@@ -1,0 +1,27 @@
+{{ define "main" }}
+
+<section class="section overlay bg-cover" style="background-image: url('{{ .Params.Image | absURL }}');">
+  <div class="container">
+    <div class="row">
+      <div class="col-12 text-center">
+        <h1 class="text-white display-3">{{ .Title }}</h1>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section-sm">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-10 mx-auto">
+        <div class="content">
+          {{ .Content }}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{{ partial "footer-block.html" . }}
+
+{{ end }}

@@ -1,0 +1,71 @@
+baseURL = "https://sitepins.com/"
+paginate = "21"
+summaryLength = "15"
+theme = "sitepins"
+title = "Sitepins"
+[markup.goldmark.renderer]
+unsafe = true
+[[menu.main]]
+URL = "#"
+name = "Resources"
+weight = 1
+[[menu.main]]
+URL = "contact"
+name = "Contact"
+weight = 3
+[outputs]
+home = ["HTML", "RSS", "JSON"]
+[params]
+author = "Themefisher"
+description = "This is meta description"
+email = "themefisher@gmail.com"
+footer_content = "Sitepines featured the best website design inspiration with over 300+ examples. Curated to ensure the best quality."
+google_analitycs_id = ""
+heading = " Best Landing Page <br> Examples for Design Inspiration"
+heading_content = ""
+logo = "images/logo.png"
+product_thumb_height = "400px"
+promotoion = []
+search = true
+[params.navigation_button]
+enable = true
+label = "+ Submit Theme"
+link = "submit"
+[[params.plugins.css]]
+link = "plugins/bootstrap/bootstrap.min.css"
+[[params.plugins.css]]
+link = "plugins/themify-icons/themify-icons.css"
+[[params.plugins.js]]
+link = "plugins/jQuery/jquery.min.js"
+[[params.plugins.js]]
+link = "plugins/bootstrap/bootstrap.min.js"
+[[params.plugins.js]]
+link = "plugins/search/fuse.min.js"
+[[params.plugins.js]]
+link = "plugins/search/mark.js"
+[[params.plugins.js]]
+link = "plugins/search/search.js"
+[params.preloader]
+enable = false
+preloader = ""
+[[params.social]]
+icon = "ti-pinterest"
+link = "https://www.pinterest.com/Sitepins/"
+name = "pinterest"
+[[params.social]]
+icon = "ti-facebook"
+link = "https://www.facebook.com/SitePins"
+name = "facebook"
+[[params.social]]
+icon = "ti-twitter-alt"
+link = "https://twitter.com/sitepins_com"
+name = "twitter"
+[[params.social]]
+icon = "ti-github"
+link = "https://github.com/themefisher"
+name = "github"
+[taxonomies]
+category = "categories"
+color = "colors"
+tag = "tags"
+technology = "technology"

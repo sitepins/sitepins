@@ -1,0 +1,48 @@
+<footer class="py-5 px-md-4 border-top">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-lg-4 mb-4 mb-lg-0">
+        <a class="navbar-brand text-dark" href="{{ .Site.BaseURL | relLangURL }}">
+          {{ if .Site.Params.logo }}
+          <img class="img-fluid" src="{{ .Site.Params.logo | absURL }}" alt="{{ .Site.Title }}">
+          {{ else }}
+          {{ .Site.Title }}
+          {{ end }}
+        </a>
+        <small class="d-block">{{ .Site.Params.footer_content | markdownify }}</small>
+      </div>
+      <div class="col-lg-2 col-md-3 col-6 mb-4 mb-md-0">
+        <h6 class="mb-3">Inspiration</h6>
+        <ul class="list-unstyled footer-list">
+          {{ range .Site.Menus.inspiration }}
+          <li><a href="{{ .URL | absURL }}">{{ .Name }}</a></li>
+          {{ end }}
+        </ul>
+      </div>
+      <div class="col-lg-2 col-md-3 col-6 mb-4 mb-md-0">
+        <h6 class="mb-3">Templates</h6>
+        <ul class="list-unstyled footer-list">
+          {{ range .Site.Menus.template }}
+          <li><a href="{{ .URL | absURL }}">{{ .Name }}</a></li>
+          {{ end }}
+        </ul>
+      </div>
+      <div class="col-lg-2 col-md-3 col-6 mb-4 mb-md-0">
+        <h6 class="mb-3">Resources</h6>
+        <ul class="list-unstyled footer-list">
+          {{ range .Site.Menus.resource }}
+          <li><a href="{{ .URL | absURL }}">{{ .Name }}</a></li>
+          {{ end }}
+        </ul>
+      </div>
+      <div class="col-lg-2 col-md-3 col-6 mb-4 mb-md-0">
+        <h6 class="mb-3">Social</h6>
+        <ul class="list-unstyled footer-list">
+          {{ range .Site.Params.social }}
+          <li><a href="{{ .link | safeURL }}">{{ .name }}</a></li>
+          {{ end }}
+        </ul>
+      </div>
+    </div>
+  </div>
+</footer>

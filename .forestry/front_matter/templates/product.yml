@@ -1,0 +1,43 @@
+---
+label: Product
+hide_body: false
+display_field: title
+fields:
+- type: text
+  name: title
+  label: title
+- type: datetime
+  name: date
+  label: date
+- type: file
+  name: image_thumb
+  label: image_thumb
+- type: file
+  name: image
+  label: image
+- type: list
+  name: categories
+  label: categories
+- type: tag_list
+  name: tags
+  label: tags
+- type: tag_list
+  name: colors
+  label: colors
+- type: tag_list
+  name: technology
+  label: technology
+- type: text
+  name: website
+  label: website
+- type: list
+  name: pages
+  label: pages list
+  description: website all page list
+- type: text
+  name: parent
+  label: parent
+  description: Fill it, If it has a parent page (Use Capitalize)
+- type: text
+  name: description
+  label: meta description

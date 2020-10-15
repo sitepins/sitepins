@@ -1,0 +1,30 @@
+<!-- left sidebar -->
+<aside class="sidebar border-right">
+
+  <div class="sticky-top py-4">
+    <!-- search -->
+    <div class="widget search">
+      <form class="search-bar" action="{{ `search/` | relLangURL }}">
+        <input id="search-query" name="s" type="search" class="form-control" placeholder="Search Here...">
+      </form>
+    </div>
+
+    <!-- category -->
+    {{- if isset .Site.Taxonomies "categories" }}
+    {{- if not (eq (len .Site.Taxonomies.categories) 0) }}
+    <div class="widget {{if gt (len .Site.Taxonomies.categories) 10}}scroll-box{{end}}">
+      <ul class="list-group">
+        {{- range $name, $items := .Site.Taxonomies.categories }}
+        <li class="list-group-item">
+          <a class="d-flex justify-content-between"
+            href="{{ `categories/` | relLangURL }}{{ $name | urlize | lower }}">{{ $name | title | humanize }}<span
+              class="mt-1">({{len $items}})</span></a>
+        </li>
+        {{- end }}
+      </ul>
+    </div>
+    {{- end }}
+    {{- end }}
+  </div>
+</aside>
+<!-- /left sidebar -->

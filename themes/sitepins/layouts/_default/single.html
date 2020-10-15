@@ -1,0 +1,109 @@
+{{ define "main" }}
+
+<section>
+  <div class="container-fluid px-0">
+    <div class="d-flex flex-column flex-md-row">
+      {{ partial "left-sidebar.html" . }}
+      <div class="wrapper">
+        <div class="row">
+          <!-- body -->
+          <div class="col-lg-8 p-5 order-2 order-lg-1">
+            <img src="{{ .Params.Image | absURL }}" alt="{{ .Title }}" class="img-fluid w-100 mb-5 rounded shadow">
+          </div>
+          <!-- right sidebar -->
+          <div class="col-lg-4 mt-5 px-5 pl-lg-0 order-1 order-lg-2">
+            <div class="shadow widget p-4">
+              <h2 class="h3 font-weight-bold mb-4">{{.Title}}</h2>
+              {{ with .Content}}<div class="mb-4">{{ . }}</div>{{ end }}
+              {{ with .Params.Tags}}
+              <div class="d-flex mb-3">
+                <i class="ti-bookmark text-primary h4 mr-2 mt-1"></i>
+                <ul class="list-inline tag-list">
+                  {{ range . }}
+                  <li class="list-inline-item"><a href="{{ `tags/` | relLangURL }}{{ . | lower }}">{{ . | title}}</a>
+                  </li>
+                  {{ end }}
+                </ul>
+              </div>
+              {{ end }}
+              {{ with .Params.Colors}}
+              <div class="d-flex mb-3">
+                <i class="ti-palette text-primary h4 mr-2 mt-1"></i>
+                <ul class="list-inline color-list">
+                  {{ range . }}
+                  <li class="list-inline-item"><a title="{{.|humanize}}" href="{{`colors/`|relLangURL}}{{.|lower}}">
+                    <span class="color" style="background-color: {{.}};"></span></a>
+                  </li>
+                  {{ end }}
+                </ul>
+              </div>
+              {{ end }}
+              {{ with .Params.Technology}}
+              <div class="d-flex mb-3">
+                <i class="ti-panel text-primary h4 mr-2 mt-1"></i>
+                <ul class="list-inline technology-list">
+                  {{ range . }}
+                  <li class="list-inline-item"><a title="{{.|humanize}}" href="{{`technology/`|relLangURL}}{{.|lower}}"><img src="{{`technology/`|absURL}}{{.|lower}}.svg" alt="{{.|title}}"></a>
+                  </li>
+                  {{ end }}
+                </ul>
+              </div>
+              {{ end }}
+              <div class="d-flex mb-3">
+                <i class="ti-time text-primary h4 mr-2"></i>
+                <span
+                  class="list-inline-item mr-0 text-dark font-weight-medium">{{ .PublishDate.Format "02 January, 2006" }}</span>
+              </div>
+              <a href="{{.Params.Website | safeURL }}" class="btn btn-primary btn-block">Visit Website</a>
+            </div>
+            {{ with .Params.Pages}}
+            <div class="shadow widget p-4">
+              <h3 class="font-weight-bold mb-3">Page List</h3>
+              <ul class="list-styled">
+                {{ range . }}
+                <li>{{. | humanize}}</li>
+                {{ end }}
+              </ul>
+            </div>
+            {{ end }}
+            {{ with .Site.Params.promotoion }}
+            <div class="promotion d-none d-md-block">
+              {{ range . }}
+              <a href="{{ .link | absURL }}"><img class="img-fluid" src="{{ .image | absURL }}"></a>
+              {{ end }}
+            </div>
+            {{ end }}
+          </div>
+          <!-- /right sidebar -->
+        </div>
+        {{ with where .Site.RegularPages ".Params.parent" .Title }}
+        <div class="section-sm px-5 pt-0">
+          <div class="row">
+            <div class="col-12 mb-4">
+              <h2>Others Pages</h2>
+            </div>
+            {{ range .}}
+            {{ .Render "product" }}
+            {{ end }}
+          </div>
+        </div>
+        {{else}}
+        <div class="section-sm px-5 pt-0">
+          <div class="row">
+            <div class="col-12 mb-4">
+              <h2>Related Websites</h2>
+            </div>
+            {{ $related := (where .Site.RegularPages "Section" "products") | intersect (where .Site.Pages ".Title" "!=" .Title) | union (.Site.RegularPages.Related . ) | shuffle}}
+            {{ range first 3 $related }}
+            {{ .Render "product" }}
+            {{ end }}
+          </div>
+        </div>
+        {{ end }}
+        {{ partial "footer-block.html" . }}
+      </div>
+    </div>
+  </div>
+</section>
+
+{{ end }}

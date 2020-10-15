@@ -1,0 +1,9 @@
+{{ $_hugo_config := `{ "version": 1 }` }}
+
+<div class="card product">
+  <div class="card-body">
+    <h2><a href="{{ .Get `link` }}/?ref=sitepins.com">{{ .Get "name"}}</a></h2>
+    <a href="{{ .Get `link`}}/?ref=sitepins.com"><img loading="lazy" src="{{.Get `image` | absURL }}" class="img-fluid w-100" alt="{{ .Get `name`}}"></a>
+    {{ .Inner | markdownify}}
+  </div>
+</div>

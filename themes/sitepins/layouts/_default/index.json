@@ -1,0 +1,7 @@
+{{- $.Scratch.Add "index" slice -}}
+{{- range .Site.RegularPages -}}
+{{ $summary := .Summary | truncate 40 }}
+{{ $image:= .Scratch.Get "image" }}
+  {{- $.Scratch.Add "index" (dict "title" .Title "image" .Params.Image "site" .Params.website "tags" .Params.tags "categories" .Params.categories "summary" $summary "contents" .Plain "permalink" .Permalink) -}}
+{{- end -}}
+{{- $.Scratch.Get "index" | jsonify -}}

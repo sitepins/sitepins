@@ -1,0 +1,56 @@
+{{ define "main" }}
+
+<section>
+  <div class="container-fluid px-0">
+    <div class="d-flex">
+      {{ partial "left-sidebar.html" . }}
+      <div class="wrapper">
+        <div class="p-5">
+          <div class="mb-5">
+            <h1>Search results for
+              <span class="text-primary">
+                <script>
+                  var keyword = (window.location.search).substr(3);
+                  var result = keyword.replace("+", " ");
+                  document.write(result);
+                </script>
+              </span>
+            </h1>
+          </div>
+          <div class="row" id="search-results"></div>
+          <script id="search-result-template" type="text/x-js-template">
+            <div class="col-lg-4 mb-4 col-sm-6" id="summary-${key}">
+            <div class="card">
+              <a href="${link}" class="product-thumb"
+              style="height:{{if .Site.Params.product_thumb_height}}{{ .Site.Params.product_thumb_height}}{{else}}100%{{end}};">
+                <img src="{{.Site.BaseURL}}${image}" loading="lazy" alt="${title}" class="card-img-top">
+              </a>
+
+              <div class="card-body border-top border-default">
+                <div class="d-flex">
+                  <h3 class="mb-1"><a href="${link}">${title}</a></h3>
+                  <div class="ml-auto">
+                    <a target="_blank" class="icon-link" href="${site}?ref=sitepins.com">
+                      <svg height="15px" viewBox="0 0 283.922 283.922">
+                        <g>
+                          <path
+                            d="M266.422,0h-97.625c-9.65,0-17.5,7.851-17.5,17.5c0,9.649,7.85,17.5,17.5,17.5h55.377l-92.375,92.374c-3.307,3.305-5.127,7.699-5.127,12.375c0,4.676,1.819,9.069,5.125,12.371c3.306,3.309,7.699,5.13,12.375,5.13c4.674,0,9.069-1.82,12.376-5.127l92.374-92.375v55.377c0,9.649,7.851,17.5,17.5,17.5c9.649,0,17.5-7.851,17.5-17.5V17.5C283.922,7.851,276.071,0,266.422,0z" />
+                          <path
+                            d="M201.137,253.922H30V82.785h128.711l30-30H15c-8.284,0-15,6.716-15,15v201.137c0,8.284,6.716,15,15,15h201.137c8.284,0,15-6.716,15-15V95.211l-30,30V253.922z" />
+                        </g>
+                      </svg></a>
+                  </div>
+                </div>
+                <small>${summary}</small>
+              </div>
+            </div>
+          </div>
+        </script>
+        </div>
+        {{ partial "footer-block.html" . }}
+      </div>
+    </div>
+  </div>
+</section>
+
+{{ end }}

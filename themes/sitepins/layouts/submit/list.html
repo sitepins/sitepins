@@ -1,0 +1,53 @@
+{{ define "main" }}
+
+<section class="section-sm pb-0">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-6 col-md-8">
+        <h1 class="display-4">{{ .Title }}</h1>
+        <p>{{ .Params.Subtitle | markdownify  }}</p>
+        <a href="{{ .Params.Submit_button_url | safeURL }}" class="btn btn-primary">{{ .Params.Submit_button_label }}</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section-sm pb-0">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-4 mb-4 mb-md-0">
+        <h2>Why You will Submit your site?</h2>
+      </div>
+      <div class="col-md-8">
+        <div class="row content">
+          {{ range .Params.Services }}
+          <div class="col-sm-6">
+            <h5>{{ .title }}</h5>
+            <p>{{ .content | markdownify }}</p>
+          </div>
+          {{ end }}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section-sm">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-11 mx-auto">
+        <div class="shadow p-5 text-center">
+          {{ with .Params.Call_to_action }}
+          <h2 class="mb-3">{{ .title }}</h2>
+          <p class="mb-4">{{ .content }}</p>
+          {{ end }}
+          <a href="{{ .Params.Submit_button_url | safeURL }}" class="btn btn-primary">{{ .Params.Submit_button_label }}</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{{ partial "footer-block.html" . }}
+
+{{ end }}

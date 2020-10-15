@@ -1,0 +1,62 @@
+{{ define "main" }}
+
+<section class="section-sm">
+  <div class="container">
+    <div class="rounded shadow p-5">
+      <h2 class="mb-4">Start Submitting</h2>
+      <form name="product-submit" method="POST" data-netlify="true" class="row">
+        <div class="col-md-6">
+          <div class="form-group mb-4">
+            <label for="website-title">Website Title</label>
+            <input type="text" name="website-title" id="website-title" class="form-control" placeholder="Sitepins">
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group mb-4">
+            <label for="website-url">Website URL</label>
+            <input type="text" name="website-url" id="website-url" class="form-control" placeholder="www.sitepins.com">
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group mb-4">
+            <label for="email">E-Mail Address</label>
+            <input type="email" name="email" id="email" class="form-control" placeholder="john.doe@email.com">
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group mb-4">
+            <label for="user-name">Your Name/Company Name</label>
+            <input type="text" name="user-name" id="user-name" class="form-control" placeholder="John Doe">
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group mb-4">
+            <label for="payment-email">Payment Email</label>
+            <input type="email" name="payment-email" id="payment-email" class="form-control"
+              placeholder="john.doe@email.com">
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group mb-4">
+            <label for="order-number">Payment Order Number</label>
+            <input type="text" name="order-number" id="order-number" class="form-control" placeholder="#12282624">
+          </div>
+        </div>
+        <div class="col-12">
+          <div class="form-group mb-4">
+            <label for="description">Website Description</label>
+            <textarea name="description" id="description" class="form-control"
+              placeholder="Lorem Ipsum is simply dummy text of the printing and......"></textarea>
+          </div>
+        </div>
+        <div class="col-12">
+          <button class="btn btn-primary" type="submit" value="send">submit now</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+{{ partial "footer-block.html" . }}
+
+{{ end }}

@@ -1,0 +1,26 @@
+{{ define "main" }}
+
+<section>
+  <div class="container-fluid px-0">
+    <div class="d-flex">
+      {{ partial "left-sidebar.html" . }}
+      <div class="wrapper">
+        <div class="row p-5">
+          <div class="col-12 mb-5">
+            <h1>Items are showing from <span class="text-primary">{{.Title}}</span></h1>
+          </div>
+          {{ $paginator := .Paginate .Data.Pages }}
+          {{ range $paginator.Pages }}
+          {{ .Render "product" }}
+          {{ end }}
+          <div class="col-12">
+            {{ template "_internal/pagination.html" . }}
+          </div>
+        </div>
+        {{ partial "footer-block.html" . }}
+      </div>
+    </div>
+  </div>
+</section>
+
+{{ end }}

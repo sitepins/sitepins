@@ -1,0 +1,70 @@
+---
+new_page_extension: md
+auto_deploy: false
+admin_path: ''
+webhook_url: 
+sections:
+- type: heading
+  label: Products
+- type: directory
+  path: content/products
+  label: Products
+  create: all
+  match: "**/*"
+  templates:
+  - product
+- type: heading
+  label: Blog
+- type: directory
+  path: content/blog
+  label: Post
+  create: all
+  match: "*"
+  templates:
+  - post
+- type: heading
+  label: All Pages
+- type: directory
+  path: content/submit
+  label: Submit
+  create: none
+  match: "**/*"
+- type: directory
+  path: content/contact
+  label: Contact
+  create: none
+  match: "**/*"
+- type: directory
+  path: content/terms-conditions
+  label: Terms Conditions
+  create: none
+  match: "**/*"
+- type: directory
+  path: content/privacy-policy
+  label: Privacy Policy
+  create: none
+  match: "**/*"
+- type: heading
+  label: Configuration
+- type: directory
+  path: ''
+  label: Configuration
+  create: all
+  match: "*.toml"
+  new_doc_ext: toml
+upload_dir: static/images
+public_path: "/images"
+front_matter_path: ''
+use_front_matter_path: false
+file_template: ":filename:"
+build:
+  preview_env:
+  - HUGO_ENV=staging
+  - HUGO_VERSION=0.63.2
+  preview_output_directory: public
+  preview_docker_image: forestryio/hugo:latest
+  mount_path: "/srv"
+  working_dir: "/srv"
+  instant_preview_command: hugo server -D -E -F --port 8080 --bind 0.0.0.0 --renderToDisk
+    -d public
+version: 0.63.2

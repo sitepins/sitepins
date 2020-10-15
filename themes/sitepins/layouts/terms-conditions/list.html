@@ -1,0 +1,34 @@
+{{ define "main" }}
+
+<section class="section-sm">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-11 mx-auto">
+        <h1 class="display-4">{{.Title}}</h1>
+        <p>{{ .Params.Subtitle | markdownify }}</p>
+        <div class="content mt-5">
+          {{ .Content }}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section-sm pt-0">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-11 mx-auto">
+        <div class="shadow p-5 text-center">
+          <h2 class="mb-3">Still Have A Question?</h2>
+          <p class="mb-4">If You Can Not Find Your Answer Of Your Question Here, You Can <br>
+            Always Contact Us.We Will Answer To You Shortly</p>
+            <a href="/contact" class="btn btn-primary">Contact Us</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{{ partial "footer-block.html" . }}
+
+{{ end }}

@@ -1,0 +1,30 @@
+/* Button style */
+.btn {
+  font-size: 15px;
+  font-weight: 500;
+  font-family: $primary-font;
+  text-transform: capitalize;
+  padding: 10px 25px;
+  border-radius: 50px;
+  border: 0;
+
+  &:hover,
+  &:active,
+  &:focus {
+    outline: 0;
+    box-shadow: none !important;
+  }
+}
+
+.btn-primary {
+  background: $primary-gradient;
+  color: $white;
+
+  &:active,
+  &:hover,
+  &:focus,
+  &.focus,
+  &.active {
+    background: $primary-gradient !important;
+  }
+}

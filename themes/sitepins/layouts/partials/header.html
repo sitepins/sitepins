@@ -1,0 +1,50 @@
+{{ "<!-- navigation -->" | safeHTML }}
+<header class="border-bottom">
+  <!-- navbar -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-transparent">
+    <a class="navbar-brand text-dark px-4 py-3" href="{{ .Site.BaseURL | relLangURL }}">
+      {{ if .Site.Params.logo }}
+      <img class="img-fluid" src="{{ .Site.Params.logo | absURL }}" alt="{{ .Site.Title }}">
+      {{ else }}
+      {{ .Site.Title }}
+      {{ end }}
+    </a>
+    <button class="navbar-toggler mr-4" type="button" data-toggle="collapse" data-target="#navigation"
+      aria-controls="navigation" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse text-center" id="navigation">
+      <ul class="navbar-nav m-auto">
+        <!-- <li class="nav-item">
+          <a class="nav-link" href="{{ .Site.BaseURL }}">{{ .Site.Params.Home }}</a>
+        </li> -->
+        {{ range .Site.Menus.main }}
+        {{ if .HasChildren }}
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true"
+            aria-expanded="false">
+            {{ .Name }}
+          </a>
+          <div class="dropdown-menu">
+            {{ range .Children }}
+            <a class="dropdown-item" href="{{ .URL | absURL }}">{{ .Name }}</a>
+            {{ end }}
+          </div>
+        </li>
+        {{ else }}
+        <li class="nav-item">
+          <a class="nav-link" href="{{ .URL | absURL }}">{{ .Name }}</a>
+        </li>
+        {{ end }}
+        {{ end }}
+      </ul>
+      {{ if .Site.Params.navigation_button.enable }}
+      {{ with .Site.Params.navigation_button }}
+      <a href="{{ .link | absURL }}" class="btn btn-primary mr-lg-4 mb-4 mb-lg-0">{{ .label }}</a>
+      {{ end }}
+      {{ end }}
+    </div>
+  </nav>
+</header>
+{{ "<!-- /navigation -->" | safeHTML }}

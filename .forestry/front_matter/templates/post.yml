@@ -1,0 +1,14 @@
+---
+label: Post
+hide_body: false
+display_field: title
+fields:
+- type: text
+  name: title
+  label: title
+- type: text
+  name: description
+  label: description
+- type: file
+  name: image
+  label: image

@@ -1,0 +1,17 @@
+.content .card{
+  *{
+    padding-left: 0;
+  }
+  h1,h2,h3,h4,h5,h6{
+    text-transform: capitalize;
+    &::before{
+      display: none;
+    }
+  }
+  .card-body{
+    margin-bottom: 0;
+  }
+  ul,ol{
+    padding-left: 15px;
+  }
+}

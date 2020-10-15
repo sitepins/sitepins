@@ -1,0 +1,37 @@
+{{ define "main" }}
+
+<section class="section">
+  <div class="container">
+    <div class="row justify-content-around">
+      <div class="col-lg-5 col-md-6 mb-5 mb-md-0">
+        <h1 class="mb-5 display-4">Ask Us Anything Or just Say Hi</h1>
+        <h3 class="h4">Hate Forms? Write Us Email</h3>
+        <p class="mb-5"><i class="ti-email text-primary mr-2"></i> {{ .Site.Params.email }}</p>
+        <ul class="list-inline social-icons">
+          {{ range .Site.Params.social }}
+          <li class="list-inline-item"><a href="{{ .link | safeURL }}"><i class="{{ .icon }}"></i></a></li>
+          {{ end }}
+        </ul>
+      </div>
+      <div class="col-lg-5 col-md-6">
+        <form name="contact" method="POST" data-netlify="true">
+          <input type="text" name="name" id="name" class="form-control mb-4" placeholder="Your Full Name">
+          <input type="email" name="email" id="email" class="form-control mb-4" placeholder="Your working Email">
+          <select class="custom-select form-control mb-4">
+            <option selected disabled>Whats This About</option>
+            <option value="payment-issue">Payment Issue</option>
+            <option value="suggestion">Suggestion</option>
+            <option value="partnership">Partnership</option>
+            <option value="other">Just want to say "Hi"</option>
+          </select>
+          <textarea name="message" id="message" class="form-control mb-4" placeholder="Go ahead We Are Listening......"></textarea>
+          <button class="btn btn-primary" type="submit">Submit Now</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+{{ partial "footer-block.html" . }}
+
+{{ end }}

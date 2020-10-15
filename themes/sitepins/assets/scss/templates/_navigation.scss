@@ -1,0 +1,99 @@
+.navbar {
+  padding: 0;
+
+  .nav-item {
+    .nav-link {
+      text-transform: capitalize;
+      font-weight: 400;
+      font-size: 14px;
+    }
+  }
+
+  .dropdown {
+    &:hover {
+      .dropdown-menu {
+        visibility: visible;
+        opacity: 1;
+        transform: scaleX(1);
+      }
+    }
+
+    &-menu {
+      @extend .shadow;
+      padding: 15px;
+      border: 0;
+      top: 100%;
+      left: -20px;
+      border-radius: 0;
+      display: block;
+      visibility: hidden;
+      transition: .3s ease;
+      opacity: 0;
+      transform: scale(.8);
+      background: $white;
+
+      @include desktop {
+        display: none;
+        opacity: 1;
+        visibility: visible;
+        transform: scale(1);
+        transform-origin: unset;
+      }
+
+      &.view {
+        visibility: visible !important;
+        opacity: 1;
+        transform: scale(1);
+
+        @include desktop {
+          display: block;
+        }
+      }
+
+      &.show {
+        visibility: hidden;
+
+        @include desktop {
+          visibility: visible;
+          display: block;
+        }
+      }
+    }
+
+    &-item {
+      position: relative;
+      color: $text-color-dark;
+      transition: .2s ease;
+      font-family: $primary-font;
+
+      @include desktop {
+        text-align: center;
+      }
+
+      &:not(:last-child) {
+        margin-bottom: 10px;
+      }
+
+      &:hover {
+        color: $primary-color;
+        background: transparent;
+      }
+    }
+  }
+}
+
+.navbar-light .navbar-nav .nav-link {
+  color: $text-color-dark;
+
+  &:hover {
+    color: $primary-color;
+  }
+}
+
+.navbar-expand-lg .navbar-nav .nav-link {
+  padding: 20px;
+
+  @include desktop-lg {
+    padding: 10px;
+  }
+}

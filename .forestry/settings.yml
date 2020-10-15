@@ -52,10 +52,10 @@ sections:
   create: all
   match: "*.toml"
   new_doc_ext: toml
-upload_dir: static/images
-public_path: "/images"
+upload_dir: static/products
+public_path: static/products
 front_matter_path: ''
-use_front_matter_path: false
+use_front_matter_path: 
 file_template: ":filename:"
 build:
   preview_env:

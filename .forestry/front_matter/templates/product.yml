@@ -10,9 +10,6 @@ fields:
   name: date
   label: date
 - type: file
-  name: image_thumb
-  label: image_thumb
-- type: file
   name: image
   label: image
 - type: list

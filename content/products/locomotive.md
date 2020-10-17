@@ -2,9 +2,9 @@
 categories = ["Agency"]
 date = 2020-03-31T19:30:00Z
 description = ""
-image = "/products/bejamas.jpg"
+image = "/products/locomotive.jpg"
 tags = []
-title = "Bejamas"
+title = "Locomotive"
 website = "https://locomotive.ca"
 parent = ""
 +++

@@ -182,9 +182,10 @@ textarea.form-control {
       text-align: center;
       margin-right: 6px;
       color: $text-color;
-      span{
-      line-height: 1;
-    }
+
+      span {
+        line-height: 1;
+      }
     }
 
     &:first-child,
@@ -200,7 +201,8 @@ textarea.form-control {
         color: $white;
       }
     }
-    span{
+
+    span {
       line-height: 35px;
     }
   }
@@ -400,21 +402,11 @@ textarea.form-control {
 
   a {
     display: block;
-    height: 31px;
-    width: 31px;
-    border-radius: 50px;
-    background-color: $white;
-    border: 1px solid $primary-color;
-    transition: all .3s ease;
-
-    .color {
-      display: inline-block;
-      height: 25px;
-      width: 25px;
-      border-radius: 50%;
-      vertical-align: middle;
-      margin: 2px;
-    }
+    border: 3px solid $primary-color;
+    height: 25px;
+    width: 25px;
+    border-radius: 50%;
+    margin: 2px;
   }
 }
 
@@ -424,8 +416,9 @@ textarea.form-control {
   a {
     display: block;
     padding: 3px;
-    img{
-      height: 20px;
+
+    img {
+      height: 25px;
       width: auto;
     }
   }
@@ -457,6 +450,7 @@ textarea.form-control {
 // sidebar
 .sidebar {
   width: 300px;
+
   @include tablet {
     width: 100%;
   }
@@ -464,7 +458,7 @@ textarea.form-control {
 
 .wrapper {
   width: calc(100% - 210px);
-  
+
   @include tablet {
     width: 100%;
   }

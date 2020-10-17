@@ -31,8 +31,8 @@
                 <i class="ti-palette text-primary h4 mr-2 mt-1"></i>
                 <ul class="list-inline color-list">
                   {{ range . }}
-                  <li class="list-inline-item"><a title="{{.|humanize}}" href="{{`colors/`|relLangURL}}{{.|lower}}">
-                    <span class="color" style="background-color: {{.}};"></span></a>
+                  <li class="list-inline-item">
+                    <a title="{{.|humanize}}" href="{{`colors/`|relLangURL}}{{.|lower}}"  style="background-color: {{.}};"></a>
                   </li>
                   {{ end }}
                 </ul>

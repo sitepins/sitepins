@@ -178,7 +178,7 @@ textarea.form-control {
       height: 40px;
       line-height: 1.7;
       border: 0;
-      border-radius: 4px;
+      border-radius: 50%;
       text-align: center;
       margin-right: 6px;
       color: $text-color;
@@ -191,7 +191,7 @@ textarea.form-control {
     &:first-child,
     &:last-child {
       .page-link {
-        border-radius: 4px;
+        border-radius: 50%;
       }
     }
 

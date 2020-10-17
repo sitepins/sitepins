@@ -2,7 +2,7 @@
 
 <section>
   <div class="container-fluid px-0">
-    <div class="d-flex">
+    <div class="d-flex flex-column flex-md-row">
       {{ partial "left-sidebar.html" . }}
       <div class="wrapper">
         <div class="p-5">
@@ -17,9 +17,9 @@
               </span>
             </h1>
           </div>
-          <div class="row" id="search-results"></div>
+          <div class="row p-lg-5 p-md-4 p-3" id="search-results"></div>
           <script id="search-result-template" type="text/x-js-template">
-            <div class="col-lg-4 mb-4 col-sm-6" id="summary-${key}">
+            <div class="col-lg-4 col-sm-6 mb-4" id="summary-${key}">
             <div class="card">
               <a href="${link}" class="product-thumb"
               style="height:{{if .Site.Params.product_thumb_height}}{{ .Site.Params.product_thumb_height}}{{else}}100%{{end}};">

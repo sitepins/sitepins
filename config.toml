@@ -3,24 +3,33 @@ paginate = "21"
 summaryLength = "15"
 theme = "sitepins"
 title = "Sitepins"
+googleAnalytics = ""
 [markup.goldmark.renderer]
 unsafe = true
 [[menu.main]]
-URL = "#"
+url = "#"
 name = "Resources"
 weight = 1
 [[menu.main]]
-URL = "contact"
+url = "contact"
 name = "Contact"
 weight = 3
+[[menu.inspiration]]
+url = "#"
+name = " "
+[[menu.template]]
+url = "#"
+name = " "
+[[menu.resource]]
+url = "#"
+name = " "
 [outputs]
 home = ["HTML", "RSS", "JSON"]
 [params]
 author = "Themefisher"
-description = "This is meta description"
+description = "Sitepines featured the best website design inspiration with over 300+ examples. Curated to ensure the best quality."
 email = "themefisher@gmail.com"
 footer_content = "Sitepines featured the best website design inspiration with over 300+ examples. Curated to ensure the best quality."
-google_analitycs_id = ""
 heading = " Best Landing Page <br> Examples for Design Inspiration"
 heading_content = ""
 logo = "images/logo.png"

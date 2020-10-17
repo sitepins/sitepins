@@ -25,7 +25,7 @@ heading = " Best Landing Page <br> Examples for Design Inspiration"
 heading_content = ""
 logo = "images/logo.png"
 product_thumb_height = "400px"
-product_thumb_size = "?nf_resize=smartcrop&w=300&h=400"
+product_thumb_size = "?nf_resize=fit&w=300&h=400"
 promotoion = []
 search = true
 [params.navigation_button]

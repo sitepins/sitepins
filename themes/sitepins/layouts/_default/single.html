@@ -5,13 +5,13 @@
     <div class="d-flex flex-column flex-md-row">
       {{ partial "left-sidebar.html" . }}
       <div class="wrapper">
-        <div class="row">
+        <div class="row p-lg-5 p-md-4 p-3 mx-0">
           <!-- body -->
-          <div class="col-lg-8 p-5 order-2 order-lg-1">
-            <img src="{{ .Params.Image | absURL }}" alt="{{ .Title }}" class="img-fluid w-100 mb-5 rounded shadow">
+          <div class="col-lg-8 order-2 order-lg-1">
+            <img src="{{ .Params.Image | absURL }}" alt="{{ .Title }}" class="img-fluid w-100 rounded shadow">
           </div>
           <!-- right sidebar -->
-          <div class="col-lg-4 mt-5 px-5 pl-lg-0 order-1 order-lg-2">
+          <div class="col-lg-4 order-1 order-lg-2">
             <div class="shadow widget p-4">
               <h2 class="h3 font-weight-bold mb-4">{{.Title}}</h2>
               {{ with .Content}}<div class="mb-4">{{ . }}</div>{{ end }}
@@ -77,7 +77,7 @@
           <!-- /right sidebar -->
         </div>
         {{ with where .Site.RegularPages ".Params.parent" .Title }}
-        <div class="section-sm px-5 pt-0">
+        <div class="section-sm pt-0">
           <div class="row">
             <div class="col-12 mb-4">
               <h2>Others Pages</h2>

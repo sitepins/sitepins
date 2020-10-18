@@ -9,6 +9,13 @@
     }
   }
 
+  &-toggler{
+    height: 45px;
+    width: 45px;
+    border-radius: 50%;
+    padding: 0;
+  }
+
   .dropdown {
     &:hover {
       .dropdown-menu {

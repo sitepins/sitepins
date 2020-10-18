@@ -427,6 +427,9 @@ textarea.form-control {
 .scroll-box {
   height: calc(100vh - 100px);
   overflow-y: scroll;
+  @include tablet {
+    height: 200px;
+  }
 
   /* width */
   &::-webkit-scrollbar {

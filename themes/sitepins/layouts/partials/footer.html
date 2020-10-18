@@ -2,7 +2,7 @@
 {{ "<!-- Search index -->" | safeHTML }}
 {{ if .Site.Params.search }}
 <script>
-  var indexURL = {{"index.json" | absURL}}
+  var indexURL = {{"index.json" | relURL}}
 </script>
 {{ end }}
 

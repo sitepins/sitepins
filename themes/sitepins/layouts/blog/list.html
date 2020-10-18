@@ -23,7 +23,7 @@
         {{ range first 3 (where .Site.RegularPages "Section" "products" ) }}
         <div class="card mb-4">
           <a href="{{ .Permalink }}" class="product-thumb"
-            style="height:{{with .Site.Params.product_thumb_height}}{{.}}{{else}}100%{{end}};">
+            style="height:{{site.Params.product_thumb_height}};">
             <img src="{{ .Params.Image | absURL }}{{site.Params.product_thumb_size}}" alt="{{ .Title }}" class="card-img-top">
           </a>
           <div class="card-body border-top border-default">

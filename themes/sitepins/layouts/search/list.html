@@ -22,8 +22,8 @@
             <div class="col-lg-4 col-sm-6 mb-4" id="summary-${key}">
             <div class="card">
               <a href="${link}" class="product-thumb"
-              style="height:{{if .Site.Params.product_thumb_height}}{{ .Site.Params.product_thumb_height}}{{else}}100%{{end}};">
-                <img src="{{.Site.BaseURL}}${image}{{site.Params.product_thumb_size}}" loading="lazy" alt="${title}" class="card-img-top">
+              style="height:{{site.Params.product_thumb_height}};">
+                <img src="{{site.BaseURL}}${image}{{site.Params.product_thumb_size}}" loading="lazy" alt="${title}" class="card-img-top">
               </a>
 
               <div class="card-body border-top border-default">

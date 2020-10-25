@@ -430,20 +430,23 @@ textarea.form-control {
   @include tablet {
     height: 200px;
   }
-
-  /* width */
+  
   &::-webkit-scrollbar {
     width: 2px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: transparent;
   }
 
   &:hover {
 
-    /* Track */
     &::-webkit-scrollbar-track {
       background: #f1f1f1;
     }
-
-    /* Handle */
     &::-webkit-scrollbar-thumb {
       background: #bbb;
     }

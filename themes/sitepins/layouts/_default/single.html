@@ -76,20 +76,19 @@
           </div>
           <!-- /right sidebar -->
         </div>
-        {{ with where .Site.RegularPages ".Params.parent" .Title }}
-        <div class="section-sm pt-0">
-          <div class="row">
+        <div class="section-sm px-lg-5 p-3">
+          <div class="row mx-0">
+            <!-- others page -->
+            {{ with where .Site.RegularPages ".Params.parent" .Title }}
             <div class="col-12 mb-4">
               <h2>Others Pages</h2>
             </div>
             {{ range .}}
             {{ .Render "product" }}
             {{ end }}
-          </div>
-        </div>
-        {{else}}
-        <div class="section-sm px-5 pt-0">
-          <div class="row">
+
+            {{else}}
+            <!-- related page -->
             <div class="col-12 mb-4">
               <h2>Related Websites</h2>
             </div>
@@ -97,9 +96,9 @@
             {{ range first 3 $related }}
             {{ .Render "product" }}
             {{ end }}
+            {{ end }}
           </div>
         </div>
-        {{ end }}
         {{ partial "footer-block.html" . }}
       </div>
     </div>

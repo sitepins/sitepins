@@ -1,2 +1,1 @@
 static/products/** filter=lfs diff=lfs merge=lfs -text
-assets/products/** filter=lfs diff=lfs merge=lfs -text

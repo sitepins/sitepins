@@ -54,7 +54,7 @@
                 <span
                   class="list-inline-item mr-0 text-dark font-weight-medium">{{ .PublishDate.Format "02 January, 2006" }}</span>
               </div>
-              <a href="{{.Params.Website | safeURL }}" class="btn btn-primary btn-block">Visit Website</a>
+              <a href="{{.Params.Website| safeURL}}?ref=sitepins.com" target="_blank" class="btn btn-primary btn-block">Visit Website</a>
             </div>
             {{ with .Params.Pages}}
             <div class="shadow widget p-4">

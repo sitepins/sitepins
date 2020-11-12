@@ -5,8 +5,6 @@
 <script src="{{ .link | absURL }}" {{.attributes | safeHTMLAttr}}></script>
 {{ else if eq .page "/"}}
 <script src="{{ .link | absURL }}" {{.attributes | safeHTMLAttr}}></script>
-{{ else }}
-<script src="{{ .link | absURL }}" {{.attributes | safeHTMLAttr}}></script>
 {{ end }}
 {{ end }}
 

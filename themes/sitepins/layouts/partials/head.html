@@ -15,8 +15,6 @@
   <link rel="stylesheet" href="{{ .link | absURL }}" {{.attributes | safeHTMLAttr}}>
   {{ else if eq .page "/"}}
   <link rel="stylesheet" href="{{ .link | absURL }}" {{.attributes | safeHTMLAttr}}>
-  {{ else }}
-  <link rel="stylesheet" href="{{ .link | absURL }}" {{.attributes | safeHTMLAttr}}>
   {{ end }}
   {{ end }}
 

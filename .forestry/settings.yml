@@ -18,8 +18,9 @@ sections:
 - type: directory
   path: content/blog
   label: Post
-  create: all
+  create: documents
   match: "*"
+  exclude: _index.md
   templates:
   - post
 - type: heading
@@ -27,27 +28,19 @@ sections:
 - type: document
   path: content/submit.md
   label: Submit
-  create: none
-  match: "**/*"
 - type: document
   path: content/contact.md
   label: Contact
-  create: none
-  match: "**/*"
 - type: document
   path: content/terms-conditions.md
   label: Terms Conditions
-  create: none
-  match: "**/*"
 - type: document
   path: content/privacy-policy.md
   label: Privacy Policy
-  create: none
-  match: "**/*"
 - type: heading
   label: Configuration
 - type: document
-  path: 'config.toml'
+  path: config.toml
   label: Configuration
 upload_dir: static/products
 public_path: static/products

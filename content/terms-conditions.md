@@ -2,7 +2,9 @@
 title: Terms and condition
 subtitle: ''
 description: ''
-
+layout: "default"
+call_to_action: true
+draft: false
 ---
 You are agreeing to submit your Product (Digital Product) for Advertising under flowing terms and conditions.
 

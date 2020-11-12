@@ -2,7 +2,9 @@
 title: Privecy & Policy
 subtitle: ''
 description: ''
-
+layout: "default"
+call_to_action: true
+draft: false
 ---
 We SitePins commit ourselves to protect and respect your privacy when visiting our website.
 

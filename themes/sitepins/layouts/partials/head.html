@@ -3,14 +3,21 @@
   <title>{{ .Title }}</title>
 
   {{ "<!-- mobile responsive meta -->" | safeHTML }}
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
   <meta name="description" content="{{ with .Params.Description }}{{ . }}{{ else }}{{ with .Site.Params.description }}{{ . }}{{ end }}{{ end }}">
   {{ with .Site.Params.author }}<meta name="author" content="{{ . }}">{{ end }}
   {{ hugo.Generator }}
 
   {{ "<!-- plugins -->" | safeHTML }}
-  {{ range .Site.Params.plugins.css }}
-  <link rel="stylesheet" href="{{ .link | absURL }}">
+  {{ $permalink:= .Permalink }}
+  {{ range site.Params.plugins.css}}
+  {{ if eq $permalink (.page | lower | urlize | absURL ) }}
+  <link rel="stylesheet" href="{{ .link | absURL }}" {{.attributes | safeHTMLAttr}}>
+  {{ else if eq .page "/"}}
+  <link rel="stylesheet" href="{{ .link | absURL }}" {{.attributes | safeHTMLAttr}}>
+  {{ else }}
+  <link rel="stylesheet" href="{{ .link | absURL }}" {{.attributes | safeHTMLAttr}}>
+  {{ end }}
   {{ end }}
 
   {{ "<!-- Main Stylesheet -->" | safeHTML }}
@@ -22,7 +29,7 @@
   <link rel="icon" href="{{ `images/favicon.png` | absURL }}" type="image/x-icon">
 
   
-  {{ with .Params.Image }}
+  {{ with .Params.image }}
   <meta property="og:image" content="{{ . | absURL }}" />
   {{ end }}
   {{ template "_internal/opengraph.html" . }}

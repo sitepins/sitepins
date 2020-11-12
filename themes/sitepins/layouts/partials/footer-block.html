@@ -12,9 +12,9 @@
         <small class="d-block">{{ .Site.Params.footer_content | markdownify }}</small>
       </div>
       <div class="col-lg-2 col-md-3 col-6 mb-4 mb-md-0">
-        <h6 class="mb-3">Inspiration</h6>
+        <h6 class="mb-3">Company</h6>
         <ul class="list-unstyled footer-list">
-          {{ range .Site.Menus.inspiration }}
+          {{ range .Site.Menus.company }}
           <li><a href="{{ .URL | absURL }}">{{ .Name }}</a></li>
           {{ end }}
         </ul>

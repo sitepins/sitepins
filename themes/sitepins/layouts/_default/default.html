@@ -14,6 +14,7 @@
   </div>
 </section>
 
+{{ if .Params.call_to_action }}
 <section class="section-sm pt-0">
   <div class="container">
     <div class="row">
@@ -28,6 +29,7 @@
     </div>
   </div>
 </section>
+{{ end }}
 
 {{ partial "footer-block.html" . }}
 

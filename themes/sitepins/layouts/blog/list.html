@@ -8,7 +8,7 @@
         {{ range $paginator.Pages }}
         <div class="card mb-4">
           <a href="{{ .Permalink }}">
-            <img src="{{ .Params.Image | absURL }}" loading="lazy" alt="{{ .Title }}" class="card-img-top">
+            <img src="{{ .Params.image | absURL }}" loading="lazy" alt="{{ .Title }}" class="card-img-top">
           </a>
           <div class="card-body">
             <h2><a href="{{ .Permalink }}">{{ .Title }}</a></h2>
@@ -19,11 +19,11 @@
         {{ template "_internal/pagination.html" . }}
       </div>
       <div class="col-md-5 col-lg-4 offset-lg-1">
-        <h3 class="mb-4">Recently Added Design</h3>
+        <h3 class="mb-5">Recently Added Design</h3>
         {{ range first 3 (where .Site.RegularPages "Section" "products" ) }}
         <div class="card mb-4">
           <a href="{{ .Permalink }}" class="product-thumb"
-            style="height:{{site.Params.product_thumb_height}};">
+            style="height:{{site.Params.product_thumb_height}}">
             <img src="{{ .Params.Image | absURL }}{{site.Params.product_thumb_size}}" alt="{{ .Title }}" class="card-img-top">
           </a>
           <div class="card-body border-top border-default">

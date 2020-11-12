@@ -4,6 +4,7 @@ subtitle: Sitepines.com is a Home of awesome design Website Landing Page. We fea
   the best quality design websites to help find inspiration and motivation to create
   new great stuff.
 description: This is meta description
+layout: "submit"
 submit_button_url: "#"
 submit_button_label: Submit For Just 10$
 services:

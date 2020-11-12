@@ -1,14 +1,13 @@
-
-{{ "<!-- Search index -->" | safeHTML }}
-{{ if .Site.Params.search }}
-<script>
-  var indexURL = {{"index.json" | relURL}}
-</script>
-{{ end }}
-
 {{ "<!-- JS Plugins -->" | safeHTML }}
-{{ range .Site.Params.plugins.js}}
-<script src="{{ .link | absURL }}"></script>
+{{ $permalink:= .Permalink }}
+{{ range site.Params.plugins.js}}
+{{ if eq $permalink (.page | lower | urlize | absURL ) }}
+<script src="{{ .link | absURL }}" {{.attributes | safeHTMLAttr}}></script>
+{{ else if eq .page "/"}}
+<script src="{{ .link | absURL }}" {{.attributes | safeHTMLAttr}}></script>
+{{ else }}
+<script src="{{ .link | absURL }}" {{.attributes | safeHTMLAttr}}></script>
+{{ end }}
 {{ end }}
 
 {{ "<!-- Main Script -->" | safeHTML }}

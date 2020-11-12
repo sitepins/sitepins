@@ -14,9 +14,26 @@ weight = 1
 url = "contact"
 name = "Contact"
 weight = 3
-[[menu.inspiration]]
-url = "#"
-name = " "
+[[menu.company]]
+url = "privacy-policy"
+name = "Privacy Policy"
+weight = 1
+[[menu.company]]
+url = "terms-conditions"
+name = "Terms & Conditions"
+weight = 2
+[[menu.company]]
+url = "submit"
+name = "Submit Themes"
+weight = 3
+[[menu.company]]
+url = "https://themefisher.com/"
+name = "Free HTML Themes"
+weight = 4
+[[menu.company]]
+url = "https://gethugothemes.com/"
+name = "Best Hugo Themes"
+weight = 5
 [[menu.template]]
 url = "#"
 name = " "
@@ -24,7 +41,7 @@ name = " "
 url = "#"
 name = " "
 [outputs]
-home = ["HTML", "RSS", "JSON"]
+home = ["HTML", "JSON"]
 [params]
 author = "Themefisher"
 description = "Sitepines featured the best website design inspiration with over 300+ examples. Curated to ensure the best quality."
@@ -43,18 +60,36 @@ label = "+ Submit Theme"
 link = "submit"
 [[params.plugins.css]]
 link = "plugins/bootstrap/bootstrap.min.css"
+attributes = "media='screen'"
+page = "/"
 [[params.plugins.css]]
 link = "plugins/themify-icons/themify-icons.css"
+attributes = ""
+page = "/"
 [[params.plugins.js]]
 link = "plugins/jQuery/jquery.min.js"
+attributes = ""
+page = "/"
 [[params.plugins.js]]
 link = "plugins/bootstrap/bootstrap.min.js"
+attributes = ""
+page = "/"
+[[params.plugins.js]]
+link = "plugins/turbolinks/turbolinks.js"
+attributes = ""
+page = "/"
 [[params.plugins.js]]
 link = "plugins/search/fuse.min.js"
+attributes = ""
+page = "search/"
 [[params.plugins.js]]
 link = "plugins/search/mark.js"
+attributes = ""
+page = "search/"
 [[params.plugins.js]]
 link = "plugins/search/search.js"
+attributes = ""
+page = "search/"
 [params.preloader]
 enable = false
 preloader = ""

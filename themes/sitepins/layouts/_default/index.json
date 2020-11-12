@@ -1,7 +1,6 @@
 {{- $.Scratch.Add "index" slice -}}
-{{- range .Site.RegularPages -}}
+{{- range where .Site.RegularPages "Section" "products" -}}
 {{ $summary := .Summary | truncate 40 }}
-{{ $image:= .Scratch.Get "image" }}
-  {{- $.Scratch.Add "index" (dict "title" .Title "image" .Params.Image "site" .Params.website "tags" .Params.tags "categories" .Params.categories "summary" $summary "contents" .Plain "permalink" .Permalink) -}}
+  {{- $.Scratch.Add "index" (dict "title" .Title "image" .Params.image "site" .Params.website "tags" .Params.tags "categories" .Params.categories "summary" $summary "contents" .Plain "permalink" .Permalink) -}}
 {{- end -}}
 {{- $.Scratch.Get "index" | jsonify -}}

@@ -46,8 +46,8 @@ footer_content = "Sitepines featured the best website design inspiration with ov
 heading = " Best Landing Page <br> Examples for Design Inspiration"
 heading_content = ""
 logo = "images/logo.png"
-product_thumb_height = "400px"
-product_thumb_size = "?nf_resize=fit&w=300"
+product_thumb_height = "500px"
+product_thumb_size = "?nf_resize=fit&w=480"
 promotoion = []
 search = true
 [params.navigation_button]

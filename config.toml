@@ -7,12 +7,12 @@ googleAnalytics = ""
 [markup.goldmark.renderer]
 unsafe = true
 [[menu.main]]
-url = "#"
-name = "Resources"
+name = "About"
+url = "about/"
 weight = 1
 [[menu.main]]
-url = "contact"
 name = "Contact"
+url = "contact/"
 weight = 3
 [[menu.company]]
 url = "privacy-policy"

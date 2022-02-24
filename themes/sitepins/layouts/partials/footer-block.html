@@ -30,6 +30,7 @@
       <div class="col-lg-2 col-md-3 col-6 mb-4 mb-md-0">
         <h6 class="mb-3">Resources</h6>
         <ul class="list-unstyled footer-list">
+          <li><a href="https://statichunt.com">Statichunt</a></li>
           {{ range .Site.Menus.resource }}
           <li><a href="{{ .URL | absURL }}">{{ .Name }}</a></li>
           {{ end }}

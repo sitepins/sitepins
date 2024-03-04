@@ -84,13 +84,12 @@
         </li>
         {{ end }} {{ end }}
       </ul>
-      {{ if .Site.Params.navigation_button.enable }} {{ with
-      .Site.Params.navigation_button }}
+      {{ if .Site.Params.navigation_button.enable }} {{ with .Site.Params.navigation_button }}
       <a
         href="{{ .link | absURL }}"
         class="btn btn-primary mr-lg-4 mb-4 mb-lg-0"
-        >{{ .label }}</a
-      >
+        >{{ .label }}
+      </a>
       {{ end }} {{ end }}
     </div>
   </nav>

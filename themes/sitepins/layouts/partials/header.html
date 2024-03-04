@@ -53,12 +53,7 @@
         <li class="nav-item">
           <a
             class="nav-link"
-            {{if
-            findRE
-            `^http`
-            .URL}}target="_blank"
-            rel="noopener"
-            {{end}}
+            {{if findRE `^http` .URL}} target="_blank" rel="noopener" {{end}}
             href="{{ .URL | absURL }}"
             >{{ .Name }}{{if findRE `^http` .URL}}
             <svg

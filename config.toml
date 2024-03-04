@@ -11,9 +11,13 @@ name = "About"
 url = "about/"
 weight = 1
 [[menu.main]]
+name = "30,000+ Design Resources"
+url = "https://uihut.com/"
+weight = 3
+[[menu.main]]
 name = "Contact"
 url = "contact/"
-weight = 3
+weight = 2
 [[menu.company]]
 url = "privacy-policy"
 name = "Privacy Policy"

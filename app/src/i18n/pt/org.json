@@ -1,0 +1,161 @@
+{
+  "org": {
+    "create": {
+      "add_org_btn": "Adicionar Nova Organização",
+      "dialog_title": "Criar nova organização",
+      "dialog_desc": "Adicione uma nova organização à sua conta.",
+      "demo_error": "Você não pode criar uma nova organização no modo de demonstração.",
+      "success": "Organização criada com sucesso. Agora você pode adicionar membros.",
+      "name_label": "Nome da Organização",
+      "submit_btn": "Criar Organização"
+    },
+    "switcher": {
+      "default_org": "Organização",
+      "search": "Pesquisar...",
+      "not_found": "Nenhuma organização encontrada.",
+      "add_new": "Adicionar Nova Organização"
+    },
+    "general": {
+      "form": {
+        "title": "Nome da Organização",
+        "description": "Atualize o nome da sua organização",
+        "update_btn": "Atualizar Organização",
+        "demo_error": "Você não pode atualizar a organização no modo de demonstração.",
+        "success": "Organização atualizada com sucesso."
+      },
+      "archive": {
+        "title_archive": "Arquivar Organização",
+        "title_restore": "Restaurar Organização",
+        "desc_archive": "Arquive esta organização — ela será removida das listas ativas, mas pode ser restaurada mais tarde.",
+        "desc_restore": "Esta organização está arquivada e oculta das listas ativas. Você pode restaurá-la para ativá-la novamente.",
+        "archive_btn": "Arquivar Organização",
+        "restore_btn": "Restaurar Organização",
+        "dialog_title_archive": "Arquivar organização",
+        "dialog_title_restore": "Restaurar organização",
+        "dialog_desc_archive": "O arquivamento ocultará a organização das listas ativas. Você poderá restaurá-la depois se necessário.",
+        "dialog_desc_restore": "Restaure esta organização e a torne ativa novamente. O conteúdo e as configurações são preservados.",
+        "success_archive": "Organização arquivada com sucesso.",
+        "success_restore": "Organização restaurada para status ativo.",
+        "error": "Falha ao atualizar a organização. Por favor, tente novamente mais tarde."
+      },
+      "delete": {
+        "title": "Excluir Organização",
+        "description": "Excluir sua organização excluirá permanentemente todos os projetos, membros e configurações. Esta ação não pode ser desfeita.",
+        "delete_org_btn": "Excluir Organização",
+        "dialog_title": "Você tem certeza?",
+        "dialog_desc": "Excluir sua organização excluirá permanentemente todos os projetos, membros e configurações. Esta ação não pode ser desfeita.",
+        "placeholder": "digite CONFIRMAR para confirmar",
+        "demo_error": "Você não pode excluir a organização de demonstração — entre em contato conosco se quiser excluí-la",
+        "success": "Organização excluída com sucesso",
+        "error": "Algo deu errado"
+      },
+      "thumb": {
+        "title": "Miniatura da Organização",
+        "description": "Torne a imagem da sua organização única adicionando uma foto.",
+        "demo_error": "Você não pode atualizar a organização no modo de demonstração.",
+        "success": "Miniatura da organização atualizada com sucesso."
+      }
+    },
+    "members": {
+      "title": "Membros da Equipe",
+      "description": "Gerencie seus membros da equipe",
+      "anonymous": "Anônimo",
+      "roles": {
+        "owner": "proprietário",
+        "admin": "Administrador",
+        "editor": "Editor"
+      },
+      "add_member": {
+        "add_member_btn": "Adicionar Membro",
+        "dialog_title": "Adicionar Membro da Equipe",
+        "dialog_desc": "Adicione um novo membro à sua organização.",
+        "email_label": "E-mail",
+        "email_placeholder": "Digite o e-mail",
+        "role_label": "Função",
+        "role_placeholder": "Selecionar função",
+        "roles_group": "Funções",
+        "demo_error": "Este recurso não está disponível no modo de demonstração.",
+        "error": "O membro não pôde ser adicionado à organização."
+      },
+      "actions": {
+        "delete_user": "Excluir Usuário",
+        "remove_member": "Remover Membro",
+        "make": "Tornar",
+        "are_you_sure": "Você tem certeza?",
+        "delete_warning": "Esta ação não pode ser desfeita. Isso excluirá permanentemente.",
+        "placeholder": "digite CONFIRMAR para confirmar",
+        "demo_error_delete": "Você não pode excluir usuários no modo de demonstração.",
+        "demo_error_update": "Este recurso não está disponível no modo de demonstração.",
+        "success_delete": "Usuário excluído com sucesso.",
+        "error_delete_suffix": "Você não tem autorização para excluir este usuário.",
+        "error_update_fn": "Função de atualização indisponível",
+        "success_update": "A função do membro foi atualizada com sucesso.",
+        "error_generic": "Algo deu errado"
+      }
+    },
+    "sandbox": {
+      "title": "Vercel Sandbox",
+      "description": "Conecte um token de acesso Vercel para ativar pré-visualizações sandbox ao vivo nos seus projetos.",
+      "connected": "Conectado",
+      "account": "Conta",
+      "project": "Projeto (atribuição de cobrança)",
+      "disconnect_btn": "Desconectar",
+      "disconnecting": "Desconectando",
+      "token_label": "Token de Acesso Vercel",
+      "token_placeholder": "Cole seu token de acesso Vercel",
+      "create_token_link": "Criar um token de acesso Vercel",
+      "step1": "Crie um token de acesso Vercel com escopo total da conta.",
+      "step2": "Cole-o abaixo e clique em Conectar.",
+      "step3": "Um projeto sandbox dedicado será criado automaticamente na sua conta Vercel.",
+      "connect_btn": "Conectar",
+      "connecting": "Conectando",
+      "toast_token_required": "Insira seu token de acesso Vercel",
+      "toast_connect_success": "Sandbox conectado",
+      "toast_connect_success_desc": "Os previews de sandbox agora serão executados na conta Vercel de {username}.",
+      "toast_connect_error": "Falha ao conectar sandbox",
+      "toast_disconnect_success": "Sandbox desconectado",
+      "toast_disconnect_error": "Falha ao desconectar",
+      "no_permission": "Apenas proprietários e administradores da organização podem gerenciar as configurações do sandbox.",
+      "project_label": "Projeto",
+      "save_token_btn": "Salvar token",
+      "update_token_btn": "Atualizar token",
+      "cancel_btn": "Cancelar",
+      "status_validating": "Validando token",
+      "status_creating_project": "Criando projeto sandbox",
+      "status_saving": "Salvando configurações",
+      "disconnect_confirm_title": "Desconectar Vercel Sandbox?",
+      "disconnect_confirm_desc": "As visualizações do sandbox deixarão de funcionar para todos os projetos desta organização.",
+      "disconnect_confirm_btn": "Desconectar",
+      "disconnect_cancel_btn": "Cancelar",
+      "select_team_title": "Selecionar conta Vercel",
+      "personal_account": "Conta pessoal",
+      "team_label": "Equipe",
+      "change_token": "Alterar token",
+      "security_title": "Segurança e privacidade",
+      "security0": "O Preview Sandbox executa o **script `dev`** do seu projeto (por exemplo, `npm run dev`). Se o seu site não iniciar com esse script, também não funcionará no sandbox.",
+      "security1": "Seu token de acesso é **criptografado com AES-256-GCM** antes de ser armazenado — nunca salvo em texto simples.",
+      "security2": "**Qualquer conta Vercel funciona** — pessoal ou de equipe, plano Hobby gratuito ou pago. As pré-visualizações sandbox são executadas na sua própria cota Vercel, não na nossa.",
+      "security3": "O token é usado **apenas** para criar um projeto sandbox dedicado e gerenciar implantações de pré-visualização. Nenhuma outra ação é executada na sua conta Vercel.",
+      "security4": "**Desconecte a qualquer momento** para remover imediatamente o token dos nossos servidores.",
+      "security5": "Cada organização recebe seu próprio **projeto sandbox dedicado** no Vercel — mantendo os previews isolados por org e a atribuição de cobrança organizada."
+    }
+  },
+  "org-sites": {
+    "no_sites_found": "Nenhum site encontrado",
+    "try_adjusting": "Tente ajustar seus termos de pesquisa",
+    "site_name": "Nome do Site",
+    "repository": "Repositório",
+    "status": "Status",
+    "archived": "Arquivado",
+    "active": "Ativo",
+    "private": "Privado",
+    "public": "Público"
+  },
+  "org-archived": {
+    "title": "Organização arquivada",
+    "desc_full": "Esta organização foi arquivada. Todo o conteúdo é atualmente de apenas leitura e a maioria das funções de gestão está desativada.",
+    "desc_banner": "Esta organização está atualmente arquivada e a maior parte das funcionalidades está desativada.",
+    "org_settings": "Definições da organização",
+    "view_settings": "Ver definições"
+  }
+}

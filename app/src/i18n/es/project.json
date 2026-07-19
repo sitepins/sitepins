@@ -1,0 +1,131 @@
+{
+  "project": {
+    "activity": {
+      "recent_file_changes": "Cambios recientes de archivos",
+      "latest_activity": "Última actividad por ti o tu equipo",
+      "updated": "Actualizado",
+      "created": "Creado",
+      "deleted": "Eliminado",
+      "renamed": "Renombrado",
+      "duplicated": "Duplicado",
+      "no_more": "No hay más",
+      "load_more": "Cargar más"
+    },
+    "branching": {
+      "incoming_request": "Solicitud de {provider} entrante",
+      "merge": "Combinar",
+      "details": "Detalles",
+      "changes_detected": "Cambios detectados",
+      "view_request": "Ver solicitud",
+      "create_request": "Crear solicitud de {provider}",
+      "title": "Título",
+      "description_optional": "Descripción (Opcional)",
+      "placeholder_title": "Título de la característica",
+      "placeholder_description": "Describe tus cambios...",
+      "merge_into": "Combinar {head} en {base}",
+      "merge_description": "Combinar cambios de {head} en {base}",
+      "success_created": "¡{type} creado exitosamente!",
+      "success_merged": "¡{branch} combinado exitosamente!",
+      "error_create": "Error al crear {type}",
+      "error_merge": "Error al combinar",
+      "permission_error_title": "Error de permiso de aplicación de GitHub",
+      "permission_error_description": "Tu aplicación de GitHub necesita permiso 'Pull requests: Write'. Por favor acepta los nuevos permisos en tu configuración de GitHub.",
+      "review": "Revisar",
+      "switcher": {
+        "placeholder": "Buscar rama...",
+        "no_results": "No se encontró rama.",
+        "default": "predeterminada",
+        "create_new": "Crear nueva rama"
+      },
+      "create": {
+        "title": "Crear nueva rama",
+        "desc": "Crea una nueva rama desde <branch>{branchName}</branch>",
+        "label": "Nombre de la rama",
+        "placeholder": "ej. staging",
+        "submit": "Crear rama",
+        "error": {
+          "required": "El nombre de la rama es requerido",
+          "sha": "No se pudo encontrar el SHA de la rama base",
+          "failed": "Error al crear nueva rama"
+        },
+        "success": "¡Rama {name} creada exitosamente!"
+      },
+      "status": {
+        "on_default": "Estás en la rama predeterminada: {branch}",
+        "ahead": "{branch} está adelante de {base}."
+      }
+    },
+    "git": {
+      "recent_activities": "Actividades recientes de Git",
+      "recent_commits": "Confirmaciones recientes en tu repositorio",
+      "revert": "Revertir",
+      "reset": "Restablecer",
+      "commit": "Confirmar",
+      "restore_version": "Restaurar versión",
+      "undo_commit": "Deshacer confirmación",
+      "admin_only": "Solo los administradores y propietarios pueden realizar esta acción",
+      "restore_title": "Restaurar a esta versión",
+      "restore_description_github": "Esto retrocederá en el tiempo exactamente a cómo se veía tu sitio en este momento. Todos los cambios realizados después de esta versión serán eliminados.",
+      "restore_description_gitlab": "Esto traerá tu sitio exactamente a cómo se veía en este momento. Crearemos una nueva actualización para hacer esto, por lo que tu historial permanece seguro.",
+      "restore_warning_github": "⚠️ Advertencia: Este es un cambio permanente. Todas las actualizaciones más nuevas serán eliminadas de esta rama. Solo úsalo si quieres descartar completamente el trabajo reciente.",
+      "restore_warning_gitlab": "✓ Esto es seguro. Tu trabajo reciente no será eliminado; simplemente creamos una nueva versión basada en esta antigua.",
+      "undo_title": "Deshacer esta confirmación",
+      "undo_description": "Esto creará una nueva actualización que invierte todo lo cambiado en esta versión específica.",
+      "undo_warning": "✓ ¡Esto es seguro! Agregaremos una nueva versión a tu historial que cancele estos cambios específicos, manteniendo todo lo demás intacto.",
+      "feedback": {
+        "reset_success": "¡Rama restablecida a {sha} exitosamente!",
+        "revert_success": "¡Confirmación revertida! Nueva confirmación: {sha}",
+        "revert_failed": "Error al revertir"
+      },
+      "actions": {
+        "restoring": "Restaurando",
+        "undoing": "Deshaciendo",
+        "confirm_restore": "Confirmar restauración",
+        "confirm_undo": "Confirmar deshacer"
+      },
+      "commit_messages": {
+        "add_file": "Agregar {name}",
+        "rename_file": "Renombrar archivo {name}",
+        "delete_file": "Eliminar archivo {name}",
+        "duplicate_file": "Duplicar archivo {name}",
+        "create_schema": "Crear esquema {name}",
+        "update_schema": "Actualizar esquema {name}",
+        "delete_schema": "Eliminar esquema {name}",
+        "update_config": "Actualizar configuraciones del sitio"
+      }
+    },
+    "setup-steps": {
+      "getting_started": "Comenzando",
+      "description": "Completa estos pasos para configurar Sitepins y publicar tu primer contenido",
+      "progress": "Progreso",
+      "progress_count": "{completed} de {total}",
+      "steps": {
+        "add_site": {
+          "title": "Agregar Nuevo Sitio",
+          "description": "Tu sitio ha sido creado y está listo para ser configurado"
+        },
+        "configure_project": {
+          "title": "Configurar Proyecto",
+          "description": "Configura tu estructura de repositorio (Carpeta de Contenido, Raíz de Medios, etc.)"
+        },
+        "publish_content": {
+          "title": "Publicar Primer Contenido",
+          "description": "Publica tu primer contenido desde el panel izquierdo"
+        },
+        "deploy_site": {
+          "title": "Implementar Sitio",
+          "description": "Implementa tu sitio en Vercel por primera vez"
+        }
+      },
+      "edit_config": "Editar Configuración del Proyecto",
+      "deploy_to_vercel": "Implementar en Vercel",
+      "login_signup": "Iniciar Sesión o Registrarse",
+      "create_account": "Crear una cuenta",
+      "deploy_repo": "Implementa tu repositorio",
+      "one_click": "con un clic",
+      "or": "O",
+      "already_deployed": "¿Ya implementado? Ingresa la URL ahora",
+      "vercel_host": "en Vercel para alojar tu sitio"
+    }
+  }
+}

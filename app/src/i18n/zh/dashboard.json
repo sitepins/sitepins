@@ -1,0 +1,149 @@
+{
+  "dashboard": {
+    "preference": {
+      "title": "偏好设置",
+      "coauthor": {
+        "title": "Git 联合作者",
+        "description": "选择用于仓库操作的身份。",
+        "as_you": "以您的身份操作",
+        "as_you_desc": "机器人将使用您的个人身份进行提交、分支和拉取请求，您将获得完整的更改归属。",
+        "as_you_fallback": "如果个人权限不足，将自动回退至机器人身份，以确保任务顺利完成。",
+        "as_bot": "以机器人身份操作",
+        "as_bot_desc": "所有仓库操作将归属于系统机器人。这能确保一致的审计跟踪，是自动化工作流的推荐设置。",
+        "updated": "联合作者偏好已更新",
+        "error": "更新模拟偏好失败"
+      },
+      "language": {
+        "title": "语言",
+        "description": "选择您偏好的界面语言。更改会立即生效。",
+        "label": "界面语言"
+      },
+      "theme": {
+        "title": "主题",
+        "description": "选择您偏好的颜色主题。",
+        "updated_success": "主题更新成功",
+        "updated_failed": "主题更新失败"
+      }
+    },
+    "account": {
+      "title": "账户",
+      "profile": {
+        "title": "更新显示名称",
+        "description": "这是将在您的个人资料中显示的名称。",
+        "full_name": "全名",
+        "submit": "更新账户",
+        "success": "用户信息更新成功",
+        "error": "更新失败，请重试",
+        "demo_error": "此操作在演示模式下被禁用。"
+      },
+      "password": {
+        "title": "更改密码",
+        "description": "定期更新您的密码，以确保您的账户安全并防止未经授权的访问。",
+        "current_password": "当前密码",
+        "new_password": "新密码",
+        "submit": "更新密码",
+        "success": "密码更新成功",
+        "error": "更新失败，请重试"
+      },
+      "set_password": {
+        "title": "设置密码",
+        "description": "您使用了社交提供商登录。请创建一个密码以启用额外的安全选项和替代登录方式。",
+        "new_password": "新密码",
+        "submit": "添加密码",
+        "success": "密码添加成功",
+        "error": "出错了！请稍后重试"
+      },
+      "picture": {
+        "title": "更新显示图片",
+        "description": "通过添加照片让您的工作区更显专业。",
+        "success": "用户信息更新成功",
+        "error": "更新失败，请重试"
+      },
+      "newsletter": {
+        "title": "邮件订阅",
+        "description": "我们会偶尔发送关于新功能、更新和优惠的邮件。您可以随时退订。",
+        "label": "接收邮件和产品更新",
+        "submit": "保存偏好",
+        "success_sub": "成功订阅邮件列表",
+        "success_unsub": "成功退订邮件列表",
+        "error": "更新失败，请重试"
+      },
+      "delete": {
+        "title": "删除账户",
+        "description": "警告：此操作无法撤销。这将永久删除您的账户并从我们的服务器中移除您的所有数据。",
+        "confirm_label": "输入 <strong>DELETE</strong> 以确认",
+        "confirm_placeholder": "在此输入 DELETE",
+        "button": "删除账户",
+        "reason_title": "您删除账户的主要原因是什么？",
+        "other_reason_label": "其他原因（最多 200 个字符）",
+        "other_reason_placeholder": "告诉我们更多（最多 200 个字符）",
+        "reasons": {
+          "complex": "太复杂或难以使用",
+          "not_work": "不适用于我的网站",
+          "poor_design": "设计或用户体验不佳",
+          "bugs": "Bug 太多",
+          "missing_features": "缺少我需要的功能",
+          "better_alternative": "找到了更好的替代方案",
+          "other": "其他"
+        },
+        "feedback": {
+          "demo_disabled": "演示模式下禁用删除账户。",
+          "success": "账户删除成功",
+          "error": "请稍后重试。"
+        }
+      }
+    },
+    "sitepins_ai": {
+      "title": "Sitepins AI",
+      "description": "配置您的 AI 提供商以启用智能内容建议和自动补全功能。",
+      "provider_label": "提供商",
+      "provider_placeholder": "选择提供商",
+      "model_label": "模型",
+      "model_placeholder": "选择模型",
+      "api_key_label": "API 密钥",
+      "api_key_placeholder": "输入您的 API 密钥",
+      "show": "显示",
+      "hide": "隐藏",
+      "copilot_title": "Sitepins Copilot",
+      "copilot_description": "输入时提供自动补全建议。",
+      "delete_key": "删除密钥",
+      "save_changes": "保存更改",
+      "save_success": "设置保存成功",
+      "save_error": "发生错误！",
+      "security_title": "重要安全提示",
+      "security1": "为保护您的隐私并遵守安全策略，我们**不会在数据库中存储您的 API 密钥**。",
+      "security2": "您的密钥仅保存在浏览器本地。如果更换或清理浏览器，密钥将丢失。",
+      "security3": "请妥善保管并自行留存您的 API 密钥，我们无法为您恢复该密钥。",
+      "custom_model": "手动输入",
+      "custom_model_input_label": "模型 ID",
+      "custom_model_input_placeholder": "输入自定义模型 ID",
+      "find_model_id": "查找您的模型 ID"
+    },
+    "sidebar": {
+      "back": "返回"
+    },
+    "refetch_preview": "刷新预览",
+    "preview_unavailable": "预览不可用",
+    "website": "网站",
+    "edit_website": "编辑网站",
+    "build_status": "构建状态",
+    "last_updated": "最后更新",
+    "source": "源码",
+    "recently": "最近",
+    "last_updated_by": "{distance}前 由 {author}",
+    "switcher": {
+      "default_site": "选择站点",
+      "search": "搜索...",
+      "not_found": "未找到项目。",
+      "add_new": "添加新站点"
+    },
+    "archived_project": {
+      "title": "项目已归档",
+      "description": "此项目已归档，大部分功能已禁用。您仍然可以访问项目设置以恢复或更改项目状态。",
+      "open_settings": "打开设置"
+    },
+    "project_overview": {
+      "preview_alt": "{name} 的实时预览"
+    }
+  }
+}

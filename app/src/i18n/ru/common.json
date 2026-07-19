@@ -1,0 +1,138 @@
+{
+  "common": {
+    "settings": "Настройки",
+    "overview": "Обзор",
+    "archived": "В архиве",
+    "locale": "ru",
+    "language": "Язык",
+    "theme": "Тема",
+    "light": "Светлая",
+    "dark": "Тёмная",
+    "system": "Системная",
+    "logout": {
+      "label": "Выйти",
+      "demo_disabled": "Выход отключён в демо-режиме.",
+      "confirm_title": "Подтверждение выхода",
+      "confirm_description": "Вы уверены, что хотите выйти из своей учётной записи?"
+    },
+    "accessibility": {
+      "trigger": "Открыть меню доступности"
+    },
+    "actions": {
+      "save": "Сохранить",
+      "cancel": "Отмена",
+      "delete": "Удалить",
+      "edit": "Редактировать",
+      "create": "Создать",
+      "update": "Обновить",
+      "add": "Добавить",
+      "rename": "Переименовать",
+      "duplicate": "Дублировать",
+      "back": "Назад",
+      "close": "Закрыть",
+      "archive": "Архивировать",
+      "restore": "Восстановить",
+      "move": "Переместить",
+      "disconnect": "Отключить",
+      "connect": "Подключить",
+      "finish": "Завершить",
+      "next": "Далее",
+      "previous": "Назад",
+      "edit_as_code": "Редактировать как код",
+      "continue": "Продолжить",
+      "replace": "Заменить",
+      "confirm": "Подтвердить",
+      "reset": "Сбросить"
+    },
+    "status": {
+      "loading": "Загрузка...",
+      "saving": "Сохранение...",
+      "saved": "Сохранено",
+      "no_results": "Результаты не найдены.",
+      "error": "Что-то пошло не так"
+    },
+    "confirm": {
+      "are_you_sure": "Вы уверены?",
+      "absolutely_sure": "Вы полностью уверены?",
+      "cannot_be_undone": "Это действие нельзя отменить.",
+      "type_to_confirm": "введите {confirm} для подтверждения",
+      "confirm_value": "CONFIRM",
+      "delete_description": "Это действие нельзя отменить. Ваши данные будут безвозвратно удалены с наших серверов.",
+      "delete_media": "Удалить медиафайл",
+      "delete_media_description": "Вы уверены, что хотите удалить этот файл?",
+      "enter_new_name": "Введите новое имя для файла.",
+      "duplicate_file": "Дублировать файл",
+      "duplicate_file_description": "Введите новое имя для дублированного файла."
+    },
+    "feedback": {
+      "language_updated": "Язык успешно обновлён",
+      "language_update_failed": "Не удалось обновить язык",
+      "duplicate_success": "Файл успешно дублирован!",
+      "duplicate_failed": "Не удалось дублировать файл",
+      "uploaded_success": "Успешно загружено",
+      "upload_failed": "Ошибка загрузки",
+      "error_processing": "Ошибка обработки файлов",
+      "image_deleted": "Изображение успешно удалено",
+      "rename_success": "Файл успешно переименован",
+      "rename_failed": "Не удалось переименовать файл",
+      "delete_success": "Файл успешно удалён",
+      "delete_failed": "Не удалось удалить файл",
+      "folder_rename_success": "Папка успешно переименована",
+      "folder_rename_failed": "Не удалось переименовать папку",
+      "folder_delete_success": "Папка успешно удалена",
+      "folder_delete_failed": "Не удалось удалить папку",
+      "folder_duplicate_success": "Папка успешно дублирована",
+      "folder_duplicate_failed": "Не удалось дублировать папку",
+      "draft_success": "Черновик успешно сохранён",
+      "publish_success": "Успешно опубликовано",
+      "fetch_failed": "Не удалось загрузить некоторые файлы. Попробуйте ещё раз.",
+      "invalid_path": "Путь к папке недействителен.",
+      "missing_context": "Контекст репозитория отсутствует. Перезагрузите страницу и попробуйте снова.",
+      "unable_to_locate": "Не удалось найти файлы для этой папки. Обновите страницу и попробуйте снова.",
+      "demo_mode": "Это действие отключено в демо-режиме.",
+      "draft_saved": "Черновик сохранен в базе данных",
+      "draft_saved_error": "Не удалось сохранить черновик",
+      "draft_discard_success": "Черновик успешно удален",
+      "draft_discard_error": "Не удалось удалить черновик"
+    },
+    "labels": {
+      "name": "Имя",
+      "date": "Дата",
+      "size": "Размер",
+      "dimensions": "Размеры",
+      "required": "Обязательно",
+      "fields": "Поля",
+      "user": "Пользователь",
+      "site_favicon": "Фавикон сайта",
+      "or": "Или"
+    },
+    "errors": {
+      "missing_git_info": "Отсутствует обязательная информация Git",
+      "unable_to_determine_path": "Не удалось определить путь к файлу",
+      "required_fields_empty": "Пожалуйста, заполните все обязательные поля: {fields}"
+    },
+    "search": "Поиск",
+    "search_placeholder": "Поиск...",
+    "search_sites_placeholder": "Поиск сайтов...",
+    "prevent_navigation": {
+      "title": "Сохранить изменения перед закрытием?",
+      "description": "У вас есть несохранённые изменения. Если вы продолжите без сохранения, изменения будут потеряны.",
+      "stay": "Остаться",
+      "leave": "Уйти",
+      "browser_prompt": "У вас есть несохранённые изменения. Вы уверены, что хотите покинуть страницу?"
+    },
+    "error_page": {
+      "something_went_wrong": "Что-то пошло не так",
+      "error_code": "Код ошибки: {code}",
+      "go_home": "На главную",
+      "contact_support": "Связаться с поддержкой",
+      "show_technical_details": "Показать технические подробности"
+    },
+    "image_upload": {
+      "file_too_large": "Размер файла превышает лимит в {limit} МБ.",
+      "preview_title": "Предпросмотр изображения",
+      "preview_desc": "Подтвердите, хотите ли вы загрузить это изображение.",
+      "upload": "Загрузить"
+    }
+  }
+}

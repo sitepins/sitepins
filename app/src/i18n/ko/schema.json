@@ -1,0 +1,119 @@
+{
+  "schema": {
+    "types": {
+      "string": "문자열",
+      "number": "숫자",
+      "boolean": "부울",
+      "media": "미디어",
+      "gallery": "갤러리",
+      "array": "배열",
+      "date": "날짜",
+      "object": "개체"
+    },
+    "fields": {
+      "label": "라벨",
+      "name": "이름",
+      "type": "필드 유형",
+      "placeholder": {
+        "type": "유형 선택",
+        "label": "예: 제목",
+        "name": "자동 생성됨"
+      },
+      "description": "설명",
+      "default_value": "기본값",
+      "boolean": {
+        "true": "사실",
+        "false": "거짓"
+      },
+      "input_style": {
+        "label": "입력 스타일",
+        "placeholder": "입력 스타일 선택",
+        "options": {
+          "standard_text": "표준 텍스트 상자",
+          "standard_table": "표준 테이블",
+          "dropdown": "드롭다운 선택",
+          "multi_dropdown": "다중 선택 드롭다운"
+        }
+      }
+    },
+    "configuration": {
+      "title": "필드 구성",
+      "dropdown": {
+        "title": "드롭다운 구성",
+        "multi_title": "다중 선택 구성",
+        "source": "출처",
+        "source_placeholder": "소스 선택",
+        "sources": {
+          "static": "정적 옵션",
+          "folder": "폴더의 파일",
+          "file": "파일의 데이터"
+        },
+        "static": {
+          "placeholder": "옵션 값을 입력하세요"
+        },
+        "folder": {
+          "path": "폴더 경로",
+          "path_placeholder": "폴더 선택",
+          "display_field": "표시 필드(머리말 키)",
+          "field_placeholder": "예를 들어 제목(기본값은 파일 이름)",
+          "loading_fields": "필드 로드 중...",
+          "default_field": "파일 이름 (기본값)",
+          "include_pattern": "포함 패턴(Glob)",
+          "include_placeholder": "예를 들어 *.md",
+          "exclude_pattern": "패턴 제외(Glob)",
+          "exclude_placeholder": "예를 들어 index.md"
+        },
+        "file": {
+          "path": "파일 경로(JSON/YAML/TOML)",
+          "path_placeholder": "파일을 선택하세요",
+          "data_key": "데이터 키(추출할 필드)",
+          "key_placeholder": "예를 들어 카테고리 또는 이름",
+          "default_key": "전체 파일/배열 추출"
+        }
+      }
+    },
+    "array": {
+      "label": "",
+      "placeholder": "의 배열 하위 유형 선택"
+    },
+    "nested": {
+      "title": "중첩된 필드",
+      "add_button": "중첩 필드 추가"
+    },
+    "date": {
+      "default_value": "기본값",
+      "mode_placeholder": "모드 선택",
+      "static": "고정 날짜",
+      "dynamic": "현재 날짜(실시간)",
+      "empty": "비어 있음",
+      "select_initial": "초기 날짜 선택",
+      "today": "오늘"
+    },
+    "actions": {
+      "add_option": "옵션 추가",
+      "add_field": "필드 추가",
+      "update_field": "필드 업데이트",
+      "enter_option": "옵션 입력",
+      "include": "포함",
+      "ignore": "무시"
+    },
+    "builder": {
+      "add_new_field": "새 필드 추가",
+      "configure_properties": "새 필드 속성 구성",
+      "field_settings": "필드 설정",
+      "required": "필수",
+      "show": "보여주기",
+      "hide": "숨기기",
+      "no_field_selected": "선택된 필드가 없습니다",
+      "select_to_edit": "설정을 편집하려면 목록에서 필드를 선택하세요",
+      "no_fields": "아직 필드가 없습니다",
+      "add_first_field": "아래에 첫 번째 필드를 추가하세요",
+      "back_to_fields": "필드로 돌아가기",
+      "field_count": "{개수, 복수형, =0 {0개 필드} 1개 {1개 필드} 기타 {#개 필드}}"
+    },
+    "errors": {
+      "name_required": "필드 이름은 필수입니다",
+      "name_exists": "필드 이름이 이미 존재합니다."
+    }
+  }
+}

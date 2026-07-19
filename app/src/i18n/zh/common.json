@@ -1,0 +1,138 @@
+{
+  "common": {
+    "settings": "设置",
+    "overview": "概览",
+    "archived": "已归档",
+    "locale": "zh",
+    "language": "语言",
+    "theme": "主题",
+    "light": "浅色",
+    "dark": "深色",
+    "system": "跟随系统",
+    "logout": {
+      "label": "退出登录",
+      "demo_disabled": "演示模式下无法退出登录。",
+      "confirm_title": "退出您的账户？",
+      "confirm_description": "您确定要退出吗？您需要重新登录才能访问您的账户。"
+    },
+    "accessibility": {
+      "trigger": "打开无障碍菜单"
+    },
+    "actions": {
+      "save": "保存",
+      "cancel": "取消",
+      "delete": "删除",
+      "edit": "编辑",
+      "create": "创建",
+      "update": "更新",
+      "add": "添加",
+      "rename": "重命名",
+      "duplicate": "复制",
+      "back": "返回",
+      "close": "关闭",
+      "archive": "归档",
+      "restore": "恢复",
+      "move": "移动",
+      "disconnect": "断开连接",
+      "connect": "连接",
+      "finish": "完成",
+      "next": "下一步",
+      "previous": "上一步",
+      "edit_as_code": "作为代码编辑",
+      "continue": "继续",
+      "replace": "替换",
+      "confirm": "确认",
+      "reset": "重置"
+    },
+    "status": {
+      "loading": "加载中...",
+      "saving": "正在保存...",
+      "saved": "已保存",
+      "no_results": "未找到结果。",
+      "error": "发生错误"
+    },
+    "confirm": {
+      "are_you_sure": "您确定吗？",
+      "absolutely_sure": "您绝对确定吗？",
+      "cannot_be_undone": "此操作无法撤销。",
+      "type_to_confirm": "输入 {confirm} 以确认",
+      "confirm_value": "CONFIRM",
+      "delete_description": "此操作无法撤销。这将永久从我们的服务器中删除您的数据。",
+      "delete_media": "删除媒体文件",
+      "delete_media_description": "您确定要删除此文件吗？",
+      "enter_new_name": "请输入文件的新名称。",
+      "duplicate_file": "复制文件",
+      "duplicate_file_description": "为复制的文件输入新名称。"
+    },
+    "feedback": {
+      "language_updated": "语言更新成功",
+      "language_update_failed": "语言更新失败",
+      "duplicate_success": "文件复制成功！",
+      "duplicate_failed": "复制文件失败",
+      "uploaded_success": "上传成功",
+      "upload_failed": "上传失败",
+      "error_processing": "处理文件时出错",
+      "image_deleted": "图片删除成功",
+      "rename_success": "文件重命名成功",
+      "rename_failed": "重命名文件失败",
+      "delete_success": "文件删除成功",
+      "delete_failed": "删除文件失败",
+      "folder_rename_success": "文件夹重命名成功",
+      "folder_rename_failed": "重命名文件夹失败",
+      "folder_delete_success": "文件夹删除成功",
+      "folder_delete_failed": "删除文件夹失败",
+      "folder_duplicate_success": "文件夹复制成功",
+      "folder_duplicate_failed": "复制文件夹失败",
+      "draft_success": "草稿保存成功",
+      "publish_success": "发布成功",
+      "fetch_failed": "获取某些文件失败。请重试。",
+      "invalid_path": "文件夹路径无效。",
+      "missing_context": "缺少代码库上下文。请重新加载并重试。",
+      "unable_to_locate": "无法找到该文件夹的文件。请刷新并重试。",
+      "demo_mode": "演示模式 — 此操作在演示模式下已禁用。",
+      "draft_saved": "草稿已保存到数据库",
+      "draft_saved_error": "保存草稿失败",
+      "draft_discard_success": "草稿已成功舍弃",
+      "draft_discard_error": "舍弃草稿失败"
+    },
+    "labels": {
+      "name": "名称",
+      "date": "日期",
+      "size": "大小",
+      "dimensions": "尺寸",
+      "required": "必填",
+      "fields": "字段",
+      "user": "用户",
+      "site_favicon": "站点图标",
+      "or": "或"
+    },
+    "errors": {
+      "missing_git_info": "缺失必要的 Git 信息",
+      "unable_to_determine_path": "无法确定文件路径",
+      "required_fields_empty": "请填写所有必填字段: {fields}"
+    },
+    "search": "搜索",
+    "search_placeholder": "搜索...",
+    "search_sites_placeholder": "搜索站点...",
+    "prevent_navigation": {
+      "title": "在关闭前保存更改吗？",
+      "description": "您有未保存的更改。如果您在不保存的情况下继续，这些更改将会丢失。",
+      "stay": "保留",
+      "leave": "离开",
+      "browser_prompt": "您有未保存的更改。您确定要离开吗？"
+    },
+    "error_page": {
+      "something_went_wrong": "发生了一些错误",
+      "error_code": "错误代码: {code}",
+      "go_home": "返回首页",
+      "contact_support": "联系支持",
+      "show_technical_details": "显示技术细节"
+    },
+    "image_upload": {
+      "file_too_large": "文件大小超过 {limit}MB 限制。",
+      "preview_title": "预览图片",
+      "preview_desc": "确认是否要上传此图片。",
+      "upload": "上传"
+    }
+  }
+}

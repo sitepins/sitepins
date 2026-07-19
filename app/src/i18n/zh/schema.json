@@ -1,0 +1,119 @@
+{
+  "schema": {
+    "types": {
+      "string": "字符串 (String)",
+      "number": "数字 (Number)",
+      "boolean": "布尔值 (Boolean)",
+      "media": "媒体 (Media)",
+      "gallery": "图集 (Gallery)",
+      "array": "数组 (Array)",
+      "date": "日期 (Date)",
+      "object": "对象 (Object)"
+    },
+    "fields": {
+      "label": "标签",
+      "name": "名称",
+      "type": "字段类型",
+      "placeholder": {
+        "type": "选择类型",
+        "label": "例如：标题",
+        "name": "自动生成"
+      },
+      "description": "描述",
+      "default_value": "默认值",
+      "boolean": {
+        "true": "是 (True)",
+        "false": "否 (False)"
+      },
+      "input_style": {
+        "label": "输入样式",
+        "placeholder": "选择输入样式",
+        "options": {
+          "standard_text": "标准文本框",
+          "standard_table": "标准表格",
+          "dropdown": "下拉选择",
+          "multi_dropdown": "多选下拉"
+        }
+      }
+    },
+    "configuration": {
+      "title": "字段配置",
+      "dropdown": {
+        "title": "下拉菜单配置",
+        "multi_title": "多选配置",
+        "source": "来源",
+        "source_placeholder": "选择来源",
+        "sources": {
+          "static": "静态选项",
+          "folder": "文件夹中的文件",
+          "file": "文件中的数据"
+        },
+        "static": {
+          "placeholder": "输入选项值"
+        },
+        "folder": {
+          "path": "文件夹路径",
+          "path_placeholder": "选择文件夹",
+          "display_field": "显示字段 (Frontmatter 键)",
+          "field_placeholder": "例如：title (默认为文件名)",
+          "loading_fields": "正在加载字段...",
+          "default_field": "文件名 (默认)",
+          "include_pattern": "包含模式 (Glob)",
+          "include_placeholder": "例如：*.md",
+          "exclude_pattern": "排除模式 (Glob)",
+          "exclude_placeholder": "例如：index.md"
+        },
+        "file": {
+          "path": "文件路径 (JSON/YAML/TOML)",
+          "path_placeholder": "选择文件",
+          "data_key": "数据键 (提取的字段)",
+          "key_placeholder": "例如：categories 或 name",
+          "default_key": "提取整个文件/数组"
+        }
+      }
+    },
+    "array": {
+      "label": "数组类型",
+      "placeholder": "选择子类型"
+    },
+    "nested": {
+      "title": "嵌套字段",
+      "add_button": "添加嵌套字段"
+    },
+    "date": {
+      "default_value": "默认值",
+      "mode_placeholder": "选择模式",
+      "static": "固定日期",
+      "dynamic": "当前日期 (实时)",
+      "empty": "留空",
+      "select_initial": "选择初始日期",
+      "today": "今天"
+    },
+    "actions": {
+      "add_option": "添加选项",
+      "add_field": "添加字段",
+      "update_field": "更新字段",
+      "enter_option": "输入选项",
+      "include": "包含",
+      "ignore": "忽略"
+    },
+    "builder": {
+      "add_new_field": "添加新字段",
+      "configure_properties": "配置新字段属性",
+      "field_settings": "字段设置",
+      "required": "必填",
+      "show": "显示",
+      "hide": "隐藏",
+      "no_field_selected": "未选择字段",
+      "select_to_edit": "从列表中选择一个字段进行编辑",
+      "no_fields": "暂无字段",
+      "add_first_field": "在下方添加您的第一个字段",
+      "back_to_fields": "返回字段列表",
+      "field_count": "{count, plural, other {# 个字段}}"
+    },
+    "errors": {
+      "name_required": "字段名称必填",
+      "name_exists": "字段名称已存在"
+    }
+  }
+}

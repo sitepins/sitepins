@@ -1,0 +1,55 @@
+{
+  "navigation": {
+    "menu": {
+      "footer_account": {
+        "account": "অ্যাকাউন্ট",
+        "updates": "আপডেটসমূহ",
+        "support": "সাপোর্ট",
+        "sitepins_ai": "Sitepins AI",
+        "preferences": "পছন্দসমূহ"
+      },
+      "user_dashboard": {
+        "overview": "সারসংক্ষেপ",
+        "account": "অ্যাকাউন্ট",
+        "preferences": "পছন্দসমূহ",
+        "sitepins_ai": "Sitepins AI"
+      },
+      "org_dashboard": {
+        "websites": "ওয়েবসাইটসমূহ",
+        "settings": "সেটিংস"
+      },
+      "org_settings": {
+        "general": "সাধারণ",
+        "members": "সদস্যবৃন্দ",
+        "sandbox": "স্যান্ডবক্স"
+      },
+      "project_dashboard": {
+        "overview": "সারসংক্ষেপ",
+        "media": "মিডিয়া",
+        "settings": "সেটিংস"
+      },
+      "project_settings": {
+        "general": "সাধারণ",
+        "configure": "কনফিগার",
+        "git": "Git",
+        "schemas": "স্কিমা",
+        "snippets": "স্নিপেট",
+        "arrangement": "ব্যবস্থাপনা"
+      }
+    },
+    "sidebar": {
+      "open_menu": "মেনু খুলুন",
+      "code": "কোড",
+      "config": "কনফিগার",
+      "actions": {
+        "close": "বন্ধ করুন"
+      },
+      "sidebar_trigger_mobile": {
+        "title": "কন্টেন্ট তালিকা",
+        "description": "সাইডবার থেকে আপনার সমস্ত কন্টেন্ট ফাইল দেখুন",
+        "message": "আপনার কন্টেন্ট খুঁজছেন? সব ফাইল দেখতে সাইডবার খুলুন।",
+        "open_sidebar": "সাইডবার খুলুন"
+      }
+    }
+  }
+}

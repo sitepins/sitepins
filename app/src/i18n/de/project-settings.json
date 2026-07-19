@@ -1,0 +1,282 @@
+{
+  "project-settings": {
+    "general": {
+      "form": {
+        "title": "Projekteinstellungen",
+        "description": "Aktualisiere deine Projektinformationen.",
+        "demo_error": "Dies ist eine Demo-Website, du kannst sie nicht aktualisieren",
+        "success": "Website erfolgreich aktualisiert",
+        "site_name": "Website-Name",
+        "website": "Website (optional)"
+      },
+      "archive": {
+        "restore_title": "Projekt wiederherstellen",
+        "restore_desc": "Das Projekt ist derzeit archiviert. Es muss zuerst wiederhergestellt werden, um Änderungen vorzunehmen.",
+        "archive_title": "Projekt archivieren",
+        "archive_desc": "Das Projekt wird archiviert. Es wird in der Projektliste ausgeblendet, kann aber später wiederhergestellt werden.",
+        "restore_btn": "Projekt wiederherstellen",
+        "archive_btn": "Projekt archivieren",
+        "archive_confirm_title": "Dieses Projekt archivieren?",
+        "restore_confirm_title": "Dieses Projekt wiederherstellen?",
+        "archive_confirm_desc": "Dieses Projekt wird archiviert. Es wird in der Projektliste ausgeblendet, kann aber später wiederhergestellt werden.",
+        "restore_confirm_desc": "Dieses Projekt wird wiederhergestellt. Es wird in der Projektliste sichtbar und kann aktualisiert werden.",
+        "demo_error": "Diese Funktion ist in der Demo nicht verfügbar",
+        "archive_success": "Projekt erfolgreich archiviert",
+        "restore_success": "Projekt erfolgreich wiederhergestellt",
+        "error": "Etwas ist schiefgelaufen"
+      },
+      "delete": {
+        "title": "Projekt löschen",
+        "description": "Das Projekt wird dauerhaft gelöscht. Diese Aktion ist irreversibel und kann nicht rückgängig gemacht werden.",
+        "warning": "Dieses Projekt wird dauerhaft gelöscht. Diese Aktion ist irreversibel und kann nicht rückgängig gemacht werden. Alle mit diesem Projekt verbundenen Daten gehen verloren.",
+        "delete_btn": "Projekt löschen",
+        "confirm_title": "Bist du absolut sicher?",
+        "confirm_desc": "Diese Aktion kann nicht rückgängig gemacht werden. Dadurch wird dauerhaft gelöscht.",
+        "placeholder": "Gib CONFIRM zur Bestätigung ein",
+        "demo_error": "Im Demo-Modus kannst du keine Projekte löschen.",
+        "success": "Projekt wurde erfolgreich gelöscht.",
+        "error": "Etwas ist schiefgelaufen",
+        "error_suffix": "Du bist nicht berechtigt, dieses Projekt zu löschen.",
+        "error_generic": "Etwas ist schiefgelaufen"
+      },
+      "move": {
+        "title": "Projekt verschieben",
+        "description": "Verschiebe dieses Projekt in eine andere Organisation, der du angehörst.",
+        "current_org": "Aktuelle Organisation",
+        "destination": "Ziel",
+        "loading_orgs": "Organisationen werden geladen...",
+        "no_orgs": "Keine anderen Organisationen verfügbar.",
+        "placeholder": "Ziel auswählen",
+        "move_btn": "Projekt verschieben",
+        "confirm_title": "Verschieben bestätigen",
+        "confirm_desc": "Dieses Projekt verschieben nach",
+        "confirm_move_btn": "Projekt verschieben",
+        "error_select": "Wähle eine Organisation aus",
+        "success": "Projekt erfolgreich verschoben",
+        "error": "Projektverschiebung fehlgeschlagen"
+      },
+      "thumb": {
+        "title": "Projekt-Thumbnail",
+        "description": "Mache dein Website-Bild einzigartig, indem du ein Foto hinzufügst.",
+        "demo_error": "Dies ist eine Demo-Website, du kannst sie nicht aktualisieren",
+        "success": "Website erfolgreich aktualisiert"
+      }
+    },
+    "git": {
+      "repo": {
+        "title": "Git-Repository",
+        "description_connected": "Dein Projekt ist derzeit mit einem Repository verbunden.",
+        "description_disconnected": "Verbinde dein Projekt mit einem Git-Repository, um deine Inhalte zu verwalten.",
+        "connected_at": "Verbunden {time}",
+        "provider_label": "Provider auswählen",
+        "select_provider_placeholder": "Einen Provider auswählen",
+        "select_repo_label": "Repository",
+        "select_repo_placeholder": "Ein Repository auswählen",
+        "no_repo_found": "Kein Repository gefunden",
+        "please_wait": "Bitte warten...",
+        "cant_see_repo": "Siehst du dein Repo hier nicht?",
+        "configure_on": "Auf {provider} konfigurieren",
+        "branch_label": "Branch",
+        "choose_branch_placeholder": "Einen Branch wählen",
+        "disconnect_btn": "Trennen",
+        "disconnect_confirm_title": "Bist du absolut sicher?",
+        "disconnect_confirm_desc": "Diese Aktion trennt das Repository von Sitepins. Du kannst es später jederzeit wieder verbinden.",
+        "connect_repo_btn": "Repository verbinden",
+        "error_missing_info": "Projekt- oder Organisationsinformationen fehlen",
+        "success_disconnect": "Repository erfolgreich getrennt",
+        "error_disconnect": "Repository konnte nicht getrennt werden",
+        "error_no_repo_branch": "Bitte wähle ein Repository und einen Branch aus",
+        "success_connect": "Repository erfolgreich verbunden",
+        "error_connect": "Repository konnte nicht verbunden werden"
+      },
+      "branch": {
+        "title": "Branch-Verwaltung",
+        "description": "Verwalte den Branch, der für die Inhalte deines Projekts verwendet wird",
+        "current_branch_label": "Aktueller Branch",
+        "select_branch_label": "Branch auswählen",
+        "loading_branches": "Branches werden geladen...",
+        "placeholder": "Einen Branch auswählen",
+        "branches_label": "Branches",
+        "change_branch_btn": "Branch ändern",
+        "update_branch_btn": "Branch aktualisieren",
+        "success_message": "Branch erfolgreich aktualisiert!",
+        "error_missing_info": "Projekt- oder Organisationsinformationen fehlen",
+        "error_no_repo": "Kein Repository verbunden",
+        "error_generic": "Branch konnte nicht aktualisiert werden"
+      }
+    },
+    "schemas": {
+      "title": "Schema-Verwaltung",
+      "description": "Verwalte Inhaltsschemata für dein Projekt",
+      "no_schemas_found": "Keine Schemata gefunden",
+      "create_first_schema": "Erstelle dein erstes Schema, indem du zu einem Inhaltsordner navigierst",
+      "fields_count": "{count, plural, =1 {# Feld} other {# Felder}}",
+      "edit_dialog_title": "Schema bearbeiten",
+      "edit_dialog_description": "Ändere deine Schemafelder und deren Eigenschaften",
+      "schema_name_label": "Schema-Name",
+      "update_btn": "Schema aktualisieren",
+      "success_update": "Schema erfolgreich aktualisiert!",
+      "error_update": "Fehler beim Aktualisieren des Schemas",
+      "success_delete": "Schema erfolgreich gelöscht!",
+      "error_delete": "Fehler beim Löschen des Schemas",
+      "error_validation": "Bitte korrigiere die markierten Felder und versuche es erneut."
+    },
+    "snippets": {
+      "title": "Snippet-Verwaltung",
+      "description": "Verwalte Code-Snippets für dein Projekt",
+      "add_btn": "Snippet hinzufügen",
+      "no_snippets_found": "Keine Snippets gefunden",
+      "create_first_snippet": "Erstelle dein erstes Snippet, um loszulegen",
+      "used_in": "Verwendet in: {schemas}",
+      "no_schemas_linked": "Keine Schemata verknüpft",
+      "edit_dialog_title": "Snippet bearbeiten",
+      "create_dialog_title": "Snippet erstellen",
+      "dialog_description": "Konfiguriere die Eigenschaften deines Code-Snippets",
+      "success_created": "Snippet erfolgreich erstellt!",
+      "success_updated": "Snippet erfolgreich aktualisiert!",
+      "error_save": "Fehler beim Speichern des Snippets",
+      "success_deleted": "Snippet erfolgreich gelöscht!",
+      "error_delete": "Fehler beim Löschen des Snippets",
+      "label_field": "Bezeichnung",
+      "label_placeholder": "Snippet-Bezeichnung",
+      "schemas_field": "Anwendbare Schemata",
+      "select_schemas_placeholder": "Schemata auswählen",
+      "no_schemas_found_in_combobox": "Keine Schemata gefunden.",
+      "code_field": "Code",
+      "delete_confirm_title": "Snippet löschen",
+      "delete_confirm_desc": "Möchtest du dieses Snippet wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
+      "update_btn": "Snippet aktualisieren",
+      "create_btn": "Snippet erstellen"
+    },
+    "arrangement": {
+      "title": "Sidebar-Anordnungen",
+      "description": "Passe deine Inhaltsstruktur und dein Layout an",
+      "features": {
+        "virtual_folders": {
+          "title": "Virtuelle Ordner",
+          "desc": "Ändert dein Repo nicht"
+        },
+        "visual_headings": {
+          "title": "Visuelle Überschriften",
+          "desc": "Abschnitte organisieren"
+        },
+        "drag_and_drop": {
+          "title": "Drag & Drop",
+          "desc": "Sofort neu anordnen"
+        },
+        "glob_patterns": {
+          "title": "Glob-Muster",
+          "desc": "Dateien einfach filtern"
+        }
+      },
+      "no_arrangements": "Noch keine Anordnungen",
+      "get_started": "Lege los, indem du einen Ordner, eine Datei oder eine Überschrift hinzufügst, um dein Sidebar-Layout anzupassen.",
+      "add_item_btn": "+ Neues Element hinzufügen",
+      "edit_dialog_title": "Anordnungselement bearbeiten",
+      "add_dialog_title": "Neues Anordnungselement hinzufügen",
+      "edit_dialog_desc": "Aktualisiere die Details deines Anordnungselements.",
+      "add_dialog_desc": "Konfiguriere dein neues Anordnungselement.",
+      "select_type_label": "Typ auswählen:",
+      "select_type_placeholder": "Typ auswählen",
+      "type_options": {
+        "file": "Datei",
+        "heading": "Überschrift",
+        "folder": "Ordner",
+        "video": "Video",
+        "preview_image": "Vorschaubild"
+      },
+      "rename_file": "Datei umbenennen",
+      "rename_successful": "Datei erfolgreich in {name} umbenannt",
+      "error_renaming": "Beim Umbenennen der Datei ist ein Fehler aufgetreten. Bitte versuche es erneut.",
+      "success_update": "Anordnung erfolgreich aktualisiert",
+      "file_form": {
+        "select_file": "Datei auswählen",
+        "placeholder": "Datei auswählen",
+        "no_items": "Keine Elemente gefunden.",
+        "name_label": "Name",
+        "name_placeholder": "index"
+      },
+      "folder_form": {
+        "select_folder": "Ordner auswählen",
+        "placeholder": "Ordner auswählen",
+        "no_items": "Keine Elemente gefunden.",
+        "group_name_label": "Gruppenname",
+        "group_name_placeholder": "blog list",
+        "include_label": "Einschließen",
+        "include_placeholder": "*.md",
+        "exclude_label": "Ausschließen",
+        "exclude_placeholder": "*index.md"
+      },
+      "heading_form": {
+        "name_label": "Name",
+        "placeholder": "Überschrift"
+      },
+      "errors": {
+        "name_min_length": "Der Name muss mindestens 2 Zeichen haben.",
+        "heading_min_length": "Die Überschrift muss mindestens 2 Zeichen haben.",
+        "name_exists": "Gruppenname existiert bereits.",
+        "heading_exists": "Überschrift existiert bereits."
+      },
+      "delete_confirm_title": "Bist du absolut sicher?",
+      "continue_btn": "Fortfahren"
+    },
+    "configure": {
+      "commit": {
+        "title": "Commit-Konfiguration",
+        "description": "Lege fest, wie Commit-Nachrichten beim Speichern von Änderungen behandelt werden",
+        "custom_commit_label": "Benutzerdefinierte Commit-Nachrichten",
+        "custom_commit_desc": "Aktiviere dies, um beim Speichern eigene Commit-Nachrichten zu schreiben. Wenn aktiv, kannst du eine benutzerdefinierte Nachricht angeben, andernfalls erzeugt Sitepins automatisch eine für dich.",
+        "save_btn": "Änderungen speichern",
+        "success_update": "Commit-Dialog-Einstellungen erfolgreich aktualisiert",
+        "error_update": "Einstellungen konnten nicht aktualisiert werden"
+      },
+      "project": {
+        "title": "Projektkonfiguration bearbeiten",
+        "description": "Konfiguriere deine Projekteinstellungen. Klicke auf Speichern, um die Änderungen anzuwenden.",
+        "steps": {
+          "content": "Inhalt",
+          "media": "Medien",
+          "public": "Öffentlich",
+          "configs": "Konfigurationen"
+        },
+        "form": {
+          "content_label": "Inhaltsordner",
+          "content_placeholder": "Wähle deinen Inhaltsordner",
+          "media_label": "Medienordner",
+          "media_placeholder": "Wähle deinen Medienordner (Bilder)",
+          "public_label": "Öffentlicher Ordner",
+          "public_placeholder": "Wähle deinen öffentlichen Ordner",
+          "config_label": "Website-Konfigurationen (optional)",
+          "config_placeholder": "Wähle deine Konfigurationsdatei",
+          "suggested": "Vorgeschlagen:",
+          "no_results": "Keine Ergebnisse gefunden.",
+          "suggestions": {
+            "content": "wo deine Markdown-Dateien gespeichert sind",
+            "media": "wo deine Mediendateien gespeichert sind",
+            "public": "wo deine öffentlichen Dateien gespeichert sind",
+            "config": "wo deine Konfigurationsdateien gespeichert sind"
+          }
+        },
+        "buttons": {
+          "finish": "Einrichtung abschließen",
+          "update": "Konfiguration aktualisieren"
+        },
+        "help": {
+          "text": "Brauchst du Hilfe bei deiner Konfiguration?",
+          "contact_us": "Kontaktiere uns"
+        },
+        "status": {
+          "success_create": "Konfigurationsdatei erfolgreich erstellt",
+          "success_update": "Konfigurationsdatei erfolgreich aktualisiert",
+          "error_update": "Einstellungen konnten nicht aktualisiert werden",
+          "not_configured": "Nicht konfiguriert",
+          "none": "Keine"
+        },
+        "summary": {
+          "title": "Projektkonfiguration",
+          "description": "Kurzübersicht deiner aktuellen Konfiguration"
+        }
+      }
+    }
+  }
+}

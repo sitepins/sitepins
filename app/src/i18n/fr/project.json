@@ -1,0 +1,131 @@
+{
+  "project": {
+    "activity": {
+      "recent_file_changes": "Modifications récentes des fichiers",
+      "latest_activity": "Dernière activité par vous ou votre équipe",
+      "updated": "Mis à jour",
+      "created": "Créé",
+      "deleted": "Supprimé",
+      "renamed": "Renommé",
+      "duplicated": "Dupliqué",
+      "no_more": "Plus aucun",
+      "load_more": "Charger plus"
+    },
+    "branching": {
+      "incoming_request": "Demande {provider} entrante",
+      "merge": "Fusionner",
+      "details": "Détails",
+      "changes_detected": "Modifications détectées",
+      "view_request": "Voir la demande",
+      "create_request": "Créer une demande {provider}",
+      "title": "Titre",
+      "description_optional": "Description (facultatif)",
+      "placeholder_title": "Titre de la fonctionnalité",
+      "placeholder_description": "Décrivez vos modifications...",
+      "merge_into": "Fusionner {head} dans {base}",
+      "merge_description": "Fusionner les modifications de {head} dans {base}",
+      "success_created": "{type} créé avec succès !",
+      "success_merged": "{branch} fusionné avec succès !",
+      "error_create": "Échec de la création de {type}",
+      "error_merge": "Échec de la fusion",
+      "permission_error_title": "Erreur d'autorisation de l'application GitHub",
+      "permission_error_description": "Votre application GitHub nécessite l'autorisation « Pull requests : Écriture ». Veuillez accepter les nouvelles autorisations dans vos paramètres GitHub.",
+      "review": "Réviser",
+      "switcher": {
+        "placeholder": "Rechercher une branche...",
+        "no_results": "Aucune branche trouvée.",
+        "default": "par défaut",
+        "create_new": "Créer une nouvelle branche"
+      },
+      "create": {
+        "title": "Créer une nouvelle branche",
+        "desc": "Créer une nouvelle branche à partir de <branch>{branchName}</branch>",
+        "label": "Nom de la branche",
+        "placeholder": "ex. staging",
+        "submit": "Créer la branche",
+        "error": {
+          "required": "Le nom de la branche est requis",
+          "sha": "Impossible de trouver le SHA de la branche de base",
+          "failed": "Échec de la création de la nouvelle branche"
+        },
+        "success": "Branche « {name} » créée avec succès !"
+      },
+      "status": {
+        "on_default": "Vous êtes sur la branche par défaut : {branch}",
+        "ahead": "{branch} est en avance sur {base}."
+      }
+    },
+    "git": {
+      "recent_activities": "Activités Git récentes",
+      "recent_commits": "Commits récents sur votre dépôt",
+      "revert": "Annuler",
+      "reset": "Réinitialiser",
+      "commit": "Commit",
+      "restore_version": "Restaurer cette version",
+      "undo_commit": "Annuler le commit",
+      "admin_only": "Seuls les administrateurs et propriétaires peuvent effectuer cette action",
+      "restore_title": "Restaurer à cette version",
+      "restore_description_github": "Cela ramènera votre site exactement à son état à ce moment précis. Toutes les modifications effectuées après cette version seront supprimées.",
+      "restore_description_gitlab": "Cela ramènera votre site exactement à son état à ce moment précis. Nous créerons une nouvelle mise à jour pour y parvenir, votre historique restera donc intact.",
+      "restore_warning_github": "⚠️ Attention : Ce changement est permanent. Toutes les mises à jour plus récentes seront supprimées de cette branche. Utilisez ceci uniquement si vous souhaitez supprimer définitivement les travaux récents.",
+      "restore_warning_gitlab": "✓ C'est sans danger. Vos travaux récents ne seront pas supprimés ; nous créons simplement une nouvelle version basée sur cet ancien état.",
+      "undo_title": "Annuler ce commit",
+      "undo_description": "Cela créera une nouvelle mise à jour qui annule tous les changements effectués dans cette version spécifique.",
+      "undo_warning": "✓ C'est sans danger ! Nous ajouterons une nouvelle version à votre historique qui annule ces changements spécifiques, en conservant tout le reste intact.",
+      "feedback": {
+        "reset_success": "Branche réinitialisée sur {sha} avec succès !",
+        "revert_success": "Commit annulé ! Nouveau commit : {sha}",
+        "revert_failed": "Échec de l'annulation"
+      },
+      "actions": {
+        "restoring": "Restauration",
+        "undoing": "Annulation",
+        "confirm_restore": "Confirmer la restauration",
+        "confirm_undo": "Confirmer l'annulation"
+      },
+      "commit_messages": {
+        "add_file": "Ajouter {name}",
+        "rename_file": "Renommer le fichier {name}",
+        "delete_file": "Supprimer le fichier {name}",
+        "duplicate_file": "Dupliquer le fichier {name}",
+        "create_schema": "Créer le schéma {name}",
+        "update_schema": "Mettre à jour le schéma {name}",
+        "delete_schema": "Supprimer le schéma {name}",
+        "update_config": "Mettre à jour les configurations du site"
+      }
+    },
+    "setup-steps": {
+      "getting_started": "Premiers pas",
+      "description": "Complétez ces étapes pour configurer Sitepins et publier votre premier contenu",
+      "progress": "Progression",
+      "progress_count": "{completed} sur {total}",
+      "steps": {
+        "add_site": {
+          "title": "Ajouter un nouveau site",
+          "description": "Votre site a été créé et est prêt pour la configuration"
+        },
+        "configure_project": {
+          "title": "Configurer le projet",
+          "description": "Configurez la structure de votre dépôt (dossier de contenu, racine des médias, etc.)"
+        },
+        "publish_content": {
+          "title": "Publier le premier contenu",
+          "description": "Publiez votre premier contenu depuis le panneau de gauche"
+        },
+        "deploy_site": {
+          "title": "Déployer le site",
+          "description": "Déployez votre site sur Vercel pour la première fois"
+        }
+      },
+      "edit_config": "Modifier la configuration du projet",
+      "deploy_to_vercel": "Déployer sur Vercel",
+      "login_signup": "Se connecter ou s'inscrire",
+      "create_account": "Créer un compte",
+      "deploy_repo": "Déployez votre dépôt",
+      "one_click": "en un clic",
+      "or": "Ou",
+      "already_deployed": "Déjà déployé ? Insérez l'URL maintenant",
+      "vercel_host": "sur Vercel pour héberger votre site"
+    }
+  }
+}

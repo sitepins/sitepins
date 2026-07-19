@@ -1,0 +1,138 @@
+{
+  "common": {
+    "settings": "Configuración",
+    "overview": "Descripción general",
+    "archived": "Archivado",
+    "locale": "es",
+    "language": "Idioma",
+    "theme": "Tema",
+    "light": "Claro",
+    "dark": "Oscuro",
+    "system": "Sistema",
+    "logout": {
+      "label": "Cerrar sesión",
+      "demo_disabled": "Cerrar sesión está deshabilitado en modo demostración.",
+      "confirm_title": "Confirmar cierre de sesión",
+      "confirm_description": "¿Estás seguro de que deseas cerrar sesión en tu cuenta?"
+    },
+    "accessibility": {
+      "trigger": "Abrir menú de accesibilidad"
+    },
+    "actions": {
+      "save": "Guardar",
+      "cancel": "Cancelar",
+      "delete": "Eliminar",
+      "edit": "Editar",
+      "create": "Crear",
+      "update": "Actualizar",
+      "add": "Agregar",
+      "rename": "Renombrar",
+      "duplicate": "Duplicar",
+      "back": "Atrás",
+      "close": "Cerrar",
+      "archive": "Archivar",
+      "restore": "Restaurar",
+      "move": "Mover",
+      "disconnect": "Desconectar",
+      "connect": "Conectar",
+      "finish": "Finalizar",
+      "next": "Siguiente",
+      "previous": "Anterior",
+      "edit_as_code": "Editar como código",
+      "continue": "Continuar",
+      "replace": "Reemplazar",
+      "confirm": "Confirmar",
+      "reset": "Restablecer"
+    },
+    "status": {
+      "loading": "Cargando...",
+      "saving": "Guardando...",
+      "saved": "Guardado",
+      "no_results": "No se encontraron resultados.",
+      "error": "Algo salió mal"
+    },
+    "confirm": {
+      "are_you_sure": "¿Estás seguro?",
+      "absolutely_sure": "¿Estás absolutamente seguro?",
+      "cannot_be_undone": "Esta acción no se puede deshacer.",
+      "type_to_confirm": "escribe {confirm} para confirmar",
+      "confirm_value": "CONFIRMAR",
+      "delete_description": "Esta acción no se puede deshacer. Esto eliminará permanentemente tus datos de nuestros servidores.",
+      "delete_media": "Eliminar archivo de medios",
+      "delete_media_description": "¿Estás seguro de que deseas eliminar este archivo?",
+      "enter_new_name": "Ingresa un nuevo nombre para el archivo.",
+      "duplicate_file": "Duplicar archivo",
+      "duplicate_file_description": "Ingresa un nuevo nombre para el archivo duplicado."
+    },
+    "feedback": {
+      "language_updated": "Idioma actualizado con éxito",
+      "language_update_failed": "Error al actualizar el idioma",
+      "duplicate_success": "¡Archivo duplicado con éxito!",
+      "duplicate_failed": "Error al duplicar el archivo",
+      "uploaded_success": "Cargado con éxito",
+      "upload_failed": "Error al cargar",
+      "error_processing": "Error al procesar los archivos",
+      "image_deleted": "Imagen eliminada con éxito",
+      "rename_success": "Archivo renombrado con éxito",
+      "rename_failed": "Error al renombrar el archivo",
+      "delete_success": "Archivo eliminado con éxito",
+      "delete_failed": "Error al eliminar el archivo",
+      "folder_rename_success": "Carpeta renombrada con éxito",
+      "folder_rename_failed": "Error al renombrar la carpeta",
+      "folder_delete_success": "Carpeta eliminada con éxito",
+      "folder_delete_failed": "Error al eliminar la carpeta",
+      "folder_duplicate_success": "Carpeta duplicada con éxito",
+      "folder_duplicate_failed": "Error al duplicar la carpeta",
+      "draft_success": "Borrador guardado con éxito",
+      "publish_success": "Publicado con éxito",
+      "fetch_failed": "Error al obtener algunos archivos. Por favor, inténtelo de nuevo.",
+      "invalid_path": "La ruta de la carpeta no es válida.",
+      "missing_context": "Falta el contexto del repositorio. Por favor, recargue e inténtelo de nuevo.",
+      "unable_to_locate": "No se pueden localizar los archivos de esta carpeta. Por favor, actualice e inténtelo de nuevo.",
+      "demo_mode": "Esta acción está deshabilitada en modo demostración.",
+      "draft_saved": "Borrador guardado en la base de datos",
+      "draft_saved_error": "No se pudo guardar el borrador",
+      "draft_discard_success": "Borrador descartado correctamente",
+      "draft_discard_error": "Error al descartar el borrador"
+    },
+    "labels": {
+      "name": "Nombre",
+      "date": "Fecha",
+      "size": "Tamaño",
+      "dimensions": "Dimensiones",
+      "required": "Requerido",
+      "fields": "Campos",
+      "user": "Usuario",
+      "site_favicon": "Favicon del sitio",
+      "or": "O"
+    },
+    "errors": {
+      "missing_git_info": "Falta información de Git requerida",
+      "unable_to_determine_path": "No se puede determinar la ruta del archivo",
+      "required_fields_empty": "Por favor, complete todos los campos requeridos: {fields}"
+    },
+    "search": "Buscar",
+    "search_placeholder": "Buscar...",
+    "search_sites_placeholder": "Buscar sitios...",
+    "prevent_navigation": {
+      "title": "¿Guardar cambios antes de cerrar?",
+      "description": "Tienes cambios sin guardar. Si continúas sin guardar, estos cambios se perderán.",
+      "stay": "Quedarse",
+      "leave": "Salir",
+      "browser_prompt": "Tienes cambios sin guardar. ¿Estás seguro de que deseas irte?"
+    },
+    "error_page": {
+      "something_went_wrong": "Algo salió mal",
+      "error_code": "Código de error: {code}",
+      "go_home": "Ir al inicio",
+      "contact_support": "Contactar con soporte",
+      "show_technical_details": "Mostrar detalles técnicos"
+    },
+    "image_upload": {
+      "file_too_large": "El tamaño del archivo supera el límite de {limit}MB.",
+      "preview_title": "Vista Previa de Imagen",
+      "preview_desc": "Confirma si deseas subir esta imagen.",
+      "upload": "Subir"
+    }
+  }
+}

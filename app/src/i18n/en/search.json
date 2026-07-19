@@ -1,0 +1,291 @@
+{
+  "search": {
+    "placeholder": "Search settings, Orgs, Pricing...",
+    "groupLabels": {
+      "organizations": "Organizations",
+      "preferences": "Preferences",
+      "billing": "Billing",
+      "organization_settings": "Organization Settings",
+      "sitepins_ai": "SitePins AI",
+      "support_updates": "Support & Updates",
+      "account": "Account",
+      "files": "Files"
+    },
+    "controls": {
+      "navigate": "Navigate",
+      "select": "Select",
+      "close": "Close"
+    },
+    "org_keywords": [
+      "org",
+      "organization",
+      "switch",
+      "workspace",
+      "team",
+      "workspace"
+    ],
+    "items": {
+      "display-picture": {
+        "label": "Display Picture",
+        "href": "/dashboard/account/#display-picture",
+        "keywords": [
+          "display",
+          "profile",
+          "user",
+          "account",
+          "photo",
+          "picture",
+          "image",
+          "avatar",
+          "change",
+          "upload",
+          "update",
+          "edit"
+        ]
+      },
+      "display-name": {
+        "label": "Update Display Name",
+        "href": "/dashboard/account/#display-name",
+        "keywords": [
+          "display name",
+          "name",
+          "profile name",
+          "public name",
+          "username",
+          "screen name",
+          "nickname",
+          "account name",
+          "change name",
+          "update name",
+          "edit name",
+          "rename",
+          "change display name",
+          "update display name",
+          "edit display name",
+          "identity",
+          "personal information"
+        ]
+      },
+      "change-password": {
+        "label": "Change Password",
+        "href": "/dashboard/account/#change-password",
+        "keywords": [
+          "change password",
+          "update password",
+          "edit password",
+          "new password",
+          "current password",
+          "reset password",
+          "password",
+          "security",
+          "credentials",
+          "login credentials",
+          "account security"
+        ]
+      },
+      "set-password": {
+        "label": "Set Password",
+        "href": "/dashboard/account/#set-password",
+        "keywords": [
+          "set password",
+          "create password",
+          "add password",
+          "password",
+          "security",
+          "credentials",
+          "account security"
+        ]
+      },
+      "newsletter": {
+        "label": "Newsletter Subscription",
+        "href": "/dashboard/account/#newsletter",
+        "keywords": [
+          "newsletter",
+          "subscription",
+          "subscribe",
+          "unsubscribe",
+          "email subscription",
+          "email notifications",
+          "marketing emails",
+          "updates",
+          "email updates",
+          "notifications",
+          "mailing list"
+        ]
+      },
+      "language": {
+        "label": "Language",
+        "href": "/dashboard/preference#language",
+        "keywords": [
+          "language",
+          "locale",
+          "region",
+          "change language",
+          "set language",
+          "app language",
+          "interface language",
+          "localization",
+          "i18n",
+          "translation",
+          "preferences"
+        ]
+      },
+      "theme": {
+        "label": "Theme",
+        "href": "/dashboard/preference#theme",
+        "keywords": [
+          "theme",
+          "dark mode",
+          "light mode",
+          "dark theme",
+          "light theme",
+          "system theme",
+          "appearance",
+          "color scheme",
+          "color mode",
+          "night mode",
+          "display theme",
+          "ui theme",
+          "preferences"
+        ]
+      },
+      "coauthor": {
+        "label": "Co-Author Preference",
+        "href": "/dashboard/preference#coauthor",
+        "keywords": [
+          "coauthor",
+          "co-author",
+          "co author",
+          "author preference",
+          "pin author",
+          "impersonate",
+          "show as",
+          "default author",
+          "article author",
+          "post author",
+          "content author",
+          "preferences"
+        ]
+      },
+      "manage-billing": {
+        "label": "Billing, Plans & Pricing",
+        "href": "/dashboard/billing",
+        "keywords": [
+          "plan",
+          "pricing",
+          "upgrade",
+          "subscription plan",
+          "premium",
+          "features",
+          "tiers",
+          "hobby",
+          "pro",
+          "billing",
+          "payment",
+          "payment method",
+          "credit card",
+          "cancel subscription",
+          "manage billing",
+          "next billing date",
+          "invoice",
+          "subscription"
+        ]
+      },
+      "sitepins-ai": {
+        "label": "SitePins AI Settings",
+        "href": "/dashboard/sitepins-ai",
+        "keywords": [
+          "ai",
+          "copilot",
+          "sitepins ai",
+          "artificial intelligence",
+          "assistant",
+          "bot",
+          "automation",
+          "smart",
+          "machine learning",
+          "features",
+          "settings",
+          "configuration"
+        ]
+      },
+      "discord-support": {
+        "label": "Discord Community",
+        "href": "https://discord.com/invite/KrpvHfqcNA",
+        "target": "_blank",
+        "keywords": [
+          "support",
+          "help",
+          "discord",
+          "community",
+          "chat",
+          "contact",
+          "talk to us",
+          "issue",
+          "bug",
+          "question",
+          "need help"
+        ]
+      },
+      "updates-feedback": {
+        "label": "Updates & Feedback",
+        "href": "https://updates.sitepins.com/",
+        "target": "_blank",
+        "keywords": [
+          "updates",
+          "feedback",
+          "feature request",
+          "tracking",
+          "building timeline",
+          "changelog",
+          "new features",
+          "roadmap",
+          "what's new"
+        ]
+      },
+      "org-general": {
+        "label": "General Settings",
+        "href": "/{orgId}/settings/general",
+        "keywords": [
+          "general",
+          "organization",
+          "settings",
+          "name",
+          "archive",
+          "delete",
+          "org"
+        ]
+      },
+      "org-members": {
+        "label": "Members",
+        "href": "/{orgId}/settings/members",
+        "keywords": [
+          "members",
+          "team",
+          "invite",
+          "users",
+          "roles",
+          "permissions",
+          "organization"
+        ]
+      },
+      "org-sandbox": {
+        "label": "Sandbox Settings",
+        "href": "/{orgId}/settings/sandbox",
+        "keywords": [
+          "sandbox",
+          "vercel",
+          "integration",
+          "connect",
+          "deployment",
+          "development",
+          "preview",
+          "publish",
+          "deploy",
+          "live",
+          "build"
+        ]
+      }
+    }
+  }
+}

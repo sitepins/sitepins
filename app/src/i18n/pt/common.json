@@ -1,0 +1,138 @@
+{
+  "common": {
+    "settings": "Configurações",
+    "overview": "Visão Geral",
+    "archived": "Arquivado",
+    "locale": "pt",
+    "language": "Idioma",
+    "theme": "Tema",
+    "light": "Claro",
+    "dark": "Escuro",
+    "system": "Sistema",
+    "logout": {
+      "label": "Sair",
+      "demo_disabled": "Logout está desabilitado no modo demo.",
+      "confirm_title": "Confirmar Logout",
+      "confirm_description": "Tem certeza que deseja sair de sua conta?"
+    },
+    "accessibility": {
+      "trigger": "Abrir menu de acessibilidade"
+    },
+    "actions": {
+      "save": "Salvar",
+      "cancel": "Cancelar",
+      "delete": "Deletar",
+      "edit": "Editar",
+      "create": "Criar",
+      "update": "Atualizar",
+      "add": "Adicionar",
+      "rename": "Renomear",
+      "duplicate": "Duplicar",
+      "back": "Voltar",
+      "close": "Fechar",
+      "archive": "Arquivar",
+      "restore": "Restaurar",
+      "move": "Mover",
+      "disconnect": "Desconectar",
+      "connect": "Conectar",
+      "finish": "Finalizar",
+      "next": "Próximo",
+      "previous": "Anterior",
+      "edit_as_code": "Editar Como Código",
+      "continue": "Continuar",
+      "replace": "Substituir",
+      "confirm": "Confirmar",
+      "reset": "Redefinir"
+    },
+    "status": {
+      "loading": "Carregando...",
+      "saving": "Salvando...",
+      "saved": "Salvo",
+      "no_results": "Nenhum resultado encontrado.",
+      "error": "Algo deu errado"
+    },
+    "confirm": {
+      "are_you_sure": "Tem certeza?",
+      "absolutely_sure": "Tem certeza absoluta?",
+      "cannot_be_undone": "Esta ação não pode ser desfeita.",
+      "type_to_confirm": "digite {confirm} para confirmar",
+      "confirm_value": "CONFIRMAR",
+      "delete_description": "Esta ação não pode ser desfeita. Isso irá deletar permanentemente seus dados de nossos servidores.",
+      "delete_media": "Deletar Arquivo de Mídia",
+      "delete_media_description": "Tem certeza que deseja deletar este arquivo?",
+      "enter_new_name": "Digite um novo nome para o arquivo.",
+      "duplicate_file": "Duplicar Arquivo",
+      "duplicate_file_description": "Digite um novo nome para o arquivo duplicado."
+    },
+    "feedback": {
+      "language_updated": "Idioma atualizado com sucesso",
+      "language_update_failed": "Falha ao atualizar o idioma",
+      "duplicate_success": "Arquivo duplicado com sucesso!",
+      "duplicate_failed": "Falha ao duplicar o arquivo",
+      "uploaded_success": "Enviado com sucesso",
+      "upload_failed": "Falha ao enviar",
+      "error_processing": "Erro ao processar os arquivos",
+      "image_deleted": "Imagem excluída com sucesso",
+      "rename_success": "Arquivo renomeado com sucesso",
+      "rename_failed": "Falha ao renomear o arquivo",
+      "delete_success": "Arquivo excluído com sucesso",
+      "delete_failed": "Falha ao excluir o arquivo",
+      "folder_rename_success": "Pasta renomeada com sucesso",
+      "folder_rename_failed": "Falha ao renomear a pasta",
+      "folder_delete_success": "Pasta excluída com sucesso",
+      "folder_delete_failed": "Falha ao excluir a pasta",
+      "folder_duplicate_success": "Pasta duplicada com sucesso",
+      "folder_duplicate_failed": "Falha ao duplicar a pasta",
+      "draft_success": "Rascunho salvo com sucesso",
+      "publish_success": "Publicado com sucesso",
+      "fetch_failed": "Falha ao buscar alguns arquivos. Por favor, tente novamente.",
+      "invalid_path": "O caminho da pasta é inválido.",
+      "missing_context": "Faltando contexto do repositório. Por favor, recarregue e tente novamente.",
+      "unable_to_locate": "Não foi possível localizar os arquivos desta pasta. Por favor, atualize e tente novamente.",
+      "demo_mode": "Esta ação está desativada no modo de demonstração.",
+      "draft_saved": "Rascunho salvo no banco de dados",
+      "draft_saved_error": "Falha ao salvar o rascunho",
+      "draft_discard_success": "Rascunho descartado com sucesso",
+      "draft_discard_error": "Falha ao descartar rascunho"
+    },
+    "labels": {
+      "name": "Nome",
+      "date": "Data",
+      "size": "Tamanho",
+      "dimensions": "Dimensões",
+      "required": "Obrigatório",
+      "fields": "Campos",
+      "user": "Usuário",
+      "site_favicon": "Favicon do Site",
+      "or": "Ou"
+    },
+    "errors": {
+      "missing_git_info": "Informações Git obrigatórias ausentes",
+      "unable_to_determine_path": "Não foi possível determinar o caminho do arquivo",
+      "required_fields_empty": "Por favor, preencha todos os campos obrigatórios: {fields}"
+    },
+    "search": "Buscar",
+    "search_placeholder": "Buscar...",
+    "search_sites_placeholder": "Buscar Sites...",
+    "prevent_navigation": {
+      "title": "Salvar Alterações Antes de Fechar?",
+      "description": "Você tem alterações não salvas. Se continuar sem salvar, essas alterações serão perdidas.",
+      "stay": "Ficar",
+      "leave": "Sair",
+      "browser_prompt": "Você tem alterações não salvas. Tem certeza que deseja sair?"
+    },
+    "error_page": {
+      "something_went_wrong": "Algo deu errado",
+      "error_code": "Código do erro: {code}",
+      "go_home": "Ir para o início",
+      "contact_support": "Contatar suporte",
+      "show_technical_details": "Mostrar detalhes técnicos"
+    },
+    "image_upload": {
+      "file_too_large": "O tamanho do arquivo excede o limite de {limit}MB.",
+      "preview_title": "Pré-visualização da Imagem",
+      "preview_desc": "Confirme se deseja enviar esta imagem.",
+      "upload": "Enviar"
+    }
+  }
+}

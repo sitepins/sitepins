@@ -1,0 +1,161 @@
+{
+  "org": {
+    "create": {
+      "add_org_btn": "Thêm tổ chức mới",
+      "dialog_title": "Tạo tổ chức mới",
+      "dialog_desc": "Thêm tổ chức mới vào tài khoản của bạn.",
+      "demo_error": "Bạn không thể tạo tổ chức mới ở chế độ demo.",
+      "success": "Tổ chức được tạo thành công. Bây giờ bạn có thể thêm thành viên.",
+      "name_label": "Tên tổ chức",
+      "submit_btn": "Tạo tổ chức"
+    },
+    "switcher": {
+      "default_org": "Tổ chức",
+      "search": "Tìm kiếm...",
+      "not_found": "Không tìm thấy tổ chức nào.",
+      "add_new": "Thêm tổ chức mới"
+    },
+    "general": {
+      "form": {
+        "title": "Tên tổ chức",
+        "description": "Cập nhật tên tổ chức của bạn",
+        "update_btn": "Cập nhật tổ chức",
+        "demo_error": "Bạn không thể cập nhật tổ chức ở chế độ demo.",
+        "success": "Tổ chức được cập nhật thành công."
+      },
+      "archive": {
+        "title_archive": "Tổ chức lưu trữ",
+        "title_restore": "Khôi phục tổ chức",
+        "desc_archive": "Lưu trữ tổ chức này — tổ chức này sẽ bị xóa khỏi danh sách hoạt động nhưng có thể được khôi phục sau.",
+        "desc_restore": "Tổ chức này được lưu trữ và ẩn khỏi danh sách hoạt động. Bạn có thể khôi phục nó để làm cho nó hoạt động trở lại.",
+        "archive_btn": "Tổ chức lưu trữ",
+        "restore_btn": "Khôi phục tổ chức",
+        "dialog_title_archive": "Tổ chức lưu trữ",
+        "dialog_title_restore": "Khôi phục tổ chức",
+        "dialog_desc_archive": "Việc lưu trữ sẽ ẩn tổ chức khỏi danh sách hoạt động. Bạn có thể khôi phục nó sau nếu cần.",
+        "dialog_desc_restore": "Khôi phục tổ chức này và làm cho nó hoạt động trở lại. Nội dung và cài đặt được giữ nguyên.",
+        "success_archive": "Tổ chức đã lưu trữ thành công.",
+        "success_restore": "Tổ chức được khôi phục về trạng thái hoạt động.",
+        "error": "Không thể cập nhật tổ chức. Vui lòng thử lại sau."
+      },
+      "delete": {
+        "title": "Xóa tổ chức",
+        "description": "Xóa tổ chức của bạn sẽ xóa vĩnh viễn tất cả các dự án, thành viên và cài đặt. Không thể hoàn tác hành động này.",
+        "delete_org_btn": "Xóa tổ chức",
+        "dialog_title": "Bạn có chắc không?",
+        "dialog_desc": "Xóa tổ chức của bạn sẽ xóa vĩnh viễn tất cả các dự án, thành viên và cài đặt. Không thể hoàn tác hành động này.",
+        "placeholder": "gõ CONFIRM để xác nhận",
+        "demo_error": "Bạn không thể xóa tổ chức demo - vui lòng liên hệ với chúng tôi nếu bạn muốn xóa nó",
+        "success": "Đã xóa tổ chức thành công",
+        "error": "Đã xảy ra lỗi"
+      },
+      "thumb": {
+        "title": "Hình thu nhỏ của tổ chức",
+        "description": "Làm cho hình ảnh tổ chức của bạn trở nên độc đáo bằng cách thêm ảnh.",
+        "demo_error": "Bạn không thể cập nhật tổ chức ở chế độ demo.",
+        "success": "Hình thu nhỏ của tổ chức đã được cập nhật thành công."
+      }
+    },
+    "members": {
+      "title": "Thành viên nhóm",
+      "description": "Quản lý các thành viên trong nhóm của bạn",
+      "anonymous": "Ẩn danh",
+      "roles": {
+        "owner": "chủ sở hữu",
+        "admin": "Quản trị viên",
+        "editor": "Biên tập viên"
+      },
+      "add_member": {
+        "add_member_btn": "Thêm thành viên",
+        "dialog_title": "Thêm thành viên nhóm",
+        "dialog_desc": "Thêm thành viên mới vào tổ chức của bạn.",
+        "email_label": "Email",
+        "email_placeholder": "Nhập email",
+        "role_label": "Vai trò",
+        "role_placeholder": "Chọn vai trò",
+        "roles_group": "Vai trò",
+        "demo_error": "Tính năng này không có sẵn trong chế độ demo.",
+        "error": "Không thể thêm thành viên vào tổ chức."
+      },
+      "actions": {
+        "delete_user": "Xóa người dùng",
+        "remove_member": "Xóa thành viên",
+        "make": "Làm",
+        "are_you_sure": "Bạn có chắc không?",
+        "delete_warning": "Không thể hoàn tác hành động này. Điều này sẽ xóa vĩnh viễn.",
+        "placeholder": "gõ CONFIRM để xác nhận",
+        "demo_error_delete": "Bạn không thể xóa người dùng ở chế độ demo.",
+        "demo_error_update": "Tính năng này không có sẵn trong chế độ demo.",
+        "success_delete": "Người dùng đã được xóa thành công.",
+        "error_delete_suffix": "Bạn không được phép xóa người dùng này.",
+        "error_update_fn": "Chức năng cập nhật không có sẵn",
+        "success_update": "Vai trò của thành viên đã được cập nhật thành công.",
+        "error_generic": "Đã xảy ra lỗi"
+      }
+    },
+    "sandbox": {
+      "title": "Hộp cát Vercel",
+      "description": "Kết nối mã thông báo truy cập Vercel để bật xem trước hộp cát trực tiếp cho dự án của bạn.",
+      "connected": "Đã kết nối",
+      "account": "Tài khoản",
+      "project": "Dự án (phân bổ thanh toán)",
+      "project_label": "Dự án",
+      "disconnect_btn": "Ngắt kết nối",
+      "disconnecting": "Đang ngắt kết nối",
+      "token_label": "Mã thông báo truy cập Vercel",
+      "token_placeholder": "Dán mã thông báo truy cập Vercel của bạn",
+      "create_token_link": "Tạo mã thông báo truy cập Vercel",
+      "step1": "Tạo mã thông báo truy cập Vercel với phạm vi tài khoản đầy đủ.",
+      "step2": "Dán nó bên dưới và nhấp vào Kết nối.",
+      "step3": "Một dự án sandbox chuyên dụng sẽ được tạo tự động trên tài khoản Vercel của bạn.",
+      "connect_btn": "Kết nối",
+      "connecting": "Đang kết nối",
+      "save_token_btn": "Lưu mã thông báo",
+      "update_token_btn": "Cập nhật mã thông báo",
+      "cancel_btn": "Hủy",
+      "status_validating": "Xác thực mã thông báo",
+      "status_creating_project": "Tạo dự án sandbox",
+      "status_saving": "Đang lưu cài đặt",
+      "disconnect_confirm_title": "Ngắt kết nối hộp cát Vercel?",
+      "disconnect_confirm_desc": "Bản xem trước hộp cát sẽ ngừng hoạt động đối với tất cả các dự án trong tổ chức này.",
+      "disconnect_confirm_btn": "Ngắt kết nối",
+      "disconnect_cancel_btn": "Hủy",
+      "toast_token_required": "Nhập mã thông báo truy cập Vercel của bạn",
+      "toast_connect_success": "Đã kết nối hộp cát",
+      "toast_connect_success_desc": "Giờ đây, bản xem trước hộp cát sẽ chạy trên tài khoản Vercel của {username}.",
+      "toast_connect_error": "Không thể kết nối hộp cát",
+      "toast_disconnect_success": "Hộp cát bị ngắt kết nối",
+      "toast_disconnect_error": "Không ngắt kết nối được",
+      "no_permission": "Chỉ chủ sở hữu tổ chức và quản trị viên mới có thể quản lý cài đặt hộp cát.",
+      "select_team_title": "Chọn tài khoản Vercel",
+      "personal_account": "Tài khoản cá nhân",
+      "team_label": "Đội",
+      "change_token": "Thay đổi mã thông báo",
+      "security_title": "Bảo mật & Quyền riêng tư",
+      "security0": "Preview Sandbox chạy **lệnh `dev`** của dự án (ví dụ: `npm run dev`). Nếu trang web của bạn không khởi động bằng lệnh đó, nó cũng sẽ không hoạt động trong sandbox.",
+      "security1": "Mã thông báo truy cập của bạn được **mã hóa bằng AES-256-GCM** trước khi lưu trữ — không bao giờ được lưu ở dạng văn bản thuần túy.",
+      "security2": "**Mọi tài khoản Vercel đều hoạt động** — cá nhân hoặc nhóm, gói Sở thích miễn phí hoặc trả phí. Bản xem trước hộp cát chạy theo hạn ngạch Vercel của riêng bạn chứ không phải của chúng tôi.",
+      "security3": "Mã thông báo **chỉ** được sử dụng để tạo dự án hộp cát chuyên dụng và quản lý việc triển khai bản xem trước. Không có hành động nào khác được thực hiện trên tài khoản Vercel của bạn.",
+      "security4": "**Ngắt kết nối bất kỳ lúc nào** để xóa ngay mã thông báo khỏi máy chủ của chúng tôi.",
+      "security5": "Mỗi tổ chức có **dự án hộp cát chuyên dụng** của riêng mình trên Vercel — giữ cho các bản xem trước được tách biệt trên mỗi tổ chức và phân bổ thanh toán rõ ràng."
+    }
+  },
+  "org-sites": {
+    "no_sites_found": "Không tìm thấy trang web nào",
+    "try_adjusting": "Hãy thử điều chỉnh cụm từ tìm kiếm của bạn",
+    "site_name": "Tên trang web",
+    "repository": "Kho lưu trữ",
+    "status": "Trạng thái",
+    "archived": "Đã lưu trữ",
+    "active": "Đang hoạt động",
+    "private": "Riêng tư",
+    "public": "Công khai"
+  },
+  "org-archived": {
+    "title": "Tổ chức được lưu trữ",
+    "desc_full": "Tổ chức này đã được lưu trữ. Tất cả nội dung hiện ở chế độ chỉ đọc và hầu hết các chức năng quản lý đều bị tắt.",
+    "desc_banner": "Tổ chức này hiện đang được lưu trữ và hầu hết chức năng đều bị vô hiệu hóa.",
+    "org_settings": "Cài đặt tổ chức",
+    "view_settings": "Xem cài đặt"
+  }
+}

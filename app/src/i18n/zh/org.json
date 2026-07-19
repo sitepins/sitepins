@@ -1,0 +1,161 @@
+{
+  "org": {
+    "create": {
+      "add_org_btn": "添加新组织",
+      "dialog_title": "创建新组织",
+      "dialog_desc": "向您的帐户添加一个新组织。",
+      "demo_error": "您无法在演示模式下创建新组织。",
+      "success": "组织创建成功。您现在可以向组织添加成员了。",
+      "name_label": "组织名称",
+      "submit_btn": "创建组织"
+    },
+    "switcher": {
+      "default_org": "组织",
+      "search": "搜索...",
+      "not_found": "未找到组织。",
+      "add_new": "添加新组织"
+    },
+    "general": {
+      "form": {
+        "title": "组织名称",
+        "description": "更新您的组织名称",
+        "update_btn": "更新组织",
+        "demo_error": "您不能在演示模式下更新组织。",
+        "success": "组织名称更新成功。"
+      },
+      "archive": {
+        "title_archive": "归档组织",
+        "title_restore": "恢复组织",
+        "desc_archive": "归档此组织 — 它将从活动列表中移除，但可以稍后恢复。",
+        "desc_restore": "此组织已归档，并从活动列表中隐藏。您可以恢复它以重新激活。",
+        "archive_btn": "归档组织",
+        "restore_btn": "恢复组织",
+        "dialog_title_archive": "归档组织",
+        "dialog_title_restore": "恢复组织",
+        "dialog_desc_archive": "归档将把组织从活动列表中隐藏。如果需要，您可以稍后恢复。",
+        "dialog_desc_restore": "恢复此组织并将其重新激活。内容和设置将被保留。",
+        "success_archive": "组织归档成功。",
+        "success_restore": "组织已恢复到活动状态。",
+        "error": "失败。请稍后重试。"
+      },
+      "delete": {
+        "title": "删除组织",
+        "description": "删除您的组织将永久删除所有项目、成员和设置。此操作无法撤销。",
+        "delete_org_btn": "删除组织",
+        "dialog_title": "您确定吗？",
+        "dialog_desc": "删除您的组织将永久删除所有项目、成员和设置。此操作无法撤销。",
+        "placeholder": "输入 CONFIRM 以确认",
+        "demo_error": "您无法删除演示组织 — 如果您想删除它，请与我们联系",
+        "success": "组织删除成功",
+        "error": "出错了"
+      },
+      "thumb": {
+        "title": "组织缩略图",
+        "description": "通过添加照片让您的组织图片更具特色。",
+        "demo_error": "您不能在演示模式下更新组织。",
+        "success": "组织缩略图更新成功。"
+      }
+    },
+    "members": {
+      "title": "团队成员",
+      "description": "管理您的团队成员",
+      "anonymous": "匿名",
+      "roles": {
+        "owner": "所有者",
+        "admin": "管理员",
+        "editor": "编辑者"
+      },
+      "add_member": {
+        "add_member_btn": "添加成员",
+        "dialog_title": "添加团队成员",
+        "dialog_desc": "向您的组织添加新成员。",
+        "email_label": "电子邮件",
+        "email_placeholder": "输入电子邮件",
+        "role_label": "角色",
+        "role_placeholder": "选择角色",
+        "roles_group": "角色",
+        "demo_error": "此功能在演示模式下不可用。",
+        "error": "无法将成员添加到组织。"
+      },
+      "actions": {
+        "delete_user": "删除用户",
+        "remove_member": "移除成员",
+        "make": "设为",
+        "are_you_sure": "您确定吗？",
+        "delete_warning": "此操作无法撤销。这将永久删除该用户。",
+        "placeholder": "输入 CONFIRM 以确认",
+        "demo_error_delete": "您处于演示模式，无法删除用户。",
+        "demo_error_update": "此功能在演示模式下不可用。",
+        "success_delete": "用户已成功删除。",
+        "error_delete_suffix": "您无权删除此用户。",
+        "error_update_fn": "更新功能不可用",
+        "success_update": "成员的角色已成功更新。",
+        "error_generic": "发生错误"
+      }
+    },
+    "sandbox": {
+      "title": "Vercel 沙箱",
+      "description": "连接 Vercel 访问令牌，为您的项目启用实时沙箱预览。",
+      "connected": "已连接",
+      "account": "账户",
+      "project": "项目（计费归因）",
+      "disconnect_btn": "断开连接",
+      "disconnecting": "断开中",
+      "token_label": "Vercel 访问令牌",
+      "token_placeholder": "粘贴您的 Vercel 访问令牌",
+      "create_token_link": "创建 Vercel 访问令牌",
+      "step1": "创建具有完整账户范围的 Vercel 访问令牌。",
+      "step2": "粘贴到下方并点击连接。",
+      "step3": "专用沙箱项目将自动在您的 Vercel 账户中创建。",
+      "connect_btn": "连接",
+      "connecting": "连接中",
+      "toast_token_required": "请输入您的 Vercel 访问令牌",
+      "toast_connect_success": "沙箱已连接",
+      "toast_connect_success_desc": "沙箱预览现在将在 {username} 的 Vercel 账户上运行。",
+      "toast_connect_error": "沙箱连接失败",
+      "toast_disconnect_success": "沙箱已断开",
+      "toast_disconnect_error": "断开失败",
+      "no_permission": "只有组织所有者和管理员可以管理沙箱设置。",
+      "project_label": "项目",
+      "save_token_btn": "保存令牌",
+      "update_token_btn": "更新令牌",
+      "cancel_btn": "取消",
+      "status_validating": "正在验证令牌",
+      "status_creating_project": "正在创建沙箱项目",
+      "status_saving": "正在保存设置",
+      "disconnect_confirm_title": "断开 Vercel 沙箱连接？",
+      "disconnect_confirm_desc": "此组织中所有项目的沙箱预览将停止工作。",
+      "disconnect_confirm_btn": "断开连接",
+      "disconnect_cancel_btn": "取消",
+      "select_team_title": "选择 Vercel 账户",
+      "personal_account": "个人账户",
+      "team_label": "团队",
+      "change_token": "更改令牌",
+      "security_title": "安全与隐私",
+      "security0": "预览沙盒将运行您项目的 **`dev` 脚本**（例如 `npm run dev`）。如果您的站点无法通过该脚本启动，则在沙盒中也无法运行。",
+      "security1": "您的访问令牌在存储前经过 **AES-256-GCM 加密** — 从不以明文保存。",
+      "security2": "**任何 Vercel 账户均可使用** — 个人或团队，免费 Hobby 计划或付费计划均可。沙箱预览在您自己的 Vercel 配额上运行，而非我们的。",
+      "security3": "令牌**仅**用于创建专属沙箱项目和管理预览部署，不会对您的 Vercel 账户执行任何其他操作。",
+      "security4": "**随时断开连接**，即可立即从我们的服务器中删除令牌。",
+      "security5": "每个组织在 Vercel 上都有独立的**专属沙箱项目** — 预览按组织隔离，账单归属清晰。"
+    }
+  },
+  "org-sites": {
+    "no_sites_found": "未找到站点",
+    "try_adjusting": "请尝试调整搜索关键词",
+    "site_name": "站点名称",
+    "repository": "仓库",
+    "status": "状态",
+    "archived": "已归档",
+    "active": "活跃",
+    "private": "私有",
+    "public": "公开"
+  },
+  "org-archived": {
+    "title": "组织已归档",
+    "desc_full": "该组织已被归档。所有内容目前均为只读状态，大部分管理功能已被禁用。",
+    "desc_banner": "该组织目前已归档，大部分功能已被禁用。",
+    "org_settings": "组织设置",
+    "view_settings": "查看设置"
+  }
+}

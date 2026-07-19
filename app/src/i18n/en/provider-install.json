@@ -1,0 +1,35 @@
+{
+  "provider-install": {
+    "authenticating_aria": "Authenticating",
+    "request_title": "Installation Request Sent",
+    "auth_title": "Authenticating with {provider}",
+    "request_description": "An installation request was sent to the organization's owner. They'll receive a notification and can approve access to repositories.",
+    "auth_description": "We are finishing authentication with {provider}. This window will close automatically when complete.",
+    "manual_close_hint": "If this window doesn't close, you can safely close it manually.",
+    "providers": {
+      "github": "GitHub",
+      "gitlab": "GitLab"
+    },
+    "github_integration": {
+      "title": "Connect your GitHub account",
+      "description": "Sitepins needs access to create branches and sync content for your projects.",
+      "allow_all_repos": "I will select all repositories",
+      "connect_btn": "Connect with Github",
+      "grant_access_link": "I won't grant access to all repositories",
+      "selective_title": "Selective Repository Access",
+      "selective_desc1": "If you choose selective repository access, we won't be able to automatically create repository for you.",
+      "selective_desc2": "No worries! You can still get started manually by following these steps:",
+      "step_download": "Manually download the template.",
+      "step_fork": "Manually fork the repository.",
+      "step_push": "Push the source code to your GitHub repository.",
+      "step_go_to": "Go to Sitepins",
+      "step_new_site": "Click the + New Site button from the top right.",
+      "step_grant_access": "Select GitHub and grant access to your repository.",
+      "step_grant_forked": "Select GitHub and grant access to only your forked repository.",
+      "step_final": "Fill necessary details and press Create Site.",
+      "revoke_access": "Access can be revoked anytime in GitHub settings",
+      "watch_tutorial": "Watch a quick tutorial",
+      "close": "Close"
+    }
+  }
+}

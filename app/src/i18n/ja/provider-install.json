@@ -1,0 +1,35 @@
+{
+  "provider-install": {
+    "authenticating_aria": "認証中",
+    "request_title": "インストールリクエストを送信しました",
+    "auth_title": "{provider} で認証中",
+    "request_description": "インストールリクエストが組織のオーナーに送信されました。通知を受け取り、リポジトリへのアクセスを承認することができます。",
+    "auth_description": "{provider} との認証を完了しています。完了するとこのウィンドウは自動的に閉じられます。",
+    "manual_close_hint": "このウィンドウが閉じない場合は、手動で安全に閉じることができます。",
+    "providers": {
+      "github": "GitHub",
+      "gitlab": "GitLab"
+    },
+    "github_integration": {
+      "title": "GitHub アカウントを接続",
+      "description": "Sitepins はプロジェクトのブランチ作成とコンテンツ同期のためにアクセスが必要です。",
+      "allow_all_repos": "すべてのリポジトリを選択します",
+      "connect_btn": "GitHub で接続",
+      "grant_access_link": "すべてのリポジトリへのアクセスを許可しない",
+      "selective_title": "選択的リポジトリアクセス",
+      "selective_desc1": "選択的リポジトリアクセスを選択した場合、リポジトリを自動的に作成することができません。",
+      "selective_desc2": "ご心配なく！次の手順に従って手動で始めることができます：",
+      "step_download": "テンプレートを手動でダウンロードします。",
+      "step_fork": "リポジトリを手動でフォークします。",
+      "step_push": "ソースコードを GitHub リポジトリにプッシュします。",
+      "step_go_to": "Sitepins に移動します",
+      "step_new_site": "右上の「＋ 新しいサイト」ボタンをクリックします。",
+      "step_grant_access": "GitHub を選択してリポジトリへのアクセスを許可します。",
+      "step_grant_forked": "GitHub を選択してフォークしたリポジトリのみへのアクセスを許可します。",
+      "step_final": "必要な情報を入力して「サイトを作成」を押します。",
+      "revoke_access": "アクセスはいつでも GitHub 設定で取り消すことができます",
+      "watch_tutorial": "クイックチュートリアルを見る",
+      "close": "閉じる"
+    }
+  }
+}

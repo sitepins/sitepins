@@ -1,0 +1,149 @@
+{
+  "dashboard": {
+    "preference": {
+      "title": "Einstellungen",
+      "coauthor": {
+        "title": "Git-Co-Authoring",
+        "description": "Wähle, welche Identität für Repository-Aktionen verwendet werden soll.",
+        "as_you": "Handeln als du",
+        "as_you_desc": "Der Bot verwendet deine persönliche Identität für Commits, Branches und Pull Requests, sodass die Änderungen dir vollständig zugeschrieben werden.",
+        "as_you_fallback": "Falls persönliche Berechtigungen nicht ausreichen, wird automatisch auf den Bot zurückgegriffen, damit Aufgaben abgeschlossen werden können.",
+        "as_bot": "Handeln als Bot",
+        "as_bot_desc": "Alle Repository-Aktionen werden dem System-Bot zugeordnet. Das sorgt für einen konsistenten Audit-Trail und ist die empfohlene Einstellung für automatisierte Workflows.",
+        "updated": "Co-Author-Präferenz aktualisiert",
+        "error": "Impersonate-Präferenz konnte nicht aktualisiert werden"
+      },
+      "language": {
+        "title": "Sprache",
+        "description": "Wähle deine bevorzugte Sprache für die Oberfläche. Änderungen werden sofort angewendet.",
+        "label": "Oberflächensprache"
+      },
+      "theme": {
+        "title": "Design",
+        "description": "Wähle dein bevorzugtes Farbdesign.",
+        "updated_success": "Design erfolgreich aktualisiert",
+        "updated_failed": "Design konnte nicht aktualisiert werden"
+      }
+    },
+    "account": {
+      "title": "Konto",
+      "profile": {
+        "title": "Anzeigenamen aktualisieren",
+        "description": "Dieser Name wird in deinem Profil angezeigt.",
+        "full_name": "Vollständiger Name",
+        "submit": "Konto aktualisieren",
+        "success": "Benutzerdaten erfolgreich aktualisiert",
+        "error": "Aktualisierung fehlgeschlagen, bitte versuche es erneut",
+        "demo_error": "Diese Aktion ist im Demo-Modus deaktiviert."
+      },
+      "password": {
+        "title": "Passwort ändern",
+        "description": "Aktualisiere dein Passwort regelmäßig, um dein Konto sicher zu halten und vor unbefugtem Zugriff zu schützen.",
+        "current_password": "Aktuelles Passwort",
+        "new_password": "Neues Passwort",
+        "submit": "Passwort aktualisieren",
+        "success": "Passwort erfolgreich aktualisiert",
+        "error": "Aktualisierung fehlgeschlagen, bitte versuche es erneut"
+      },
+      "set_password": {
+        "title": "Passwort festlegen",
+        "description": "Du hast dich über einen Social-Provider angemeldet. Erstelle ein Passwort, um zusätzliche Sicherheitsoptionen und alternative Anmeldemethoden zu aktivieren.",
+        "new_password": "Neues Passwort",
+        "submit": "Passwort hinzufügen",
+        "success": "Passwort erfolgreich hinzugefügt",
+        "error": "Etwas ist schiefgelaufen! Versuche es später erneut"
+      },
+      "picture": {
+        "title": "Profilbild aktualisieren",
+        "description": "Mache deinen Workspace professioneller, indem du ein Foto hinzufügst.",
+        "success": "Benutzerdaten erfolgreich aktualisiert",
+        "error": "Aktualisierung fehlgeschlagen, bitte versuche es erneut"
+      },
+      "newsletter": {
+        "title": "Newsletter-Abonnement",
+        "description": "Wir senden gelegentlich E-Mails zu neuen Funktionen, Updates und Angeboten. Du kannst dich jederzeit abmelden.",
+        "label": "Newsletter und Produktupdates erhalten",
+        "submit": "Einstellungen speichern",
+        "success_sub": "Erfolgreich für den Newsletter angemeldet",
+        "success_unsub": "Erfolgreich vom Newsletter abgemeldet",
+        "error": "Aktualisierung fehlgeschlagen, bitte versuche es erneut"
+      },
+      "delete": {
+        "title": "Konto löschen",
+        "description": "Warnung: Diese Aktion kann nicht rückgängig gemacht werden. Dadurch wird dein Konto dauerhaft gelöscht und alle deine Daten von unseren Servern entfernt.",
+        "confirm_label": "Gib <strong>DELETE</strong> zur Bestätigung ein",
+        "confirm_placeholder": "Gib hier DELETE ein",
+        "button": "Konto löschen",
+        "reason_title": "Was ist der Hauptgrund für das Löschen deines Kontos?",
+        "other_reason_label": "Anderer Grund (max. 200 Zeichen)",
+        "other_reason_placeholder": "Erzähl uns mehr (max. 200 Zeichen)",
+        "reasons": {
+          "complex": "Zu komplex oder schwer zu bedienen",
+          "not_work": "Hat für meine Website nicht funktioniert",
+          "poor_design": "Schlechtes Design oder Benutzererlebnis",
+          "bugs": "Zu viele Fehler",
+          "missing_features": "Fehlende Funktionen, die ich brauche",
+          "better_alternative": "Eine bessere Alternative gefunden",
+          "other": "Andere"
+        },
+        "feedback": {
+          "demo_disabled": "Konto löschen ist im Demo-Modus deaktiviert.",
+          "success": "Konto erfolgreich gelöscht",
+          "error": "Bitte versuche es später erneut."
+        }
+      }
+    },
+    "sitepins_ai": {
+      "title": "Sitepins AI",
+      "description": "Konfiguriere deinen KI-Provider, um intelligente Inhaltsvorschläge und Autovervollständigungsfunktionen zu aktivieren.",
+      "provider_label": "Provider",
+      "provider_placeholder": "Provider auswählen",
+      "model_label": "Modell",
+      "model_placeholder": "Modell auswählen",
+      "api_key_label": "API-Key",
+      "api_key_placeholder": "Gib deinen API-Key ein",
+      "show": "Anzeigen",
+      "hide": "Ausblenden",
+      "copilot_title": "Sitepins Copilot",
+      "copilot_description": "Schlägt beim Tippen Autovervollständigungen vor.",
+      "delete_key": "Key löschen",
+      "save_changes": "Änderungen speichern",
+      "save_success": "Einstellungen erfolgreich gespeichert",
+      "save_error": "Etwas ist schiefgelaufen!",
+      "security_title": "Wichtiger Sicherheitshinweis",
+      "security1": "Wir **speichern deinen API-Key nicht** in unserer Datenbank, um deine Privatsphäre zu schützen und Sicherheitsrichtlinien einzuhalten.",
+      "security2": "Dein Key wird nur lokal in deinem Browser gespeichert. Wenn du den Browser wechselst oder leerst, geht der Key verloren.",
+      "security3": "Bitte bewahre deinen API-Key sicher auf und halte ihn für dich verfügbar, da wir ihn nicht für dich wiederherstellen können.",
+      "custom_model": "Manuell eingeben",
+      "custom_model_input_label": "Modell-ID",
+      "custom_model_input_placeholder": "Benutzerdefinierte Modell-ID eingeben",
+      "find_model_id": "Ihre Modell-ID finden"
+    },
+    "sidebar": {
+      "back": "Zurück"
+    },
+    "refetch_preview": "Vorschau neu laden",
+    "preview_unavailable": "Vorschau nicht verfügbar",
+    "website": "Website",
+    "edit_website": "Website bearbeiten",
+    "build_status": "Build-Status",
+    "last_updated": "Zuletzt aktualisiert",
+    "source": "Quelle",
+    "recently": "kürzlich",
+    "last_updated_by": "vor {distance} von {author}",
+    "switcher": {
+      "default_site": "Website auswählen",
+      "search": "Suchen...",
+      "not_found": "Kein Projekt gefunden.",
+      "add_new": "Neue Website hinzufügen"
+    },
+    "archived_project": {
+      "title": "Projekt archiviert",
+      "description": "Dieses Projekt wurde archiviert und die meisten Funktionen sind deaktiviert. Du kannst weiterhin auf die Projekteinstellungen zugreifen, um das Projekt wiederherzustellen oder den Projektstatus zu ändern.",
+      "open_settings": "Einstellungen öffnen"
+    },
+    "project_overview": {
+      "preview_alt": "Live-Vorschau von {name}"
+    }
+  }
+}

@@ -1,0 +1,131 @@
+{
+  "project": {
+    "activity": {
+      "recent_file_changes": "Recent File Changes",
+      "latest_activity": "Latest activity by you or your team",
+      "updated": "Updated",
+      "created": "Created",
+      "deleted": "Deleted",
+      "renamed": "Renamed",
+      "duplicated": "Duplicated",
+      "no_more": "No more",
+      "load_more": "Load More"
+    },
+    "branching": {
+      "incoming_request": "Incoming {provider} Request",
+      "merge": "Merge",
+      "details": "Details",
+      "changes_detected": "Changes detected",
+      "view_request": "View Request",
+      "create_request": "Create {provider} Request",
+      "title": "Title",
+      "description_optional": "Description (Optional)",
+      "placeholder_title": "Feature title",
+      "placeholder_description": "Describe your changes...",
+      "merge_into": "Merge {head} into {base}",
+      "merge_description": "Merge changes from {head} into {base}",
+      "success_created": "{type} created successfully!",
+      "success_merged": "Merged {branch} successfully!",
+      "error_create": "Failed to create {type}",
+      "error_merge": "Failed to merge",
+      "permission_error_title": "GitHub App Permission Error",
+      "permission_error_description": "Your GitHub App needs 'Pull requests: Write' permission. Please accept the new permissions in your GitHub settings.",
+      "review": "Review",
+      "switcher": {
+        "placeholder": "Search branch...",
+        "no_results": "No branch found.",
+        "default": "default",
+        "create_new": "Create New Branch"
+      },
+      "create": {
+        "title": "Create New Branch",
+        "desc": "Create a new branch from <branch>{branchName}</branch>",
+        "label": "Branch Name",
+        "placeholder": "e.g. staging",
+        "submit": "Create Branch",
+        "error": {
+          "required": "Branch name is required",
+          "sha": "Could not find base branch SHA",
+          "failed": "Failed to create new branch"
+        },
+        "success": "Branch {name} created successfully!"
+      },
+      "status": {
+        "on_default": "You are on the default branch: {branch}",
+        "ahead": "{branch} is ahead of {base}."
+      }
+    },
+    "git": {
+      "recent_activities": "Recent Git Activities",
+      "recent_commits": "Recent commits to your repository",
+      "revert": "Revert",
+      "reset": "Reset",
+      "commit": "Commit",
+      "restore_version": "Restore version",
+      "undo_commit": "Undo commit",
+      "admin_only": "Only admins and owners can perform this action",
+      "restore_title": "Restore to this version",
+      "restore_description_github": "This will jump back in time to exactly how your site looked at this moment. Any changes made after this version will be removed.",
+      "restore_description_gitlab": "This will bring back your site to exactly how it looked at this moment. We'll create a new update to make this happen, so your history remains safe.",
+      "restore_warning_github": "⚠️ Warning: This is a permanent change. All newer updates will be deleted from this branch. Only use this if you want to completely discard recent work.",
+      "restore_warning_gitlab": "✓ This is safe. Your recent work won't be deleted; we just create a new version based on this old one.",
+      "undo_title": "Undo this commit",
+      "undo_description": "This will create a new update that reverses everything changed in this specific version.",
+      "undo_warning": "✓ This is safe! We'll add a new version to your history that cancels out these specific changes, keeping everything else intact.",
+      "feedback": {
+        "reset_success": "Branch reset to {sha} successfully!",
+        "revert_success": "Commit reverted! New commit: {sha}",
+        "revert_failed": "Failed to revert"
+      },
+      "actions": {
+        "restoring": "Restoring",
+        "undoing": "Undoing",
+        "confirm_restore": "Confirm Restore",
+        "confirm_undo": "Confirm Undo"
+      },
+      "commit_messages": {
+        "add_file": "Add {name}",
+        "rename_file": "Rename file {name}",
+        "delete_file": "Delete file {name}",
+        "duplicate_file": "Duplicate file {name}",
+        "create_schema": "Create schema {name}",
+        "update_schema": "Update schema {name}",
+        "delete_schema": "Delete schema {name}",
+        "update_config": "Update site configurations"
+      }
+    },
+    "setup-steps": {
+      "getting_started": "Getting Started",
+      "description": "Complete these steps to set up Sitepins and publish your first content",
+      "progress": "Progress",
+      "progress_count": "{completed} of {total}",
+      "steps": {
+        "add_site": {
+          "title": "Add New Site",
+          "description": "Your site has been created and is ready for configuration"
+        },
+        "configure_project": {
+          "title": "Configure Project",
+          "description": "Set up your repository structure (Content Folder, Media Root, etc.)"
+        },
+        "publish_content": {
+          "title": "Publish First Content",
+          "description": "Publish your first content from the left panel"
+        },
+        "deploy_site": {
+          "title": "Deploy Site",
+          "description": "Deploy your site to Vercel for the first time"
+        }
+      },
+      "edit_config": "Edit Project Configuration",
+      "deploy_to_vercel": "Deploy to Vercel",
+      "login_signup": "Login or Signup",
+      "create_account": "Create an account",
+      "deploy_repo": "Deploy your repository",
+      "one_click": "with one click",
+      "or": "Or",
+      "already_deployed": "Already deployed? Insert the URL now",
+      "vercel_host": "on Vercel to host your site"
+    }
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "provider-install": {
+    "authenticating_aria": "Mengautentikasi",
+    "request_title": "Permintaan Instalasi Terkirim",
+    "auth_title": "Mengautentikasi dengan {provider}",
+    "request_description": "Permintaan pemasangan telah dikirim ke pemilik organisasi. Mereka akan menerima notifikasi dan dapat menyetujui akses ke repositori.",
+    "auth_description": "Kami sedang menyelesaikan otentikasi dengan {provider} . Jendela ini akan tertutup secara otomatis setelah selesai.",
+    "manual_close_hint": "Jika jendela ini tidak dapat ditutup, Anda dapat menutupnya secara manual dengan aman.",
+    "providers": {
+      "github": "GitHub",
+      "gitlab": "GitLab"
+    },
+    "github_integration": {
+      "title": "Hubungkan akun GitHub Anda",
+      "description": "Sitepins memerlukan akses untuk membuat cabang dan menyinkronkan konten untuk proyek Anda.",
+      "allow_all_repos": "Saya akan memilih semua repositori",
+      "connect_btn": "Terhubung dengan Github",
+      "grant_access_link": "Saya tidak akan memberikan akses ke semua repositori",
+      "selective_title": "Akses Repositori Selektif",
+      "selective_desc1": "Jika Anda memilih akses repositori selektif, kami tidak akan dapat membuat repositori secara otomatis untuk Anda.",
+      "selective_desc2": "Jangan khawatir! Anda masih dapat memulai secara manual dengan mengikuti langkah-langkah berikut:",
+      "step_download": "Unduh templat secara manual.",
+      "step_fork": "Membagi repositori secara manual.",
+      "step_push": "Dorong kode sumber ke repositori GitHub Anda.",
+      "step_go_to": "Buka Sitepin",
+      "step_new_site": "Klik tombol + Situs Baru dari kanan atas.",
+      "step_grant_access": "Pilih GitHub dan berikan akses ke repositori Anda.",
+      "step_grant_forked": "Pilih GitHub dan berikan akses hanya ke repositori bercabang Anda.",
+      "step_final": "Isi rincian yang diperlukan dan tekan Buat Situs.",
+      "revoke_access": "Akses dapat dicabut kapan saja di pengaturan GitHub",
+      "watch_tutorial": "Tonton tutorial singkat",
+      "close": "Menutup"
+    }
+  }
+}

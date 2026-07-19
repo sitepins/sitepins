@@ -1,0 +1,149 @@
+{
+  "dashboard": {
+    "preference": {
+      "title": "Preferencias",
+      "coauthor": {
+        "title": "Autoría compartida en Git",
+        "description": "Elige qué identidad usar para las acciones del repositorio.",
+        "as_you": "Actuar como tú",
+        "as_you_desc": "El bot usará tu identidad personal para commits, ramas y pull requests, dándote crédito completo por los cambios.",
+        "as_you_fallback": "Vuelve automáticamente al bot si los permisos personales son insuficientes para asegurar que las tareas se completen.",
+        "as_bot": "Actuar como el bot",
+        "as_bot_desc": "Todas las acciones del repositorio se atribuirán al bot del sistema. Esto asegura un registro de auditoría consistente y es la configuración recomendada para flujos de trabajo automatizados.",
+        "updated": "Preferencia de coautor actualizada",
+        "error": "Error al actualizar preferencia de suplantación"
+      },
+      "language": {
+        "title": "Idioma",
+        "description": "Elige tu idioma preferido para la interfaz. Los cambios se aplican inmediatamente.",
+        "label": "Idioma de la interfaz"
+      },
+      "theme": {
+        "title": "Tema",
+        "description": "Elige tu tema de color preferido.",
+        "updated_success": "Tema actualizado exitosamente",
+        "updated_failed": "Error al actualizar tema"
+      }
+    },
+    "account": {
+      "title": "Cuenta",
+      "profile": {
+        "title": "Actualizar nombre de visualización",
+        "description": "Este es el nombre que se mostrará en tu perfil.",
+        "full_name": "Nombre completo",
+        "submit": "Actualizar cuenta",
+        "success": "Detalles del usuario actualizados exitosamente",
+        "error": "Error al actualizar, por favor intenta de nuevo",
+        "demo_error": "Esta acción está deshabilitada en modo demostración."
+      },
+      "password": {
+        "title": "Cambiar contraseña",
+        "description": "Actualiza tu contraseña regularmente para mantener tu cuenta segura y protegida del acceso no autorizado.",
+        "current_password": "Contraseña actual",
+        "new_password": "Nueva contraseña",
+        "submit": "Actualizar contraseña",
+        "success": "Contraseña actualizada exitosamente",
+        "error": "Error al actualizar, por favor intenta de nuevo"
+      },
+      "set_password": {
+        "title": "Establecer contraseña",
+        "description": "Iniciaste sesión con un proveedor social. Crea una contraseña para habilitar opciones de seguridad adicionales y métodos de inicio de sesión alternativos.",
+        "new_password": "Nueva contraseña",
+        "submit": "Agregar contraseña",
+        "success": "Contraseña agregada exitosamente",
+        "error": "¡Algo salió mal! Intenta más tarde"
+      },
+      "picture": {
+        "title": "Actualizar imagen de perfil",
+        "description": "Haz tu espacio de trabajo profesional agregando una foto.",
+        "success": "Detalles del usuario actualizados exitosamente",
+        "error": "Error al actualizar, por favor intenta de nuevo"
+      },
+      "newsletter": {
+        "title": "Suscripción al boletín",
+        "description": "Te enviaremos ocasionalmente correos sobre nuevas características, actualizaciones y ofertas. Puedes desuscribirte en cualquier momento.",
+        "label": "Recibir boletín y actualizaciones de productos",
+        "submit": "Guardar preferencias",
+        "success_sub": "Suscripción al boletín exitosa",
+        "success_unsub": "Desuscripción del boletín exitosa",
+        "error": "Error al actualizar, por favor intenta de nuevo"
+      },
+      "delete": {
+        "title": "Eliminar cuenta",
+        "description": "Advertencia: Esta acción no se puede deshacer. Esto eliminará permanentemente tu cuenta y eliminará todos tus datos de nuestros servidores.",
+        "confirm_label": "Escribe <strong>DELETE</strong> para confirmar",
+        "confirm_placeholder": "Escribe DELETE aquí",
+        "button": "Eliminar cuenta",
+        "reason_title": "¿Cuál es la razón principal para eliminar tu cuenta?",
+        "other_reason_label": "Otra razón (máx 200 caracteres)",
+        "other_reason_placeholder": "Cuéntanos más (máx 200 caracteres)",
+        "reasons": {
+          "complex": "Demasiado complejo o difícil de usar",
+          "not_work": "No funcionó para mi sitio web",
+          "poor_design": "Diseño o experiencia de usuario pobre",
+          "bugs": "Demasiados errores",
+          "missing_features": "Faltan características que necesito",
+          "better_alternative": "Encontré una alternativa mejor",
+          "other": "Otro"
+        },
+        "feedback": {
+          "demo_disabled": "Eliminar cuenta está deshabilitado en modo demostración.",
+          "success": "Cuenta eliminada exitosamente",
+          "error": "Por favor intenta más tarde."
+        }
+      }
+    },
+    "sitepins_ai": {
+      "title": "Sitepins AI",
+      "description": "Configura tu proveedor de IA para habilitar sugerencias de contenido inteligentes y características de autocompletado.",
+      "provider_label": "Proveedor",
+      "provider_placeholder": "Selecciona proveedor",
+      "model_label": "Modelo",
+      "model_placeholder": "Selecciona modelo",
+      "api_key_label": "Clave API",
+      "api_key_placeholder": "Ingresa tu clave API",
+      "show": "Mostrar",
+      "hide": "Ocultar",
+      "copilot_title": "Sitepins Copilot",
+      "copilot_description": "Sugerir autocompletado al escribir.",
+      "delete_key": "Eliminar clave",
+      "save_changes": "Guardar cambios",
+      "save_success": "Configuración guardada exitosamente",
+      "save_error": "¡Algo salió mal!",
+      "security_title": "Aviso de seguridad importante",
+      "security1": "**No almacenamos tu clave API** en nuestra base de datos para asegurar tu privacidad y cumplir con políticas de seguridad.",
+      "security2": "Tu clave se almacena localmente en tu navegador solo. Si cambias o limpias tu navegador, la clave se perderá.",
+      "security3": "Por favor mantén tu clave API segura y accesible para ti, ya que no podemos recuperarla por ti.",
+      "custom_model": "Introducir manualmente",
+      "custom_model_input_label": "ID del modelo",
+      "custom_model_input_placeholder": "Introduzca el ID del modelo personalizado",
+      "find_model_id": "Encuentra el ID de tu modelo"
+    },
+    "sidebar": {
+      "back": "Atrás"
+    },
+    "refetch_preview": "Recargar vista previa",
+    "preview_unavailable": "Vista previa no disponible",
+    "website": "Sitio web",
+    "edit_website": "Editar sitio web",
+    "build_status": "Estado de compilación",
+    "last_updated": "Última actualización",
+    "source": "Fuente",
+    "recently": "recientemente",
+    "last_updated_by": "hace {distance} por {author}",
+    "switcher": {
+      "default_site": "Seleccionar sitio",
+      "search": "Buscar...",
+      "not_found": "No se encontró proyecto.",
+      "add_new": "Agregar nuevo sitio"
+    },
+    "archived_project": {
+      "title": "Proyecto archivado",
+      "description": "Este proyecto ha sido archivado y la mayoría de funcionalidades están deshabilitadas. Aún puedes acceder a la configuración del proyecto para restaurarlo o cambiar su estado.",
+      "open_settings": "Abrir configuración"
+    },
+    "project_overview": {
+      "preview_alt": "Vista previa en vivo de {name}"
+    }
+  }
+}

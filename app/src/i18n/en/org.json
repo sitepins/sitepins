@@ -1,0 +1,161 @@
+{
+  "org": {
+    "create": {
+      "add_org_btn": "Add New Org",
+      "dialog_title": "Create New organization",
+      "dialog_desc": "Add a new organization to your account.",
+      "demo_error": "You cannot create a new organization in demo mode.",
+      "success": "Organization created successfully. You can now add members.",
+      "name_label": "Organization Name",
+      "submit_btn": "Create Organization"
+    },
+    "switcher": {
+      "default_org": "Organization",
+      "search": "Search...",
+      "not_found": "No organization found.",
+      "add_new": "Add New Org"
+    },
+    "general": {
+      "form": {
+        "title": "Organization Name",
+        "description": "Update your organization name",
+        "update_btn": "Update Organization",
+        "demo_error": "You cannot update the organization in demo mode.",
+        "success": "Organization updated successfully."
+      },
+      "archive": {
+        "title_archive": "Archive Organization",
+        "title_restore": "Restore Organization",
+        "desc_archive": "Archive this organization — it will be removed from active lists but can be restored later.",
+        "desc_restore": "This organization is archived and hidden from active lists. You can restore it to make it active again.",
+        "archive_btn": "Archive Organization",
+        "restore_btn": "Restore Organization",
+        "dialog_title_archive": "Archive organization",
+        "dialog_title_restore": "Restore organization",
+        "dialog_desc_archive": "Archiving will hide the organization from active lists. You can restore it later if needed.",
+        "dialog_desc_restore": "Restore this organization and make it active again. Content and settings are preserved.",
+        "success_archive": "Organization archived successfully.",
+        "success_restore": "Organization restored to active status.",
+        "error": "Failed to update organization. Please try again later."
+      },
+      "delete": {
+        "title": "Delete Organization",
+        "description": "Deleting your organization will permanently delete all projects, members, and settings. This action cannot be undone.",
+        "delete_org_btn": "Delete Organization",
+        "dialog_title": "Are you sure?",
+        "dialog_desc": "Deleting your organization will permanently delete all projects, members, and settings. This action cannot be undone.",
+        "placeholder": "type CONFIRM to confirm",
+        "demo_error": "You cannot delete demo organization — please contact us if you want to delete it",
+        "success": "Organization deleted successfully",
+        "error": "Something went wrong"
+      },
+      "thumb": {
+        "title": "Organization Thumbnail",
+        "description": "Make your organization image unique by adding a photo.",
+        "demo_error": "You cannot update the organization in demo mode.",
+        "success": "Organization thumbnail updated successfully."
+      }
+    },
+    "members": {
+      "title": "Team Members",
+      "description": "Manage your team members",
+      "anonymous": "Anonymous",
+      "roles": {
+        "owner": "owner",
+        "admin": "Admin",
+        "editor": "Editor"
+      },
+      "add_member": {
+        "add_member_btn": "Add Member",
+        "dialog_title": "Add Team Member",
+        "dialog_desc": "Add a new member to your organization.",
+        "email_label": "Email",
+        "email_placeholder": "Enter email",
+        "role_label": "Role",
+        "role_placeholder": "Select role",
+        "roles_group": "Roles",
+        "demo_error": "This feature is not available in demo mode.",
+        "error": "The member could not be added to the organization."
+      },
+      "actions": {
+        "delete_user": "Delete User",
+        "remove_member": "Remove Member",
+        "make": "Make",
+        "are_you_sure": "Are you sure?",
+        "delete_warning": "This action cannot be undone. This will permanently delete.",
+        "placeholder": "type CONFIRM to confirm",
+        "demo_error_delete": "You cannot delete users in demo mode.",
+        "demo_error_update": "This feature is not available in demo mode.",
+        "success_delete": "User has been deleted successfully.",
+        "error_delete_suffix": "You are not authorized to delete this user.",
+        "error_update_fn": "Update function unavailable",
+        "success_update": "The member's role has been updated successfully.",
+        "error_generic": "Something went wrong"
+      }
+    },
+    "sandbox": {
+      "title": "Vercel Sandbox",
+      "description": "Connect a Vercel access token to enable live sandbox previews for your projects.",
+      "connected": "Connected",
+      "account": "Account",
+      "project": "Project (billing attribution)",
+      "project_label": "Project",
+      "disconnect_btn": "Disconnect",
+      "disconnecting": "Disconnecting",
+      "token_label": "Vercel Access Token",
+      "token_placeholder": "Paste your Vercel access token",
+      "create_token_link": "Create a Vercel access token",
+      "step1": "Create a Vercel access token with full account scope.",
+      "step2": "Paste it below and click Connect.",
+      "step3": "A dedicated sandbox project will be created automatically on your Vercel account.",
+      "connect_btn": "Connect",
+      "connecting": "Connecting",
+      "save_token_btn": "Save token",
+      "update_token_btn": "Update token",
+      "cancel_btn": "Cancel",
+      "status_validating": "Validating token",
+      "status_creating_project": "Creating sandbox project",
+      "status_saving": "Saving settings",
+      "disconnect_confirm_title": "Disconnect Vercel Sandbox?",
+      "disconnect_confirm_desc": "Sandbox previews will stop working for all projects in this organization.",
+      "disconnect_confirm_btn": "Disconnect",
+      "disconnect_cancel_btn": "Cancel",
+      "toast_token_required": "Enter your Vercel access token",
+      "toast_connect_success": "Sandbox connected",
+      "toast_connect_success_desc": "Sandbox previews will now run on {username}'s Vercel account.",
+      "toast_connect_error": "Failed to connect sandbox",
+      "toast_disconnect_success": "Sandbox disconnected",
+      "toast_disconnect_error": "Failed to disconnect",
+      "no_permission": "Only org owners and admins can manage sandbox settings.",
+      "select_team_title": "Select Vercel Account",
+      "personal_account": "Personal Account",
+      "team_label": "Team",
+      "change_token": "Change token",
+      "security_title": "Security & Privacy",
+      "security0": "Preview Sandbox runs your project’s **`dev` script** (e.g. `npm run dev`). If your site does not start with that script, it will not run in the sandbox either.",
+      "security1": "Your access token is **encrypted with AES-256-GCM** before storage — never saved in plain text.",
+      "security2": "**Any Vercel account works** — personal or team, free Hobby plan or paid. Sandbox previews run on your own Vercel quota, not ours.",
+      "security3": "The token is used **only** to create a dedicated sandbox project and manage preview deployments. No other actions are taken on your Vercel account.",
+      "security4": "**Disconnect at any time** to immediately wipe the token from our servers.",
+      "security5": "Each organization gets its own **dedicated sandbox project** on Vercel — keeping previews isolated per org and billing attribution clean."
+    }
+  },
+  "org-sites": {
+    "no_sites_found": "No sites found",
+    "try_adjusting": "Try adjusting your search terms",
+    "site_name": "Site Name",
+    "repository": "Repository",
+    "status": "Status",
+    "archived": "Archived",
+    "active": "Active",
+    "private": "Private",
+    "public": "Public"
+  },
+  "org-archived": {
+    "title": "Organization Archived",
+    "desc_full": "This organization has been archived. All content is currently read-only, and most management functions are disabled.",
+    "desc_banner": "This organization is currently archived and most functionality is disabled.",
+    "org_settings": "Organization Settings",
+    "view_settings": "View Settings"
+  }
+}

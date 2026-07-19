@@ -1,0 +1,282 @@
+{
+  "project-settings": {
+    "general": {
+      "form": {
+        "title": "프로젝트 설정",
+        "description": "프로젝트 정보를 업데이트하세요.",
+        "demo_error": "이것은 데모 사이트이므로 업데이트할 수 없습니다",
+        "success": "사이트가 성공적으로 업데이트되었습니다",
+        "site_name": "사이트 이름",
+        "website": "웹사이트 (선택사항)"
+      },
+      "archive": {
+        "restore_title": "프로젝트 복원",
+        "restore_desc": "프로젝트가 현재 보관되어 있습니다. 변경하려면 먼저 복원해야 합니다.",
+        "archive_title": "아카이브 프로젝트",
+        "archive_desc": "프로젝트가 보관됩니다. 프로젝트 목록에서는 숨겨지지만 나중에 복원할 수 있습니다.",
+        "restore_btn": "프로젝트 복원",
+        "archive_btn": "아카이브 프로젝트",
+        "archive_confirm_title": "이 프로젝트를 보관하시겠습니까?",
+        "restore_confirm_title": "이 프로젝트를 복원하시겠습니까?",
+        "archive_confirm_desc": "이 프로젝트는 보관됩니다. 프로젝트 목록에서는 숨겨지지만 나중에 복원할 수 있습니다.",
+        "restore_confirm_desc": "이 프로젝트는 복원됩니다. 프로젝트 목록에 표시되며 업데이트될 수 있습니다.",
+        "demo_error": "이 기능은 데모에서는 사용할 수 없습니다",
+        "archive_success": "프로젝트가 성공적으로 보관되었습니다",
+        "restore_success": "프로젝트가 성공적으로 복원되었습니다",
+        "error": "문제가 발생했습니다"
+      },
+      "delete": {
+        "title": "프로젝트 삭제",
+        "description": "프로젝트가 영구적으로 삭제됩니다. 이 작업은 되돌릴 수 없으며 취소할 수 없습니다.",
+        "warning": "이 프로젝트는 영구적으로 삭제됩니다. 이 작업은 되돌릴 수 없으며 취소할 수 없습니다. 이 프로젝트와 관련된 모든 데이터가 손실됩니다.",
+        "delete_btn": "프로젝트 삭제",
+        "confirm_title": "정말 확신하시나요?",
+        "confirm_desc": "이 작업은 취소할 수 없습니다. 영구적으로 삭제됩니다.",
+        "placeholder": "확인하려면 CONFIRM을 입력하세요",
+        "demo_error": "데모 모드에서는 프로젝트를 삭제할 수 없습니다.",
+        "success": "프로젝트가 성공적으로 삭제되었습니다.",
+        "error": "문제가 발생했습니다",
+        "error_suffix": "이 프로젝트를 삭제할 권한이 없습니다.",
+        "error_generic": "문제가 발생했습니다"
+      },
+      "move": {
+        "title": "로 이동하세요. 프로젝트 이동",
+        "description": "이 프로젝트를 귀하가 속한 다른 조직으로 이동하세요.",
+        "current_org": "현재 조직",
+        "destination": "목적지",
+        "loading_orgs": "조직 로드 중...",
+        "no_orgs": "다른 조직은 사용할 수 없습니다.",
+        "placeholder": "목적지 선택",
+        "move_btn": "로 이동하세요. 프로젝트 이동",
+        "confirm_title": "이동 확인",
+        "confirm_desc": "이 프로젝트를",
+        "confirm_move_btn": "로 이동하세요. 프로젝트 이동",
+        "error_select": "조직을 선택하세요",
+        "success": "프로젝트가 성공적으로 이동되었습니다",
+        "error": "프로젝트 이동 실패"
+      },
+      "thumb": {
+        "title": "프로젝트 썸네일",
+        "description": "사진을 추가하여 사이트 이미지를 독특하게 만드세요.",
+        "demo_error": "이것은 데모 사이트이므로 업데이트할 수 없습니다",
+        "success": "사이트가 성공적으로 업데이트되었습니다"
+      }
+    },
+    "git": {
+      "repo": {
+        "title": "힘내 저장소",
+        "description_connected": "귀하의 프로젝트는 현재 저장소에 연결되어 있습니다.",
+        "description_disconnected": "콘텐츠를 관리하려면 프로젝트를 Git 저장소에 연결하세요.",
+        "connected_at": "연결됨 {time}",
+        "provider_label": "제공업체 선택",
+        "select_provider_placeholder": "제공업체 선택",
+        "select_repo_label": "저장소",
+        "select_repo_placeholder": "저장소 선택",
+        "no_repo_found": "저장소를 찾을 수 없습니다",
+        "please_wait": "잠시만 기다려주세요...",
+        "cant_see_repo": "여기서 저장소를 볼 수 없나요?",
+        "configure_on": "{provider}에 구성",
+        "branch_label": "지점",
+        "choose_branch_placeholder": "지점을 선택하세요",
+        "disconnect_btn": "연결 해제",
+        "disconnect_confirm_title": "정말 확신하시나요?",
+        "disconnect_confirm_desc": "이 작업을 수행하면 Sitepin에서 저장소 연결이 끊어집니다. 나중에 언제든지 다시 연결할 수 있습니다.",
+        "connect_repo_btn": "저장소 연결",
+        "error_missing_info": "프로젝트 또는 조직 정보 누락",
+        "success_disconnect": "저장소 연결이 성공적으로 끊어졌습니다",
+        "error_disconnect": "저장소 연결을 끊지 못했습니다",
+        "error_no_repo_branch": "저장소와 브랜치를 선택하세요",
+        "success_connect": "저장소가 성공적으로 연결되었습니다",
+        "error_connect": "저장소 연결 실패"
+      },
+      "branch": {
+        "title": "지점 관리",
+        "description": "프로젝트 콘텐츠에 사용되는 브랜치를 관리하세요",
+        "current_branch_label": "현재 지점",
+        "select_branch_label": "지점 선택",
+        "loading_branches": "브랜치 로드 중...",
+        "placeholder": "지점을 선택하세요",
+        "branches_label": "지점",
+        "change_branch_btn": "지점 변경",
+        "update_branch_btn": "분기 업데이트",
+        "success_message": "지점이 성공적으로 업데이트되었습니다!",
+        "error_missing_info": "프로젝트 또는 조직 정보 누락",
+        "error_no_repo": "연결된 저장소가 없습니다",
+        "error_generic": "브랜치를 업데이트하지 못했습니다"
+      }
+    },
+    "schemas": {
+      "title": "스키마 관리",
+      "description": "프로젝트의 콘텐츠 스키마를 관리하세요",
+      "no_schemas_found": "스키마를 찾을 수 없습니다",
+      "create_first_schema": "콘텐츠 폴더로 이동하여 첫 번째 스키마를 생성하세요",
+      "fields_count": "{개수, 복수형, =1 {# 필드} 기타 {# 필드}}",
+      "edit_dialog_title": "스키마 편집",
+      "edit_dialog_description": "스키마 필드와 해당 속성을 수정하세요",
+      "schema_name_label": "스키마 이름",
+      "update_btn": "스키마 업데이트",
+      "success_update": "스키마가 업데이트되었습니다!",
+      "error_update": "스키마 업데이트 오류",
+      "success_delete": "스키마가 삭제되었습니다!",
+      "error_delete": "스키마 삭제 오류",
+      "error_validation": "강조표시된 필드를 수정하고 다시 시도하세요."
+    },
+    "snippets": {
+      "title": "조각 관리",
+      "description": "프로젝트의 코드 조각을 관리하세요",
+      "add_btn": "조각 추가",
+      "no_snippets_found": "스니펫을 찾을 수 없습니다",
+      "create_first_snippet": "시작하려면 첫 번째 스니펫을 만드세요",
+      "used_in": "사용 위치: {schemas}",
+      "no_schemas_linked": "연결된 스키마 없음",
+      "edit_dialog_title": "조각 편집",
+      "create_dialog_title": "스니펫 생성",
+      "dialog_description": "코드 조각 속성 구성",
+      "success_created": "스니펫이 성공적으로 생성되었습니다!",
+      "success_updated": "스니펫이 업데이트되었습니다.",
+      "error_save": "스니펫을 저장하는 중에 오류가 발생했습니다",
+      "success_deleted": "스니펫이 삭제되었습니다.",
+      "error_delete": "스니펫 삭제 중 오류 발생",
+      "label_field": "라벨",
+      "label_placeholder": "스니펫 라벨",
+      "schemas_field": "적용 가능한 스키마",
+      "select_schemas_placeholder": "스키마 선택",
+      "no_schemas_found_in_combobox": "스키마를 찾을 수 없습니다.",
+      "code_field": "코드",
+      "delete_confirm_title": "조각 삭제",
+      "delete_confirm_desc": "이 스니펫을 삭제하시겠습니까? 이 작업은 취소할 수 없습니다.",
+      "update_btn": "조각 업데이트",
+      "create_btn": "스니펫 생성"
+    },
+    "arrangement": {
+      "title": "사이드바 준비",
+      "description": "콘텐츠 구조와 레이아웃을 맞춤설정하세요",
+      "features": {
+        "virtual_folders": {
+          "title": "가상 폴더",
+          "desc": "저장소를 변경하지 않을 거예요"
+        },
+        "visual_headings": {
+          "title": "시각적 제목",
+          "desc": "섹션 정리"
+        },
+        "drag_and_drop": {
+          "title": "드래그 앤 드롭",
+          "desc": "즉시 재정렬"
+        },
+        "glob_patterns": {
+          "title": "글로브 패턴",
+          "desc": "파일을 쉽게 필터링하세요"
+        }
+      },
+      "no_arrangements": "아직 약속이 없습니다",
+      "get_started": "사이드바 레이아웃을 사용자 정의하려면 폴더, 파일 또는 제목을 추가하여 시작해 보세요.",
+      "add_item_btn": "+ 새 항목 추가",
+      "edit_dialog_title": "정렬 항목 편집",
+      "add_dialog_title": "새로운 배열 항목 추가",
+      "edit_dialog_desc": "준비 항목의 세부정보를 업데이트합니다.",
+      "add_dialog_desc": "새 배열 항목을 구성합니다.",
+      "select_type_label": "유형을 선택하세요:",
+      "select_type_placeholder": "유형을 선택하세요",
+      "type_options": {
+        "file": "파일",
+        "heading": "제목",
+        "folder": "폴더",
+        "video": "비디오",
+        "preview_image": "미리보기 이미지"
+      },
+      "rename_file": "파일 이름 바꾸기",
+      "rename_successful": "파일 이름이 {name}(으)로 성공적으로 변경되었습니다.",
+      "error_renaming": "파일 이름을 바꾸는 중에 오류가 발생했습니다. 다시 시도해 주세요.",
+      "success_update": "배열이 성공적으로 업데이트되었습니다",
+      "file_form": {
+        "select_file": "파일 선택",
+        "placeholder": "파일 선택",
+        "no_items": "항목을 찾을 수 없습니다.",
+        "name_label": "이름",
+        "name_placeholder": "색인"
+      },
+      "folder_form": {
+        "select_folder": "폴더 선택",
+        "placeholder": "폴더 선택",
+        "no_items": "항목을 찾을 수 없습니다.",
+        "group_name_label": "그룹 이름",
+        "group_name_placeholder": "블로그 목록",
+        "include_label": "포함",
+        "include_placeholder": "*.md",
+        "exclude_label": "제외",
+        "exclude_placeholder": "*index.md"
+      },
+      "heading_form": {
+        "name_label": "이름",
+        "placeholder": "제목"
+      },
+      "errors": {
+        "name_min_length": "이름은 2자 이상이어야 합니다.",
+        "heading_min_length": "제목은 2자 이상이어야 합니다.",
+        "name_exists": "그룹 이름이 이미 존재합니다.",
+        "heading_exists": "제목이 이미 존재합니다."
+      },
+      "delete_confirm_title": "정말 확신하시나요?",
+      "continue_btn": "계속"
+    },
+    "configure": {
+      "commit": {
+        "title": "구성 커밋",
+        "description": "변경 사항을 저장할 때 커밋 메시지를 처리하는 방법 결정",
+        "custom_commit_label": "사용자 정의 커밋 메시지",
+        "custom_commit_desc": "저장 시 커밋 메시지를 직접 작성하려면 이 옵션을 활성화하세요. 활성화되면 사용자 정의 메시지를 제공할 수 있습니다. 그렇지 않으면 사이트핀이 자동으로 사이트핀을 생성합니다.",
+        "save_btn": "변경 사항 저장",
+        "success_update": "커밋 대화 상자 설정이 성공적으로 업데이트되었습니다",
+        "error_update": "설정을 업데이트하지 못했습니다"
+      },
+      "project": {
+        "title": "프로젝트 구성 편집",
+        "description": "프로젝트 설정을 구성합니다. 변경 사항을 적용하려면 저장을 클릭하세요.",
+        "steps": {
+          "content": "내용",
+          "media": "미디어",
+          "public": "공개",
+          "configs": "구성"
+        },
+        "form": {
+          "content_label": "콘텐츠 폴더",
+          "content_placeholder": "콘텐츠 폴더를 선택하세요",
+          "media_label": "미디어 폴더",
+          "media_placeholder": "미디어(이미지) 폴더를 선택하세요",
+          "public_label": "공용 폴더",
+          "public_placeholder": "공개 폴더를 선택하세요",
+          "config_label": "사이트 구성(선택 사항)",
+          "config_placeholder": "구성 파일을 선택하세요",
+          "suggested": "제안:",
+          "no_results": "검색된 결과가 없습니다.",
+          "suggestions": {
+            "content": "마크다운 파일이 저장된 위치",
+            "media": "미디어 파일이 저장된 위치",
+            "public": "공개 파일이 저장되어 있는 곳",
+            "config": "구성 파일이 저장된 위치"
+          }
+        },
+        "buttons": {
+          "finish": "설정 완료",
+          "update": "구성 업데이트"
+        },
+        "help": {
+          "text": "구성에 도움이 필요하십니까?",
+          "contact_us": "저희에게 연락하세요"
+        },
+        "status": {
+          "success_create": "구성 파일이 성공적으로 생성되었습니다",
+          "success_update": "구성 파일이 성공적으로 업데이트되었습니다",
+          "error_update": "설정을 업데이트하지 못했습니다",
+          "not_configured": "구성되지 않음",
+          "none": "없음"
+        },
+        "summary": {
+          "title": "프로젝트 구성",
+          "description": "현재 구성에 대한 빠른 개요"
+        }
+      }
+    }
+  }
+}

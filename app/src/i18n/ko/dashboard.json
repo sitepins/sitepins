@@ -1,0 +1,149 @@
+{
+  "dashboard": {
+    "preference": {
+      "title": "환경설정",
+      "coauthor": {
+        "title": "Git 공동 작성",
+        "description": "저장소 작업에 사용할 ID를 선택하세요.",
+        "as_you": "당신처럼 행동",
+        "as_you_desc": "봇은 커밋, 분기 및 끌어오기 요청에 개인 신원을 사용하여 변경 사항에 대한 전체 크레딧을 제공합니다.",
+        "as_you_fallback": "개인 권한이 충분하지 않아 작업을 완료할 수 없는 경우 자동으로 봇으로 대체됩니다.",
+        "as_bot": "봇 역할",
+        "as_bot_desc": "모든 저장소 작업은 시스템 봇에 귀속됩니다. 이는 일관된 감사 추적을 보장하며 자동화된 작업 흐름에 권장되는 설정입니다.",
+        "updated": "공동저자 기본 설정이 업데이트되었습니다",
+        "error": "가장 기본 설정을 업데이트하지 못했습니다"
+      },
+      "language": {
+        "title": "언어",
+        "description": "인터페이스에 대해 선호하는 언어를 선택하십시오. 변경사항은 즉시 적용됩니다.",
+        "label": "인터페이스 언어"
+      },
+      "theme": {
+        "title": "테마",
+        "description": "원하는 색상 테마를 선택하세요.",
+        "updated_success": "테마가 성공적으로 업데이트되었습니다",
+        "updated_failed": "테마를 업데이트하지 못했습니다"
+      }
+    },
+    "account": {
+      "title": "계정",
+      "profile": {
+        "title": "표시 이름 업데이트",
+        "description": "이는 귀하의 프로필에 표시될 이름입니다.",
+        "full_name": "성명",
+        "submit": "계정 업데이트",
+        "success": "사용자 세부정보가 성공적으로 업데이트되었습니다",
+        "error": "업데이트하지 못했습니다. 다시 시도해 주세요",
+        "demo_error": "데모 모드에서는 이 작업이 비활성화됩니다."
+      },
+      "password": {
+        "title": "비밀번호 변경",
+        "description": "계정을 안전하게 보호하고 무단 액세스로부터 보호하려면 비밀번호를 정기적으로 업데이트하세요.",
+        "current_password": "현재 비밀번호",
+        "new_password": "새 비밀번호",
+        "submit": "비밀번호 업데이트",
+        "success": "비밀번호가 성공적으로 업데이트되었습니다",
+        "error": "업데이트하지 못했습니다. 다시 시도해 주세요"
+      },
+      "set_password": {
+        "title": "비밀번호 설정",
+        "description": "소셜 서비스 제공자로 로그인하셨습니다. 추가 보안 옵션과 대체 로그인 방법을 활성화하려면 비밀번호를 만드세요.",
+        "new_password": "새 비밀번호",
+        "submit": "비밀번호 추가",
+        "success": "비밀번호가 성공적으로 추가되었습니다",
+        "error": "문제가 발생했습니다. 나중에 다시 시도해 보세요"
+      },
+      "picture": {
+        "title": "디스플레이 사진 업데이트",
+        "description": "사진을 추가하여 작업 공간을 전문적으로 만들어보세요.",
+        "success": "사용자 세부정보가 성공적으로 업데이트되었습니다",
+        "error": "업데이트하지 못했습니다. 다시 시도해 주세요"
+      },
+      "newsletter": {
+        "title": "뉴스레터 구독",
+        "description": "새로운 기능, 업데이트, 혜택에 대한 이메일을 가끔 보내드리겠습니다. 언제든지 구독을 취소할 수 있습니다.",
+        "label": "뉴스레터 및 제품 업데이트 받기",
+        "submit": "환경설정 저장",
+        "success_sub": "뉴스레터를 성공적으로 구독했습니다",
+        "success_unsub": "뉴스레터 구독을 성공적으로 취소했습니다",
+        "error": "업데이트하지 못했습니다. 다시 시도해 주세요"
+      },
+      "delete": {
+        "title": "계정 삭제",
+        "description": "경고: 이 작업은 취소할 수 없습니다. 이렇게 하면 귀하의 계정이 영구적으로 삭제되고 당사 서버에서 귀하의 모든 데이터가 제거됩니다.",
+        "confirm_label": "확인하려면 <strong>DELETE</strong>를 입력하세요",
+        "confirm_placeholder": "여기에 DELETE를 입력하세요",
+        "button": "계정 삭제",
+        "reason_title": "계정을 삭제하려는 주된 이유는 무엇입니까?",
+        "other_reason_label": "기타 이유(최대 200자)",
+        "other_reason_placeholder": "자세히 알려주세요(최대 200자)",
+        "reasons": {
+          "complex": "너무 복잡하거나 사용하기 어렵다",
+          "not_work": "내 웹사이트에서는 작동하지 않았어요",
+          "poor_design": "디자인이나 사용자 경험이 좋지 않음",
+          "bugs": "버그가 너무 많아",
+          "missing_features": "필요한 기능이 누락되었습니다",
+          "better_alternative": "더 나은 대안을 찾았습니다",
+          "other": "기타"
+        },
+        "feedback": {
+          "demo_disabled": "데모 모드에서는 계정 삭제가 비활성화되어 있습니다.",
+          "success": "계정이 성공적으로 삭제되었습니다",
+          "error": "나중에 다시 시도해 주세요."
+        }
+      }
+    },
+    "sitepins_ai": {
+      "title": "사이트핀 AI",
+      "description": "지능형 콘텐츠 제안 및 자동 완성 기능을 활성화하도록 AI 공급자를 구성하세요.",
+      "provider_label": "제공자",
+      "provider_placeholder": "제공업체 선택",
+      "model_label": "모델",
+      "model_placeholder": "모델 선택",
+      "api_key_label": "API 키",
+      "api_key_placeholder": "API 키를 입력하세요",
+      "show": "보여주기",
+      "hide": "숨기기",
+      "copilot_title": "사이트핀 부조종사",
+      "copilot_description": "입력할 때 자동 완성을 제안합니다.",
+      "delete_key": "키 삭제",
+      "save_changes": "변경 사항 저장",
+      "save_success": "설정이 성공적으로 저장되었습니다",
+      "save_error": "문제가 발생했습니다.",
+      "security_title": "중요한 보안 공지",
+      "security1": "당사는 귀하의 개인정보를 보호하고 보안 정책을 준수하기 위해 **귀하의 API 키를 데이터베이스에 저장하지 않습니다**.",
+      "security2": "키는 브라우저에만 로컬로 저장됩니다. 브라우저를 전환하거나 지우면 키가 손실됩니다.",
+      "security3": "API 키는 복구할 수 없으므로 안전하게 보관하고 본인이 액세스할 수 있도록 하십시오.",
+      "custom_model": "수동으로 입력",
+      "custom_model_input_label": "모델 ID",
+      "custom_model_input_placeholder": "사용자 지정 모델 ID 입력",
+      "find_model_id": "모델 ID 찾기"
+    },
+    "sidebar": {
+      "back": "뒤로"
+    },
+    "refetch_preview": "미리보기 다시 가져오기",
+    "preview_unavailable": "미리보기를 사용할 수 없음",
+    "website": "웹사이트",
+    "edit_website": "웹사이트 편집",
+    "build_status": "빌드 상태",
+    "last_updated": "마지막 업데이트",
+    "source": "출처",
+    "recently": "최근",
+    "last_updated_by": "{distance} 전 by {author}",
+    "switcher": {
+      "default_site": "사이트 선택",
+      "search": "검색...",
+      "not_found": "프로젝트를 찾을 수 없습니다.",
+      "add_new": "새 사이트 추가"
+    },
+    "archived_project": {
+      "title": "프로젝트가 보관되었습니다",
+      "description": "이 프로젝트는 보관되었으며 대부분의 기능이 비활성화되었습니다. 프로젝트 설정에 계속 액세스하여 프로젝트 상태를 복원하거나 변경할 수 있습니다.",
+      "open_settings": "설정 열기"
+    },
+    "project_overview": {
+      "preview_alt": "{name} 실시간 미리보기"
+    }
+  }
+}

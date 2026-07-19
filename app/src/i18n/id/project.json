@@ -1,0 +1,131 @@
+{
+  "project": {
+    "activity": {
+      "recent_file_changes": "Perubahan File Terkini",
+      "latest_activity": "Aktivitas terbaru oleh Anda atau tim Anda",
+      "updated": "Diperbarui",
+      "created": "Dibuat",
+      "deleted": "Dihapus",
+      "renamed": "Berganti nama",
+      "duplicated": "Digandakan",
+      "no_more": "Tidak ada lagi",
+      "load_more": "Muat Lebih Banyak"
+    },
+    "branching": {
+      "incoming_request": "Permintaan {provider} masuk",
+      "merge": "Gabungkan",
+      "details": "Detailnya",
+      "changes_detected": "Perubahan terdeteksi",
+      "view_request": "Lihat Permintaan",
+      "create_request": "Buat Permintaan {provider}",
+      "title": "Judul",
+      "description_optional": "Deskripsi (Opsional)",
+      "placeholder_title": "Judul fitur",
+      "placeholder_description": "Jelaskan perubahan Anda...",
+      "merge_into": "Gabungkan {head} menjadi {base}",
+      "merge_description": "Gabungkan perubahan dari {head} menjadi {base}",
+      "success_created": "{type} berhasil dibuat!",
+      "success_merged": "Berhasil menggabungkan {branch}!",
+      "error_create": "Gagal membuat {type}",
+      "error_merge": "Gagal menggabungkan",
+      "permission_error_title": "Kesalahan Izin Aplikasi GitHub",
+      "permission_error_description": "Aplikasi GitHub Anda memerlukan izin 'Permintaan tarik: Tulis'. Harap terima izin baru di pengaturan GitHub Anda.",
+      "review": "Tinjau",
+      "switcher": {
+        "placeholder": "Cabang pencarian...",
+        "no_results": "Tidak ada cabang yang ditemukan.",
+        "default": "bawaan",
+        "create_new": "Buat Cabang Baru"
+      },
+      "create": {
+        "title": "Buat Cabang Baru",
+        "desc": "Buat cabang baru dari <branch> {branchName} </branch>",
+        "label": "Nama Cabang",
+        "placeholder": "misalnya pementasan",
+        "submit": "Buat Cabang",
+        "error": {
+          "required": "Nama cabang wajib diisi",
+          "sha": "Tidak dapat menemukan cabang dasar SHA",
+          "failed": "Gagal membuat cabang baru"
+        },
+        "success": "Cabang {name} berhasil dibuat!"
+      },
+      "status": {
+        "on_default": "Anda berada di cabang default: {branch}",
+        "ahead": "{branch} berada di depan {base} ."
+      }
+    },
+    "git": {
+      "recent_activities": "Aktivitas Git Terbaru",
+      "recent_commits": "Komit terbaru ke repositori Anda",
+      "revert": "Kembalikan",
+      "reset": "Setel ulang",
+      "commit": "Berkomitmen",
+      "restore_version": "Pulihkan versi",
+      "undo_commit": "Membatalkan komit",
+      "admin_only": "Hanya admin dan pemilik yang dapat melakukan tindakan ini",
+      "restore_title": "Kembalikan ke versi ini",
+      "restore_description_github": "Ini akan kembali ke masa lalu persis seperti tampilan situs Anda saat ini. Perubahan apa pun yang dilakukan setelah versi ini akan dihapus.",
+      "restore_description_gitlab": "Ini akan mengembalikan situs Anda ke tampilannya saat ini. Kami akan membuat pembaruan baru untuk mewujudkan hal ini, sehingga riwayat Anda tetap aman.",
+      "restore_warning_github": "⚠️ Peringatan: Ini adalah perubahan permanen. Semua pembaruan baru akan dihapus dari cabang ini. Hanya gunakan ini jika Anda ingin membuang karya terbaru sepenuhnya.",
+      "restore_warning_gitlab": "✓ Ini aman. Karya terbaru Anda tidak akan dihapus; kami baru saja membuat versi baru berdasarkan versi lama ini.",
+      "undo_title": "Batalkan komitmen ini",
+      "undo_description": "Ini akan membuat pembaruan baru yang membalikkan semua perubahan di versi khusus ini.",
+      "undo_warning": "✓ Ini aman! Kami akan menambahkan versi baru ke riwayat Anda yang membatalkan perubahan spesifik ini, menjaga semuanya tetap utuh.",
+      "feedback": {
+        "reset_success": "Cabang berhasil direset ke {sha}!",
+        "revert_success": "Komit dikembalikan! Komit baru: {sha}",
+        "revert_failed": "Gagal mengembalikan"
+      },
+      "actions": {
+        "restoring": "Memulihkan",
+        "undoing": "Membatalkan",
+        "confirm_restore": "Konfirmasi Pemulihan",
+        "confirm_undo": "Konfirmasikan Batalkan"
+      },
+      "commit_messages": {
+        "add_file": "Tambahkan {name}",
+        "rename_file": "Ganti nama berkas {name}",
+        "delete_file": "Hapus berkas {name}",
+        "duplicate_file": "File duplikat {name}",
+        "create_schema": "Buat skema {name}",
+        "update_schema": "Perbarui skema {name}",
+        "delete_schema": "Hapus skema {name}",
+        "update_config": "Perbarui konfigurasi situs"
+      }
+    },
+    "setup-steps": {
+      "getting_started": "Memulai",
+      "description": "Selesaikan langkah-langkah ini untuk menyiapkan Sitepins dan mempublikasikan konten pertama Anda",
+      "progress": "Kemajuan",
+      "progress_count": "{completed} dari {total}",
+      "steps": {
+        "add_site": {
+          "title": "Tambahkan Situs Baru",
+          "description": "Situs Anda telah dibuat dan siap untuk dikonfigurasi"
+        },
+        "configure_project": {
+          "title": "Konfigurasikan Proyek",
+          "description": "Siapkan struktur repositori Anda (Folder Konten, Root Media, dll.)"
+        },
+        "publish_content": {
+          "title": "Publikasikan Konten Pertama",
+          "description": "Publikasikan konten pertama Anda dari panel kiri"
+        },
+        "deploy_site": {
+          "title": "Terapkan Situs",
+          "description": "Terapkan situs Anda ke Vercel untuk pertama kalinya"
+        }
+      },
+      "edit_config": "Edit Konfigurasi Proyek",
+      "deploy_to_vercel": "Terapkan ke Vercel",
+      "login_signup": "Masuk atau Daftar",
+      "create_account": "Buat akun",
+      "deploy_repo": "Terapkan repositori Anda",
+      "one_click": "dengan satu klik",
+      "or": "Atau",
+      "already_deployed": "Sudah diterapkan? Masukkan URL sekarang",
+      "vercel_host": "di Vercel untuk menghosting situs Anda"
+    }
+  }
+}

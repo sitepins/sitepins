@@ -1,0 +1,55 @@
+{
+  "navigation": {
+    "menu": {
+      "footer_account": {
+        "account": "账户",
+        "updates": "更新",
+        "support": "支持",
+        "sitepins_ai": "Sitepins AI",
+        "preferences": "偏好设置"
+      },
+      "user_dashboard": {
+        "overview": "概览",
+        "account": "账户",
+        "preferences": "偏好设置",
+        "sitepins_ai": "Sitepins AI"
+      },
+      "org_dashboard": {
+        "websites": "网站",
+        "settings": "设置"
+      },
+      "org_settings": {
+        "general": "通用",
+        "members": "成员",
+        "sandbox": "沙箱"
+      },
+      "project_dashboard": {
+        "overview": "概览",
+        "media": "媒体",
+        "settings": "设置"
+      },
+      "project_settings": {
+        "general": "通用",
+        "configure": "配置",
+        "git": "Git",
+        "schemas": "模式",
+        "snippets": "代码片段",
+        "arrangement": "排列"
+      }
+    },
+    "sidebar": {
+      "open_menu": "打开菜单",
+      "code": "代码",
+      "config": "配置",
+      "actions": {
+        "close": "关闭"
+      },
+      "sidebar_trigger_mobile": {
+        "title": "内容列表",
+        "description": "从侧边栏查看所有内容文件",
+        "message": "正在寻找您的内容吗？打开侧边栏查看所有文件。",
+        "open_sidebar": "打开侧边栏"
+      }
+    }
+  }
+}

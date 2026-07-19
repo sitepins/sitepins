@@ -1,0 +1,282 @@
+{
+  "project-settings": {
+    "general": {
+      "form": {
+        "title": "プロジェクト設定",
+        "description": "プロジェクト情報を更新します。",
+        "demo_error": "これはデモサイトのため、更新できません",
+        "success": "サイトが正常に更新されました",
+        "site_name": "サイト名",
+        "website": "ウェブサイト（任意）"
+      },
+      "archive": {
+        "restore_title": "プロジェクトを復元",
+        "restore_desc": "プロジェクトは現在アーカイブされています。変更を加えるには、まず復元する必要があります。",
+        "archive_title": "プロジェクトをアーカイブ",
+        "archive_desc": "プロジェクトがアーカイブされます。プロジェクト一覧から非表示になりますが、後で復元できます。",
+        "restore_btn": "プロジェクトを復元",
+        "archive_btn": "プロジェクトをアーカイブ",
+        "archive_confirm_title": "このプロジェクトをアーカイブしますか？",
+        "restore_confirm_title": "このプロジェクトを復元しますか？",
+        "archive_confirm_desc": "このプロジェクトはアーカイブされます。プロジェクト一覧から非表示になりますが、後で復元できます。",
+        "restore_confirm_desc": "このプロジェクトが復元されます。プロジェクト一覧に表示され、更新できるようになります。",
+        "demo_error": "この機能はデモでは利用できません",
+        "archive_success": "プロジェクトが正常にアーカイブされました",
+        "restore_success": "プロジェクトが正常に復元されました",
+        "error": "エラーが発生しました"
+      },
+      "delete": {
+        "title": "プロジェクトを削除",
+        "description": "プロジェクトは完全に削除されます。この操作は取り消しできません。",
+        "warning": "このプロジェクトは完全に削除されます。この操作は取り消しできません。このプロジェクトに関連するすべてのデータが失われます。",
+        "delete_btn": "プロジェクトを削除",
+        "confirm_title": "本当によろしいですか？",
+        "confirm_desc": "この操作は元に戻せません。完全に削除されます。",
+        "placeholder": "CONFIRM と入力して確認",
+        "demo_error": "デモモードではプロジェクトを削除できません。",
+        "success": "プロジェクトが正常に削除されました。",
+        "error": "エラーが発生しました",
+        "error_suffix": "このプロジェクトを削除する権限がありません。",
+        "error_generic": "エラーが発生しました"
+      },
+      "move": {
+        "title": "プロジェクトを移動",
+        "description": "このプロジェクトを所属する別の組織に移動します。",
+        "current_org": "現在の組織",
+        "destination": "移動先",
+        "loading_orgs": "組織を読み込み中...",
+        "no_orgs": "他に利用可能な組織がありません。",
+        "placeholder": "移動先を選択",
+        "move_btn": "プロジェクトを移動",
+        "confirm_title": "移動の確認",
+        "confirm_desc": "このプロジェクトを移動します",
+        "confirm_move_btn": "プロジェクトを移動",
+        "error_select": "組織を選択してください",
+        "success": "プロジェクトが正常に移動されました",
+        "error": "プロジェクトの移動に失敗しました"
+      },
+      "thumb": {
+        "title": "プロジェクトのサムネイル",
+        "description": "写真を追加してサイト画像をユニークにしましょう。",
+        "demo_error": "これはデモサイトのため、更新できません",
+        "success": "サイトが正常に更新されました"
+      }
+    },
+    "git": {
+      "repo": {
+        "title": "Git リポジトリ",
+        "description_connected": "プロジェクトは現在リポジトリに接続されています。",
+        "description_disconnected": "コンテンツを管理するには、プロジェクトを Git リポジトリに接続してください。",
+        "connected_at": "{time} に接続",
+        "provider_label": "プロバイダーを選択",
+        "select_provider_placeholder": "プロバイダーを選択",
+        "select_repo_label": "リポジトリ",
+        "select_repo_placeholder": "リポジトリを選択",
+        "no_repo_found": "リポジトリが見つかりません",
+        "please_wait": "しばらくお待ちください...",
+        "cant_see_repo": "リポジトリが表示されていませんか？",
+        "configure_on": "{provider} で設定する",
+        "branch_label": "ブランチ",
+        "choose_branch_placeholder": "ブランチを選択",
+        "disconnect_btn": "切断",
+        "disconnect_confirm_title": "本当によろしいですか？",
+        "disconnect_confirm_desc": "この操作により、Sitepins からリポジトリが切断されます。後でいつでも再接続できます。",
+        "connect_repo_btn": "リポジトリに接続",
+        "error_missing_info": "プロジェクトまたは組織の情報が見つかりません",
+        "success_disconnect": "リポジトリが正常に切断されました",
+        "error_disconnect": "リポジトリの切断に失敗しました",
+        "error_no_repo_branch": "リポジトリとブランチを選択してください",
+        "success_connect": "リポジトリが正常に接続されました",
+        "error_connect": "リポジトリの接続に失敗しました"
+      },
+      "branch": {
+        "title": "ブランチ管理",
+        "description": "プロジェクトコンテンツで使用するブランチを管理します",
+        "current_branch_label": "現在のブランチ",
+        "select_branch_label": "ブランチを選択",
+        "loading_branches": "ブランチを読み込み中...",
+        "placeholder": "ブランチを選択",
+        "branches_label": "ブランチ",
+        "change_branch_btn": "ブランチを変更",
+        "update_branch_btn": "ブランチを更新",
+        "success_message": "ブランチが正常に更新されました！",
+        "error_missing_info": "プロジェクトまたは組織の情報が見つかりません",
+        "error_no_repo": "リポジトリが接続されていません",
+        "error_generic": "ブランチの更新に失敗しました"
+      }
+    },
+    "schemas": {
+      "title": "Schema 管理",
+      "description": "プロジェクトのコンテンツスキーマを管理します",
+      "no_schemas_found": "Schema が見つかりません",
+      "create_first_schema": "コンテンツフォルダーに移動して最初の Schema を作成してください",
+      "fields_count": "{count, plural, other {# フィールド}}",
+      "edit_dialog_title": "Schema を編集",
+      "edit_dialog_description": "Schema フィールドとそのプロパティを変更します",
+      "schema_name_label": "Schema 名",
+      "update_btn": "Schema を更新",
+      "success_update": "Schema が正常に更新されました！",
+      "error_update": "Schema の更新中にエラーが発生しました",
+      "success_delete": "Schema が正常に削除されました！",
+      "error_delete": "Schema の削除中にエラーが発生しました",
+      "error_validation": "ハイライトされたフィールドを修正してから再試行してください。"
+    },
+    "snippets": {
+      "title": "スニペット管理",
+      "description": "プロジェクトのコードスニペットを管理します",
+      "add_btn": "スニペットを追加",
+      "no_snippets_found": "スニペットが見つかりません",
+      "create_first_snippet": "最初のスニペットを作成して始めましょう",
+      "used_in": "使用中：{schemas}",
+      "no_schemas_linked": "スキーマがリンクされていません",
+      "edit_dialog_title": "スニペットを編集",
+      "create_dialog_title": "スニペットを作成",
+      "dialog_description": "コードスニペットのプロパティを設定します",
+      "success_created": "スニペットが正常に作成されました！",
+      "success_updated": "スニペットが正常に更新されました！",
+      "error_save": "スニペットの保存中にエラーが発生しました",
+      "success_deleted": "スニペットが正常に削除されました！",
+      "error_delete": "スニペットの削除中にエラーが発生しました",
+      "label_field": "ラベル",
+      "label_placeholder": "スニペットラベル",
+      "schemas_field": "適用する Schema",
+      "select_schemas_placeholder": "Schema を選択",
+      "no_schemas_found_in_combobox": "Schema が見つかりません。",
+      "code_field": "コード",
+      "delete_confirm_title": "スニペットを削除",
+      "delete_confirm_desc": "このスニペットを削除してもよろしいですか？この操作は元に戻せません。",
+      "update_btn": "スニペットを更新",
+      "create_btn": "スニペットを作成"
+    },
+    "arrangement": {
+      "title": "サイドバー配置",
+      "description": "コンテンツの構造とレイアウトをカスタマイズします",
+      "features": {
+        "virtual_folders": {
+          "title": "仮想フォルダー",
+          "desc": "リポジトリは変更されません"
+        },
+        "visual_headings": {
+          "title": "ビジュアル見出し",
+          "desc": "セクションを整理"
+        },
+        "drag_and_drop": {
+          "title": "ドラッグ＆ドロップ",
+          "desc": "すぐに並び替え"
+        },
+        "glob_patterns": {
+          "title": "Glob パターン",
+          "desc": "ファイルを簡単にフィルタリング"
+        }
+      },
+      "no_arrangements": "配置がまだありません",
+      "get_started": "フォルダー、ファイル、または見出しを追加してサイドバーのレイアウトをカスタマイズしてください。",
+      "add_item_btn": "+ 新しいアイテムを追加",
+      "edit_dialog_title": "配置アイテムを編集",
+      "add_dialog_title": "新しい配置アイテムを追加",
+      "edit_dialog_desc": "配置アイテムの詳細を更新します。",
+      "add_dialog_desc": "新しい配置アイテムを設定します。",
+      "select_type_label": "タイプを選択：",
+      "select_type_placeholder": "タイプを選択",
+      "type_options": {
+        "file": "ファイル",
+        "heading": "見出し",
+        "folder": "フォルダー",
+        "video": "動画",
+        "preview_image": "プレビュー画像"
+      },
+      "rename_file": "ファイル名を変更",
+      "rename_successful": "ファイル名が正常に {name} に変更されました",
+      "error_renaming": "ファイル名の変更中にエラーが発生しました。再試行してください。",
+      "success_update": "配置が正常に更新されました",
+      "file_form": {
+        "select_file": "ファイルを選択",
+        "placeholder": "ファイルを選択",
+        "no_items": "アイテムが見つかりません。",
+        "name_label": "名前",
+        "name_placeholder": "index"
+      },
+      "folder_form": {
+        "select_folder": "フォルダーを選択",
+        "placeholder": "フォルダーを選択",
+        "no_items": "アイテムが見つかりません。",
+        "group_name_label": "グループ名",
+        "group_name_placeholder": "blog list",
+        "include_label": "含む",
+        "include_placeholder": "*.md",
+        "exclude_label": "除外",
+        "exclude_placeholder": "*index.md"
+      },
+      "heading_form": {
+        "name_label": "名前",
+        "placeholder": "見出し"
+      },
+      "errors": {
+        "name_min_length": "名前は2文字以上にしてください。",
+        "heading_min_length": "見出しは2文字以上にしてください。",
+        "name_exists": "グループ名がすでに存在します。",
+        "heading_exists": "見出しがすでに存在します。"
+      },
+      "delete_confirm_title": "本当によろしいですか？",
+      "continue_btn": "続ける"
+    },
+    "configure": {
+      "commit": {
+        "title": "コミット設定",
+        "description": "変更を保存するときのコミットメッセージの処理方法を決定します",
+        "custom_commit_label": "カスタムコミットメッセージ",
+        "custom_commit_desc": "これを有効にすると、保存時に独自のコミットメッセージを入力できます。有効の場合はカスタムメッセージを入力できます。無効の場合は Sitepins が自動的に生成します。",
+        "save_btn": "変更を保存",
+        "success_update": "コミットダイアログの設定が正常に更新されました",
+        "error_update": "設定の更新に失敗しました"
+      },
+      "project": {
+        "title": "プロジェクト設定を編集",
+        "description": "プロジェクトの設定を構成します。変更を適用するには保存をクリックしてください。",
+        "steps": {
+          "content": "コンテンツ",
+          "media": "メディア",
+          "public": "パブリック",
+          "configs": "設定ファイル"
+        },
+        "form": {
+          "content_label": "コンテンツフォルダー",
+          "content_placeholder": "コンテンツフォルダーを選択",
+          "media_label": "メディアフォルダー",
+          "media_placeholder": "メディア（画像）フォルダーを選択",
+          "public_label": "パブリックフォルダー",
+          "public_placeholder": "パブリックフォルダーを選択",
+          "config_label": "サイト設定（任意）",
+          "config_placeholder": "設定ファイルを選択",
+          "suggested": "推奨：",
+          "no_results": "結果が見つかりません。",
+          "suggestions": {
+            "content": "Markdown ファイルが保存される場所",
+            "media": "メディアファイルが保存される場所",
+            "public": "パブリックファイルが保存される場所",
+            "config": "設定ファイルが保存される場所"
+          }
+        },
+        "buttons": {
+          "finish": "セットアップを完了",
+          "update": "設定を更新"
+        },
+        "help": {
+          "text": "設定についてサポートが必要ですか？",
+          "contact_us": "お問い合わせ"
+        },
+        "status": {
+          "success_create": "設定ファイルが正常に作成されました",
+          "success_update": "設定ファイルが正常に更新されました",
+          "error_update": "設定の更新に失敗しました",
+          "not_configured": "未設定",
+          "none": "なし"
+        },
+        "summary": {
+          "title": "プロジェクト設定",
+          "description": "現在の設定の概要"
+        }
+      }
+    }
+  }
+}

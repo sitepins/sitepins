@@ -1,0 +1,131 @@
+{
+  "project": {
+    "activity": {
+      "recent_file_changes": "Những thay đổi tập tin gần đây",
+      "latest_activity": "Hoạt động mới nhất của bạn hoặc nhóm của bạn",
+      "updated": "Đã cập nhật",
+      "created": "Đã tạo",
+      "deleted": "Đã xóa",
+      "renamed": "Đã đổi tên",
+      "duplicated": "Trùng lặp",
+      "no_more": "Không còn",
+      "load_more": "Tải thêm"
+    },
+    "branching": {
+      "incoming_request": "Yêu cầu {provider} đang đến",
+      "merge": "Hợp nhất",
+      "details": "Chi tiết",
+      "changes_detected": "Đã phát hiện thấy những thay đổi",
+      "view_request": "Xem yêu cầu",
+      "create_request": "Tạo yêu cầu {provider}",
+      "title": "Tiêu đề",
+      "description_optional": "Mô tả (Tùy chọn)",
+      "placeholder_title": "Tiêu đề tính năng",
+      "placeholder_description": "Hãy mô tả những thay đổi của bạn...",
+      "merge_into": "Hợp nhất {head} thành {base}",
+      "merge_description": "Hợp nhất các thay đổi từ {head} thành {base}",
+      "success_created": "{type} đã tạo thành công!",
+      "success_merged": "Đã hợp nhất {branch} thành công!",
+      "error_create": "Không tạo được {type}",
+      "error_merge": "Không hợp nhất được",
+      "permission_error_title": "Lỗi cấp phép ứng dụng GitHub",
+      "permission_error_description": "Ứng dụng GitHub của bạn cần có quyền 'Kéo yêu cầu: Viết'. Vui lòng chấp nhận các quyền mới trong cài đặt GitHub của bạn.",
+      "review": "Đánh giá",
+      "switcher": {
+        "placeholder": "Tìm kiếm chi nhánh...",
+        "no_results": "Không tìm thấy chi nhánh.",
+        "default": "mặc định",
+        "create_new": "Tạo chi nhánh mới"
+      },
+      "create": {
+        "title": "Tạo chi nhánh mới",
+        "desc": "Tạo một nhánh mới từ <branch> {branchName} </branch>",
+        "label": "Tên chi nhánh",
+        "placeholder": "ví dụ. dàn dựng",
+        "submit": "Tạo chi nhánh",
+        "error": {
+          "required": "Tên chi nhánh là bắt buộc",
+          "sha": "Không thể tìm thấy nhánh cơ sở SHA",
+          "failed": "Không thể tạo chi nhánh mới"
+        },
+        "success": "Chi nhánh {name} đã được tạo thành công!"
+      },
+      "status": {
+        "on_default": "Bạn đang ở nhánh mặc định: {branch}",
+        "ahead": "{branch} trước {base} ."
+      }
+    },
+    "git": {
+      "recent_activities": "Hoạt động Git gần đây",
+      "recent_commits": "Các cam kết gần đây đối với kho lưu trữ của bạn",
+      "revert": "Hoàn nguyên",
+      "reset": "Đặt lại",
+      "commit": "Cam kết",
+      "restore_version": "Khôi phục phiên bản",
+      "undo_commit": "Hoàn tác cam kết",
+      "admin_only": "Chỉ quản trị viên và chủ sở hữu mới có thể thực hiện hành động này",
+      "restore_title": "Khôi phục về phiên bản này",
+      "restore_description_github": "Điều này sẽ quay ngược thời gian về chính xác trang web của bạn trông như thế nào vào thời điểm này. Mọi thay đổi được thực hiện sau phiên bản này sẽ bị xóa.",
+      "restore_description_gitlab": "Điều này sẽ đưa trang web của bạn trở lại chính xác như thế nào vào thời điểm hiện tại. Chúng tôi sẽ tạo bản cập nhật mới để thực hiện điều này, vì vậy lịch sử của bạn vẫn được an toàn.",
+      "restore_warning_github": "⚠️ Cảnh báo: Đây là sự thay đổi vĩnh viễn. Tất cả các bản cập nhật mới hơn sẽ bị xóa khỏi nhánh này. Chỉ sử dụng điều này nếu bạn muốn loại bỏ hoàn toàn công việc gần đây.",
+      "restore_warning_gitlab": "✓ Điều này an toàn. Tác phẩm gần đây của bạn sẽ không bị xóa; chúng tôi chỉ tạo một phiên bản mới dựa trên phiên bản cũ này.",
+      "undo_title": "Hoàn tác cam kết này",
+      "undo_description": "Điều này sẽ tạo ra một bản cập nhật mới đảo ngược mọi thứ đã thay đổi trong phiên bản cụ thể này.",
+      "undo_warning": "✓ Điều này an toàn! Chúng tôi sẽ thêm phiên bản mới vào lịch sử của bạn để hủy bỏ những thay đổi cụ thể này, giữ nguyên mọi thứ khác.",
+      "feedback": {
+        "reset_success": "Đặt lại chi nhánh về {sha} thành công!",
+        "revert_success": "Cam kết được hoàn nguyên! Cam kết mới: {sha}",
+        "revert_failed": "Không thể hoàn nguyên"
+      },
+      "actions": {
+        "restoring": "Đang khôi phục",
+        "undoing": "Đang hoàn tác",
+        "confirm_restore": "Xác nhận Khôi phục",
+        "confirm_undo": "Xác nhận Hoàn tác"
+      },
+      "commit_messages": {
+        "add_file": "Thêm {name}",
+        "rename_file": "Đổi tên tập tin {name}",
+        "delete_file": "Xóa tập tin {name}",
+        "duplicate_file": "Tập tin trùng lặp {name}",
+        "create_schema": "Tạo lược đồ {name}",
+        "update_schema": "Cập nhật lược đồ {name}",
+        "delete_schema": "Xóa lược đồ {name}",
+        "update_config": "Cập nhật cấu hình trang web"
+      }
+    },
+    "setup-steps": {
+      "getting_started": "Bắt đầu",
+      "description": "Hoàn thành các bước này để thiết lập Sitepins và xuất bản nội dung đầu tiên của bạn",
+      "progress": "Tiến độ",
+      "progress_count": "{completed} của {total}",
+      "steps": {
+        "add_site": {
+          "title": "Thêm trang web mới",
+          "description": "Trang web của bạn đã được tạo và sẵn sàng để cấu hình"
+        },
+        "configure_project": {
+          "title": "Cấu hình dự án",
+          "description": "Thiết lập cấu trúc kho lưu trữ của bạn (Thư mục nội dung, Media Root, v.v.)"
+        },
+        "publish_content": {
+          "title": "Xuất bản nội dung đầu tiên",
+          "description": "Xuất bản nội dung đầu tiên của bạn từ bảng điều khiển bên trái"
+        },
+        "deploy_site": {
+          "title": "Triển khai trang web",
+          "description": "Triển khai trang web của bạn lên Vercel lần đầu tiên"
+        }
+      },
+      "edit_config": "Chỉnh sửa cấu hình dự án",
+      "deploy_to_vercel": "Triển khai tới Vercel",
+      "login_signup": "Đăng nhập hoặc Đăng ký",
+      "create_account": "Tạo tài khoản",
+      "deploy_repo": "Triển khai kho lưu trữ của bạn",
+      "one_click": "chỉ với một cú nhấp chuột",
+      "or": "Hoặc",
+      "already_deployed": "Đã triển khai chưa? Chèn URL ngay bây giờ",
+      "vercel_host": "trên Vercel để lưu trữ trang web của bạn"
+    }
+  }
+}

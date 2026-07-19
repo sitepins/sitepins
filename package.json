@@ -1,0 +1,18 @@
+{
+  "name": "sitepins-monorepo",
+  "private": true,
+  "description": "Sitepins — open-source git-based CMS",
+  "packageManager": "pnpm@11.15.0",
+  "scripts": {
+    "dev": "pnpm --parallel --filter ./app --filter ./api dev",
+    "dev:app": "pnpm --filter sitepins dev",
+    "dev:api": "pnpm --filter sitepins-backend dev",
+    "build": "pnpm -r build",
+    "build:app": "pnpm --filter sitepins build",
+    "build:api": "pnpm --filter sitepins-backend build",
+    "format": "pnpm -r format",
+    "test": "pnpm -r test",
+    "test:api": "pnpm --filter sitepins-backend test",
+    "test:app": "pnpm --filter sitepins test"
+  }
+}

@@ -1,0 +1,282 @@
+{
+  "project-settings": {
+    "general": {
+      "form": {
+        "title": "Project Settings",
+        "description": "Update your Project information.",
+        "demo_error": "This is a demo site, you cannot update it",
+        "success": "Site updated successfully",
+        "site_name": "Site Name",
+        "website": "Website (optional)"
+      },
+      "archive": {
+        "restore_title": "Restore Project",
+        "restore_desc": "The project is currently archived. It needs to be restored first to make any changes.",
+        "archive_title": "Archive Project",
+        "archive_desc": "The project will be archived. It will be hidden from the project list but can be restored later.",
+        "restore_btn": "Restore Project",
+        "archive_btn": "Archive Project",
+        "archive_confirm_title": "Archive this project?",
+        "restore_confirm_title": "Restore this project?",
+        "archive_confirm_desc": "This project will be archived. It will be hidden from the project list but can be restored later.",
+        "restore_confirm_desc": "This project will be restored. It will be visible in the project list and can be updated.",
+        "demo_error": "This feature is not available in demo",
+        "archive_success": "Project archived successfully",
+        "restore_success": "Project restored successfully",
+        "error": "Something went wrong"
+      },
+      "delete": {
+        "title": "Delete Project",
+        "description": "The project will be permanently deleted. This action is irreversible and can not be undone.",
+        "warning": "This project will be permanently deleted. This action is irreversible and can not be undone. All data associated with this project will be lost.",
+        "delete_btn": "Delete Project",
+        "confirm_title": "Are you absolutely sure?",
+        "confirm_desc": "This action cannot be undone. This will permanently delete.",
+        "placeholder": "type CONFIRM to confirm",
+        "demo_error": "You cannot delete projects in demo mode.",
+        "success": "Project has been deleted successfully.",
+        "error": "Something went wrong",
+        "error_suffix": "You are not authorized to delete this project.",
+        "error_generic": "Something went wrong"
+      },
+      "move": {
+        "title": "Move Project",
+        "description": "Move this project to another organization you belong to.",
+        "current_org": "Current Org",
+        "destination": "Destination",
+        "loading_orgs": "Loading organizations...",
+        "no_orgs": "No other organizations available.",
+        "placeholder": "Select destination",
+        "move_btn": "Move Project",
+        "confirm_title": "Confirm move",
+        "confirm_desc": "Move this project to",
+        "confirm_move_btn": "Move Project",
+        "error_select": "Select an organization",
+        "success": "Project moved successfully",
+        "error": "Project Move failed"
+      },
+      "thumb": {
+        "title": "Project Thumbnail",
+        "description": "Make your site image unique by adding a photo.",
+        "demo_error": "This is a demo site, you cannot update it",
+        "success": "Site updated successfully"
+      }
+    },
+    "git": {
+      "repo": {
+        "title": "Git Repository",
+        "description_connected": "Your project is currently connected to a repository.",
+        "description_disconnected": "Connect your project to a Git repository to manage your content.",
+        "connected_at": "Connected {time}",
+        "provider_label": "Select Provider",
+        "select_provider_placeholder": "Select a provider",
+        "select_repo_label": "Repository",
+        "select_repo_placeholder": "Select a repository",
+        "no_repo_found": "No repository found",
+        "please_wait": "Please wait...",
+        "cant_see_repo": "Can't see your repo here?",
+        "configure_on": "Configure on {provider}",
+        "branch_label": "Branch",
+        "choose_branch_placeholder": "Choose a branch",
+        "disconnect_btn": "Disconnect",
+        "disconnect_confirm_title": "Are you absolutely sure?",
+        "disconnect_confirm_desc": "This action will disconnect the repository from Sitepins. You can always connect it back later.",
+        "connect_repo_btn": "Connect Repository",
+        "error_missing_info": "Missing project or organization information",
+        "success_disconnect": "Repository disconnected successfully",
+        "error_disconnect": "Failed to disconnect repository",
+        "error_no_repo_branch": "Please select a repository and branch",
+        "success_connect": "Repository connected successfully",
+        "error_connect": "Failed to connect repository"
+      },
+      "branch": {
+        "title": "Branch Management",
+        "description": "Manage the branch used for your project content",
+        "current_branch_label": "Current Branch",
+        "select_branch_label": "Select Branch",
+        "loading_branches": "Loading branches...",
+        "placeholder": "Select a branch",
+        "branches_label": "Branches",
+        "change_branch_btn": "Change Branch",
+        "update_branch_btn": "Update Branch",
+        "success_message": "Branch updated successfully!",
+        "error_missing_info": "Missing project or organization information",
+        "error_no_repo": "No repository connected",
+        "error_generic": "Failed to update branch"
+      }
+    },
+    "schemas": {
+      "title": "Schema Management",
+      "description": "Manage content schemas for your project",
+      "no_schemas_found": "No schemas found",
+      "create_first_schema": "Create your first schema by navigating to a content folder",
+      "fields_count": "{count, plural, =1 {# field} other {# fields}}",
+      "edit_dialog_title": "Edit Schema",
+      "edit_dialog_description": "Modify your schema fields and their properties",
+      "schema_name_label": "Schema Name",
+      "update_btn": "Update Schema",
+      "success_update": "Schema updated successfully!",
+      "error_update": "Error updating schema",
+      "success_delete": "Schema deleted successfully!",
+      "error_delete": "Error deleting schema",
+      "error_validation": "Please fix the highlighted fields and try again."
+    },
+    "snippets": {
+      "title": "Snippet Management",
+      "description": "Manage code snippets for your project",
+      "add_btn": "Add Snippet",
+      "no_snippets_found": "No snippets found",
+      "create_first_snippet": "Create your first snippet to get started",
+      "used_in": "Used in: {schemas}",
+      "no_schemas_linked": "No schemas linked",
+      "edit_dialog_title": "Edit Snippet",
+      "create_dialog_title": "Create Snippet",
+      "dialog_description": "Configure your code snippet properties",
+      "success_created": "Snippet created successfully!",
+      "success_updated": "Snippet updated successfully!",
+      "error_save": "Error saving snippet",
+      "success_deleted": "Snippet deleted successfully!",
+      "error_delete": "Error deleting snippet",
+      "label_field": "Label",
+      "label_placeholder": "Snippet Label",
+      "schemas_field": "Applicable Schemas",
+      "select_schemas_placeholder": "Select schemas",
+      "no_schemas_found_in_combobox": "No schemas found.",
+      "code_field": "Code",
+      "delete_confirm_title": "Delete Snippet",
+      "delete_confirm_desc": "Are you sure you want to delete this snippet? This action cannot be undone.",
+      "update_btn": "Update Snippet",
+      "create_btn": "Create Snippet"
+    },
+    "arrangement": {
+      "title": "Sidebar Arrangements",
+      "description": "Customize your content structure and layout",
+      "features": {
+        "virtual_folders": {
+          "title": "Virtual folders",
+          "desc": "Won't change your repo"
+        },
+        "visual_headings": {
+          "title": "Visual headings",
+          "desc": "Organize sections"
+        },
+        "drag_and_drop": {
+          "title": "Drag & drop",
+          "desc": "Reorder instantly"
+        },
+        "glob_patterns": {
+          "title": "Glob patterns",
+          "desc": "Filter files easily"
+        }
+      },
+      "no_arrangements": "No arrangements yet",
+      "get_started": "Get started by adding a folder, file, or heading to customize your sidebar layout.",
+      "add_item_btn": "+ Add New Item",
+      "edit_dialog_title": "Edit arrangement item",
+      "add_dialog_title": "Add new arrangement item",
+      "edit_dialog_desc": "Update the details of your arrangement item.",
+      "add_dialog_desc": "Configure your new arrangement item.",
+      "select_type_label": "Select a type:",
+      "select_type_placeholder": "Select a type",
+      "type_options": {
+        "file": "File",
+        "heading": "Heading",
+        "folder": "Folder",
+        "video": "Video",
+        "preview_image": "Preview Image"
+      },
+      "rename_file": "Rename File",
+      "rename_successful": "File renamed successfully to {name}",
+      "error_renaming": "There was an error renaming the file. Please try again.",
+      "success_update": "Successfully updated arrangement",
+      "file_form": {
+        "select_file": "Select File",
+        "placeholder": "Select File",
+        "no_items": "No items found.",
+        "name_label": "Name",
+        "name_placeholder": "index"
+      },
+      "folder_form": {
+        "select_folder": "Select Folder",
+        "placeholder": "Select Folder",
+        "no_items": "No items found.",
+        "group_name_label": "Group Name",
+        "group_name_placeholder": "blog list",
+        "include_label": "Include",
+        "include_placeholder": "*.md",
+        "exclude_label": "Exclude",
+        "exclude_placeholder": "*index.md"
+      },
+      "heading_form": {
+        "name_label": "Name",
+        "placeholder": "Heading"
+      },
+      "errors": {
+        "name_min_length": "Name must be at least 2 characters.",
+        "heading_min_length": "Heading must be at least 2 characters.",
+        "name_exists": "Group name already exists.",
+        "heading_exists": "Heading already exists."
+      },
+      "delete_confirm_title": "Are you absolutely sure?",
+      "continue_btn": "Continue"
+    },
+    "configure": {
+      "commit": {
+        "title": "Commit Configuration",
+        "description": "Determine how commit messages are handled when you save changes",
+        "custom_commit_label": "Custom Commit Messages",
+        "custom_commit_desc": "Enable this to write your own commit messages on save. When active, you can provide a custom message; otherwise, Sitepins will automatically generate one for you.",
+        "save_btn": "Save Changes",
+        "success_update": "Commit dialog settings updated successfully",
+        "error_update": "Failed to update settings"
+      },
+      "project": {
+        "title": "Edit Project Configuration",
+        "description": "Configure your project settings. Click save to apply the changes.",
+        "steps": {
+          "content": "Content",
+          "media": "Media",
+          "public": "Public",
+          "configs": "Configs"
+        },
+        "form": {
+          "content_label": "Content Folder",
+          "content_placeholder": "Select your content folder",
+          "media_label": "Media Folder",
+          "media_placeholder": "Select your media (images) folder",
+          "public_label": "Public Folder",
+          "public_placeholder": "Select your public folder",
+          "config_label": "Site Configs (optional)",
+          "config_placeholder": "Select your config file",
+          "suggested": "Suggested:",
+          "no_results": "No results found.",
+          "suggestions": {
+            "content": "where your markdown files are stored",
+            "media": "where your media files are stored",
+            "public": "where your public files are stored",
+            "config": "where your config files are stored"
+          }
+        },
+        "buttons": {
+          "finish": "Finish Setup",
+          "update": "Update Configuration"
+        },
+        "help": {
+          "text": "Need help with your configuration?",
+          "contact_us": "Contact us"
+        },
+        "status": {
+          "success_create": "Config file created successfully",
+          "success_update": "Config file updated successfully",
+          "error_update": "Failed to update settings",
+          "not_configured": "Not configured",
+          "none": "None"
+        },
+        "summary": {
+          "title": "Project Configuration",
+          "description": "Quick overview of your current configuration"
+        }
+      }
+    }
+  }
+}

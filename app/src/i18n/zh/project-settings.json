@@ -1,0 +1,282 @@
+{
+  "project-settings": {
+    "general": {
+      "form": {
+        "title": "项目设置",
+        "description": "更新您的项目信息。",
+        "demo_error": "这是一个演示网站，您无法更新它",
+        "success": "网站更新成功",
+        "site_name": "网站名称",
+        "website": "网站（可选）"
+      },
+      "archive": {
+        "restore_title": "恢复项目",
+        "restore_desc": "该项目目前已归档。它需要先被恢复才能进行任何更改。",
+        "archive_title": "归档项目",
+        "archive_desc": "该项目将被归档。它将从项目列表中隐藏，但稍后可以恢复。",
+        "restore_btn": "恢复项目",
+        "archive_btn": "归档项目",
+        "archive_confirm_title": "归档此项目？",
+        "restore_confirm_title": "恢复此项目？",
+        "archive_confirm_desc": "此项目将被归档。它将从项目列表中隐藏，但稍后可以恢复。",
+        "restore_confirm_desc": "此项目将被恢复。它将显示在项目列表中，并可被更新。",
+        "demo_error": "此功能在演示模式下不可用",
+        "archive_success": "项目归档成功",
+        "restore_success": "项目恢复成功",
+        "error": "发生错误"
+      },
+      "delete": {
+        "title": "删除项目",
+        "description": "该项目将被永久删除。此操作不可逆，无法撤销。",
+        "warning": "此项目将被永久删除。此操作不可逆，无法撤销。与此项目关联的所有数据都将丢失。",
+        "delete_btn": "删除项目",
+        "confirm_title": "您绝对确定吗？",
+        "confirm_desc": "此操作无法撤销。这将永久删除该项目。",
+        "placeholder": "输入 CONFIRM 以确认",
+        "demo_error": "您处于演示模式，无法删除项目。",
+        "success": "项目已成功删除。",
+        "error": "发生错误",
+        "error_suffix": "您无权删除此项目",
+        "error_generic": "发生错误"
+      },
+      "move": {
+        "title": "移动项目",
+        "description": "将此项目移动到您所属的另一个组织。",
+        "current_org": "当前组织",
+        "destination": "目的地",
+        "loading_orgs": "正在加载组织...",
+        "no_orgs": "没有其他可用的组织。",
+        "placeholder": "选择目的地",
+        "move_btn": "移动项目",
+        "confirm_title": "确认移动",
+        "confirm_desc": "将此项目移动到",
+        "confirm_move_btn": "移动项目",
+        "error_select": "选择一个组织",
+        "success": "项目移动成功",
+        "error": "项目移动失败"
+      },
+      "thumb": {
+        "title": "项目缩略图",
+        "description": "添加照片使您的网站图像独一无二。",
+        "demo_error": "这是一个演示网站，您无法更新它",
+        "success": "网站更新成功"
+      }
+    },
+    "git": {
+      "repo": {
+        "title": "Git 存储库",
+        "description_connected": "您的项目当前已连接到一个存储库。",
+        "description_disconnected": "将您的项目连接到一个 Git 存储库以管理您的内容。",
+        "connected_at": "已连接 {time}",
+        "provider_label": "选择提供商",
+        "select_provider_placeholder": "选择一个提供商",
+        "select_repo_label": "存储库",
+        "select_repo_placeholder": "选择一个存储库",
+        "no_repo_found": "未找到存储库",
+        "please_wait": "请稍候...",
+        "cant_see_repo": "在这里看不到您的存储库？",
+        "configure_on": "在 {provider} 上配置",
+        "branch_label": "分支",
+        "choose_branch_placeholder": "选择一个分支",
+        "disconnect_btn": "断开连接",
+        "disconnect_confirm_title": "您确定吗？",
+        "disconnect_confirm_desc": "此操作将断开存储库与 Sitepins 的连接。您可以稍后随时重新连接。",
+        "connect_repo_btn": "连接存储库",
+        "error_missing_info": "缺少项目或组织信息",
+        "success_disconnect": "存储库断开连接成功",
+        "error_disconnect": "存储库断开连接失败",
+        "error_no_repo_branch": "请选择存储库和分支",
+        "success_connect": "存储库连接成功",
+        "error_connect": "存储库连接失败"
+      },
+      "branch": {
+        "title": "分支管理",
+        "description": "管理用于项目内容的分支",
+        "current_branch_label": "当前分支",
+        "select_branch_label": "选择分支",
+        "loading_branches": "正在加载分支...",
+        "placeholder": "选择一个分支",
+        "branches_label": "分支",
+        "change_branch_btn": "更改分支",
+        "update_branch_btn": "更新分支",
+        "success_message": "分支更新成功！",
+        "error_missing_info": "缺少项目或组织信息",
+        "error_no_repo": "未连接存储库",
+        "error_generic": "更新分支失败"
+      }
+    },
+    "schemas": {
+      "title": "架构管理",
+      "description": "管理项目的內容架构",
+      "no_schemas_found": "未找到架构",
+      "create_first_schema": "通过导航到内容文件夹创建您的第一个架构",
+      "fields_count": "{count, plural, other {# 个字段}}",
+      "edit_dialog_title": "编辑架构",
+      "edit_dialog_description": "修改您的架构字段及其属性",
+      "schema_name_label": "架构名称",
+      "update_btn": "更新架构",
+      "success_update": "架构更新成功！",
+      "error_update": "更新架构时出错",
+      "success_delete": "架构删除成功！",
+      "error_delete": "删除架构时出错",
+      "error_validation": "请修复突出显示的字段并重试。"
+    },
+    "snippets": {
+      "title": "代码片段管理",
+      "description": "管理项目的代码片段",
+      "add_btn": "添加代码片段",
+      "no_snippets_found": "未找到代码片段",
+      "create_first_snippet": "创建一个代码片段以开始",
+      "used_in": "用于: {schemas}",
+      "no_schemas_linked": "未链接架构",
+      "edit_dialog_title": "编辑代码片段",
+      "create_dialog_title": "创建代码片段",
+      "dialog_description": "配置您的代码片段属性",
+      "success_created": "代码片段创建成功！",
+      "success_updated": "代码片段更新成功！",
+      "error_save": "保存代码片段出错",
+      "success_deleted": "代码片段删除成功！",
+      "error_delete": "删除代码片段出错",
+      "label_field": "标签",
+      "label_placeholder": "代码片段标签",
+      "schemas_field": "适用架构",
+      "select_schemas_placeholder": "选择架构",
+      "no_schemas_found_in_combobox": "未找到架构。",
+      "code_field": "代码",
+      "delete_confirm_title": "删除代码片段",
+      "delete_confirm_desc": "您确定要删除此代码片段吗？此操作无法撤销。",
+      "update_btn": "更新代码片段",
+      "create_btn": "创建代码片段"
+    },
+    "arrangement": {
+      "title": "侧边栏排列",
+      "description": "自定义您的内容结构和布局",
+      "features": {
+        "virtual_folders": {
+          "title": "虚拟文件夹",
+          "desc": "不会改变您的仓库"
+        },
+        "visual_headings": {
+          "title": "视觉标题",
+          "desc": "组织章节"
+        },
+        "drag_and_drop": {
+          "title": "拖放",
+          "desc": "立即重新排序"
+        },
+        "glob_patterns": {
+          "title": "全局匹配模式",
+          "desc": "轻松过滤文件"
+        }
+      },
+      "no_arrangements": "尚无排列",
+      "get_started": "通过添加文件夹、文件或标题来开始自定义您的侧边栏布局。",
+      "add_item_btn": "+ 添加新项目",
+      "edit_dialog_title": "编辑排列项目",
+      "add_dialog_title": "添加新排列项目",
+      "edit_dialog_desc": "更新排列项目的详细信息。",
+      "add_dialog_desc": "配置您的新排列项目。",
+      "select_type_label": "选择类型：",
+      "select_type_placeholder": "选择一个类型",
+      "type_options": {
+        "file": "文件",
+        "heading": "标题",
+        "folder": "文件夹",
+        "video": "视频",
+        "preview_image": "预览图"
+      },
+      "rename_file": "重命名文件",
+      "rename_successful": "文件已成功重命名为 {name}",
+      "error_renaming": "重命名文件时出错。请重试。",
+      "success_update": "成功更新排列",
+      "file_form": {
+        "select_file": "选择文件",
+        "placeholder": "选择文件",
+        "no_items": "未找到项目。",
+        "name_label": "名称",
+        "name_placeholder": "index"
+      },
+      "folder_form": {
+        "select_folder": "选择文件夹",
+        "placeholder": "选择文件夹",
+        "no_items": "未找到项目。",
+        "group_name_label": "组名称",
+        "group_name_placeholder": "博客列表",
+        "include_label": "包含",
+        "include_placeholder": "*.md",
+        "exclude_label": "排除",
+        "exclude_placeholder": "*index.md"
+      },
+      "heading_form": {
+        "name_label": "名称",
+        "placeholder": "标题"
+      },
+      "errors": {
+        "name_min_length": "名称必须至少为 2 个字符。",
+        "heading_min_length": "标题必须至少为 2 个字符。",
+        "name_exists": "组名称已存在。",
+        "heading_exists": "标题已存在。"
+      },
+      "delete_confirm_title": "您确定吗？",
+      "continue_btn": "继续"
+    },
+    "configure": {
+      "commit": {
+        "title": "提交配置",
+        "description": "确定保存更改时如何处理提交消息",
+        "custom_commit_label": "自定义提交消息",
+        "custom_commit_desc": "启用此功能可在保存时编写您自己的提交消息。激活后，您可以提供自定义消息；否则，Sitepins 将自动为您生成一个。",
+        "save_btn": "保存更改",
+        "success_update": "提交对话框设置更新成功",
+        "error_update": "更新设置失败"
+      },
+      "project": {
+        "title": "编辑项目配置",
+        "description": "配置您的项目设置。单击保存以应用更改。",
+        "steps": {
+          "content": "内容",
+          "media": "媒体",
+          "public": "公开",
+          "configs": "配置"
+        },
+        "form": {
+          "content_label": "内容文件夹",
+          "content_placeholder": "选择您的内容文件夹",
+          "media_label": "媒体文件夹",
+          "media_placeholder": "选择您的媒体（图像）文件夹",
+          "public_label": "公开文件夹",
+          "public_placeholder": "选择您的公开文件夹",
+          "config_label": "站点配置（可选）",
+          "config_placeholder": "选择您的配置文件",
+          "suggested": "建议：",
+          "no_results": "未找到结果。",
+          "suggestions": {
+            "content": "存储 Markdown 文件的位置",
+            "media": "存储媒体文件的位置",
+            "public": "存储公开文件的位置",
+            "config": "存储配置文件的位置"
+          }
+        },
+        "buttons": {
+          "finish": "完成设置",
+          "update": "更新配置"
+        },
+        "help": {
+          "text": "需要配置方面的帮助吗？",
+          "contact_us": "联系我们"
+        },
+        "status": {
+          "success_create": "配置文件创建成功",
+          "success_update": "配置文件更新成功",
+          "error_update": "更新设置失败",
+          "not_configured": "未配置",
+          "none": "无"
+        },
+        "summary": {
+          "title": "项目配置",
+          "description": "当前配置的快速概览"
+        }
+      }
+    }
+  }
+}

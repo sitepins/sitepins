@@ -1,0 +1,35 @@
+{
+  "provider-install": {
+    "authenticating_aria": "Autenticando",
+    "request_title": "Solicitação de Instalação Enviada",
+    "auth_title": "Autenticando com {provider}",
+    "request_description": "Uma solicitação de instalação foi enviada ao proprietário da organização. Ele receberá uma notificação e poderá aprovar o acesso aos repositórios.",
+    "auth_description": "Estamos concluindo a autenticação com {provider}. Esta janela fechará automaticamente quando concluída.",
+    "manual_close_hint": "Se esta janela não fechar, você pode fechá-la com segurança manualmente.",
+    "providers": {
+      "github": "GitHub",
+      "gitlab": "GitLab"
+    },
+    "github_integration": {
+      "title": "Conectar sua conta do GitHub",
+      "description": "O Sitepins precisa de acesso para criar ramos e sincronizar conteúdo para seus projetos.",
+      "allow_all_repos": "Vou selecionar todos os repositórios",
+      "connect_btn": "Conectar com Github",
+      "grant_access_link": "Não vou conceder acesso a todos os repositórios",
+      "selective_title": "Acesso Seletivo ao Repositório",
+      "selective_desc1": "Se você escolher acesso seletivo ao repositório, não conseguiremos criar repositório automaticamente para você.",
+      "selective_desc2": "Sem problemas! Você ainda pode começar manualmente seguindo estas etapas:",
+      "step_download": "Baixe o modelo manualmente.",
+      "step_fork": "Faça um fork do repositório manualmente.",
+      "step_push": "Envie o código-fonte para seu repositório do GitHub.",
+      "step_go_to": "Vá para Sitepins",
+      "step_new_site": "Clique no botão + Novo Site no canto superior direito.",
+      "step_grant_access": "Selecione GitHub e conceda acesso ao seu repositório.",
+      "step_grant_forked": "Selecione GitHub e conceda acesso apenas ao seu repositório bifurcado.",
+      "step_final": "Preencha os detalhes necessários e pressione Criar Site.",
+      "revoke_access": "O acesso pode ser revogado a qualquer momento nas configurações do GitHub",
+      "watch_tutorial": "Assista a um tutorial rápido",
+      "close": "Fechar"
+    }
+  }
+}

@@ -1,0 +1,119 @@
+{
+  "schema": {
+    "types": {
+      "string": "Text",
+      "number": "Zahl",
+      "boolean": "Boolesch",
+      "media": "Medien",
+      "gallery": "Galerie",
+      "array": "Array",
+      "date": "Datum",
+      "object": "Objekt"
+    },
+    "fields": {
+      "label": "Bezeichnung",
+      "name": "Name",
+      "type": "Feldtyp",
+      "placeholder": {
+        "type": "Typ auswählen",
+        "label": "z. B. Titel",
+        "name": "automatisch_generiert"
+      },
+      "description": "Beschreibung",
+      "default_value": "Standardwert",
+      "boolean": {
+        "true": "Wahr",
+        "false": "Falsch"
+      },
+      "input_style": {
+        "label": "Eingabestil",
+        "placeholder": "Eingabestil auswählen",
+        "options": {
+          "standard_text": "Standard-Textfeld",
+          "standard_table": "Standard-Tabelle",
+          "dropdown": "Dropdown-Auswahl",
+          "multi_dropdown": "Mehrfachauswahl-Dropdown"
+        }
+      }
+    },
+    "configuration": {
+      "title": "Feldkonfiguration",
+      "dropdown": {
+        "title": "Dropdown-Konfiguration",
+        "multi_title": "Mehrfachauswahl-Konfiguration",
+        "source": "Quelle",
+        "source_placeholder": "Quelle auswählen",
+        "sources": {
+          "static": "Statische Optionen",
+          "folder": "Dateien aus Ordner",
+          "file": "Daten aus Datei"
+        },
+        "static": {
+          "placeholder": "Optionswert eingeben"
+        },
+        "folder": {
+          "path": "Ordnerpfad",
+          "path_placeholder": "Ordner auswählen",
+          "display_field": "Anzeigefeld (Frontmatter-Schlüssel)",
+          "field_placeholder": "z. B. title (Standard: Dateiname)",
+          "loading_fields": "Felder werden geladen...",
+          "default_field": "Dateiname (Standard)",
+          "include_pattern": "Einschlussmuster (Glob)",
+          "include_placeholder": "z. B. *.md",
+          "exclude_pattern": "Ausschlussmuster (Glob)",
+          "exclude_placeholder": "z. B. index.md"
+        },
+        "file": {
+          "path": "Dateipfad (JSON/YAML/TOML)",
+          "path_placeholder": "Datei auswählen",
+          "data_key": "Datenschlüssel (zu extrahierendes Feld)",
+          "key_placeholder": "z. B. categories oder name",
+          "default_key": "Gesamte Datei/gesamtes Array extrahieren"
+        }
+      }
+    },
+    "array": {
+      "label": "Array von",
+      "placeholder": "Untertyp auswählen"
+    },
+    "nested": {
+      "title": "Verschachtelte Felder",
+      "add_button": "Verschachteltes Feld hinzufügen"
+    },
+    "date": {
+      "default_value": "Standardwert",
+      "mode_placeholder": "Modus auswählen",
+      "static": "Festes Datum",
+      "dynamic": "Aktuelles Datum (Live)",
+      "empty": "Leer",
+      "select_initial": "Anfangsdatum auswählen",
+      "today": "Heute"
+    },
+    "actions": {
+      "add_option": "Option hinzufügen",
+      "add_field": "Feld hinzufügen",
+      "update_field": "Feld aktualisieren",
+      "enter_option": "Option eingeben",
+      "include": "Einschließen",
+      "ignore": "Ignorieren"
+    },
+    "builder": {
+      "add_new_field": "Neues Feld hinzufügen",
+      "configure_properties": "Eigenschaften des neuen Feldes konfigurieren",
+      "field_settings": "Feldeinstellungen",
+      "required": "Erforderlich",
+      "show": "Anzeigen",
+      "hide": "Ausblenden",
+      "no_field_selected": "Kein Feld ausgewählt",
+      "select_to_edit": "Wähle ein Feld aus der Liste aus, um dessen Einstellungen zu bearbeiten",
+      "no_fields": "Noch keine Felder",
+      "add_first_field": "Füge unten dein erstes Feld hinzu",
+      "back_to_fields": "Zurück zu den Feldern",
+      "field_count": "{count, plural, =0 {0 Felder} one {1 Feld} other {# Felder}}"
+    },
+    "errors": {
+      "name_required": "Feldname ist erforderlich",
+      "name_exists": "Feldname existiert bereits"
+    }
+  }
+}

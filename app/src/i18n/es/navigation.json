@@ -1,0 +1,55 @@
+{
+  "navigation": {
+    "menu": {
+      "footer_account": {
+        "account": "Cuenta",
+        "updates": "Actualizaciones",
+        "support": "Soporte",
+        "sitepins_ai": "Sitepins AI",
+        "preferences": "Preferencias"
+      },
+      "user_dashboard": {
+        "overview": "Descripción general",
+        "account": "Cuenta",
+        "preferences": "Preferencias",
+        "sitepins_ai": "Sitepins AI"
+      },
+      "org_dashboard": {
+        "websites": "Sitios web",
+        "settings": "Configuración"
+      },
+      "org_settings": {
+        "general": "General",
+        "members": "Miembros",
+        "sandbox": "Sandbox"
+      },
+      "project_dashboard": {
+        "overview": "Descripción general",
+        "media": "Medios",
+        "settings": "Configuración"
+      },
+      "project_settings": {
+        "general": "General",
+        "configure": "Configurar",
+        "git": "Git",
+        "schemas": "Esquemas",
+        "snippets": "Fragmentos",
+        "arrangement": "Disposición"
+      }
+    },
+    "sidebar": {
+      "open_menu": "Abrir menú",
+      "code": "Código",
+      "config": "Configuración",
+      "actions": {
+        "close": "Cerrar"
+      },
+      "sidebar_trigger_mobile": {
+        "title": "Lista de Contenido",
+        "description": "Ver todos tus archivos de contenido desde la barra lateral",
+        "message": "¿Buscas tu contenido? Abre la barra lateral para ver todos los archivos.",
+        "open_sidebar": "Abrir barra lateral"
+      }
+    }
+  }
+}

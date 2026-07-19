@@ -1,0 +1,138 @@
+{
+  "common": {
+    "settings": "Cài đặt",
+    "overview": "Tổng quan",
+    "archived": "Đã lưu trữ",
+    "locale": "vi",
+    "language": "Ngôn ngữ",
+    "theme": "Chủ đề",
+    "light": "Ánh sáng",
+    "dark": "Tối",
+    "system": "Hệ thống",
+    "logout": {
+      "label": "Đăng xuất",
+      "demo_disabled": "Đăng xuất bị vô hiệu hóa trong chế độ demo.",
+      "confirm_title": "Xác nhận Đăng xuất",
+      "confirm_description": "Bạn có chắc chắn muốn đăng xuất khỏi tài khoản của mình không?"
+    },
+    "accessibility": {
+      "trigger": "Mở menu trợ năng"
+    },
+    "actions": {
+      "save": "Lưu",
+      "cancel": "Hủy",
+      "delete": "Xóa",
+      "edit": "Chỉnh sửa",
+      "create": "Tạo",
+      "update": "Cập nhật",
+      "add": "Thêm",
+      "rename": "Đổi tên",
+      "duplicate": "Trùng lặp",
+      "back": "Quay lại",
+      "close": "Đóng",
+      "archive": "Lưu trữ",
+      "restore": "Khôi phục",
+      "move": "Di chuyển",
+      "disconnect": "Ngắt kết nối",
+      "connect": "Kết nối",
+      "finish": "Kết thúc",
+      "next": "Tiếp theo",
+      "previous": "Trước",
+      "edit_as_code": "Chỉnh sửa dưới dạng mã",
+      "continue": "Tiếp tục",
+      "replace": "Thay thế",
+      "confirm": "Xác nhận",
+      "reset": "Đặt lại"
+    },
+    "status": {
+      "loading": "Đang tải...",
+      "saving": "Đang lưu...",
+      "saved": "Đã lưu",
+      "no_results": "Không tìm thấy kết quả nào.",
+      "error": "Đã xảy ra lỗi"
+    },
+    "confirm": {
+      "are_you_sure": "Bạn có chắc không?",
+      "absolutely_sure": "Bạn có hoàn toàn chắc chắn không?",
+      "cannot_be_undone": "Không thể hoàn tác hành động này.",
+      "type_to_confirm": "gõ {confirm} để xác nhận",
+      "confirm_value": "XÁC NHẬN",
+      "delete_description": "Không thể hoàn tác hành động này. Điều này sẽ xóa vĩnh viễn dữ liệu của bạn khỏi máy chủ của chúng tôi.",
+      "delete_media": "Xóa tệp phương tiện",
+      "delete_media_description": "Bạn có chắc chắn muốn xóa tập tin này?",
+      "enter_new_name": "Nhập tên mới cho tập tin.",
+      "duplicate_file": "Tệp trùng lặp",
+      "duplicate_file_description": "Nhập tên mới cho tệp trùng lặp."
+    },
+    "feedback": {
+      "language_updated": "Ngôn ngữ được cập nhật thành công",
+      "language_update_failed": "Không cập nhật được ngôn ngữ",
+      "duplicate_success": "Đã sao chép tập tin thành công!",
+      "duplicate_failed": "Không sao chép được tập tin",
+      "uploaded_success": "Đã tải lên thành công",
+      "upload_failed": "Không thể tải lên",
+      "error_processing": "Lỗi xử lý tập tin",
+      "image_deleted": "Đã xóa hình ảnh thành công",
+      "rename_success": "Đã đổi tên tập tin thành công",
+      "rename_failed": "Không đổi tên được tập tin",
+      "delete_success": "Tệp đã được xóa thành công",
+      "delete_failed": "Không xóa được tập tin",
+      "folder_rename_success": "Đã đổi tên thư mục thành công",
+      "folder_rename_failed": "Không đổi tên được thư mục",
+      "folder_delete_success": "Đã xóa thư mục thành công",
+      "folder_delete_failed": "Không xóa được thư mục",
+      "folder_duplicate_success": "Đã sao chép thư mục thành công",
+      "folder_duplicate_failed": "Không sao chép được thư mục",
+      "draft_success": "Đã lưu bản nháp thành công",
+      "publish_success": "Đã xuất bản thành công",
+      "fetch_failed": "Không tìm nạp được một số tệp. Vui lòng thử lại.",
+      "invalid_path": "Đường dẫn thư mục không hợp lệ.",
+      "missing_context": "Bối cảnh kho lưu trữ bị thiếu. Vui lòng tải lại và thử lại.",
+      "unable_to_locate": "Không thể định vị tệp cho thư mục này. Vui lòng làm mới và thử lại.",
+      "demo_mode": "Hành động này bị vô hiệu hóa trong chế độ demo.",
+      "draft_saved": "Đã lưu bản nháp vào cơ sở dữ liệu",
+      "draft_saved_error": "Không thể lưu bản nháp",
+      "draft_discard_success": "Đã hủy bản nháp thành công",
+      "draft_discard_error": "Hủy bản nháp thất bại"
+    },
+    "labels": {
+      "name": "Tên",
+      "date": "Ngày",
+      "size": "Kích thước",
+      "dimensions": "Kích thước",
+      "required": "Bắt buộc",
+      "fields": "Trường",
+      "user": "Người dùng",
+      "site_favicon": "Trang web Favicon",
+      "or": "Hoặc"
+    },
+    "errors": {
+      "missing_git_info": "Thiếu thông tin Git bắt buộc",
+      "unable_to_determine_path": "Không thể xác định đường dẫn tệp",
+      "required_fields_empty": "Vui lòng điền vào tất cả các trường bắt buộc: {fields}"
+    },
+    "search": "Tìm kiếm",
+    "search_placeholder": "Tìm kiếm...",
+    "search_sites_placeholder": "Tìm kiếm trang web...",
+    "prevent_navigation": {
+      "title": "Lưu thay đổi trước khi đóng?",
+      "description": "Bạn có những thay đổi chưa được lưu. Nếu bạn tiếp tục mà không lưu, những thay đổi này sẽ bị mất.",
+      "stay": "Ở lại",
+      "leave": "Rời khỏi",
+      "browser_prompt": "Bạn có những thay đổi chưa được lưu. Bạn có chắc chắn muốn rời đi không?"
+    },
+    "error_page": {
+      "something_went_wrong": "Đã xảy ra lỗi",
+      "error_code": "Mã lỗi: {code}",
+      "go_home": "Về nhà",
+      "contact_support": "Liên hệ hỗ trợ",
+      "show_technical_details": "Hiển thị chi tiết kỹ thuật"
+    },
+    "image_upload": {
+      "file_too_large": "Kích thước tệp vượt quá giới hạn {limit} MB.",
+      "preview_title": "Xem trước hình ảnh",
+      "preview_desc": "Xác nhận nếu bạn muốn tải lên hình ảnh này.",
+      "upload": "Tải lên"
+    }
+  }
+}

@@ -1,0 +1,149 @@
+{
+  "dashboard": {
+    "preference": {
+      "title": "Tùy chọn",
+      "coauthor": {
+        "title": "Đồng tác giả Git",
+        "description": "Chọn danh tính sẽ sử dụng cho các hành động trong kho lưu trữ.",
+        "as_you": "Đóng vai bạn",
+        "as_you_desc": "Bot sẽ sử dụng danh tính cá nhân của bạn cho các cam kết, chi nhánh và yêu cầu kéo, cung cấp cho bạn toàn bộ tín dụng cho các thay đổi.",
+        "as_you_fallback": "Tự động quay trở lại bot nếu quyền cá nhân không đủ để đảm bảo hoàn thành nhiệm vụ.",
+        "as_bot": "Đóng vai trò là Bot",
+        "as_bot_desc": "Tất cả các hành động của kho lưu trữ sẽ được quy cho bot hệ thống. Điều này đảm bảo quy trình kiểm tra nhất quán và là cài đặt được đề xuất cho quy trình làm việc tự động.",
+        "updated": "Đã cập nhật tùy chọn đồng tác giả",
+        "error": "Không cập nhật được tùy chọn mạo danh"
+      },
+      "language": {
+        "title": "Ngôn ngữ",
+        "description": "Chọn ngôn ngữ ưa thích của bạn cho giao diện. Những thay đổi được áp dụng ngay lập tức.",
+        "label": "Ngôn ngữ giao diện"
+      },
+      "theme": {
+        "title": "Chủ đề",
+        "description": "Chọn chủ đề màu sắc ưa thích của bạn.",
+        "updated_success": "Chủ đề được cập nhật thành công",
+        "updated_failed": "Không cập nhật được chủ đề"
+      }
+    },
+    "account": {
+      "title": "Tài khoản",
+      "profile": {
+        "title": "Cập nhật tên hiển thị",
+        "description": "Đây là tên sẽ được hiển thị trên hồ sơ của bạn.",
+        "full_name": "Tên đầy đủ",
+        "submit": "Cập nhật tài khoản",
+        "success": "Thông tin người dùng được cập nhật thành công",
+        "error": "Cập nhật không thành công, vui lòng thử lại",
+        "demo_error": "Hành động này bị vô hiệu hóa trong chế độ demo."
+      },
+      "password": {
+        "title": "Đổi mật khẩu",
+        "description": "Cập nhật mật khẩu của bạn thường xuyên để giữ cho tài khoản của bạn an toàn và được bảo vệ khỏi sự truy cập trái phép.",
+        "current_password": "Mật khẩu hiện tại",
+        "new_password": "Mật khẩu mới",
+        "submit": "Cập nhật mật khẩu",
+        "success": "Cập nhật mật khẩu thành công",
+        "error": "Cập nhật không thành công, vui lòng thử lại"
+      },
+      "set_password": {
+        "title": "Đặt mật khẩu",
+        "description": "Bạn đã đăng nhập với một nhà cung cấp mạng xã hội. Tạo mật khẩu để kích hoạt các tùy chọn bảo mật bổ sung và các phương thức đăng nhập thay thế.",
+        "new_password": "Mật khẩu mới",
+        "submit": "Thêm mật khẩu",
+        "success": "Đã thêm mật khẩu thành công",
+        "error": "Đã xảy ra lỗi! Hãy thử lại sau"
+      },
+      "picture": {
+        "title": "Cập nhật hình ảnh hiển thị",
+        "description": "Làm cho không gian làm việc của bạn trở nên chuyên nghiệp bằng cách thêm ảnh.",
+        "success": "Thông tin người dùng được cập nhật thành công",
+        "error": "Cập nhật không thành công, vui lòng thử lại"
+      },
+      "newsletter": {
+        "title": "Đăng ký nhận bản tin",
+        "description": "Chúng tôi sẽ thỉnh thoảng gửi email về các tính năng, bản cập nhật và ưu đãi mới. Bạn có thể hủy đăng ký bất cứ lúc nào.",
+        "label": "Nhận bản tin và cập nhật sản phẩm",
+        "submit": "Lưu tùy chọn",
+        "success_sub": "Đăng ký nhận bản tin thành công",
+        "success_unsub": "Đã hủy đăng ký nhận bản tin thành công",
+        "error": "Cập nhật không thành công, vui lòng thử lại"
+      },
+      "delete": {
+        "title": "Xóa tài khoản",
+        "description": "Cảnh báo: Hành động này không thể hoàn tác được. Điều này sẽ xóa vĩnh viễn tài khoản của bạn và xóa tất cả dữ liệu của bạn khỏi máy chủ của chúng tôi.",
+        "confirm_label": "Nhập <strong>XÓA</strong> để xác nhận",
+        "confirm_placeholder": "Nhập XÓA tại đây",
+        "button": "Xóa tài khoản",
+        "reason_title": "Lý do chính khiến bạn xóa tài khoản của mình là gì?",
+        "other_reason_label": "Lý do khác (tối đa 200 ký tự)",
+        "other_reason_placeholder": "Hãy cho chúng tôi biết thêm (tối đa 200 ký tự)",
+        "reasons": {
+          "complex": "Quá phức tạp hoặc khó sử dụng",
+          "not_work": "Không hoạt động cho trang web của tôi",
+          "poor_design": "Thiết kế hoặc trải nghiệm người dùng kém",
+          "bugs": "Quá nhiều lỗi",
+          "missing_features": "Thiếu tính năng tôi cần",
+          "better_alternative": "Đã tìm thấy giải pháp thay thế tốt hơn",
+          "other": "Khác"
+        },
+        "feedback": {
+          "demo_disabled": "Xóa tài khoản bị vô hiệu hóa ở chế độ demo.",
+          "success": "Đã xóa tài khoản thành công",
+          "error": "Vui lòng thử lại sau."
+        }
+      }
+    },
+    "sitepins_ai": {
+      "title": "Ghim trang web AI",
+      "description": "Định cấu hình nhà cung cấp AI của bạn để bật các đề xuất nội dung thông minh và tính năng tự động hoàn thành.",
+      "provider_label": "Nhà cung cấp",
+      "provider_placeholder": "Chọn Nhà cung cấp",
+      "model_label": "Người mẫu",
+      "model_placeholder": "Chọn mẫu",
+      "api_key_label": "Khóa API",
+      "api_key_placeholder": "Nhập khóa API của bạn",
+      "show": "Hiển thị",
+      "hide": "Ẩn",
+      "copilot_title": "Sitepin Copilot",
+      "copilot_description": "Đề xuất tự động hoàn thành khi gõ.",
+      "delete_key": "Xóa khóa",
+      "save_changes": "Lưu thay đổi",
+      "save_success": "Đã lưu cài đặt thành công",
+      "save_error": "Đã xảy ra lỗi!",
+      "security_title": "Thông báo bảo mật quan trọng",
+      "security1": "Chúng tôi **không lưu trữ khóa API** trong cơ sở dữ liệu của chúng tôi để đảm bảo quyền riêng tư của bạn và tuân thủ các chính sách bảo mật.",
+      "security2": "Khóa của bạn chỉ được lưu trữ cục bộ trong trình duyệt của bạn. Nếu bạn chuyển đổi hoặc xóa trình duyệt, khóa sẽ bị mất.",
+      "security3": "Vui lòng giữ khóa API của bạn an toàn và có thể truy cập được vì chúng tôi không thể khôi phục khóa cho bạn.",
+      "custom_model": "Nhập thủ công",
+      "custom_model_input_label": "ID mô hình",
+      "custom_model_input_placeholder": "Nhập ID mô hình tùy chỉnh",
+      "find_model_id": "Tìm ID mô hình của bạn"
+    },
+    "sidebar": {
+      "back": "Quay lại"
+    },
+    "refetch_preview": "Tải lại bản xem trước",
+    "preview_unavailable": "Xem trước không có sẵn",
+    "website": "Trang web",
+    "edit_website": "Chỉnh sửa trang web",
+    "build_status": "Trạng thái xây dựng",
+    "last_updated": "Cập nhật lần cuối",
+    "source": "Nguồn",
+    "recently": "gần đây",
+    "last_updated_by": "{distance} trước bởi {author}",
+    "switcher": {
+      "default_site": "Chọn trang web",
+      "search": "Tìm kiếm...",
+      "not_found": "Không tìm thấy dự án nào.",
+      "add_new": "Thêm trang web mới"
+    },
+    "archived_project": {
+      "title": "Dự án được lưu trữ",
+      "description": "Dự án này đã được lưu trữ và hầu hết chức năng đều bị vô hiệu hóa. Bạn vẫn có thể truy cập cài đặt dự án để khôi phục hoặc thay đổi trạng thái dự án.",
+      "open_settings": "Mở Cài đặt"
+    },
+    "project_overview": {
+      "preview_alt": "Xem trước trực tiếp {name}"
+    }
+  }
+}

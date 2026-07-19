@@ -1,0 +1,138 @@
+{
+  "common": {
+    "settings": "Pengaturan",
+    "overview": "Ikhtisar",
+    "archived": "Diarsipkan",
+    "locale": "id",
+    "language": "Bahasa",
+    "theme": "Tema",
+    "light": "Ringan",
+    "dark": "Gelap",
+    "system": "Sistem",
+    "logout": {
+      "label": "Keluar",
+      "demo_disabled": "Logout dinonaktifkan dalam mode demo.",
+      "confirm_title": "Konfirmasi Logout",
+      "confirm_description": "Apakah Anda yakin ingin keluar dari akun Anda?"
+    },
+    "accessibility": {
+      "trigger": "Buka menu aksesibilitas"
+    },
+    "actions": {
+      "save": "Simpan",
+      "cancel": "Batalkan",
+      "delete": "Hapus",
+      "edit": "Sunting",
+      "create": "Buat",
+      "update": "Perbarui",
+      "add": "Tambahkan",
+      "rename": "Ganti nama",
+      "duplicate": "Duplikat",
+      "back": "Kembali",
+      "close": "Menutup",
+      "archive": "Arsip",
+      "restore": "Pulihkan",
+      "move": "Pindahkan",
+      "disconnect": "Putuskan sambungan",
+      "connect": "Hubungkan",
+      "finish": "Selesai",
+      "next": "Selanjutnya",
+      "previous": "Sebelumnya",
+      "edit_as_code": "Edit Sebagai Kode",
+      "continue": "Lanjutkan",
+      "replace": "Gantikan",
+      "confirm": "Konfirmasikan",
+      "reset": "Setel ulang"
+    },
+    "status": {
+      "loading": "Memuat...",
+      "saving": "Menyimpan...",
+      "saved": "Disimpan",
+      "no_results": "Tidak ada hasil yang ditemukan.",
+      "error": "Ada yang tidak beres"
+    },
+    "confirm": {
+      "are_you_sure": "Apa kamu yakin?",
+      "absolutely_sure": "Apakah Anda benar-benar yakin?",
+      "cannot_be_undone": "Tindakan ini tidak dapat dibatalkan.",
+      "type_to_confirm": "ketik {confirm} untuk mengonfirmasi",
+      "confirm_value": "KONFIRMASI",
+      "delete_description": "Tindakan ini tidak dapat dibatalkan. Ini akan menghapus data Anda secara permanen dari server kami.",
+      "delete_media": "Hapus File Media",
+      "delete_media_description": "Apakah Anda yakin ingin menghapus file ini?",
+      "enter_new_name": "Masukkan nama baru untuk file tersebut.",
+      "duplicate_file": "File Duplikat",
+      "duplicate_file_description": "Masukkan nama baru untuk file duplikat."
+    },
+    "feedback": {
+      "language_updated": "Bahasa berhasil diperbarui",
+      "language_update_failed": "Gagal memperbarui bahasa",
+      "duplicate_success": "File berhasil diduplikasi!",
+      "duplicate_failed": "Gagal menggandakan file",
+      "uploaded_success": "Berhasil diunggah",
+      "upload_failed": "Gagal mengunggah",
+      "error_processing": "Kesalahan saat memproses file",
+      "image_deleted": "Gambar berhasil dihapus",
+      "rename_success": "File berhasil diganti namanya",
+      "rename_failed": "Gagal mengganti nama berkas",
+      "delete_success": "File berhasil dihapus",
+      "delete_failed": "Gagal menghapus berkas",
+      "folder_rename_success": "Folder berhasil diganti namanya",
+      "folder_rename_failed": "Gagal mengganti nama folder",
+      "folder_delete_success": "Folder berhasil dihapus",
+      "folder_delete_failed": "Gagal menghapus folder",
+      "folder_duplicate_success": "Folder berhasil diduplikasi",
+      "folder_duplicate_failed": "Gagal menduplikasi folder",
+      "draft_success": "Draf berhasil disimpan",
+      "publish_success": "Berhasil diterbitkan",
+      "fetch_failed": "Gagal mengambil beberapa file. Silakan coba lagi.",
+      "invalid_path": "Jalur folder tidak valid.",
+      "missing_context": "Konteks repositori tidak ada. Silakan muat ulang dan coba lagi.",
+      "unable_to_locate": "Tidak dapat menemukan file untuk folder ini. Silakan segarkan dan coba lagi.",
+      "demo_mode": "Tindakan ini dinonaktifkan dalam mode demo.",
+      "draft_saved": "Draf disimpan ke database",
+      "draft_saved_error": "Gagal menyimpan draf",
+      "draft_discard_success": "Draf berhasil dibuang",
+      "draft_discard_error": "Gagal membuang draf"
+    },
+    "labels": {
+      "name": "Nama",
+      "date": "Tanggal",
+      "size": "Ukuran",
+      "dimensions": "Dimensi",
+      "required": "Diperlukan",
+      "fields": "Bidang",
+      "user": "Pengguna",
+      "site_favicon": "Situs Favicon",
+      "or": "Atau"
+    },
+    "errors": {
+      "missing_git_info": "Informasi Git yang diperlukan tidak ada",
+      "unable_to_determine_path": "Tidak dapat menentukan jalur file",
+      "required_fields_empty": "Silakan isi semua kolom yang wajib diisi: {fields}"
+    },
+    "search": "Cari",
+    "search_placeholder": "Cari...",
+    "search_sites_placeholder": "Cari Situs...",
+    "prevent_navigation": {
+      "title": "Simpan Perubahan Sebelum Menutup?",
+      "description": "Anda memiliki perubahan yang belum disimpan. Jika Anda melanjutkan tanpa menyimpan, perubahan ini akan hilang.",
+      "stay": "Tetap",
+      "leave": "Tinggalkan",
+      "browser_prompt": "Anda memiliki perubahan yang belum disimpan. Apakah Anda yakin ingin pergi?"
+    },
+    "error_page": {
+      "something_went_wrong": "Ada yang tidak beres",
+      "error_code": "Kode kesalahan: {code}",
+      "go_home": "Pulang",
+      "contact_support": "Hubungi dukungan",
+      "show_technical_details": "Tampilkan detail teknis"
+    },
+    "image_upload": {
+      "file_too_large": "Ukuran file melebihi batas {limit} MB.",
+      "preview_title": "Pratinjau Gambar",
+      "preview_desc": "Konfirmasikan jika Anda ingin mengunggah gambar ini.",
+      "upload": "Unggah"
+    }
+  }
+}

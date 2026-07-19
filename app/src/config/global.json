@@ -1,0 +1,44 @@
+{
+  "site": {
+    "title": "Sitepins",
+    "favicon": "/images/favicon.png",
+    "logo": "/images/logo.svg",
+    "logo_darkmode": "/images/logo-white.svg",
+    "logo_width": "136",
+    "logo_height": "40",
+    "logo_text": "Sitepins"
+  },
+  "pagination": {
+    "file_limit": 20,
+    "media_limit": 24
+  },
+  "allowExtensions": [
+    ".md",
+    ".mdx",
+    ".json",
+    ".jsonc",
+    ".yml",
+    ".yaml",
+    ".toml"
+  ],
+  "frameworks": {
+    "nextjs": [
+      "next.config.js",
+      "next.config.mjs",
+      "next.config.ts"
+    ],
+    "astro": [
+      "astro.config.mjs",
+      "astro.config.js",
+      "astro.config.ts"
+    ],
+    "hugo": [
+      "config.toml",
+      "config.yaml",
+      "config.yml",
+      "hugo.toml",
+      "hugo.yaml",
+      "hugo.json"
+    ]
+  }
+}

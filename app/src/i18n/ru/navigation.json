@@ -1,0 +1,55 @@
+{
+  "navigation": {
+    "menu": {
+      "footer_account": {
+        "account": "Учётная запись",
+        "updates": "Обновления",
+        "support": "Поддержка",
+        "sitepins_ai": "Sitepins AI",
+        "preferences": "Настройки"
+      },
+      "user_dashboard": {
+        "overview": "Обзор",
+        "account": "Учётная запись",
+        "preferences": "Настройки",
+        "sitepins_ai": "Sitepins AI"
+      },
+      "org_dashboard": {
+        "websites": "Сайты",
+        "settings": "Настройки"
+      },
+      "org_settings": {
+        "general": "Основное",
+        "members": "Участники",
+        "sandbox": "Песочница"
+      },
+      "project_dashboard": {
+        "overview": "Обзор",
+        "media": "Медиа",
+        "settings": "Настройки"
+      },
+      "project_settings": {
+        "general": "Основное",
+        "configure": "Конфигурация",
+        "git": "Git",
+        "schemas": "Схемы",
+        "snippets": "Сниппеты",
+        "arrangement": "Компоновка"
+      }
+    },
+    "sidebar": {
+      "open_menu": "Открыть меню",
+      "code": "Код",
+      "config": "Конфигурация",
+      "actions": {
+        "close": "Закрыть"
+      },
+      "sidebar_trigger_mobile": {
+        "title": "Список контента",
+        "description": "Просмотрите все файлы контента из боковой панели",
+        "message": "Ищете контент? Откройте боковую панель для просмотра всех файлов.",
+        "open_sidebar": "Открыть боковую панель"
+      }
+    }
+  }
+}

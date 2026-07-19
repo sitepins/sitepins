@@ -1,0 +1,119 @@
+{
+  "schema": {
+    "types": {
+      "string": "Строка",
+      "number": "Число",
+      "boolean": "Логический",
+      "media": "Медиа",
+      "gallery": "Галерея",
+      "array": "Массив",
+      "date": "Дата",
+      "object": "Объект"
+    },
+    "fields": {
+      "label": "Метка",
+      "name": "Имя",
+      "type": "Тип поля",
+      "placeholder": {
+        "type": "Выберите тип",
+        "label": "например, Заголовок",
+        "name": "auto_generated"
+      },
+      "description": "Описание",
+      "default_value": "Значение по умолчанию",
+      "boolean": {
+        "true": "Истина",
+        "false": "Ложь"
+      },
+      "input_style": {
+        "label": "Стиль ввода",
+        "placeholder": "Выберите стиль ввода",
+        "options": {
+          "standard_text": "Стандартное текстовое поле",
+          "standard_table": "Стандартная таблица",
+          "dropdown": "Выпадающий список",
+          "multi_dropdown": "Множественный выбор"
+        }
+      }
+    },
+    "configuration": {
+      "title": "Конфигурация поля",
+      "dropdown": {
+        "title": "Конфигурация выпадающего списка",
+        "multi_title": "Конфигурация множественного выбора",
+        "source": "Источник",
+        "source_placeholder": "Выберите источник",
+        "sources": {
+          "static": "Статические варианты",
+          "folder": "Файлы из папки",
+          "file": "Данные из файла"
+        },
+        "static": {
+          "placeholder": "Введите значение варианта"
+        },
+        "folder": {
+          "path": "Путь к папке",
+          "path_placeholder": "Выберите папку",
+          "display_field": "Отображаемое поле (ключ frontmatter)",
+          "field_placeholder": "например, title (по умолчанию — имя файла)",
+          "loading_fields": "Загрузка полей...",
+          "default_field": "filename (по умолчанию)",
+          "include_pattern": "Шаблон включения (Glob)",
+          "include_placeholder": "например, *.md",
+          "exclude_pattern": "Шаблон исключения (Glob)",
+          "exclude_placeholder": "например, index.md"
+        },
+        "file": {
+          "path": "Путь к файлу (JSON/YAML/TOML)",
+          "path_placeholder": "Выберите файл",
+          "data_key": "Ключ данных (поле для извлечения)",
+          "key_placeholder": "например, categories или name",
+          "default_key": "Извлечь весь файл/массив"
+        }
+      }
+    },
+    "array": {
+      "label": "Массив из",
+      "placeholder": "Выберите подтип"
+    },
+    "nested": {
+      "title": "Вложенные поля",
+      "add_button": "Добавить вложенное поле"
+    },
+    "date": {
+      "default_value": "Значение по умолчанию",
+      "mode_placeholder": "Выберите режим",
+      "static": "Фиксированная дата",
+      "dynamic": "Текущая дата (динамическая)",
+      "empty": "Пусто",
+      "select_initial": "Выберите начальную дату",
+      "today": "Сегодня"
+    },
+    "actions": {
+      "add_option": "Добавить вариант",
+      "add_field": "Добавить поле",
+      "update_field": "Обновить поле",
+      "enter_option": "Введите вариант",
+      "include": "Включить",
+      "ignore": "Игнорировать"
+    },
+    "builder": {
+      "add_new_field": "Добавить новое поле",
+      "configure_properties": "Настройте свойства нового поля",
+      "field_settings": "Настройки поля",
+      "required": "Обязательно",
+      "show": "Показать",
+      "hide": "Скрыть",
+      "no_field_selected": "Поле не выбрано",
+      "select_to_edit": "Выберите поле из списка для редактирования его настроек",
+      "no_fields": "Полей пока нет",
+      "add_first_field": "Добавьте первое поле ниже",
+      "back_to_fields": "Назад к полям",
+      "field_count": "{count, plural, =0 {0 полей} =1 {1 поле} =2 {# поля} =3 {# поля} =4 {# поля} other {# полей}}"
+    },
+    "errors": {
+      "name_required": "Имя поля обязательно",
+      "name_exists": "Поле с таким именем уже существует"
+    }
+  }
+}

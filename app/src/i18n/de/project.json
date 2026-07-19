@@ -1,0 +1,131 @@
+{
+  "project": {
+    "activity": {
+      "recent_file_changes": "Letzte Dateiänderungen",
+      "latest_activity": "Neueste Aktivität von dir oder deinem Team",
+      "updated": "Aktualisiert",
+      "created": "Erstellt",
+      "deleted": "Gelöscht",
+      "renamed": "Umbenannt",
+      "duplicated": "Dupliziert",
+      "no_more": "Keine weiteren",
+      "load_more": "Mehr laden"
+    },
+    "branching": {
+      "incoming_request": "Eingehende {provider}-Anfrage",
+      "merge": "Zusammenführen",
+      "details": "Details",
+      "changes_detected": "Änderungen erkannt",
+      "view_request": "Anfrage anzeigen",
+      "create_request": "{provider}-Anfrage erstellen",
+      "title": "Titel",
+      "description_optional": "Beschreibung (optional)",
+      "placeholder_title": "Feature-Titel",
+      "placeholder_description": "Beschreibe deine Änderungen...",
+      "merge_into": "{head} in {base} zusammenführen",
+      "merge_description": "Änderungen von {head} in {base} zusammenführen",
+      "success_created": "{type} erfolgreich erstellt!",
+      "success_merged": "{branch} erfolgreich zusammengeführt!",
+      "error_create": "{type} konnte nicht erstellt werden",
+      "error_merge": "Zusammenführen fehlgeschlagen",
+      "permission_error_title": "GitHub-App-Berechtigungsfehler",
+      "permission_error_description": "Deine GitHub-App benötigt die Berechtigung 'Pull requests: Write'. Bitte akzeptiere die neuen Berechtigungen in deinen GitHub-Einstellungen.",
+      "review": "Prüfen",
+      "switcher": {
+        "placeholder": "Branch suchen...",
+        "no_results": "Kein Branch gefunden.",
+        "default": "default",
+        "create_new": "Neuen Branch erstellen"
+      },
+      "create": {
+        "title": "Neuen Branch erstellen",
+        "desc": "Erstelle einen neuen Branch aus <branch>{branchName}</branch>",
+        "label": "Branch-Name",
+        "placeholder": "z. B. staging",
+        "submit": "Branch erstellen",
+        "error": {
+          "required": "Branch-Name ist erforderlich",
+          "sha": "SHA des Basis-Branchs konnte nicht gefunden werden",
+          "failed": "Neuer Branch konnte nicht erstellt werden"
+        },
+        "success": "Branch {name} erfolgreich erstellt!"
+      },
+      "status": {
+        "on_default": "Du bist auf dem Standard-Branch: {branch}",
+        "ahead": "{branch} liegt vor {base}."
+      }
+    },
+    "git": {
+      "recent_activities": "Letzte Git-Aktivitäten",
+      "recent_commits": "Letzte Commits in deinem Repository",
+      "revert": "Rückgängig machen",
+      "reset": "Zurücksetzen",
+      "commit": "Commit",
+      "restore_version": "Version wiederherstellen",
+      "undo_commit": "Commit rückgängig machen",
+      "admin_only": "Nur Admins und Eigentümer können diese Aktion ausführen",
+      "restore_title": "Auf diese Version wiederherstellen",
+      "restore_description_github": "Das setzt die Zeit auf genau den Zustand zurück, in dem deine Site zu diesem Zeitpunkt war. Alle Änderungen nach dieser Version werden entfernt.",
+      "restore_description_gitlab": "Das stellt deine Site genau auf den Zustand dieses Zeitpunkts zurück. Wir erstellen dafür ein neues Update, damit deine Historie sicher bleibt.",
+      "restore_warning_github": "⚠️ Warnung: Dies ist eine dauerhafte Änderung. Alle neueren Updates werden aus diesem Branch gelöscht. Nutze das nur, wenn du aktuelle Arbeit vollständig verwerfen möchtest.",
+      "restore_warning_gitlab": "✓ Das ist sicher. Deine aktuelle Arbeit wird nicht gelöscht; wir erstellen nur eine neue Version basierend auf dieser alten.",
+      "undo_title": "Diesen Commit rückgängig machen",
+      "undo_description": "Dadurch wird ein neues Update erstellt, das alle Änderungen in dieser bestimmten Version rückgängig macht.",
+      "undo_warning": "✓ Das ist sicher! Wir fügen deiner Historie eine neue Version hinzu, die genau diese Änderungen aufhebt, während alles andere erhalten bleibt.",
+      "feedback": {
+        "reset_success": "Branch erfolgreich auf {sha} zurückgesetzt!",
+        "revert_success": "Commit rückgängig gemacht! Neuer Commit: {sha}",
+        "revert_failed": "Rückgängigmachen fehlgeschlagen"
+      },
+      "actions": {
+        "restoring": "Wird wiederhergestellt",
+        "undoing": "Wird rückgängig gemacht",
+        "confirm_restore": "Wiederherstellung bestätigen",
+        "confirm_undo": "Rückgängig machen bestätigen"
+      },
+      "commit_messages": {
+        "add_file": "{name} hinzufügen",
+        "rename_file": "Datei {name} umbenennen",
+        "delete_file": "Datei {name} löschen",
+        "duplicate_file": "Datei {name} duplizieren",
+        "create_schema": "Schema {name} erstellen",
+        "update_schema": "Schema {name} aktualisieren",
+        "delete_schema": "Schema {name} löschen",
+        "update_config": "Site-Konfigurationen aktualisieren"
+      }
+    },
+    "setup-steps": {
+      "getting_started": "Erste Schritte",
+      "description": "Schließe diese Schritte ab, um Sitepins einzurichten und deine ersten Inhalte zu veröffentlichen",
+      "progress": "Fortschritt",
+      "progress_count": "{completed} von {total}",
+      "steps": {
+        "add_site": {
+          "title": "Neue Website hinzufügen",
+          "description": "Deine Website wurde erstellt und ist bereit zur Konfiguration"
+        },
+        "configure_project": {
+          "title": "Projekt konfigurieren",
+          "description": "Richte deine Repository-Struktur ein (Inhaltsordner, Medienwurzel usw.)"
+        },
+        "publish_content": {
+          "title": "Erste Inhalte veröffentlichen",
+          "description": "Veröffentliche deine ersten Inhalte über das linke Panel"
+        },
+        "deploy_site": {
+          "title": "Website deployen",
+          "description": "Deploye deine Website zum ersten Mal auf Vercel"
+        }
+      },
+      "edit_config": "Projektkonfiguration bearbeiten",
+      "deploy_to_vercel": "Auf Vercel deployen",
+      "login_signup": "Anmelden oder registrieren",
+      "create_account": "Ein Konto erstellen",
+      "deploy_repo": "Dein Repository deployen",
+      "one_click": "mit einem Klick",
+      "or": "Oder",
+      "already_deployed": "Bereits deployed? Füge jetzt die URL ein",
+      "vercel_host": "auf Vercel, um deine Website zu hosten"
+    }
+  }
+}

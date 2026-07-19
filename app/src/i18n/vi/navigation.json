@@ -1,0 +1,55 @@
+{
+  "navigation": {
+    "menu": {
+      "footer_account": {
+        "account": "Tài khoản",
+        "updates": "Cập nhật",
+        "support": "Hỗ trợ",
+        "sitepins_ai": "Ghim trang web AI",
+        "preferences": "Tùy chọn"
+      },
+      "user_dashboard": {
+        "overview": "Tổng quan",
+        "account": "Tài khoản",
+        "preferences": "Tùy chọn",
+        "sitepins_ai": "Ghim trang web AI"
+      },
+      "org_dashboard": {
+        "websites": "Trang web",
+        "settings": "Cài đặt"
+      },
+      "org_settings": {
+        "general": "Chung",
+        "members": "Thành viên",
+        "sandbox": "Hộp cát"
+      },
+      "project_dashboard": {
+        "overview": "Tổng quan",
+        "media": "Truyền thông",
+        "settings": "Cài đặt"
+      },
+      "project_settings": {
+        "general": "Chung",
+        "configure": "Định cấu hình",
+        "git": "Git",
+        "schemas": "Lược đồ",
+        "snippets": "Đoạn trích",
+        "arrangement": "Sắp xếp"
+      }
+    },
+    "sidebar": {
+      "open_menu": "Mở menu",
+      "code": "Mã",
+      "config": "Cấu hình",
+      "actions": {
+        "close": "Đóng"
+      },
+      "sidebar_trigger_mobile": {
+        "title": "Danh sách nội dung",
+        "description": "Xem tất cả các tệp nội dung của bạn từ thanh bên",
+        "message": "Bạn đang tìm kiếm nội dung của mình? Mở thanh bên để xem tất cả các tập tin.",
+        "open_sidebar": "Mở thanh bên"
+      }
+    }
+  }
+}

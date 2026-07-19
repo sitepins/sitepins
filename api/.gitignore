@@ -1,0 +1,7 @@
+node_modules
+.env
+dist
+package-lock.json
+.vercel
+.DS_Store
+tsconfig.tsbuildinfo

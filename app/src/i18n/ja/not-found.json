@@ -1,0 +1,7 @@
+{
+  "not-found": {
+    "not_found": "ページが見つかりません",
+    "not_found_description": "お探しのページは存在しません。",
+    "go_home": "ホームへ戻る"
+  }
+}

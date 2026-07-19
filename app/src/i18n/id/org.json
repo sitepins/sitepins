@@ -1,0 +1,161 @@
+{
+  "org": {
+    "create": {
+      "add_org_btn": "Tambahkan Organisasi Baru",
+      "dialog_title": "Buat organisasi baru",
+      "dialog_desc": "Tambahkan organisasi baru ke akun Anda.",
+      "demo_error": "Anda tidak dapat membuat organisasi baru dalam mode demo.",
+      "success": "Organisasi berhasil dibuat. Anda sekarang dapat menambahkan anggota.",
+      "name_label": "Nama Organisasi",
+      "submit_btn": "Buat Organisasi"
+    },
+    "switcher": {
+      "default_org": "Organisasi",
+      "search": "Cari...",
+      "not_found": "Tidak ada organisasi yang ditemukan.",
+      "add_new": "Tambahkan Organisasi Baru"
+    },
+    "general": {
+      "form": {
+        "title": "Nama Organisasi",
+        "description": "Perbarui nama organisasi Anda",
+        "update_btn": "Perbarui Organisasi",
+        "demo_error": "Anda tidak dapat memperbarui organisasi dalam mode demo.",
+        "success": "Organisasi berhasil diperbarui."
+      },
+      "archive": {
+        "title_archive": "Organisasi Arsip",
+        "title_restore": "Pulihkan Organisasi",
+        "desc_archive": "Arsipkan organisasi ini — organisasi ini akan dihapus dari daftar aktif namun dapat dipulihkan nanti.",
+        "desc_restore": "Organisasi ini diarsipkan dan disembunyikan dari daftar aktif. Anda dapat memulihkannya agar aktif kembali.",
+        "archive_btn": "Organisasi Arsip",
+        "restore_btn": "Pulihkan Organisasi",
+        "dialog_title_archive": "Organisasi arsip",
+        "dialog_title_restore": "Pulihkan organisasi",
+        "dialog_desc_archive": "Pengarsipan akan menyembunyikan organisasi dari daftar aktif. Anda dapat memulihkannya nanti jika diperlukan.",
+        "dialog_desc_restore": "Pulihkan organisasi ini dan aktifkan kembali. Konten dan pengaturan dipertahankan.",
+        "success_archive": "Organisasi berhasil diarsipkan.",
+        "success_restore": "Organisasi dipulihkan ke status aktif.",
+        "error": "Gagal memperbarui organisasi. Silakan coba lagi nanti."
+      },
+      "delete": {
+        "title": "Hapus Organisasi",
+        "description": "Menghapus organisasi Anda akan menghapus semua proyek, anggota, dan pengaturan secara permanen. Tindakan ini tidak dapat dibatalkan.",
+        "delete_org_btn": "Hapus Organisasi",
+        "dialog_title": "Apa kamu yakin?",
+        "dialog_desc": "Menghapus organisasi Anda akan menghapus semua proyek, anggota, dan pengaturan secara permanen. Tindakan ini tidak dapat dibatalkan.",
+        "placeholder": "ketik CONFIRM untuk mengonfirmasi",
+        "demo_error": "Anda tidak dapat menghapus organisasi demo — silakan hubungi kami jika Anda ingin menghapusnya",
+        "success": "Organisasi berhasil dihapus",
+        "error": "Ada yang tidak beres"
+      },
+      "thumb": {
+        "title": "Gambar Kecil Organisasi",
+        "description": "Jadikan citra organisasi Anda unik dengan menambahkan foto.",
+        "demo_error": "Anda tidak dapat memperbarui organisasi dalam mode demo.",
+        "success": "Gambar kecil organisasi berhasil diperbarui."
+      }
+    },
+    "members": {
+      "title": "Anggota Tim",
+      "description": "Kelola anggota tim Anda",
+      "anonymous": "Anonim",
+      "roles": {
+        "owner": "pemilik",
+        "admin": "Admin",
+        "editor": "Penyunting"
+      },
+      "add_member": {
+        "add_member_btn": "Tambahkan Anggota",
+        "dialog_title": "Tambahkan Anggota Tim",
+        "dialog_desc": "Tambahkan anggota baru ke organisasi Anda.",
+        "email_label": "Surel",
+        "email_placeholder": "Masukkan email",
+        "role_label": "Peran",
+        "role_placeholder": "Pilih peran",
+        "roles_group": "Peran",
+        "demo_error": "Fitur ini tidak tersedia dalam mode demo.",
+        "error": "Anggota tidak dapat ditambahkan ke organisasi."
+      },
+      "actions": {
+        "delete_user": "Hapus Pengguna",
+        "remove_member": "Hapus Anggota",
+        "make": "Buat",
+        "are_you_sure": "Apa kamu yakin?",
+        "delete_warning": "Tindakan ini tidak dapat dibatalkan. Ini akan menghapus secara permanen.",
+        "placeholder": "ketik CONFIRM untuk mengonfirmasi",
+        "demo_error_delete": "Anda tidak dapat menghapus pengguna dalam mode demo.",
+        "demo_error_update": "Fitur ini tidak tersedia dalam mode demo.",
+        "success_delete": "Pengguna telah berhasil dihapus.",
+        "error_delete_suffix": "Anda tidak berwenang untuk menghapus pengguna ini.",
+        "error_update_fn": "Fungsi pembaruan tidak tersedia",
+        "success_update": "Peran anggota telah berhasil diperbarui.",
+        "error_generic": "Ada yang tidak beres"
+      }
+    },
+    "sandbox": {
+      "title": "Kotak Pasir Vercel",
+      "description": "Hubungkan token akses Vercel untuk mengaktifkan pratinjau sandbox langsung untuk proyek Anda.",
+      "connected": "Terhubung",
+      "account": "Akun",
+      "project": "Proyek (atribusi penagihan)",
+      "project_label": "Proyek",
+      "disconnect_btn": "Putuskan sambungan",
+      "disconnecting": "Memutuskan sambungan",
+      "token_label": "Token Akses Vercel",
+      "token_placeholder": "Tempelkan token akses Vercel Anda",
+      "create_token_link": "Buat token akses Vercel",
+      "step1": "Buat token akses Vercel dengan cakupan akun penuh.",
+      "step2": "Rekatkan di bawah dan klik Hubungkan.",
+      "step3": "Proyek sandbox khusus akan dibuat secara otomatis di akun Vercel Anda.",
+      "connect_btn": "Hubungkan",
+      "connecting": "Menghubungkan",
+      "save_token_btn": "Simpan token",
+      "update_token_btn": "Perbarui token",
+      "cancel_btn": "Batalkan",
+      "status_validating": "Memvalidasi token",
+      "status_creating_project": "Membuat proyek kotak pasir",
+      "status_saving": "Menyimpan pengaturan",
+      "disconnect_confirm_title": "Putuskan sambungan Vercel Sandbox?",
+      "disconnect_confirm_desc": "Pratinjau Sandbox akan berhenti berfungsi untuk semua project di organisasi ini.",
+      "disconnect_confirm_btn": "Putuskan sambungan",
+      "disconnect_cancel_btn": "Batalkan",
+      "toast_token_required": "Masukkan token akses Vercel Anda",
+      "toast_connect_success": "Kotak pasir terhubung",
+      "toast_connect_success_desc": "Pratinjau Sandbox sekarang akan berjalan di akun Vercel {username}.",
+      "toast_connect_error": "Gagal menghubungkan kotak pasir",
+      "toast_disconnect_success": "Kotak pasir terputus",
+      "toast_disconnect_error": "Gagal memutuskan sambungan",
+      "no_permission": "Hanya pemilik dan admin organisasi yang dapat mengelola setelan sandbox.",
+      "select_team_title": "Pilih Akun Vercel",
+      "personal_account": "Akun Pribadi",
+      "team_label": "Tim",
+      "change_token": "Ganti token",
+      "security_title": "Keamanan & Privasi",
+      "security0": "Preview Sandbox menjalankan **skrip `dev`** proyek Anda (misalnya, `npm run dev`). Jika situs Anda tidak berjalan dengan skrip tersebut, maka tidak akan berjalan di sandbox juga.",
+      "security1": "Token akses Anda **dienkripsi dengan AES-256-GCM** sebelum disimpan — tidak pernah disimpan dalam teks biasa.",
+      "security2": "**Akun Vercel mana pun bisa digunakan** — pribadi atau tim, paket Hobby gratis atau berbayar. Pratinjau Sandbox dijalankan dengan kuota Vercel Anda sendiri, bukan kuota kami.",
+      "security3": "Token ini digunakan **hanya** untuk membuat proyek sandbox khusus dan mengelola penerapan pratinjau. Tidak ada tindakan lain yang diambil pada akun Vercel Anda.",
+      "security4": "**Putuskan sambungan kapan saja** untuk segera menghapus token dari server kami.",
+      "security5": "Setiap organisasi mendapatkan **proyek sandbox khusus** di Vercel — menjaga pratinjau tetap terisolasi per organisasi dan atribusi penagihan tetap bersih."
+    }
+  },
+  "org-sites": {
+    "no_sites_found": "Tidak ada situs yang ditemukan",
+    "try_adjusting": "Coba sesuaikan istilah pencarian Anda",
+    "site_name": "Nama Situs",
+    "repository": "Gudang",
+    "status": "Status",
+    "archived": "Diarsipkan",
+    "active": "Aktif",
+    "private": "Pribadi",
+    "public": "Publik"
+  },
+  "org-archived": {
+    "title": "Arsip Organisasi",
+    "desc_full": "Organisasi ini telah diarsipkan. Semua konten saat ini bersifat hanya-baca, dan sebagian besar fungsi manajemen dinonaktifkan.",
+    "desc_banner": "Organisasi ini saat ini diarsipkan dan sebagian besar fungsinya dinonaktifkan.",
+    "org_settings": "Pengaturan Organisasi",
+    "view_settings": "Lihat Pengaturan"
+  }
+}

@@ -1,0 +1,119 @@
+{
+  "schema": {
+    "types": {
+      "string": "Tali",
+      "number": "Nomor",
+      "boolean": "Boolean",
+      "media": "Media",
+      "gallery": "Galeri",
+      "array": "Himpunan",
+      "date": "Tanggal",
+      "object": "Objek"
+    },
+    "fields": {
+      "label": "Label",
+      "name": "Nama",
+      "type": "Jenis Bidang",
+      "placeholder": {
+        "type": "Pilih jenis",
+        "label": "misalnya, Judul",
+        "name": "dihasilkan secara otomatis"
+      },
+      "description": "Deskripsi",
+      "default_value": "Nilai Bawaan",
+      "boolean": {
+        "true": "Benar",
+        "false": "Salah"
+      },
+      "input_style": {
+        "label": "Gaya Masukan",
+        "placeholder": "Pilih gaya masukan",
+        "options": {
+          "standard_text": "Kotak Teks Standar",
+          "standard_table": "Tabel Standar",
+          "dropdown": "Pilihan Tarik-turun",
+          "multi_dropdown": "Dropdown multi-pilih"
+        }
+      }
+    },
+    "configuration": {
+      "title": "Konfigurasi Bidang",
+      "dropdown": {
+        "title": "Konfigurasi Tarik-turun",
+        "multi_title": "Konfigurasi Multi-pilih",
+        "source": "Sumber",
+        "source_placeholder": "Pilih sumber",
+        "sources": {
+          "static": "Opsi Statis",
+          "folder": "File dari Folder",
+          "file": "Data dari Berkas"
+        },
+        "static": {
+          "placeholder": "Masukkan nilai opsi"
+        },
+        "folder": {
+          "path": "Jalur Folder",
+          "path_placeholder": "Pilih folder",
+          "display_field": "Bidang Tampilan (Tombol Frontmatter)",
+          "field_placeholder": "misalnya judul (default pada nama file)",
+          "loading_fields": "Memuat kolom...",
+          "default_field": "nama file (default)",
+          "include_pattern": "Sertakan Pola (Glob)",
+          "include_placeholder": "misalnya *.md",
+          "exclude_pattern": "Kecualikan Pola (Glob)",
+          "exclude_placeholder": "misalnya indeks.md"
+        },
+        "file": {
+          "path": "Jalur File (JSON/YAML/TOML)",
+          "path_placeholder": "Pilih berkas",
+          "data_key": "Kunci Data (Bidang yang Akan Diekstrak)",
+          "key_placeholder": "misalnya kategori atau nama",
+          "default_key": "Ekstrak seluruh file/array"
+        }
+      }
+    },
+    "array": {
+      "label": "Array",
+      "placeholder": "Pilih subtipe"
+    },
+    "nested": {
+      "title": "Bidang bersarang",
+      "add_button": "Tambahkan bidang bersarang"
+    },
+    "date": {
+      "default_value": "Nilai Bawaan",
+      "mode_placeholder": "Pilih modus",
+      "static": "Tanggal Tetap",
+      "dynamic": "Tanggal Saat Ini (Langsung)",
+      "empty": "Kosong",
+      "select_initial": "Pilih Tanggal Awal",
+      "today": "Hari ini"
+    },
+    "actions": {
+      "add_option": "Tambahkan Opsi",
+      "add_field": "Tambahkan Bidang",
+      "update_field": "Perbarui Bidang",
+      "enter_option": "Masukkan opsi",
+      "include": "Sertakan",
+      "ignore": "Abaikan"
+    },
+    "builder": {
+      "add_new_field": "Tambahkan Bidang Baru",
+      "configure_properties": "Konfigurasikan properti bidang baru",
+      "field_settings": "Pengaturan Bidang",
+      "required": "Diperlukan",
+      "show": "Tunjukkan",
+      "hide": "Sembunyikan",
+      "no_field_selected": "Tidak ada bidang yang dipilih",
+      "select_to_edit": "Pilih bidang dari daftar untuk mengedit pengaturannya",
+      "no_fields": "Belum ada kolom",
+      "add_first_field": "Tambahkan bidang pertama Anda di bawah",
+      "back_to_fields": "Kembali ke bidang",
+      "field_count": "{hitungan, jamak, =0 {0 bidang} satu {1 bidang} lainnya {# bidang}}"
+    },
+    "errors": {
+      "name_required": "Nama bidang wajib diisi",
+      "name_exists": "Nama bidang sudah ada"
+    }
+  }
+}

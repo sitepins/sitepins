@@ -1,0 +1,138 @@
+{
+  "common": {
+    "settings": "Paramètres",
+    "overview": "Vue d'ensemble",
+    "archived": "Archivé",
+    "locale": "fr",
+    "language": "Langue",
+    "theme": "Thème",
+    "light": "Clair",
+    "dark": "Sombre",
+    "system": "Système",
+    "logout": {
+      "label": "Se déconnecter",
+      "demo_disabled": "La déconnexion est désactivée en mode démo.",
+      "confirm_title": "Confirmer la déconnexion",
+      "confirm_description": "Êtes-vous sûr de vouloir vous déconnecter de votre compte ?"
+    },
+    "accessibility": {
+      "trigger": "Ouvrir le menu d'accessibilité"
+    },
+    "actions": {
+      "save": "Enregistrer",
+      "cancel": "Annuler",
+      "delete": "Supprimer",
+      "edit": "Modifier",
+      "create": "Créer",
+      "update": "Mettre à jour",
+      "add": "Ajouter",
+      "rename": "Renommer",
+      "duplicate": "Dupliquer",
+      "back": "Retour",
+      "close": "Fermer",
+      "archive": "Archiver",
+      "restore": "Restaurer",
+      "move": "Déplacer",
+      "disconnect": "Déconnecter",
+      "connect": "Connecter",
+      "finish": "Terminer",
+      "next": "Suivant",
+      "previous": "Précédent",
+      "edit_as_code": "Modifier en tant que code",
+      "continue": "Continuer",
+      "replace": "Remplacer",
+      "confirm": "Confirmer",
+      "reset": "Réinitialiser"
+    },
+    "status": {
+      "loading": "Chargement...",
+      "saving": "Enregistrement...",
+      "saved": "Enregistré",
+      "no_results": "Aucun résultat trouvé.",
+      "error": "Une erreur s'est produite"
+    },
+    "confirm": {
+      "are_you_sure": "Êtes-vous sûr ?",
+      "absolutely_sure": "Êtes-vous absolument sûr ?",
+      "cannot_be_undone": "Cette action est irréversible.",
+      "type_to_confirm": "tapez {confirm} pour confirmer",
+      "confirm_value": "CONFIRMER",
+      "delete_description": "Cette action est irréversible. Cela supprimera définitivement vos données de nos serveurs.",
+      "delete_media": "Supprimer le fichier média",
+      "delete_media_description": "Êtes-vous sûr de vouloir supprimer ce fichier ?",
+      "enter_new_name": "Entrez un nouveau nom pour le fichier.",
+      "duplicate_file": "Dupliquer le fichier",
+      "duplicate_file_description": "Entrez un nouveau nom pour le fichier dupliqué."
+    },
+    "feedback": {
+      "language_updated": "Langue mise à jour avec succès",
+      "language_update_failed": "Échec de la mise à jour de la langue",
+      "duplicate_success": "Fichier dupliqué avec succès !",
+      "duplicate_failed": "Échec de la duplication du fichier",
+      "uploaded_success": "Téléversement réussi",
+      "upload_failed": "Échec du téléversement",
+      "error_processing": "Erreur lors du traitement des fichiers",
+      "image_deleted": "Image supprimée avec succès",
+      "rename_success": "Fichier renommé avec succès",
+      "rename_failed": "Échec du renommage du fichier",
+      "delete_success": "Fichier supprimé avec succès",
+      "delete_failed": "Échec de la suppression du fichier",
+      "folder_rename_success": "Dossier renommé avec succès",
+      "folder_rename_failed": "Échec du renommage du dossier",
+      "folder_delete_success": "Dossier supprimé avec succès",
+      "folder_delete_failed": "Échec de la suppression du dossier",
+      "folder_duplicate_success": "Dossier dupliqué avec succès",
+      "folder_duplicate_failed": "Échec de la duplication du dossier",
+      "draft_success": "Brouillon enregistré avec succès",
+      "publish_success": "Publié avec succès",
+      "fetch_failed": "Échec du chargement de certains fichiers. Veuillez réessayer.",
+      "invalid_path": "Le chemin du dossier est invalide.",
+      "missing_context": "Le contexte du dépôt est manquant. Veuillez recharger et réessayer.",
+      "unable_to_locate": "Impossible de localiser les fichiers de ce dossier. Veuillez actualiser et réessayer.",
+      "demo_mode": "Cette action est désactivée en mode démo.",
+      "draft_saved": "Brouillon enregistré dans la base de données",
+      "draft_saved_error": "Échec de l'enregistrement du brouillon",
+      "draft_discard_success": "Brouillon supprimé avec succès",
+      "draft_discard_error": "Échec de la suppression du brouillon"
+    },
+    "labels": {
+      "name": "Nom",
+      "date": "Date",
+      "size": "Taille",
+      "dimensions": "Dimensions",
+      "required": "Requis",
+      "fields": "Champs",
+      "user": "Utilisateur",
+      "site_favicon": "Favicon du site",
+      "or": "Ou"
+    },
+    "errors": {
+      "missing_git_info": "Informations Git requises manquantes",
+      "unable_to_determine_path": "Impossible de déterminer le chemin du fichier",
+      "required_fields_empty": "Veuillez remplir tous les champs obligatoires : {fields}"
+    },
+    "search": "Rechercher",
+    "search_placeholder": "Rechercher...",
+    "search_sites_placeholder": "Rechercher des sites...",
+    "prevent_navigation": {
+      "title": "Enregistrer les modifications avant de fermer ?",
+      "description": "Vous avez des modifications non enregistrées. Si vous continuez sans enregistrer, ces modifications seront perdues.",
+      "stay": "Rester",
+      "leave": "Quitter",
+      "browser_prompt": "Vous avez des modifications non enregistrées. Êtes-vous sûr de vouloir quitter ?"
+    },
+    "error_page": {
+      "something_went_wrong": "Une erreur s'est produite",
+      "error_code": "Code d'erreur : {code}",
+      "go_home": "Retourner à l'accueil",
+      "contact_support": "Contacter le support",
+      "show_technical_details": "Afficher les détails techniques"
+    },
+    "image_upload": {
+      "file_too_large": "La taille du fichier dépasse la limite de {limit} Mo.",
+      "preview_title": "Aperçu de l'image",
+      "preview_desc": "Confirmez si vous souhaitez télécharger cette image.",
+      "upload": "Télécharger"
+    }
+  }
+}

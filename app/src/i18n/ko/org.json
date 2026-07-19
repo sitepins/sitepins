@@ -1,0 +1,161 @@
+{
+  "org": {
+    "create": {
+      "add_org_btn": "새 조직 추가",
+      "dialog_title": "새 조직 만들기",
+      "dialog_desc": "계정에 새 조직을 추가합니다.",
+      "demo_error": "데모 모드에서는 새 조직을 생성할 수 없습니다.",
+      "success": "조직이 성공적으로 생성되었습니다. 이제 회원을 추가할 수 있습니다.",
+      "name_label": "조직 이름",
+      "submit_btn": "조직 생성"
+    },
+    "switcher": {
+      "default_org": "조직",
+      "search": "검색...",
+      "not_found": "조직을 찾을 수 없습니다.",
+      "add_new": "새 조직 추가"
+    },
+    "general": {
+      "form": {
+        "title": "조직 이름",
+        "description": "조직 이름 업데이트",
+        "update_btn": "조직 업데이트",
+        "demo_error": "데모 모드에서는 조직을 업데이트할 수 없습니다.",
+        "success": "조직이 업데이트되었습니다."
+      },
+      "archive": {
+        "title_archive": "아카이브 조직",
+        "title_restore": "조직 복원",
+        "desc_archive": "이 조직을 보관합니다. 활성 목록에서 제거되지만 나중에 복원할 수 있습니다.",
+        "desc_restore": "이 조직은 보관되어 활성 목록에서 숨겨졌습니다. 복원하여 다시 활성화할 수 있습니다.",
+        "archive_btn": "아카이브 조직",
+        "restore_btn": "조직 복원",
+        "dialog_title_archive": "아카이브 조직",
+        "dialog_title_restore": "조직 복원",
+        "dialog_desc_archive": "보관처리하면 활성 목록에서 조직이 숨겨집니다. 필요한 경우 나중에 복원할 수 있습니다.",
+        "dialog_desc_restore": "이 조직을 복원하고 다시 활성화하세요. 콘텐츠와 설정은 유지됩니다.",
+        "success_archive": "조직이 성공적으로 보관되었습니다.",
+        "success_restore": "조직이 활성 상태로 복원되었습니다.",
+        "error": "조직을 업데이트하지 못했습니다. 나중에 다시 시도해 주세요."
+      },
+      "delete": {
+        "title": "조직 삭제",
+        "description": "조직을 삭제하면 모든 프로젝트, 구성원, 설정이 영구적으로 삭제됩니다. 이 작업은 취소할 수 없습니다.",
+        "delete_org_btn": "조직 삭제",
+        "dialog_title": "확실합니까?",
+        "dialog_desc": "조직을 삭제하면 모든 프로젝트, 구성원, 설정이 영구적으로 삭제됩니다. 이 작업은 취소할 수 없습니다.",
+        "placeholder": "확인하려면 CONFIRM을 입력하세요",
+        "demo_error": "데모 조직은 삭제할 수 없습니다. 삭제하려면 문의해 주세요",
+        "success": "조직이 성공적으로 삭제되었습니다",
+        "error": "문제가 발생했습니다"
+      },
+      "thumb": {
+        "title": "조직 썸네일",
+        "description": "사진을 추가하여 조직 이미지를 독특하게 만드세요.",
+        "demo_error": "데모 모드에서는 조직을 업데이트할 수 없습니다.",
+        "success": "조직 미리보기 이미지가 성공적으로 업데이트되었습니다."
+      }
+    },
+    "members": {
+      "title": "팀원",
+      "description": "팀원 관리",
+      "anonymous": "익명",
+      "roles": {
+        "owner": "소유자",
+        "admin": "관리자",
+        "editor": "편집자"
+      },
+      "add_member": {
+        "add_member_btn": "회원 추가",
+        "dialog_title": "팀원 추가",
+        "dialog_desc": "조직에 새 구성원을 추가합니다.",
+        "email_label": "이메일",
+        "email_placeholder": "이메일을 입력하세요",
+        "role_label": "역할",
+        "role_placeholder": "역할 선택",
+        "roles_group": "역할",
+        "demo_error": "데모 모드에서는 이 기능을 사용할 수 없습니다.",
+        "error": "구성원을 조직에 추가할 수 없습니다."
+      },
+      "actions": {
+        "delete_user": "사용자 삭제",
+        "remove_member": "회원 제거",
+        "make": "만들기",
+        "are_you_sure": "확실합니까?",
+        "delete_warning": "이 작업은 취소할 수 없습니다. 영구적으로 삭제됩니다.",
+        "placeholder": "확인하려면 CONFIRM을 입력하세요",
+        "demo_error_delete": "데모 모드에서는 사용자를 삭제할 수 없습니다.",
+        "demo_error_update": "데모 모드에서는 이 기능을 사용할 수 없습니다.",
+        "success_delete": "사용자가 성공적으로 삭제되었습니다.",
+        "error_delete_suffix": "이 사용자를 삭제할 권한이 없습니다.",
+        "error_update_fn": "업데이트 기능을 사용할 수 없습니다",
+        "success_update": "회원의 역할이 성공적으로 업데이트되었습니다.",
+        "error_generic": "문제가 발생했습니다"
+      }
+    },
+    "sandbox": {
+      "title": "Vercel 샌드박스",
+      "description": "Vercel 액세스 토큰을 연결하여 프로젝트에 대한 라이브 샌드박스 미리보기를 활성화하세요.",
+      "connected": "연결됨",
+      "account": "계정",
+      "project": "프로젝트(청구 속성)",
+      "project_label": "프로젝트",
+      "disconnect_btn": "연결 해제",
+      "disconnecting": "연결을 끊는 중",
+      "token_label": "Vercel 액세스 토큰",
+      "token_placeholder": "Vercel 액세스 토큰을 붙여넣으세요",
+      "create_token_link": "Vercel 액세스 토큰 생성",
+      "step1": "전체 계정 범위를 사용하여 Vercel 액세스 토큰을 만듭니다.",
+      "step2": "아래에 붙여넣고 연결을 클릭하세요.",
+      "step3": "Vercel 계정에 전용 샌드박스 프로젝트가 자동으로 생성됩니다.",
+      "connect_btn": "연결",
+      "connecting": "연결 중",
+      "save_token_btn": "토큰 저장",
+      "update_token_btn": "토큰 업데이트",
+      "cancel_btn": "취소",
+      "status_validating": "토큰 검증 중",
+      "status_creating_project": "샌드박스 프로젝트 생성",
+      "status_saving": "설정 저장 중",
+      "disconnect_confirm_title": "Vercel Sandbox를 연결 해제하시겠습니까?",
+      "disconnect_confirm_desc": "이 조직의 모든 프로젝트에서 샌드박스 미리보기 작동이 중지됩니다.",
+      "disconnect_confirm_btn": "연결 해제",
+      "disconnect_cancel_btn": "취소",
+      "toast_token_required": "Vercel 액세스 토큰을 입력하세요",
+      "toast_connect_success": "샌드박스가 연결됨",
+      "toast_connect_success_desc": "이제 샌드박스 미리보기가 {username}의 Vercel 계정에서 실행됩니다.",
+      "toast_connect_error": "샌드박스 연결 실패",
+      "toast_disconnect_success": "샌드박스 연결이 끊어졌습니다",
+      "toast_disconnect_error": "연결을 끊지 못했습니다",
+      "no_permission": "조직 소유자와 관리자만 샌드박스 설정을 관리할 수 있습니다.",
+      "select_team_title": "Vercel 계정 선택",
+      "personal_account": "개인 계정",
+      "team_label": "팀",
+      "change_token": "토큰 변경",
+      "security_title": "보안 및 개인정보 보호",
+      "security0": "미리보기 샌드박스는 프로젝트의 **`dev` 스크립트**를 실행합니다(예: `npm run dev`). 해당 스크립트로 사이트가 시작되지 않으면 샌드박스에서도 실행되지 않습니다.",
+      "security1": "귀하의 액세스 토큰은 저장되기 전에 **AES-256-GCM으로 암호화**되며 일반 텍스트로 저장되지 않습니다.",
+      "security2": "**모든 Vercel 계정은 작동합니다** — 개인 또는 팀, 무료 취미 플랜 또는 유료. 샌드박스 미리보기는 당사가 아닌 귀하의 Vercel 할당량에 따라 실행됩니다.",
+      "security3": "토큰은 전용 샌드박스 프로젝트를 생성하고 미리보기 배포를 관리하는 데 **만** 사용됩니다. 귀하의 Vercel 계정에는 다른 조치가 취해지지 않습니다.",
+      "security4": "**언제든지 연결을 끊고** 서버에서 토큰을 즉시 삭제하세요.",
+      "security5": "각 조직은 Vercel에서 자체 **전용 샌드박스 프로젝트**를 통해 조직별로 미리보기를 격리하고 청구 속성을 깔끔하게 유지합니다."
+    }
+  },
+  "org-sites": {
+    "no_sites_found": "사이트를 찾을 수 없습니다",
+    "try_adjusting": "검색어를 조정해 보세요.",
+    "site_name": "사이트 이름",
+    "repository": "저장소",
+    "status": "상태",
+    "archived": "보관됨",
+    "active": "활성",
+    "private": "비공개",
+    "public": "공개"
+  },
+  "org-archived": {
+    "title": "조직이 보관됨",
+    "desc_full": "이 조직은 보관처리되었습니다. 현재 모든 콘텐츠는 읽기 전용이며 대부분의 관리 기능이 비활성화되어 있습니다.",
+    "desc_banner": "이 조직은 현재 보관처리되어 있으며 대부분의 기능이 비활성화되어 있습니다.",
+    "org_settings": "조직 설정",
+    "view_settings": "설정 보기"
+  }
+}

@@ -1,0 +1,149 @@
+{
+  "dashboard": {
+    "preference": {
+      "title": "設定",
+      "coauthor": {
+        "title": "Git 共同作成者",
+        "description": "リポジトリの操作に使用するアイデンティティを選択してください。",
+        "as_you": "あなたとして操作",
+        "as_you_desc": "ボットはコミット、ブランチ、プルリクエストにあなたの個人アイデンティティを使用し、変更の功績をあなたに帰属します。",
+        "as_you_fallback": "個人の権限が不十分な場合は、タスクを完了するために自動的にボットにフォールバックします。",
+        "as_bot": "ボットとして操作",
+        "as_bot_desc": "すべてのリポジトリ操作はシステムボットに帰属されます。これにより一貫した監査証跡が確保され、自動化ワークフローに推奨される設定です。",
+        "updated": "共同作成者の設定が更新されました",
+        "error": "なりすまし設定の更新に失敗しました"
+      },
+      "language": {
+        "title": "言語",
+        "description": "インターフェースの言語を選択してください。変更は即座に反映されます。",
+        "label": "インターフェース言語"
+      },
+      "theme": {
+        "title": "テーマ",
+        "description": "お好みのカラーテーマを選択してください。",
+        "updated_success": "テーマが正常に更新されました",
+        "updated_failed": "テーマの更新に失敗しました"
+      }
+    },
+    "account": {
+      "title": "アカウント",
+      "profile": {
+        "title": "表示名の更新",
+        "description": "プロフィールに表示される名前です。",
+        "full_name": "氏名",
+        "submit": "アカウントを更新",
+        "success": "ユーザー情報が正常に更新されました",
+        "error": "更新に失敗しました。再試行してください",
+        "demo_error": "この操作はデモモードでは無効です。"
+      },
+      "password": {
+        "title": "パスワードの変更",
+        "description": "定期的にパスワードを更新して、アカウントを安全に保護してください。",
+        "current_password": "現在のパスワード",
+        "new_password": "新しいパスワード",
+        "submit": "パスワードを更新",
+        "success": "パスワードが正常に更新されました",
+        "error": "更新に失敗しました。再試行してください"
+      },
+      "set_password": {
+        "title": "パスワードの設定",
+        "description": "ソーシャルプロバイダーでサインインしました。追加のセキュリティオプションと代替ログイン方法を有効にするためのパスワードを作成してください。",
+        "new_password": "新しいパスワード",
+        "submit": "パスワードを追加",
+        "success": "パスワードが正常に追加されました",
+        "error": "エラーが発生しました！後でもう一度お試しください"
+      },
+      "picture": {
+        "title": "プロフィール画像の更新",
+        "description": "写真を追加してワークスペースをプロフェッショナルにしましょう。",
+        "success": "ユーザー情報が正常に更新されました",
+        "error": "更新に失敗しました。再試行してください"
+      },
+      "newsletter": {
+        "title": "ニュースレターの購読",
+        "description": "新機能、アップデート、オファーに関するメールをお送りします。いつでも登録解除できます。",
+        "label": "ニュースレターと製品アップデートを受け取る",
+        "submit": "設定を保存",
+        "success_sub": "ニュースレターへの登録が完了しました",
+        "success_unsub": "ニュースレターの登録解除が完了しました",
+        "error": "更新に失敗しました。再試行してください"
+      },
+      "delete": {
+        "title": "アカウントの削除",
+        "description": "警告：この操作は元に戻せません。アカウントが完全に削除され、すべてのデータがサーバーから削除されます。",
+        "confirm_label": "<strong>DELETE</strong> と入力して確認",
+        "confirm_placeholder": "DELETE と入力してください",
+        "button": "アカウントを削除",
+        "reason_title": "アカウントを削除する主な理由は何ですか？",
+        "other_reason_label": "その他の理由（最大200文字）",
+        "other_reason_placeholder": "詳しく教えてください（最大200文字）",
+        "reasons": {
+          "complex": "複雑すぎる、または使いにくい",
+          "not_work": "ウェブサイトで機能しなかった",
+          "poor_design": "デザインやユーザー体験が悪い",
+          "bugs": "バグが多すぎる",
+          "missing_features": "必要な機能が不足している",
+          "better_alternative": "より良い代替品を見つけた",
+          "other": "その他"
+        },
+        "feedback": {
+          "demo_disabled": "デモモードではアカウントの削除が無効です。",
+          "success": "アカウントが正常に削除されました",
+          "error": "後でもう一度お試しください。"
+        }
+      }
+    },
+    "sitepins_ai": {
+      "title": "Sitepins AI",
+      "description": "AI プロバイダーを設定して、インテリジェントなコンテンツ提案とオートコンプリート機能を有効にしてください。",
+      "provider_label": "プロバイダー",
+      "provider_placeholder": "プロバイダーを選択",
+      "model_label": "モデル",
+      "model_placeholder": "モデルを選択",
+      "api_key_label": "API Key",
+      "api_key_placeholder": "API Key を入力",
+      "show": "表示",
+      "hide": "非表示",
+      "copilot_title": "Sitepins コパイロット",
+      "copilot_description": "入力時にオートコンプリートを提案します。",
+      "delete_key": "キーを削除",
+      "save_changes": "変更を保存",
+      "save_success": "設定が正常に保存されました",
+      "save_error": "エラーが発生しました！",
+      "security_title": "重要なセキュリティに関するお知らせ",
+      "security1": "プライバシーを保護しセキュリティポリシーに準拠するため、**API Key はデータベースに保存しておりません**。",
+      "security2": "キーはブラウザのローカルストレージにのみ保存されます。ブラウザを切り替えたりクリアしたりすると、キーは失われます。",
+      "security3": "API Key は安全に管理してください。弊社では回復することができません。",
+      "custom_model": "手動で入力",
+      "custom_model_input_label": "モデルID",
+      "custom_model_input_placeholder": "カスタムモデルIDを入力",
+      "find_model_id": "モデルIDを検索"
+    },
+    "sidebar": {
+      "back": "戻る"
+    },
+    "refetch_preview": "プレビューを再取得",
+    "preview_unavailable": "プレビューが利用できません",
+    "website": "ウェブサイト",
+    "edit_website": "ウェブサイトを編集",
+    "build_status": "ビルドステータス",
+    "last_updated": "最終更新",
+    "source": "ソース",
+    "recently": "最近",
+    "last_updated_by": "{distance} 前、{author} によって更新",
+    "switcher": {
+      "default_site": "サイトを選択",
+      "search": "検索...",
+      "not_found": "プロジェクトが見つかりません。",
+      "add_new": "新しいサイトを追加"
+    },
+    "archived_project": {
+      "title": "プロジェクトはアーカイブ済みです",
+      "description": "このプロジェクトはアーカイブされており、ほとんどの機能が無効になっています。プロジェクト設定にアクセスして、復元またはプロジェクトステータスの変更を行えます。",
+      "open_settings": "設定を開く"
+    },
+    "project_overview": {
+      "preview_alt": "{name} のライブプレビュー"
+    }
+  }
+}

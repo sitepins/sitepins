@@ -1,0 +1,282 @@
+{
+  "project-settings": {
+    "general": {
+      "form": {
+        "title": "Cài đặt dự án",
+        "description": "Cập nhật thông tin Dự án của bạn.",
+        "demo_error": "Đây là trang demo, bạn không thể cập nhật",
+        "success": "Trang web được cập nhật thành công",
+        "site_name": "Tên trang web",
+        "website": "Trang web (tùy chọn)"
+      },
+      "archive": {
+        "restore_title": "Khôi phục dự án",
+        "restore_desc": "Dự án hiện đang được lưu trữ. Nó cần phải được khôi phục trước để thực hiện bất kỳ thay đổi nào.",
+        "archive_title": "Lưu trữ dự án",
+        "archive_desc": "Dự án sẽ được lưu trữ. Nó sẽ bị ẩn khỏi danh sách dự án nhưng có thể được khôi phục sau.",
+        "restore_btn": "Khôi phục dự án",
+        "archive_btn": "Lưu trữ dự án",
+        "archive_confirm_title": "Lưu trữ dự án này?",
+        "restore_confirm_title": "Khôi phục dự án này?",
+        "archive_confirm_desc": "Dự án này sẽ được lưu trữ. Nó sẽ bị ẩn khỏi danh sách dự án nhưng có thể được khôi phục sau.",
+        "restore_confirm_desc": "Dự án này sẽ được khôi phục. Nó sẽ hiển thị trong danh sách dự án và có thể được cập nhật.",
+        "demo_error": "Tính năng này không có trong bản demo",
+        "archive_success": "Dự án được lưu trữ thành công",
+        "restore_success": "Dự án được khôi phục thành công",
+        "error": "Đã xảy ra lỗi"
+      },
+      "delete": {
+        "title": "Xóa dự án",
+        "description": "Dự án sẽ bị xóa vĩnh viễn. Hành động này là không thể thay đổi và không thể hoàn tác.",
+        "warning": "Dự án này sẽ bị xóa vĩnh viễn. Hành động này là không thể thay đổi và không thể hoàn tác. Tất cả dữ liệu liên quan đến dự án này sẽ bị mất.",
+        "delete_btn": "Xóa dự án",
+        "confirm_title": "Bạn có hoàn toàn chắc chắn không?",
+        "confirm_desc": "Không thể hoàn tác hành động này. Điều này sẽ xóa vĩnh viễn.",
+        "placeholder": "gõ CONFIRM để xác nhận",
+        "demo_error": "Bạn không thể xóa dự án ở chế độ demo.",
+        "success": "Dự án đã được xóa thành công.",
+        "error": "Đã xảy ra lỗi",
+        "error_suffix": "Bạn không được phép xóa dự án này.",
+        "error_generic": "Đã xảy ra lỗi"
+      },
+      "move": {
+        "title": "Di chuyển dự án",
+        "description": "Chuyển dự án này sang tổ chức khác mà bạn là thành viên.",
+        "current_org": "Tổ chức hiện tại",
+        "destination": "Điểm đến",
+        "loading_orgs": "Đang tải tổ chức...",
+        "no_orgs": "Không có tổ chức nào khác có sẵn.",
+        "placeholder": "Chọn điểm đến",
+        "move_btn": "Di chuyển dự án",
+        "confirm_title": "Xác nhận di chuyển",
+        "confirm_desc": "Di chuyển dự án này đến",
+        "confirm_move_btn": "Di chuyển dự án",
+        "error_select": "Chọn tổ chức",
+        "success": "Dự án được chuyển thành công",
+        "error": "Di chuyển dự án không thành công"
+      },
+      "thumb": {
+        "title": "Hình thu nhỏ của dự án",
+        "description": "Làm cho hình ảnh trang web của bạn trở nên độc đáo bằng cách thêm ảnh.",
+        "demo_error": "Đây là trang demo, bạn không thể cập nhật",
+        "success": "Trang web được cập nhật thành công"
+      }
+    },
+    "git": {
+      "repo": {
+        "title": "Kho lưu trữ Git",
+        "description_connected": "Dự án của bạn hiện được kết nối với một kho lưu trữ.",
+        "description_disconnected": "Kết nối dự án của bạn với kho lưu trữ Git để quản lý nội dung của bạn.",
+        "connected_at": "Đã kết nối {time}",
+        "provider_label": "Chọn Nhà cung cấp",
+        "select_provider_placeholder": "Chọn nhà cung cấp",
+        "select_repo_label": "Kho lưu trữ",
+        "select_repo_placeholder": "Chọn kho lưu trữ",
+        "no_repo_found": "Không tìm thấy kho lưu trữ",
+        "please_wait": "Xin vui lòng chờ...",
+        "cant_see_repo": "Không thể thấy repo của bạn ở đây?",
+        "configure_on": "Định cấu hình trên {provider}",
+        "branch_label": "Chi nhánh",
+        "choose_branch_placeholder": "Chọn chi nhánh",
+        "disconnect_btn": "Ngắt kết nối",
+        "disconnect_confirm_title": "Bạn có hoàn toàn chắc chắn không?",
+        "disconnect_confirm_desc": "Hành động này sẽ ngắt kết nối kho lưu trữ khỏi Sitepins. Bạn luôn có thể kết nối lại sau.",
+        "connect_repo_btn": "Kết nối kho lưu trữ",
+        "error_missing_info": "Thiếu thông tin dự án hoặc tổ chức",
+        "success_disconnect": "Đã ngắt kết nối kho lưu trữ thành công",
+        "error_disconnect": "Không thể ngắt kết nối kho lưu trữ",
+        "error_no_repo_branch": "Vui lòng chọn kho lưu trữ và chi nhánh",
+        "success_connect": "Kho lưu trữ được kết nối thành công",
+        "error_connect": "Không thể kết nối kho lưu trữ"
+      },
+      "branch": {
+        "title": "Quản lý chi nhánh",
+        "description": "Quản lý nhánh được sử dụng cho nội dung dự án của bạn",
+        "current_branch_label": "Chi nhánh hiện tại",
+        "select_branch_label": "Chọn chi nhánh",
+        "loading_branches": "Đang tải các nhánh...",
+        "placeholder": "Chọn một chi nhánh",
+        "branches_label": "Chi nhánh",
+        "change_branch_btn": "Thay đổi chi nhánh",
+        "update_branch_btn": "Cập nhật chi nhánh",
+        "success_message": "Chi nhánh được cập nhật thành công!",
+        "error_missing_info": "Thiếu thông tin dự án hoặc tổ chức",
+        "error_no_repo": "Không có kho lưu trữ nào được kết nối",
+        "error_generic": "Không cập nhật được chi nhánh"
+      }
+    },
+    "schemas": {
+      "title": "Quản lý lược đồ",
+      "description": "Quản lý lược đồ nội dung cho dự án của bạn",
+      "no_schemas_found": "Không tìm thấy lược đồ nào",
+      "create_first_schema": "Tạo lược đồ đầu tiên của bạn bằng cách điều hướng đến thư mục nội dung",
+      "fields_count": "{đếm, số nhiều, =1 {# trường} khác {# trường}}",
+      "edit_dialog_title": "Chỉnh sửa lược đồ",
+      "edit_dialog_description": "Sửa đổi các trường lược đồ của bạn và thuộc tính của chúng",
+      "schema_name_label": "Tên lược đồ",
+      "update_btn": "Cập nhật lược đồ",
+      "success_update": "Lược đồ được cập nhật thành công!",
+      "error_update": "Lỗi cập nhật lược đồ",
+      "success_delete": "Đã xóa lược đồ thành công!",
+      "error_delete": "Lỗi xóa lược đồ",
+      "error_validation": "Vui lòng sửa các trường được đánh dấu và thử lại."
+    },
+    "snippets": {
+      "title": "Quản lý đoạn mã",
+      "description": "Quản lý đoạn mã cho dự án của bạn",
+      "add_btn": "Thêm đoạn mã",
+      "no_snippets_found": "Không tìm thấy đoạn trích nào",
+      "create_first_snippet": "Tạo đoạn mã đầu tiên của bạn để bắt đầu",
+      "used_in": "Được sử dụng trong: {schemas}",
+      "no_schemas_linked": "Không có lược đồ nào được liên kết",
+      "edit_dialog_title": "Chỉnh sửa đoạn trích",
+      "create_dialog_title": "Tạo đoạn mã",
+      "dialog_description": "Định cấu hình thuộc tính đoạn mã của bạn",
+      "success_created": "Đoạn mã được tạo thành công!",
+      "success_updated": "Đoạn mã được cập nhật thành công!",
+      "error_save": "Lỗi lưu đoạn mã",
+      "success_deleted": "Đã xóa đoạn trích thành công!",
+      "error_delete": "Lỗi xóa đoạn trích",
+      "label_field": "Nhãn",
+      "label_placeholder": "Nhãn đoạn mã",
+      "schemas_field": "Lược đồ áp dụng",
+      "select_schemas_placeholder": "Chọn lược đồ",
+      "no_schemas_found_in_combobox": "Không tìm thấy lược đồ nào.",
+      "code_field": "Mã",
+      "delete_confirm_title": "Xóa đoạn mã",
+      "delete_confirm_desc": "Bạn có chắc chắn muốn xóa đoạn mã này không? Không thể hoàn tác hành động này.",
+      "update_btn": "Cập nhật đoạn mã",
+      "create_btn": "Tạo đoạn mã"
+    },
+    "arrangement": {
+      "title": "Sắp xếp thanh bên",
+      "description": "Tùy chỉnh cấu trúc và bố cục nội dung của bạn",
+      "features": {
+        "virtual_folders": {
+          "title": "Thư mục ảo",
+          "desc": "Sẽ không thay đổi repo của bạn"
+        },
+        "visual_headings": {
+          "title": "Tiêu đề trực quan",
+          "desc": "Tổ chức các phần"
+        },
+        "drag_and_drop": {
+          "title": "Kéo và thả",
+          "desc": "Sắp xếp lại ngay lập tức"
+        },
+        "glob_patterns": {
+          "title": "Mô hình toàn cầu",
+          "desc": "Lọc tập tin dễ dàng"
+        }
+      },
+      "no_arrangements": "Chưa có sự sắp xếp nào",
+      "get_started": "Bắt đầu bằng cách thêm thư mục, tệp hoặc tiêu đề để tùy chỉnh bố cục thanh bên của bạn.",
+      "add_item_btn": "+ Thêm mục mới",
+      "edit_dialog_title": "Chỉnh sửa mục sắp xếp",
+      "add_dialog_title": "Thêm mục sắp xếp mới",
+      "edit_dialog_desc": "Cập nhật chi tiết về mục sắp xếp của bạn.",
+      "add_dialog_desc": "Định cấu hình mục sắp xếp mới của bạn.",
+      "select_type_label": "Chọn loại:",
+      "select_type_placeholder": "Chọn loại",
+      "type_options": {
+        "file": "Tập tin",
+        "heading": "Tiêu đề",
+        "folder": "Thư mục",
+        "video": "Video",
+        "preview_image": "Xem trước hình ảnh"
+      },
+      "rename_file": "Đổi tên tập tin",
+      "rename_successful": "Đã đổi tên thành công tệp thành {name}",
+      "error_renaming": "Đã xảy ra lỗi khi đổi tên tệp. Vui lòng thử lại.",
+      "success_update": "Đã cập nhật thành công sắp xếp",
+      "file_form": {
+        "select_file": "Chọn Tệp",
+        "placeholder": "Chọn Tệp",
+        "no_items": "Không tìm thấy mục nào.",
+        "name_label": "Tên",
+        "name_placeholder": "chỉ số"
+      },
+      "folder_form": {
+        "select_folder": "Chọn thư mục",
+        "placeholder": "Chọn thư mục",
+        "no_items": "Không tìm thấy mục nào.",
+        "group_name_label": "Tên nhóm",
+        "group_name_placeholder": "danh sách blog",
+        "include_label": "Bao gồm",
+        "include_placeholder": "*.md",
+        "exclude_label": "Loại trừ",
+        "exclude_placeholder": "*index.md"
+      },
+      "heading_form": {
+        "name_label": "Tên",
+        "placeholder": "Tiêu đề"
+      },
+      "errors": {
+        "name_min_length": "Tên phải có ít nhất 2 ký tự.",
+        "heading_min_length": "Tiêu đề phải có ít nhất 2 ký tự.",
+        "name_exists": "Tên nhóm đã tồn tại.",
+        "heading_exists": "Tiêu đề đã tồn tại."
+      },
+      "delete_confirm_title": "Bạn có hoàn toàn chắc chắn không?",
+      "continue_btn": "Tiếp tục"
+    },
+    "configure": {
+      "commit": {
+        "title": "Cấu hình cam kết",
+        "description": "Xác định cách xử lý thông báo cam kết khi bạn lưu thay đổi",
+        "custom_commit_label": "Tin nhắn cam kết tùy chỉnh",
+        "custom_commit_desc": "Kích hoạt tính năng này để viết thông báo cam kết của riêng bạn khi lưu. Khi hoạt động, bạn có thể cung cấp tin nhắn tùy chỉnh; nếu không, Sitepins sẽ tự động tạo một cái cho bạn.",
+        "save_btn": "Lưu thay đổi",
+        "success_update": "Đã cập nhật cài đặt hộp thoại cam kết thành công",
+        "error_update": "Không cập nhật được cài đặt"
+      },
+      "project": {
+        "title": "Chỉnh sửa cấu hình dự án",
+        "description": "Định cấu hình cài đặt dự án của bạn. Nhấp vào lưu để áp dụng các thay đổi.",
+        "steps": {
+          "content": "Nội dung",
+          "media": "Truyền thông",
+          "public": "Công khai",
+          "configs": "Cấu hình"
+        },
+        "form": {
+          "content_label": "Thư mục nội dung",
+          "content_placeholder": "Chọn thư mục nội dung của bạn",
+          "media_label": "Thư mục phương tiện",
+          "media_placeholder": "Chọn thư mục phương tiện (hình ảnh) của bạn",
+          "public_label": "Thư mục Công cộng",
+          "public_placeholder": "Chọn thư mục chung của bạn",
+          "config_label": "Cấu hình trang web (tùy chọn)",
+          "config_placeholder": "Chọn tệp cấu hình của bạn",
+          "suggested": "Đề xuất:",
+          "no_results": "Không tìm thấy kết quả nào.",
+          "suggestions": {
+            "content": "nơi lưu trữ các tệp đánh dấu của bạn",
+            "media": "nơi lưu trữ các tập tin media của bạn",
+            "public": "nơi lưu trữ các tập tin công khai của bạn",
+            "config": "nơi lưu trữ tập tin cấu hình của bạn"
+          }
+        },
+        "buttons": {
+          "finish": "Hoàn tất thiết lập",
+          "update": "Cập nhật cấu hình"
+        },
+        "help": {
+          "text": "Cần trợ giúp về cấu hình của bạn?",
+          "contact_us": "Liên hệ với chúng tôi"
+        },
+        "status": {
+          "success_create": "Đã tạo file cấu hình thành công",
+          "success_update": "File cấu hình được cập nhật thành công",
+          "error_update": "Không cập nhật được cài đặt",
+          "not_configured": "Chưa được định cấu hình",
+          "none": "Không có"
+        },
+        "summary": {
+          "title": "Cấu hình dự án",
+          "description": "Tổng quan nhanh về cấu hình hiện tại của bạn"
+        }
+      }
+    }
+  }
+}

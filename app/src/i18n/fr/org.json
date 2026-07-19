@@ -1,0 +1,161 @@
+{
+  "org": {
+    "create": {
+      "add_org_btn": "Ajouter une nouvelle organisation",
+      "dialog_title": "Créer une nouvelle organisation",
+      "dialog_desc": "Ajoutez une nouvelle organisation à votre compte.",
+      "demo_error": "Vous ne pouvez pas créer de nouvelle organisation en mode démo.",
+      "success": "Organisation créée avec succès. Vous pouvez maintenant ajouter des membres.",
+      "name_label": "Nom de l'organisation",
+      "submit_btn": "Créer l'organisation"
+    },
+    "switcher": {
+      "default_org": "Organisation",
+      "search": "Rechercher...",
+      "not_found": "Aucune organisation trouvée.",
+      "add_new": "Ajouter une nouvelle organisation"
+    },
+    "general": {
+      "form": {
+        "title": "Nom de l'organisation",
+        "description": "Mettez à jour le nom de votre organisation",
+        "update_btn": "Mettre à jour l'organisation",
+        "demo_error": "Vous ne pouvez pas mettre à jour l'organisation en mode démo.",
+        "success": "Organisation mise à jour avec succès."
+      },
+      "archive": {
+        "title_archive": "Archiver l'organisation",
+        "title_restore": "Restaurer l'organisation",
+        "desc_archive": "Archivez cette organisation — elle sera retirée des listes actives mais pourra être restaurée ultérieurement.",
+        "desc_restore": "Cette organisation est archivée et masquée des listes actives. Vous pouvez la restaurer pour la rendre à nouveau active.",
+        "archive_btn": "Archiver l'organisation",
+        "restore_btn": "Restaurer l'organisation",
+        "dialog_title_archive": "Archiver l'organisation",
+        "dialog_title_restore": "Restaurer l'organisation",
+        "dialog_desc_archive": "L'archivage masquera l'organisation des listes actives. Vous pourrez la restaurer ultérieurement si nécessaire.",
+        "dialog_desc_restore": "Restaurez cette organisation et rendez-la à nouveau active. Le contenu et les paramètres sont préservés.",
+        "success_archive": "Organisation archivée avec succès.",
+        "success_restore": "Organisation restaurée en statut actif.",
+        "error": "Échec de la mise à jour de l'organisation. Veuillez réessayer plus tard."
+      },
+      "delete": {
+        "title": "Supprimer l'organisation",
+        "description": "La suppression de votre organisation supprimera définitivement tous les projets, membres et paramètres. Cette action est irréversible.",
+        "delete_org_btn": "Supprimer l'organisation",
+        "dialog_title": "Êtes-vous sûr ?",
+        "dialog_desc": "La suppression de votre organisation supprimera définitivement tous les projets, membres et paramètres. Cette action est irréversible.",
+        "placeholder": "tapez CONFIRMER pour confirmer",
+        "demo_error": "Vous ne pouvez pas supprimer l'organisation de démo — veuillez nous contacter si vous souhaitez la supprimer",
+        "success": "Organisation supprimée avec succès",
+        "error": "Une erreur s'est produite"
+      },
+      "thumb": {
+        "title": "Miniature de l'organisation",
+        "description": "Rendez l'image de votre organisation unique en ajoutant une photo.",
+        "demo_error": "Vous ne pouvez pas mettre à jour l'organisation en mode démo.",
+        "success": "Miniature de l'organisation mise à jour avec succès."
+      }
+    },
+    "members": {
+      "title": "Membres de l'équipe",
+      "description": "Gérez les membres de votre équipe",
+      "anonymous": "Anonyme",
+      "roles": {
+        "owner": "Propriétaire",
+        "admin": "Admin",
+        "editor": "Éditeur"
+      },
+      "add_member": {
+        "add_member_btn": "Ajouter un membre",
+        "dialog_title": "Ajouter un membre de l'équipe",
+        "dialog_desc": "Ajoutez un nouveau membre à votre organisation.",
+        "email_label": "E-mail",
+        "email_placeholder": "Entrez l'e-mail",
+        "role_label": "Rôle",
+        "role_placeholder": "Sélectionnez un rôle",
+        "roles_group": "Rôles",
+        "demo_error": "Cette fonctionnalité n'est pas disponible en mode démo.",
+        "error": "Le membre n'a pas pu être ajouté à l'organisation."
+      },
+      "actions": {
+        "delete_user": "Supprimer l'utilisateur",
+        "remove_member": "Retirer le membre",
+        "make": "Définir comme",
+        "are_you_sure": "Êtes-vous sûr ?",
+        "delete_warning": "Cette action est irréversible. Cela supprimera définitivement.",
+        "placeholder": "tapez CONFIRMER pour confirmer",
+        "demo_error_delete": "Vous ne pouvez pas supprimer des utilisateurs en mode démo.",
+        "demo_error_update": "Cette fonctionnalité n'est pas disponible en mode démo.",
+        "success_delete": "L'utilisateur a été supprimé avec succès.",
+        "error_delete_suffix": "Vous n'êtes pas autorisé à supprimer cet utilisateur.",
+        "error_update_fn": "Fonction de mise à jour indisponible",
+        "success_update": "Le rôle du membre a été mis à jour avec succès.",
+        "error_generic": "Une erreur s'est produite"
+      }
+    },
+    "sandbox": {
+      "title": "Vercel Sandbox",
+      "description": "Connectez un token d'accès Vercel pour activer les aperçus sandbox en direct pour vos projets.",
+      "connected": "Connecté",
+      "account": "Compte",
+      "project": "Projet (attribution de facturation)",
+      "disconnect_btn": "Déconnecter",
+      "disconnecting": "Déconnexion",
+      "token_label": "Jeton d'accès Vercel",
+      "token_placeholder": "Collez votre jeton d'accès Vercel",
+      "create_token_link": "Créer un jeton d'accès Vercel",
+      "step1": "Créez un jeton d'accès Vercel avec une portée de compte complète.",
+      "step2": "Collez-le ci-dessous et cliquez sur Connecter.",
+      "step3": "Un projet sandbox dédié sera créé automatiquement sur votre compte Vercel.",
+      "connect_btn": "Connecter",
+      "connecting": "Connexion",
+      "toast_token_required": "Entrez votre jeton d'accès Vercel",
+      "toast_connect_success": "Sandbox connecté",
+      "toast_connect_success_desc": "Les aperçus sandbox s'exécuteront désormais sur le compte Vercel de {username}.",
+      "toast_connect_error": "Échec de la connexion sandbox",
+      "toast_disconnect_success": "Sandbox déconnecté",
+      "toast_disconnect_error": "Échec de la déconnexion",
+      "no_permission": "Seuls les propriétaires et administrateurs de l'organisation peuvent gérer les paramètres sandbox.",
+      "project_label": "Projet",
+      "save_token_btn": "Enregistrer le token",
+      "update_token_btn": "Mettre à jour le token",
+      "cancel_btn": "Annuler",
+      "status_validating": "Validation du token",
+      "status_creating_project": "Création du projet sandbox",
+      "status_saving": "Enregistrement des paramètres",
+      "disconnect_confirm_title": "Déconnecter Vercel Sandbox ?",
+      "disconnect_confirm_desc": "Les aperçus sandbox ne fonctionneront plus pour tous les projets de cette organisation.",
+      "disconnect_confirm_btn": "Déconnecter",
+      "disconnect_cancel_btn": "Annuler",
+      "select_team_title": "Sélectionner le compte Vercel",
+      "personal_account": "Compte personnel",
+      "team_label": "Équipe",
+      "change_token": "Changer le token",
+      "security_title": "Sécurité et confidentialité",
+      "security0": "Le Preview Sandbox exécute le **script `dev`** de votre projet (par exemple, `npm run dev`). Si votre site ne démarre pas avec ce script, il ne fonctionnera pas non plus dans le sandbox.",
+      "security1": "Votre token d'accès est **chiffré avec AES-256-GCM** avant stockage — jamais enregistré en clair.",
+      "security2": "**Tout compte Vercel fonctionne** — personnel ou équipe, plan Hobby gratuit ou payant. Les aperçus sandbox s'exécutent sur votre propre quota Vercel, pas le nôtre.",
+      "security3": "Le token est utilisé **uniquement** pour créer un projet sandbox dédié et gérer les déploiements d'aperçu. Aucune autre action n'est effectuée sur votre compte Vercel.",
+      "security4": "**Déconnectez à tout moment** pour supprimer immédiatement le token de nos serveurs.",
+      "security5": "Chaque organisation obtient son propre **projet sandbox dédié** sur Vercel — les aperçus restent isolés par org et l'attribution de facturation est claire."
+    }
+  },
+  "org-sites": {
+    "no_sites_found": "Aucun site trouvé",
+    "try_adjusting": "Essayez d'ajuster vos termes de recherche",
+    "site_name": "Nom du site",
+    "repository": "Dépôt",
+    "status": "Statut",
+    "archived": "Archivé",
+    "active": "Actif",
+    "private": "Privé",
+    "public": "Public"
+  },
+  "org-archived": {
+    "title": "Organisation archivée",
+    "desc_full": "Cette organisation a été archivée. Tout le contenu est actuellement en lecture seule et la plupart des fonctions de gestion sont désactivées.",
+    "desc_banner": "Cette organisation est actuellement archivée et la plupart des fonctionnalités sont désactivées.",
+    "org_settings": "Paramètres de l'organisation",
+    "view_settings": "Voir les paramètres"
+  }
+}

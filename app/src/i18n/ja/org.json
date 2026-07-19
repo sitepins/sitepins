@@ -1,0 +1,161 @@
+{
+  "org": {
+    "create": {
+      "add_org_btn": "新しい組織を追加",
+      "dialog_title": "新しい組織を作成",
+      "dialog_desc": "アカウントに新しい組織を追加します。",
+      "demo_error": "デモモードでは新しい組織を作成できません。",
+      "success": "組織が正常に作成されました。メンバーを追加できます。",
+      "name_label": "組織名",
+      "submit_btn": "組織を作成"
+    },
+    "switcher": {
+      "default_org": "組織",
+      "search": "検索...",
+      "not_found": "組織が見つかりません。",
+      "add_new": "新しい組織を追加"
+    },
+    "general": {
+      "form": {
+        "title": "組織名",
+        "description": "組織名を更新します",
+        "update_btn": "組織を更新",
+        "demo_error": "デモモードでは組織を更新できません。",
+        "success": "組織が正常に更新されました。"
+      },
+      "archive": {
+        "title_archive": "組織をアーカイブ",
+        "title_restore": "組織を復元",
+        "desc_archive": "この組織をアーカイブします — アクティブリストから削除されますが、後で復元できます。",
+        "desc_restore": "この組織はアーカイブされており、アクティブリストから非表示になっています。復元してアクティブにすることができます。",
+        "archive_btn": "組織をアーカイブ",
+        "restore_btn": "組織を復元",
+        "dialog_title_archive": "組織をアーカイブ",
+        "dialog_title_restore": "組織を復元",
+        "dialog_desc_archive": "アーカイブすると組織がアクティブリストから非表示になります。後で復元することができます。",
+        "dialog_desc_restore": "この組織を復元してアクティブにします。コンテンツと設定は保持されます。",
+        "success_archive": "組織が正常にアーカイブされました。",
+        "success_restore": "組織がアクティブ状態に復元されました。",
+        "error": "組織の更新に失敗しました。後でもう一度お試しください。"
+      },
+      "delete": {
+        "title": "組織を削除",
+        "description": "組織を削除すると、すべてのプロジェクト、メンバー、設定が完全に削除されます。この操作は元に戻せません。",
+        "delete_org_btn": "組織を削除",
+        "dialog_title": "本当によろしいですか？",
+        "dialog_desc": "組織を削除すると、すべてのプロジェクト、メンバー、設定が完全に削除されます。この操作は元に戻せません。",
+        "placeholder": "CONFIRM と入力して確認",
+        "demo_error": "デモ組織は削除できません — 削除をご希望の場合はお問い合わせください",
+        "success": "組織が正常に削除されました",
+        "error": "エラーが発生しました"
+      },
+      "thumb": {
+        "title": "組織のサムネイル",
+        "description": "写真を追加して組織画像をユニークにしましょう。",
+        "demo_error": "デモモードでは組織を更新できません。",
+        "success": "組織のサムネイルが正常に更新されました。"
+      }
+    },
+    "members": {
+      "title": "チームメンバー",
+      "description": "チームメンバーを管理します",
+      "anonymous": "匿名",
+      "roles": {
+        "owner": "オーナー",
+        "admin": "管理者",
+        "editor": "エディター"
+      },
+      "add_member": {
+        "add_member_btn": "メンバーを追加",
+        "dialog_title": "チームメンバーを追加",
+        "dialog_desc": "組織に新しいメンバーを追加します。",
+        "email_label": "メールアドレス",
+        "email_placeholder": "メールアドレスを入力",
+        "role_label": "ロール",
+        "role_placeholder": "ロールを選択",
+        "roles_group": "ロール",
+        "demo_error": "この機能はデモモードではご利用いただけません。",
+        "error": "メンバーを組織に追加できませんでした。"
+      },
+      "actions": {
+        "delete_user": "ユーザーを削除",
+        "remove_member": "メンバーを削除",
+        "make": "設定",
+        "are_you_sure": "よろしいですか？",
+        "delete_warning": "この操作は元に戻せません。完全に削除されます。",
+        "placeholder": "CONFIRM と入力して確認",
+        "demo_error_delete": "デモモードではユーザーを削除できません。",
+        "demo_error_update": "この機能はデモモードではご利用いただけません。",
+        "success_delete": "ユーザーが正常に削除されました。",
+        "error_delete_suffix": "このユーザーを削除する権限がありません。",
+        "error_update_fn": "更新関数が使用できません",
+        "success_update": "メンバーのロールが正常に更新されました。",
+        "error_generic": "エラーが発生しました"
+      }
+    },
+    "sandbox": {
+      "title": "Vercel サンドボックス",
+      "description": "Vercel アクセストークンを接続して、プロジェクトのライブサンドボックスプレビューを有効にします。",
+      "connected": "接続済み",
+      "account": "アカウント",
+      "project": "プロジェクト（課金用）",
+      "disconnect_btn": "切断",
+      "disconnecting": "切断中",
+      "token_label": "Vercelアクセストークン",
+      "token_placeholder": "Vercelアクセストークンを貼り付け",
+      "create_token_link": "Vercelアクセストークンを作成",
+      "step1": "フルアカウントスコープのVercelアクセストークンを作成します。",
+      "step2": "以下に貼り付けて「接続」をクリックします。",
+      "step3": "専用サンドボックスプロジェクトがVercelアカウントに自動作成されます。",
+      "connect_btn": "接続",
+      "connecting": "接続中",
+      "toast_token_required": "Vercelアクセストークンを入力してください",
+      "toast_connect_success": "サンドボックス接続済み",
+      "toast_connect_success_desc": "{username}のVercelアカウントでサンドボックスプレビューが実行されます。",
+      "toast_connect_error": "サンドボックスの接続に失敗しました",
+      "toast_disconnect_success": "サンドボックス切断済み",
+      "toast_disconnect_error": "切断に失敗しました",
+      "no_permission": "サンドボックス設定を管理できるのは組織オーナーと管理者のみです。",
+      "project_label": "プロジェクト",
+      "save_token_btn": "トークンを保存",
+      "update_token_btn": "トークンを更新",
+      "cancel_btn": "キャンセル",
+      "status_validating": "トークンを検証中",
+      "status_creating_project": "サンドボックスプロジェクトを作成中",
+      "status_saving": "設定を保存中",
+      "disconnect_confirm_title": "Vercel サンドボックスを切断しますか？",
+      "disconnect_confirm_desc": "この組織のすべてのプロジェクトでサンドボックスプレビューが機能しなくなります。",
+      "disconnect_confirm_btn": "切断",
+      "disconnect_cancel_btn": "キャンセル",
+      "select_team_title": "Vercel アカウントを選択",
+      "personal_account": "個人アカウント",
+      "team_label": "チーム",
+      "change_token": "トークンを変更",
+      "security_title": "セキュリティとプライバシー",
+      "security0": "プレビューサンドボックスはプロジェクトの **`dev` スクリプト**（例: `npm run dev`）を実行します。そのスクリプトでサイトが起動しない場合、サンドボックスでも動作しません。",
+      "security1": "アクセストークンは保存前に **AES-256-GCM で暗号化** されます — 平文では保存されません。",
+      "security2": "**あらゆる Vercel アカウントに対応** — 個人・チーム、無料の Hobby プランから有料プランまで。サンドボックスプレビューはお客様の Vercel クォータで実行されます。",
+      "security3": "トークンは専用のサンドボックスプロジェクトの作成とプレビューデプロイの管理に **のみ** 使用されます。お客様の Vercel アカウントでそれ以外の操作は行いません。",
+      "security4": "**いつでも切断**して、サーバーからトークンを即座に削除できます。",
+      "security5": "組織ごとに Vercel 上に専用の **サンドボックスプロジェクト** が作成されます — プレビューは組織ごとに分離され、請求の帰属も明確です。"
+    }
+  },
+  "org-sites": {
+    "no_sites_found": "サイトが見つかりません",
+    "try_adjusting": "検索キーワードを変えてみてください",
+    "site_name": "サイト名",
+    "repository": "リポジトリ",
+    "status": "ステータス",
+    "archived": "アーカイブ済み",
+    "active": "アクティブ",
+    "private": "プライベート",
+    "public": "パブリック"
+  },
+  "org-archived": {
+    "title": "組織がアーカイブされました",
+    "desc_full": "この組織はアーカイブされています。すべてのコンテンツは現在読み取り専用であり、ほとんどの管理機能が無効になっています。",
+    "desc_banner": "この組織は現在アーカイブされており、ほとんどの機能が無効になっています。",
+    "org_settings": "組織設定",
+    "view_settings": "設定を表示"
+  }
+}

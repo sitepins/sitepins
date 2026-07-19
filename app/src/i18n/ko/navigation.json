@@ -1,0 +1,55 @@
+{
+  "navigation": {
+    "menu": {
+      "footer_account": {
+        "account": "계정",
+        "updates": "업데이트",
+        "support": "지원",
+        "sitepins_ai": "사이트핀 AI",
+        "preferences": "환경설정"
+      },
+      "user_dashboard": {
+        "overview": "개요",
+        "account": "계정",
+        "preferences": "환경설정",
+        "sitepins_ai": "사이트핀 AI"
+      },
+      "org_dashboard": {
+        "websites": "웹사이트",
+        "settings": "설정"
+      },
+      "org_settings": {
+        "general": "일반",
+        "members": "회원",
+        "sandbox": "샌드박스"
+      },
+      "project_dashboard": {
+        "overview": "개요",
+        "media": "미디어",
+        "settings": "설정"
+      },
+      "project_settings": {
+        "general": "일반",
+        "configure": "구성",
+        "git": "힘내",
+        "schemas": "스키마",
+        "snippets": "단편",
+        "arrangement": "편곡"
+      }
+    },
+    "sidebar": {
+      "open_menu": "메뉴 열기",
+      "code": "코드",
+      "config": "구성",
+      "actions": {
+        "close": "닫다"
+      },
+      "sidebar_trigger_mobile": {
+        "title": "콘텐츠 목록",
+        "description": "사이드바에서 모든 콘텐츠 파일 보기",
+        "message": "콘텐츠를 찾고 계십니까? 모든 파일을 보려면 사이드바를 엽니다.",
+        "open_sidebar": "사이드바 열기"
+      }
+    }
+  }
+}

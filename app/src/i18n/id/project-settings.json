@@ -1,0 +1,282 @@
+{
+  "project-settings": {
+    "general": {
+      "form": {
+        "title": "Pengaturan Proyek",
+        "description": "Perbarui informasi Proyek Anda.",
+        "demo_error": "Ini adalah situs demo, Anda tidak dapat memperbaruinya",
+        "success": "Situs berhasil diperbarui",
+        "site_name": "Nama Situs",
+        "website": "Situs web (opsional)"
+      },
+      "archive": {
+        "restore_title": "Pulihkan Proyek",
+        "restore_desc": "Proyek ini saat ini diarsipkan. Itu perlu dipulihkan terlebih dahulu untuk membuat perubahan apa pun.",
+        "archive_title": "Proyek Arsip",
+        "archive_desc": "Proyek ini akan diarsipkan. Itu akan disembunyikan dari daftar proyek tetapi dapat dipulihkan nanti.",
+        "restore_btn": "Pulihkan Proyek",
+        "archive_btn": "Proyek Arsip",
+        "archive_confirm_title": "Arsipkan proyek ini?",
+        "restore_confirm_title": "Pulihkan proyek ini?",
+        "archive_confirm_desc": "Proyek ini akan diarsipkan. Itu akan disembunyikan dari daftar proyek tetapi dapat dipulihkan nanti.",
+        "restore_confirm_desc": "Proyek ini akan dipulihkan. Itu akan terlihat di daftar proyek dan dapat diperbarui.",
+        "demo_error": "Fitur ini tidak tersedia di demo",
+        "archive_success": "Proyek berhasil diarsipkan",
+        "restore_success": "Proyek berhasil dipulihkan",
+        "error": "Ada yang tidak beres"
+      },
+      "delete": {
+        "title": "Hapus Proyek",
+        "description": "Proyek ini akan dihapus secara permanen. Tindakan ini tidak dapat diubah dan tidak dapat dibatalkan.",
+        "warning": "Proyek ini akan dihapus secara permanen. Tindakan ini tidak dapat diubah dan tidak dapat dibatalkan. Semua data yang terkait dengan proyek ini akan hilang.",
+        "delete_btn": "Hapus Proyek",
+        "confirm_title": "Apakah Anda benar-benar yakin?",
+        "confirm_desc": "Tindakan ini tidak dapat dibatalkan. Ini akan menghapus secara permanen.",
+        "placeholder": "ketik CONFIRM untuk mengonfirmasi",
+        "demo_error": "Anda tidak dapat menghapus proyek dalam mode demo.",
+        "success": "Proyek telah berhasil dihapus.",
+        "error": "Ada yang tidak beres",
+        "error_suffix": "Anda tidak berwenang untuk menghapus proyek ini.",
+        "error_generic": "Ada yang tidak beres"
+      },
+      "move": {
+        "title": "Pindahkan Proyek",
+        "description": "Pindahkan proyek ini ke organisasi lain tempat Anda bergabung.",
+        "current_org": "Organisasi Saat Ini",
+        "destination": "Tujuan",
+        "loading_orgs": "Memuat organisasi...",
+        "no_orgs": "Tidak ada organisasi lain yang tersedia.",
+        "placeholder": "Pilih tujuan",
+        "move_btn": "Pindahkan Proyek",
+        "confirm_title": "Konfirmasikan perpindahan",
+        "confirm_desc": "Pindahkan proyek ini ke",
+        "confirm_move_btn": "Pindahkan Proyek",
+        "error_select": "Pilih organisasi",
+        "success": "Proyek berhasil dipindahkan",
+        "error": "Pemindahan Proyek gagal"
+      },
+      "thumb": {
+        "title": "Gambar Kecil Proyek",
+        "description": "Jadikan gambar situs Anda unik dengan menambahkan foto.",
+        "demo_error": "Ini adalah situs demo, Anda tidak dapat memperbaruinya",
+        "success": "Situs berhasil diperbarui"
+      }
+    },
+    "git": {
+      "repo": {
+        "title": "Repositori Git",
+        "description_connected": "Proyek Anda saat ini terhubung ke repositori.",
+        "description_disconnected": "Hubungkan proyek Anda ke repositori Git untuk mengelola konten Anda.",
+        "connected_at": "Terhubung {time}",
+        "provider_label": "Pilih Penyedia",
+        "select_provider_placeholder": "Pilih penyedia",
+        "select_repo_label": "Gudang",
+        "select_repo_placeholder": "Pilih repositori",
+        "no_repo_found": "Tidak ada repositori yang ditemukan",
+        "please_wait": "Mohon tunggu...",
+        "cant_see_repo": "Tidak dapat melihat repo Anda di sini?",
+        "configure_on": "Konfigurasikan pada {provider}",
+        "branch_label": "Cabang",
+        "choose_branch_placeholder": "Pilih cabang",
+        "disconnect_btn": "Putuskan sambungan",
+        "disconnect_confirm_title": "Apakah Anda benar-benar yakin?",
+        "disconnect_confirm_desc": "Tindakan ini akan memutuskan sambungan repositori dari Sitepins. Anda selalu dapat menghubungkannya kembali nanti.",
+        "connect_repo_btn": "Hubungkan Repositori",
+        "error_missing_info": "Informasi proyek atau organisasi tidak ada",
+        "success_disconnect": "Repositori berhasil terputus",
+        "error_disconnect": "Gagal memutuskan sambungan repositori",
+        "error_no_repo_branch": "Silakan pilih repositori dan cabang",
+        "success_connect": "Repositori berhasil terhubung",
+        "error_connect": "Gagal menghubungkan repositori"
+      },
+      "branch": {
+        "title": "Manajemen Cabang",
+        "description": "Kelola cabang yang digunakan untuk konten proyek Anda",
+        "current_branch_label": "Cabang Saat Ini",
+        "select_branch_label": "Pilih Cabang",
+        "loading_branches": "Memuat cabang...",
+        "placeholder": "Pilih cabang",
+        "branches_label": "Cabang",
+        "change_branch_btn": "Ganti Cabang",
+        "update_branch_btn": "Perbarui Cabang",
+        "success_message": "Cabang berhasil diperbarui!",
+        "error_missing_info": "Informasi proyek atau organisasi tidak ada",
+        "error_no_repo": "Tidak ada repositori yang terhubung",
+        "error_generic": "Gagal memperbarui cabang"
+      }
+    },
+    "schemas": {
+      "title": "Manajemen Skema",
+      "description": "Kelola skema konten untuk proyek Anda",
+      "no_schemas_found": "Tidak ada skema yang ditemukan",
+      "create_first_schema": "Buat skema pertama Anda dengan menavigasi ke folder konten",
+      "fields_count": "{count, plural, =1 {# field} other {# field}}",
+      "edit_dialog_title": "Sunting Skema",
+      "edit_dialog_description": "Ubah bidang skema Anda dan propertinya",
+      "schema_name_label": "Nama Skema",
+      "update_btn": "Perbarui Skema",
+      "success_update": "Skema berhasil diperbarui!",
+      "error_update": "Terjadi kesalahan saat memperbarui skema",
+      "success_delete": "Skema berhasil dihapus!",
+      "error_delete": "Terjadi kesalahan saat menghapus skema",
+      "error_validation": "Harap perbaiki bidang yang disorot dan coba lagi."
+    },
+    "snippets": {
+      "title": "Manajemen Cuplikan",
+      "description": "Kelola cuplikan kode untuk proyek Anda",
+      "add_btn": "Tambahkan Cuplikan",
+      "no_snippets_found": "Tidak ada cuplikan yang ditemukan",
+      "create_first_snippet": "Buat cuplikan pertama Anda untuk memulai",
+      "used_in": "Digunakan di: {schemas}",
+      "no_schemas_linked": "Tidak ada skema yang ditautkan",
+      "edit_dialog_title": "Sunting Cuplikan",
+      "create_dialog_title": "Buat Cuplikan",
+      "dialog_description": "Konfigurasikan properti cuplikan kode Anda",
+      "success_created": "Cuplikan berhasil dibuat!",
+      "success_updated": "Cuplikan berhasil diperbarui!",
+      "error_save": "Terjadi kesalahan saat menyimpan cuplikan",
+      "success_deleted": "Cuplikan berhasil dihapus!",
+      "error_delete": "Terjadi kesalahan saat menghapus cuplikan",
+      "label_field": "Label",
+      "label_placeholder": "Label Cuplikan",
+      "schemas_field": "Skema yang Berlaku",
+      "select_schemas_placeholder": "Pilih skema",
+      "no_schemas_found_in_combobox": "Tidak ada skema yang ditemukan.",
+      "code_field": "Kode",
+      "delete_confirm_title": "Hapus Cuplikan",
+      "delete_confirm_desc": "Apakah Anda yakin ingin menghapus cuplikan ini? Tindakan ini tidak dapat dibatalkan.",
+      "update_btn": "Perbarui Cuplikan",
+      "create_btn": "Buat Cuplikan"
+    },
+    "arrangement": {
+      "title": "Pengaturan Bilah Sisi",
+      "description": "Sesuaikan struktur dan tata letak konten Anda",
+      "features": {
+        "virtual_folders": {
+          "title": "Folder maya",
+          "desc": "Tidak akan mengubah repo Anda"
+        },
+        "visual_headings": {
+          "title": "Judul visual",
+          "desc": "Atur bagian"
+        },
+        "drag_and_drop": {
+          "title": "Seret & lepas",
+          "desc": "Susun ulang secara instan"
+        },
+        "glob_patterns": {
+          "title": "Pola gumpalan",
+          "desc": "Filter file dengan mudah"
+        }
+      },
+      "no_arrangements": "Belum ada pengaturan",
+      "get_started": "Mulailah dengan menambahkan folder, file, atau judul untuk menyesuaikan tata letak sidebar Anda.",
+      "add_item_btn": "+ Tambahkan Item Baru",
+      "edit_dialog_title": "Edit item pengaturan",
+      "add_dialog_title": "Tambahkan item pengaturan baru",
+      "edit_dialog_desc": "Perbarui detail item pengaturan Anda.",
+      "add_dialog_desc": "Konfigurasikan item pengaturan baru Anda.",
+      "select_type_label": "Pilih jenis:",
+      "select_type_placeholder": "Pilih jenis",
+      "type_options": {
+        "file": "Berkas",
+        "heading": "Menuju",
+        "folder": "Map",
+        "video": "Video",
+        "preview_image": "Pratinjau Gambar"
+      },
+      "rename_file": "Ganti Nama Berkas",
+      "rename_successful": "File berhasil diganti namanya menjadi {name}",
+      "error_renaming": "Terjadi kesalahan saat mengganti nama file. Silakan coba lagi.",
+      "success_update": "Pengaturan berhasil diperbarui",
+      "file_form": {
+        "select_file": "Pilih Berkas",
+        "placeholder": "Pilih Berkas",
+        "no_items": "Tidak ada item yang ditemukan.",
+        "name_label": "Nama",
+        "name_placeholder": "indeks"
+      },
+      "folder_form": {
+        "select_folder": "Pilih Map",
+        "placeholder": "Pilih Map",
+        "no_items": "Tidak ada item yang ditemukan.",
+        "group_name_label": "Nama Grup",
+        "group_name_placeholder": "daftar blog",
+        "include_label": "Sertakan",
+        "include_placeholder": "*.md",
+        "exclude_label": "Kecualikan",
+        "exclude_placeholder": "*indeks.md"
+      },
+      "heading_form": {
+        "name_label": "Nama",
+        "placeholder": "Menuju"
+      },
+      "errors": {
+        "name_min_length": "Nama harus terdiri dari minimal 2 karakter.",
+        "heading_min_length": "Judul minimal harus 2 karakter.",
+        "name_exists": "Nama grup sudah ada.",
+        "heading_exists": "Judul sudah ada."
+      },
+      "delete_confirm_title": "Apakah Anda benar-benar yakin?",
+      "continue_btn": "Lanjutkan"
+    },
+    "configure": {
+      "commit": {
+        "title": "Konfigurasi Komit",
+        "description": "Tentukan bagaimana pesan komit ditangani saat Anda menyimpan perubahan",
+        "custom_commit_label": "Pesan Komit Khusus",
+        "custom_commit_desc": "Aktifkan ini untuk menulis pesan komit Anda sendiri saat disimpan. Saat aktif, Anda dapat memberikan pesan khusus; jika tidak, Sitepins akan secara otomatis membuatkannya untuk Anda.",
+        "save_btn": "Simpan Perubahan",
+        "success_update": "Pengaturan dialog komit berhasil diperbarui",
+        "error_update": "Gagal memperbarui pengaturan"
+      },
+      "project": {
+        "title": "Edit Konfigurasi Proyek",
+        "description": "Konfigurasikan pengaturan proyek Anda. Klik simpan untuk menerapkan perubahan.",
+        "steps": {
+          "content": "Konten",
+          "media": "Media",
+          "public": "Publik",
+          "configs": "Konfigurasi"
+        },
+        "form": {
+          "content_label": "Folder Konten",
+          "content_placeholder": "Pilih folder konten Anda",
+          "media_label": "Folder Media",
+          "media_placeholder": "Pilih folder media (gambar) Anda",
+          "public_label": "Folder Publik",
+          "public_placeholder": "Pilih folder publik Anda",
+          "config_label": "Konfigurasi Situs (opsional)",
+          "config_placeholder": "Pilih file konfigurasi Anda",
+          "suggested": "Disarankan:",
+          "no_results": "Tidak ada hasil yang ditemukan.",
+          "suggestions": {
+            "content": "di mana file penurunan harga Anda disimpan",
+            "media": "tempat file media Anda disimpan",
+            "public": "tempat file publik Anda disimpan",
+            "config": "tempat file konfigurasi Anda disimpan"
+          }
+        },
+        "buttons": {
+          "finish": "Selesaikan Penyiapan",
+          "update": "Perbarui Konfigurasi"
+        },
+        "help": {
+          "text": "Butuh bantuan dengan konfigurasi Anda?",
+          "contact_us": "Hubungi kami"
+        },
+        "status": {
+          "success_create": "File konfigurasi berhasil dibuat",
+          "success_update": "File konfigurasi berhasil diperbarui",
+          "error_update": "Gagal memperbarui pengaturan",
+          "not_configured": "Tidak dikonfigurasi",
+          "none": "Tidak ada"
+        },
+        "summary": {
+          "title": "Konfigurasi Proyek",
+          "description": "Ikhtisar singkat tentang konfigurasi Anda saat ini"
+        }
+      }
+    }
+  }
+}

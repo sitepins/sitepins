@@ -1,0 +1,119 @@
+{
+  "schema": {
+    "types": {
+      "string": "Texto",
+      "number": "Número",
+      "boolean": "Booleano",
+      "media": "Medios",
+      "gallery": "Galería",
+      "array": "Array",
+      "date": "Fecha",
+      "object": "Objeto"
+    },
+    "fields": {
+      "label": "Etiqueta",
+      "name": "Nombre",
+      "type": "Tipo de Campo",
+      "placeholder": {
+        "type": "Elige tipo",
+        "label": "ej., Título",
+        "name": "generado_automáticamente"
+      },
+      "description": "Descripción",
+      "default_value": "Valor Predeterminado",
+      "boolean": {
+        "true": "Verdadero",
+        "false": "Falso"
+      },
+      "input_style": {
+        "label": "Estilo de Entrada",
+        "placeholder": "Elige estilo de entrada",
+        "options": {
+          "standard_text": "Cuadro de Texto Estándar",
+          "standard_table": "Tabla Estándar",
+          "dropdown": "Selección de Menú Desplegable",
+          "multi_dropdown": "Menú Desplegable Multiselección"
+        }
+      }
+    },
+    "configuration": {
+      "title": "Configuración de Campo",
+      "dropdown": {
+        "title": "Configuración de Menú Desplegable",
+        "multi_title": "Configuración Multiselección",
+        "source": "Fuente",
+        "source_placeholder": "Elige fuente",
+        "sources": {
+          "static": "Opciones Estáticas",
+          "folder": "Archivos de Carpeta",
+          "file": "Datos de Archivo"
+        },
+        "static": {
+          "placeholder": "Ingresa valor de opción"
+        },
+        "folder": {
+          "path": "Ruta de Carpeta",
+          "path_placeholder": "Selecciona una carpeta",
+          "display_field": "Campo de Visualización (Clave Frontmatter)",
+          "field_placeholder": "ej. título (por defecto es nombre de archivo)",
+          "loading_fields": "Cargando campos...",
+          "default_field": "nombre de archivo (predeterminado)",
+          "include_pattern": "Patrón de Inclusión (Glob)",
+          "include_placeholder": "ej. *.md",
+          "exclude_pattern": "Patrón de Exclusión (Glob)",
+          "exclude_placeholder": "ej. index.md"
+        },
+        "file": {
+          "path": "Ruta de Archivo (JSON/YAML/TOML)",
+          "path_placeholder": "Selecciona un archivo",
+          "data_key": "Clave de Datos (Campo a Extraer)",
+          "key_placeholder": "ej. categorías o nombre",
+          "default_key": "Extraer archivo/array completo"
+        }
+      }
+    },
+    "array": {
+      "label": "Array de",
+      "placeholder": "Elige subtipo"
+    },
+    "nested": {
+      "title": "Campos anidados",
+      "add_button": "Agregar campo anidado"
+    },
+    "date": {
+      "default_value": "Valor Predeterminado",
+      "mode_placeholder": "Elige modo",
+      "static": "Fecha Fija",
+      "dynamic": "Fecha Actual (En Vivo)",
+      "empty": "Vacío",
+      "select_initial": "Selecciona Fecha Inicial",
+      "today": "Hoy"
+    },
+    "actions": {
+      "add_option": "Agregar Opción",
+      "add_field": "Agregar Campo",
+      "update_field": "Actualizar Campo",
+      "enter_option": "Ingresa opción",
+      "include": "Incluir",
+      "ignore": "Ignorar"
+    },
+    "builder": {
+      "add_new_field": "Agregar Nuevo Campo",
+      "configure_properties": "Configura las propiedades del nuevo campo",
+      "field_settings": "Configuración de Campo",
+      "required": "Requerido",
+      "show": "Mostrar",
+      "hide": "Ocultar",
+      "no_field_selected": "Sin campo seleccionado",
+      "select_to_edit": "Selecciona un campo de la lista para editar su configuración",
+      "no_fields": "Sin campos aún",
+      "add_first_field": "Agrega tu primer campo abajo",
+      "back_to_fields": "Volver a campos",
+      "field_count": "{count, plural, =0 {0 campos} one {1 campo} other {# campos}}"
+    },
+    "errors": {
+      "name_required": "El nombre del campo es requerido",
+      "name_exists": "El nombre del campo ya existe"
+    }
+  }
+}

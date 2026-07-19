@@ -1,0 +1,138 @@
+{
+  "common": {
+    "settings": "설정",
+    "overview": "개요",
+    "archived": "보관됨",
+    "locale": "ko",
+    "language": "언어",
+    "theme": "테마",
+    "light": "빛",
+    "dark": "어두움",
+    "system": "시스템",
+    "logout": {
+      "label": "로그아웃",
+      "demo_disabled": "데모 모드에서는 로그아웃이 비활성화됩니다.",
+      "confirm_title": "로그아웃 확인",
+      "confirm_description": "정말로 계정에서 로그아웃하시겠습니까?"
+    },
+    "accessibility": {
+      "trigger": "접근성 메뉴 열기"
+    },
+    "actions": {
+      "save": "저장",
+      "cancel": "취소",
+      "delete": "삭제",
+      "edit": "편집",
+      "create": "만들기",
+      "update": "업데이트",
+      "add": "추가",
+      "rename": "이름 바꾸기",
+      "duplicate": "중복",
+      "back": "뒤로",
+      "close": "닫다",
+      "archive": "보관",
+      "restore": "복원",
+      "move": "이동",
+      "disconnect": "연결 해제",
+      "connect": "연결",
+      "finish": "완료",
+      "next": "다음",
+      "previous": "이전",
+      "edit_as_code": "코드로 편집",
+      "continue": "계속",
+      "replace": "바꾸기",
+      "confirm": "확인",
+      "reset": "재설정"
+    },
+    "status": {
+      "loading": "로드 중...",
+      "saving": "저장 중...",
+      "saved": "저장됨",
+      "no_results": "검색된 결과가 없습니다.",
+      "error": "문제가 발생했습니다"
+    },
+    "confirm": {
+      "are_you_sure": "확실합니까?",
+      "absolutely_sure": "정말 확신하시나요?",
+      "cannot_be_undone": "이 작업은 취소할 수 없습니다.",
+      "type_to_confirm": "확인하려면 {confirm}을 입력하세요",
+      "confirm_value": "확인",
+      "delete_description": "이 작업은 취소할 수 없습니다. 그러면 당사 서버에서 귀하의 데이터가 영구적으로 삭제됩니다.",
+      "delete_media": "미디어 파일 삭제",
+      "delete_media_description": "이 파일을 삭제하시겠습니까?",
+      "enter_new_name": "파일의 새 이름을 입력합니다.",
+      "duplicate_file": "중복된 파일",
+      "duplicate_file_description": "복제된 파일의 새 이름을 입력합니다."
+    },
+    "feedback": {
+      "language_updated": "언어가 성공적으로 업데이트되었습니다",
+      "language_update_failed": "언어 업데이트 실패",
+      "duplicate_success": "파일이 성공적으로 복제되었습니다!",
+      "duplicate_failed": "파일을 복제하지 못했습니다",
+      "uploaded_success": "성공적으로 업로드되었습니다",
+      "upload_failed": "업로드 실패",
+      "error_processing": "파일 처리 중 오류 발생",
+      "image_deleted": "이미지가 성공적으로 삭제되었습니다",
+      "rename_success": "을(를) 삭제하시겠습니까? 파일 이름이 성공적으로 변경되었습니다",
+      "rename_failed": "파일 이름을 바꾸지 못했습니다",
+      "delete_success": "파일이 성공적으로 삭제되었습니다",
+      "delete_failed": "파일을 삭제하지 못했습니다",
+      "folder_rename_success": "폴더 이름이 성공적으로 변경되었습니다",
+      "folder_rename_failed": "폴더 이름을 바꾸지 못했습니다.",
+      "folder_delete_success": "폴더가 성공적으로 삭제되었습니다",
+      "folder_delete_failed": "폴더를 삭제하지 못했습니다",
+      "folder_duplicate_success": "폴더가 성공적으로 복제되었습니다",
+      "folder_duplicate_failed": "폴더를 복제하지 못했습니다",
+      "draft_success": "초안이 성공적으로 저장되었습니다",
+      "publish_success": "성공적으로 게시됨",
+      "fetch_failed": "일부 파일을 가져오지 못했습니다. 다시 시도해 주세요.",
+      "invalid_path": "폴더 경로가 잘못되었습니다.",
+      "missing_context": "저장소 컨텍스트가 누락되었습니다. 새로고침한 후 다시 시도해 주세요.",
+      "unable_to_locate": "이 폴더에 대한 파일을 찾을 수 없습니다. 새로고침한 후 다시 시도해 주세요.",
+      "demo_mode": "데모 모드에서는 이 작업이 비활성화됩니다.",
+      "draft_saved": "초안이 데이터베이스에 저장되었습니다",
+      "draft_saved_error": "초안 저장에 실패했습니다",
+      "draft_discard_success": "초안이 성공적으로 삭제되었습니다",
+      "draft_discard_error": "초안 삭제에 실패했습니다"
+    },
+    "labels": {
+      "name": "이름",
+      "date": "날짜",
+      "size": "크기",
+      "dimensions": "차원",
+      "required": "필수",
+      "fields": "필드",
+      "user": "사용자",
+      "site_favicon": "사이트 파비콘",
+      "or": "아니면"
+    },
+    "errors": {
+      "missing_git_info": "필수 Git 정보 누락",
+      "unable_to_determine_path": "파일 경로를 결정할 수 없습니다",
+      "required_fields_empty": "모든 필수 필드를 작성하십시오: {fields}"
+    },
+    "search": "검색",
+    "search_placeholder": "검색...",
+    "search_sites_placeholder": "사이트 검색...",
+    "prevent_navigation": {
+      "title": "닫기 전에 변경사항을 저장하시겠습니까?",
+      "description": "저장되지 않은 변경사항이 있습니다. 저장하지 않고 계속하면 변경사항이 손실됩니다.",
+      "stay": "머물러라",
+      "leave": "떠나",
+      "browser_prompt": "저장되지 않은 변경사항이 있습니다. 정말 떠나시겠어요?"
+    },
+    "error_page": {
+      "something_went_wrong": "문제가 발생했습니다",
+      "error_code": "오류 코드: {code}",
+      "go_home": "집에 가세요",
+      "contact_support": "지원팀에 문의",
+      "show_technical_details": "기술 세부정보 보기"
+    },
+    "image_upload": {
+      "file_too_large": "파일 크기가 {limit}MB 제한을 초과합니다.",
+      "preview_title": "미리보기 이미지",
+      "preview_desc": "이 이미지를 업로드할지 확인하세요.",
+      "upload": "업로드"
+    }
+  }
+}

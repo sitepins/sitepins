@@ -1,0 +1,55 @@
+{
+  "navigation": {
+    "menu": {
+      "footer_account": {
+        "account": "アカウント",
+        "updates": "アップデート",
+        "support": "サポート",
+        "sitepins_ai": "Sitepins AI",
+        "preferences": "設定"
+      },
+      "user_dashboard": {
+        "overview": "概要",
+        "account": "アカウント",
+        "preferences": "設定",
+        "sitepins_ai": "Sitepins AI"
+      },
+      "org_dashboard": {
+        "websites": "ウェブサイト",
+        "settings": "設定"
+      },
+      "org_settings": {
+        "general": "一般",
+        "members": "メンバー",
+        "sandbox": "サンドボックス"
+      },
+      "project_dashboard": {
+        "overview": "概要",
+        "media": "メディア",
+        "settings": "設定"
+      },
+      "project_settings": {
+        "general": "一般",
+        "configure": "設定",
+        "git": "Git",
+        "schemas": "スキーマ",
+        "snippets": "スニペット",
+        "arrangement": "配置"
+      }
+    },
+    "sidebar": {
+      "open_menu": "メニューを開く",
+      "code": "コード",
+      "config": "設定ファイル",
+      "actions": {
+        "close": "閉じる"
+      },
+      "sidebar_trigger_mobile": {
+        "title": "コンテンツ一覧",
+        "description": "サイドバーからすべてのコンテンツファイルを確認",
+        "message": "コンテンツをお探しですか？サイドバーを開いてすべてのファイルを確認してください。",
+        "open_sidebar": "サイドバーを開く"
+      }
+    }
+  }
+}

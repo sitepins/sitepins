@@ -1,0 +1,149 @@
+{
+  "dashboard": {
+    "preference": {
+      "title": "Preferensi",
+      "coauthor": {
+        "title": "Penulisan Bersama Git",
+        "description": "Pilih identitas mana yang akan digunakan untuk tindakan repositori.",
+        "as_you": "Bertindak sebagai Anda",
+        "as_you_desc": "Bot akan menggunakan identitas pribadi Anda untuk komitmen, cabang, dan permintaan penarikan, memberi Anda kredit penuh atas perubahan tersebut.",
+        "as_you_fallback": "Secara otomatis kembali ke bot jika izin pribadi tidak cukup untuk memastikan tugas diselesaikan.",
+        "as_bot": "Bertindak sebagai Bot",
+        "as_bot_desc": "Semua tindakan repositori akan dikaitkan dengan bot sistem. Hal ini memastikan jejak audit yang konsisten dan merupakan pengaturan yang direkomendasikan untuk alur kerja otomatis.",
+        "updated": "Preferensi rekan penulis diperbarui",
+        "error": "Gagal memperbarui preferensi yang meniru identitas"
+      },
+      "language": {
+        "title": "Bahasa",
+        "description": "Pilih bahasa pilihan Anda untuk antarmuka. Perubahan segera berlaku.",
+        "label": "Bahasa antarmuka"
+      },
+      "theme": {
+        "title": "Tema",
+        "description": "Pilih tema warna pilihan Anda.",
+        "updated_success": "Tema berhasil diperbarui",
+        "updated_failed": "Gagal memperbarui tema"
+      }
+    },
+    "account": {
+      "title": "Akun",
+      "profile": {
+        "title": "Perbarui Nama Tampilan",
+        "description": "Ini adalah nama yang akan ditampilkan di profil Anda.",
+        "full_name": "Nama Lengkap",
+        "submit": "Perbarui Akun",
+        "success": "Detail pengguna berhasil diperbarui",
+        "error": "Gagal memperbarui, Silakan coba lagi",
+        "demo_error": "Tindakan ini dinonaktifkan dalam mode demo."
+      },
+      "password": {
+        "title": "Ubah Kata Sandi",
+        "description": "Perbarui kata sandi Anda secara berkala untuk menjaga akun Anda tetap aman dan terlindungi dari akses tidak sah.",
+        "current_password": "Kata Sandi Saat Ini",
+        "new_password": "Kata Sandi Baru",
+        "submit": "Perbarui Kata Sandi",
+        "success": "Kata sandi berhasil diperbarui",
+        "error": "Gagal memperbarui, Silakan coba lagi"
+      },
+      "set_password": {
+        "title": "Tetapkan Kata Sandi",
+        "description": "Anda masuk dengan penyedia sosial. Buat kata sandi untuk mengaktifkan opsi keamanan tambahan dan metode login alternatif.",
+        "new_password": "Kata Sandi Baru",
+        "submit": "Tambahkan Kata Sandi",
+        "success": "Kata sandi berhasil ditambahkan",
+        "error": "Ada yang tidak beres! Coba lagi nanti"
+      },
+      "picture": {
+        "title": "Perbarui Gambar Tampilan",
+        "description": "Jadikan ruang kerja Anda profesional dengan menambahkan foto.",
+        "success": "Detail pengguna berhasil diperbarui",
+        "error": "Gagal memperbarui, Silakan coba lagi"
+      },
+      "newsletter": {
+        "title": "Berlangganan Buletin",
+        "description": "Kami akan mengirimkan email sesekali tentang fitur, pembaruan, dan penawaran baru. Anda dapat berhenti berlangganan kapan saja.",
+        "label": "Menerima buletin dan pembaruan produk",
+        "submit": "Simpan Preferensi",
+        "success_sub": "Berhasil berlangganan Buletin",
+        "success_unsub": "Berhasil berhenti berlangganan Buletin",
+        "error": "Gagal memperbarui, Silakan coba lagi"
+      },
+      "delete": {
+        "title": "Hapus Akun",
+        "description": "Peringatan: Tindakan ini tidak dapat dibatalkan. Ini akan menghapus akun Anda secara permanen dan menghapus semua data Anda dari server kami.",
+        "confirm_label": "Ketik <strong>HAPUS</strong> untuk mengonfirmasi",
+        "confirm_placeholder": "Ketik HAPUS di sini",
+        "button": "Hapus Akun",
+        "reason_title": "Apa alasan utama Anda menghapus akun Anda?",
+        "other_reason_label": "Alasan lain (maks 200 karakter)",
+        "other_reason_placeholder": "Beritahu kami lebih lanjut (maks 200 karakter)",
+        "reasons": {
+          "complex": "Terlalu rumit atau sulit digunakan",
+          "not_work": "Tidak berfungsi untuk situs web saya",
+          "poor_design": "Desain atau pengalaman pengguna yang buruk",
+          "bugs": "Terlalu banyak bug",
+          "missing_features": "Fitur yang saya perlukan tidak ada",
+          "better_alternative": "Menemukan alternatif yang lebih baik",
+          "other": "Lainnya"
+        },
+        "feedback": {
+          "demo_disabled": "Hapus akun dinonaktifkan dalam mode demo.",
+          "success": "Akun berhasil dihapus",
+          "error": "Silakan coba lagi nanti."
+        }
+      }
+    },
+    "sitepins_ai": {
+      "title": "AI Sitepin",
+      "description": "Konfigurasikan penyedia AI Anda untuk mengaktifkan saran konten cerdas dan fitur pelengkapan otomatis.",
+      "provider_label": "Penyedia",
+      "provider_placeholder": "Pilih Penyedia",
+      "model_label": "Model",
+      "model_placeholder": "Pilih Model",
+      "api_key_label": "Kunci API",
+      "api_key_placeholder": "Masukkan kunci API Anda",
+      "show": "Tunjukkan",
+      "hide": "Sembunyikan",
+      "copilot_title": "Salinan Sitepins",
+      "copilot_description": "Sarankan pelengkapan otomatis saat mengetik.",
+      "delete_key": "Hapus Kunci",
+      "save_changes": "Simpan Perubahan",
+      "save_success": "Pengaturan berhasil disimpan",
+      "save_error": "Ada yang tidak beres!",
+      "security_title": "Pemberitahuan Keamanan Penting",
+      "security1": "Kami **tidak menyimpan kunci API Anda** di database kami untuk memastikan privasi Anda dan mematuhi kebijakan keamanan.",
+      "security2": "Kunci Anda disimpan secara lokal di browser Anda saja. Jika Anda mengganti atau menghapus browser Anda, kuncinya akan hilang.",
+      "security3": "Harap simpan kunci API Anda dengan aman dan dapat diakses oleh Anda sendiri, karena kami tidak dapat memulihkannya untuk Anda.",
+      "custom_model": "Masukkan secara manual",
+      "custom_model_input_label": "ID Model",
+      "custom_model_input_placeholder": "Masukkan ID model kustom",
+      "find_model_id": "Temukan ID model Anda"
+    },
+    "sidebar": {
+      "back": "Kembali"
+    },
+    "refetch_preview": "Ambil kembali Pratinjau",
+    "preview_unavailable": "Pratinjau tidak tersedia",
+    "website": "Situs web",
+    "edit_website": "Sunting Situs Web",
+    "build_status": "Bangun Status",
+    "last_updated": "Terakhir Diperbarui",
+    "source": "Sumber",
+    "recently": "baru-baru ini",
+    "last_updated_by": "{distance} lalu oleh {author}",
+    "switcher": {
+      "default_site": "Pilih Situs",
+      "search": "Cari...",
+      "not_found": "Tidak ada proyek yang ditemukan.",
+      "add_new": "Tambahkan Situs Baru"
+    },
+    "archived_project": {
+      "title": "Proyek diarsipkan",
+      "description": "Proyek ini telah diarsipkan dan sebagian besar fungsinya dinonaktifkan. Anda masih dapat mengakses pengaturan proyek untuk memulihkan atau mengubah status proyek.",
+      "open_settings": "Buka Pengaturan"
+    },
+    "project_overview": {
+      "preview_alt": "Pratinjau langsung {name}"
+    }
+  }
+}

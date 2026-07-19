@@ -1,0 +1,55 @@
+{
+  "navigation": {
+    "menu": {
+      "footer_account": {
+        "account": "Akun",
+        "updates": "Pembaruan",
+        "support": "Dukungan",
+        "sitepins_ai": "AI Sitepin",
+        "preferences": "Preferensi"
+      },
+      "user_dashboard": {
+        "overview": "Ikhtisar",
+        "account": "Akun",
+        "preferences": "Preferensi",
+        "sitepins_ai": "AI Sitepin"
+      },
+      "org_dashboard": {
+        "websites": "Situs web",
+        "settings": "Pengaturan"
+      },
+      "org_settings": {
+        "general": "Umum",
+        "members": "Anggota",
+        "sandbox": "Kotak Pasir"
+      },
+      "project_dashboard": {
+        "overview": "Ikhtisar",
+        "media": "Media",
+        "settings": "Pengaturan"
+      },
+      "project_settings": {
+        "general": "Umum",
+        "configure": "Konfigurasikan",
+        "git": "Git",
+        "schemas": "Skema",
+        "snippets": "Cuplikan",
+        "arrangement": "Pengaturan"
+      }
+    },
+    "sidebar": {
+      "open_menu": "Buka menu",
+      "code": "Kode",
+      "config": "Konfigurasi",
+      "actions": {
+        "close": "Menutup"
+      },
+      "sidebar_trigger_mobile": {
+        "title": "Daftar Isi",
+        "description": "Lihat semua file konten Anda dari sidebar",
+        "message": "Mencari Konten Anda? Buka sidebar untuk melihat semua file.",
+        "open_sidebar": "Buka bilah sisi"
+      }
+    }
+  }
+}

@@ -1,0 +1,131 @@
+{
+  "project": {
+    "activity": {
+      "recent_file_changes": "最近的文件更改",
+      "latest_activity": "您或您的团队的最新动态",
+      "updated": "已更新",
+      "created": "已创建",
+      "deleted": "已删除",
+      "renamed": "已重命名",
+      "duplicated": "已复制",
+      "no_more": "没有更多了",
+      "load_more": "加载更多"
+    },
+    "branching": {
+      "incoming_request": "传入的 {provider} 请求",
+      "merge": "合并",
+      "details": "详情",
+      "changes_detected": "检测到更改",
+      "view_request": "查看请求",
+      "create_request": "创建 {provider} 请求",
+      "title": "标题",
+      "description_optional": "描述 (可选)",
+      "placeholder_title": "功能标题",
+      "placeholder_description": "描述您的更改...",
+      "merge_into": "将 {head} 合并到 {base}",
+      "merge_description": "将更改从 {head} 合并到 {base}",
+      "success_created": "{type} 创建成功！",
+      "success_merged": "成功合并 {branch}！",
+      "error_create": "创建 {type} 失败",
+      "error_merge": "合并失败",
+      "permission_error_title": "GitHub App 权限错误",
+      "permission_error_description": "您的 GitHub App 需要 'Pull requests: Write' 权限。请在 GitHub 设置中接受新权限。",
+      "review": "审查",
+      "switcher": {
+        "placeholder": "搜索分支...",
+        "no_results": "未找到分支。",
+        "default": "默认",
+        "create_new": "创建新分支"
+      },
+      "create": {
+        "title": "创建新分支",
+        "desc": "从 <branch>{branchName}</branch> 创建新分支",
+        "label": "分支名称",
+        "placeholder": "例如：staging",
+        "submit": "创建分支",
+        "error": {
+          "required": "分支名称必填",
+          "sha": "无法找到基础分支的 SHA",
+          "failed": "创建新分支失败"
+        },
+        "success": "分支 {name} 创建成功！"
+      },
+      "status": {
+        "on_default": "您当前在默认分支：{branch}",
+        "ahead": "{branch} 领先于 {base}。"
+      }
+    },
+    "git": {
+      "recent_activities": "最近的 Git 动态",
+      "recent_commits": "存储库中的最近提交",
+      "revert": "还原",
+      "reset": "重置",
+      "commit": "提交",
+      "restore_version": "还原版本",
+      "undo_commit": "撤销提交",
+      "admin_only": "只有管理员和所有者才能执行此操作",
+      "restore_title": "还原到此版本",
+      "restore_description_github": "这将使您的网站完全回到这一时刻的状态。在此版本之后所做的任何更改都将被删除。",
+      "restore_description_gitlab": "这将使您的网站回到这一时刻的状态。我们将创建一个新的更新来实现这一点，因此您的历史记录保持安全。",
+      "restore_warning_github": "⚠️ 警告：这是一个永久性的更改。此分支上的所有较新更新都将被删除。仅在您想完全放弃最近的工作时使用此功能。",
+      "restore_warning_gitlab": "✓ 这是安全的。您最近的工作不会被删除；我们只是根据这个旧版本创建一个新版本。",
+      "undo_title": "撤销此提交",
+      "undo_description": "这将创建一个新的更新，反转此特定版本中更改的所有内容。",
+      "undo_warning": "✓ 这是安全的！我们将在您的历史记录中添加一个新版本，抵消这些特定更改，同时保持其他所有内容完好无损。",
+      "feedback": {
+        "reset_success": "分支已成功重置为 {sha}！",
+        "revert_success": "提交已还原！新提交：{sha}",
+        "revert_failed": "还原失败"
+      },
+      "actions": {
+        "restoring": "正在恢复",
+        "undoing": "正在撤销",
+        "confirm_restore": "确认恢复",
+        "confirm_undo": "确认撤销"
+      },
+      "commit_messages": {
+        "add_file": "添加 {name}",
+        "rename_file": "重命名文件 {name}",
+        "delete_file": "删除文件 {name}",
+        "duplicate_file": "复制文件 {name}",
+        "create_schema": "创建模式 {name}",
+        "update_schema": "更新模式 {name}",
+        "delete_schema": "删除模式 {name}",
+        "update_config": "更新站点配置"
+      }
+    },
+    "setup-steps": {
+      "getting_started": "开始使用",
+      "description": "完成这些步骤以设置 Sitepins 并发布您的第一个内容",
+      "progress": "进度",
+      "progress_count": "{completed} / {total}",
+      "steps": {
+        "add_site": {
+          "title": "添加新站点",
+          "description": "您的站点已创建并准备好进行配置"
+        },
+        "configure_project": {
+          "title": "配置项目",
+          "description": "设置您的存储库结构（内容文件夹、媒体根目录等）"
+        },
+        "publish_content": {
+          "title": "发布第一个内容",
+          "description": "从左侧面板发布您的第一个内容"
+        },
+        "deploy_site": {
+          "title": "部署站点",
+          "description": "首次将您的站点部署到 Vercel"
+        }
+      },
+      "edit_config": "编辑项目配置",
+      "deploy_to_vercel": "部署到 Vercel",
+      "login_signup": "登录或注册",
+      "create_account": "创建一个帐户",
+      "deploy_repo": "部署您的存储库",
+      "one_click": "一键操作",
+      "or": "或者",
+      "already_deployed": "已经部署了？现在插入 URL",
+      "vercel_host": "在 Vercel 上托管您的站点"
+    }
+  }
+}

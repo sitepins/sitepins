@@ -1,0 +1,282 @@
+{
+  "project-settings": {
+    "general": {
+      "form": {
+        "title": "Configurações do Projeto",
+        "description": "Atualize as informações do seu projeto.",
+        "demo_error": "Este é um site de demonstração, você não pode atualizá-lo",
+        "success": "Site atualizado com sucesso",
+        "site_name": "Nome do Site",
+        "website": "Site (opcional)"
+      },
+      "archive": {
+        "restore_title": "Restaurar Projeto",
+        "restore_desc": "O projeto está atualmente arquivado. Ele precisa ser restaurado primeiro para fazer qualquer alteração.",
+        "archive_title": "Arquivar Projeto",
+        "archive_desc": "O projeto será arquivado. Ele será ocultado da lista de projetos, mas pode ser restaurado mais tarde.",
+        "restore_btn": "Restaurar Projeto",
+        "archive_btn": "Arquivar Projeto",
+        "archive_confirm_title": "Arquivar este projeto?",
+        "restore_confirm_title": "Restaurar este projeto?",
+        "archive_confirm_desc": "Este projeto será arquivado. Ele será ocultado da lista de projetos, mas pode ser restaurado mais tarde.",
+        "restore_confirm_desc": "Este projeto será restaurado. Ele será visível na lista de projetos e pode ser atualizado.",
+        "demo_error": "Este recurso não está disponível na demonstração",
+        "archive_success": "Projeto arquivado com sucesso",
+        "restore_success": "Projeto restaurado com sucesso",
+        "error": "Algo deu errado"
+      },
+      "delete": {
+        "title": "Excluir Projeto",
+        "description": "O projeto será excluído permanentemente. Esta ação é irreversível e não pode ser desfeita.",
+        "warning": "Este projeto será excluído permanentemente. Esta ação é irreversível e não pode ser desfeita. Todos os dados associados a este projeto serão perdidos.",
+        "delete_btn": "Excluir Projeto",
+        "confirm_title": "Você tem absolutamente certeza?",
+        "confirm_desc": "Esta ação não pode ser desfeita. Isso excluirá permanentemente.",
+        "placeholder": "digite CONFIRMAR para confirmar",
+        "demo_error": "Você não pode excluir projetos no modo de demonstração.",
+        "success": "Projeto excluído com sucesso.",
+        "error": "Algo deu errado",
+        "error_suffix": "Você não tem autorização para excluir este projeto.",
+        "error_generic": "Algo deu errado"
+      },
+      "move": {
+        "title": "Mover Projeto",
+        "description": "Mova este projeto para outra organização à qual você pertence.",
+        "current_org": "Organização Atual",
+        "destination": "Destino",
+        "loading_orgs": "Carregando organizações...",
+        "no_orgs": "Nenhuma outra organização disponível.",
+        "placeholder": "Selecionar destino",
+        "move_btn": "Mover Projeto",
+        "confirm_title": "Confirmar mudança",
+        "confirm_desc": "Mover este projeto para",
+        "confirm_move_btn": "Mover Projeto",
+        "error_select": "Selecione uma organização",
+        "success": "Projeto movido com sucesso",
+        "error": "Falha ao mover o projeto"
+      },
+      "thumb": {
+        "title": "Miniatura do Projeto",
+        "description": "Torne a imagem do seu site única adicionando uma foto.",
+        "demo_error": "Este é um site de demonstração, você não pode atualizá-lo",
+        "success": "Site atualizado com sucesso"
+      }
+    },
+    "git": {
+      "repo": {
+        "title": "Repositório Git",
+        "description_connected": "Seu projeto está conectado a um repositório no momento.",
+        "description_disconnected": "Conecte seu projeto a um repositório Git para gerenciar seu conteúdo.",
+        "connected_at": "Conectado {time}",
+        "provider_label": "Selecione Provedor",
+        "select_provider_placeholder": "Selecione um provedor",
+        "select_repo_label": "Repositório",
+        "select_repo_placeholder": "Selecione um repositório",
+        "no_repo_found": "Nenhum repositório encontrado",
+        "please_wait": "Por favor aguarde...",
+        "cant_see_repo": "Não consegue ver seu repositório aqui?",
+        "configure_on": "Configure em {provider}",
+        "branch_label": "Ramo",
+        "choose_branch_placeholder": "Escolha um ramo",
+        "disconnect_btn": "Desconectar",
+        "disconnect_confirm_title": "Você tem absolutamente certeza?",
+        "disconnect_confirm_desc": "Esta ação desconectará o repositório do Sitepins. Você sempre pode reconectá-lo mais tarde.",
+        "connect_repo_btn": "Conectar Repositório",
+        "error_missing_info": "Informações de projeto ou organização ausentes",
+        "success_disconnect": "Repositório desconectado com sucesso",
+        "error_disconnect": "Falha ao desconectar o repositório",
+        "error_no_repo_branch": "Por favor, selecione um repositório e um ramo",
+        "success_connect": "Repositório conectado com sucesso",
+        "error_connect": "Falha ao conectar o repositório"
+      },
+      "branch": {
+        "title": "Gerenciamento de Ramos",
+        "description": "Gerencie o ramo usado para o conteúdo do seu projeto",
+        "current_branch_label": "Ramo Atual",
+        "select_branch_label": "Selecionar Ramo",
+        "loading_branches": "Carregando ramos...",
+        "placeholder": "Selecione um ramo",
+        "branches_label": "Ramos",
+        "change_branch_btn": "Alterar Ramo",
+        "update_branch_btn": "Atualizar Ramo",
+        "success_message": "Ramo atualizado com sucesso!",
+        "error_missing_info": "Informações de projeto ou organização ausentes",
+        "error_no_repo": "Nenhum repositório conectado",
+        "error_generic": "Falha ao atualizar o ramo"
+      }
+    },
+    "schemas": {
+      "title": "Gerenciamento de Esquema",
+      "description": "Gerencie esquemas de conteúdo para seu projeto",
+      "no_schemas_found": "Nenhum esquema encontrado",
+      "create_first_schema": "Crie seu primeiro esquema navegando para uma pasta de conteúdo",
+      "fields_count": "{count, plural, =1 {# campo} other {# campos}}",
+      "edit_dialog_title": "Editar Esquema",
+      "edit_dialog_description": "Modifique seus campos de esquema e suas propriedades",
+      "schema_name_label": "Nome do Esquema",
+      "update_btn": "Atualizar Esquema",
+      "success_update": "Esquema atualizado com sucesso!",
+      "error_update": "Erro ao atualizar o esquema",
+      "success_delete": "Esquema excluído com sucesso!",
+      "error_delete": "Erro ao excluir o esquema",
+      "error_validation": "Por favor, corrija os campos destacados e tente novamente."
+    },
+    "snippets": {
+      "title": "Gerenciamento de Trechos",
+      "description": "Gerencie trechos de código para seu projeto",
+      "add_btn": "Adicionar Trecho",
+      "no_snippets_found": "Nenhum trecho encontrado",
+      "create_first_snippet": "Crie seu primeiro trecho para começar",
+      "used_in": "Usado em: {schemas}",
+      "no_schemas_linked": "Nenhum esquema vinculado",
+      "edit_dialog_title": "Editar Trecho",
+      "create_dialog_title": "Criar Trecho",
+      "dialog_description": "Configure as propriedades do seu trecho de código",
+      "success_created": "Trecho criado com sucesso!",
+      "success_updated": "Trecho atualizado com sucesso!",
+      "error_save": "Erro ao salvar o trecho",
+      "success_deleted": "Trecho excluído com sucesso!",
+      "error_delete": "Erro ao excluir o trecho",
+      "label_field": "Rótulo",
+      "label_placeholder": "Rótulo do Trecho",
+      "schemas_field": "Esquemas Aplicáveis",
+      "select_schemas_placeholder": "Selecionar esquemas",
+      "no_schemas_found_in_combobox": "Nenhum esquema encontrado.",
+      "code_field": "Código",
+      "delete_confirm_title": "Excluir Trecho",
+      "delete_confirm_desc": "Tem certeza de que deseja excluir este trecho? Esta ação não pode ser desfeita.",
+      "update_btn": "Atualizar Trecho",
+      "create_btn": "Criar Trecho"
+    },
+    "arrangement": {
+      "title": "Organizações da Barra Lateral",
+      "description": "Personalize sua estrutura de conteúdo e layout",
+      "features": {
+        "virtual_folders": {
+          "title": "Pastas virtuais",
+          "desc": "Não alterará seu repositório"
+        },
+        "visual_headings": {
+          "title": "Títulos visuais",
+          "desc": "Organize seções"
+        },
+        "drag_and_drop": {
+          "title": "Arrastar e soltar",
+          "desc": "Reordenar instantaneamente"
+        },
+        "glob_patterns": {
+          "title": "Padrões glob",
+          "desc": "Filtrar arquivos facilmente"
+        }
+      },
+      "no_arrangements": "Nenhuma organização ainda",
+      "get_started": "Comece adicionando uma pasta, arquivo ou título para personalizar o layout da sua barra lateral.",
+      "add_item_btn": "+ Adicionar Novo Item",
+      "edit_dialog_title": "Editar item de organização",
+      "add_dialog_title": "Adicionar novo item de organização",
+      "edit_dialog_desc": "Atualize os detalhes do seu item de organização.",
+      "add_dialog_desc": "Configure seu novo item de organização.",
+      "select_type_label": "Selecione um tipo:",
+      "select_type_placeholder": "Selecione um tipo",
+      "type_options": {
+        "file": "Arquivo",
+        "heading": "Título",
+        "folder": "Pasta",
+        "video": "Vídeo",
+        "preview_image": "Imagem de Visualização"
+      },
+      "rename_file": "Renomear Arquivo",
+      "rename_successful": "Arquivo renomeado com sucesso para {name}",
+      "error_renaming": "Houve um erro ao renomear o arquivo. Por favor, tente novamente.",
+      "success_update": "Organização atualizada com sucesso",
+      "file_form": {
+        "select_file": "Selecionar Arquivo",
+        "placeholder": "Selecionar Arquivo",
+        "no_items": "Nenhum item encontrado.",
+        "name_label": "Nome",
+        "name_placeholder": "index"
+      },
+      "folder_form": {
+        "select_folder": "Selecionar Pasta",
+        "placeholder": "Selecionar Pasta",
+        "no_items": "Nenhum item encontrado.",
+        "group_name_label": "Nome do Grupo",
+        "group_name_placeholder": "lista de blog",
+        "include_label": "Incluir",
+        "include_placeholder": "*.md",
+        "exclude_label": "Excluir",
+        "exclude_placeholder": "*index.md"
+      },
+      "heading_form": {
+        "name_label": "Nome",
+        "placeholder": "Título"
+      },
+      "errors": {
+        "name_min_length": "O nome deve ter pelo menos 2 caracteres.",
+        "heading_min_length": "O título deve ter pelo menos 2 caracteres.",
+        "name_exists": "O nome do grupo já existe.",
+        "heading_exists": "O título já existe."
+      },
+      "delete_confirm_title": "Você tem absolutamente certeza?",
+      "continue_btn": "Continuar"
+    },
+    "configure": {
+      "commit": {
+        "title": "Configuração de Commit",
+        "description": "Determine como as mensagens de commit são tratadas ao salvar alterações",
+        "custom_commit_label": "Mensagens de Commit Personalizadas",
+        "custom_commit_desc": "Habilite isto para escrever suas próprias mensagens de commit ao salvar. Quando ativo, você pode fornecer uma mensagem personalizada; caso contrário, o Sitepins gerará uma automaticamente para você.",
+        "save_btn": "Salvar Alterações",
+        "success_update": "Configurações de diálogo de commit atualizadas com sucesso",
+        "error_update": "Falha ao atualizar as configurações"
+      },
+      "project": {
+        "title": "Editar Configuração do Projeto",
+        "description": "Configure suas configurações de projeto. Clique em salvar para aplicar as alterações.",
+        "steps": {
+          "content": "Conteúdo",
+          "media": "Mídia",
+          "public": "Público",
+          "configs": "Configurações"
+        },
+        "form": {
+          "content_label": "Pasta de Conteúdo",
+          "content_placeholder": "Selecione sua pasta de conteúdo",
+          "media_label": "Pasta de Mídia",
+          "media_placeholder": "Selecione sua pasta de mídia (imagens)",
+          "public_label": "Pasta Pública",
+          "public_placeholder": "Selecione sua pasta pública",
+          "config_label": "Configurações do Site (opcional)",
+          "config_placeholder": "Selecione seu arquivo de configuração",
+          "suggested": "Sugerido:",
+          "no_results": "Nenhum resultado encontrado.",
+          "suggestions": {
+            "content": "onde seus arquivos markdown são armazenados",
+            "media": "onde seus arquivos de mídia são armazenados",
+            "public": "onde seus arquivos públicos são armazenados",
+            "config": "onde seus arquivos de configuração são armazenados"
+          }
+        },
+        "buttons": {
+          "finish": "Concluir Configuração",
+          "update": "Atualizar Configuração"
+        },
+        "help": {
+          "text": "Precisa de ajuda com sua configuração?",
+          "contact_us": "Entre em contato conosco"
+        },
+        "status": {
+          "success_create": "Arquivo de configuração criado com sucesso",
+          "success_update": "Arquivo de configuração atualizado com sucesso",
+          "error_update": "Falha ao atualizar as configurações",
+          "not_configured": "Não configurado",
+          "none": "Nenhum"
+        },
+        "summary": {
+          "title": "Configuração do Projeto",
+          "description": "Visão geral rápida de sua configuração atual"
+        }
+      }
+    }
+  }
+}

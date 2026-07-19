@@ -1,0 +1,149 @@
+{
+  "dashboard": {
+    "preference": {
+      "title": "Préférences",
+      "coauthor": {
+        "title": "Co-auteur Git",
+        "description": "Choisissez l'identité à utiliser pour les actions sur le dépôt.",
+        "as_you": "Agir en tant que vous",
+        "as_you_desc": "Le bot utilisera votre identité personnelle pour les commits, les branches et les pull requests, vous accordant tout le crédit des modifications.",
+        "as_you_fallback": "Revient automatiquement au bot si les autorisations personnelles sont insuffisantes pour s'assurer que les tâches sont accomplies.",
+        "as_bot": "Agir en tant que le bot",
+        "as_bot_desc": "Toutes les actions sur le dépôt seront attribuées au bot système. Cela garantit une piste d'audit cohérente et est le paramètre recommandé pour les workflows automatisés.",
+        "updated": "Préférence de co-auteur mise à jour",
+        "error": "Échec de la mise à jour de la préférence d'emprunt d'identité"
+      },
+      "language": {
+        "title": "Langue",
+        "description": "Choisissez votre langue préférée pour l'interface. Les modifications s'appliquent immédiatement.",
+        "label": "Langue de l'interface"
+      },
+      "theme": {
+        "title": "Thème",
+        "description": "Choisissez votre thème de couleur préféré.",
+        "updated_success": "Thème mis à jour avec succès",
+        "updated_failed": "Échec de la mise à jour du thème"
+      }
+    },
+    "account": {
+      "title": "Compte",
+      "profile": {
+        "title": "Mettre à jour le nom d'affichage",
+        "description": "C'est le nom qui sera affiché sur votre profil.",
+        "full_name": "Nom complet",
+        "submit": "Mettre à jour le compte",
+        "success": "Informations utilisateur mises à jour avec succès",
+        "error": "Échec de la mise à jour. Veuillez réessayer",
+        "demo_error": "Cette action est désactivée en mode démo."
+      },
+      "password": {
+        "title": "Changer le mot de passe",
+        "description": "Mettez à jour votre mot de passe régulièrement pour protéger votre compte contre les accès non autorisés.",
+        "current_password": "Mot de passe actuel",
+        "new_password": "Nouveau mot de passe",
+        "submit": "Mettre à jour le mot de passe",
+        "success": "Mot de passe mis à jour avec succès",
+        "error": "Échec de la mise à jour. Veuillez réessayer"
+      },
+      "set_password": {
+        "title": "Définir un mot de passe",
+        "description": "Vous vous êtes connecté avec un fournisseur social. Créez un mot de passe pour activer des options de sécurité supplémentaires et des méthodes de connexion alternatives.",
+        "new_password": "Nouveau mot de passe",
+        "submit": "Ajouter un mot de passe",
+        "success": "Mot de passe ajouté avec succès",
+        "error": "Une erreur s'est produite ! Réessayez plus tard"
+      },
+      "picture": {
+        "title": "Mettre à jour la photo de profil",
+        "description": "Rendez votre espace de travail professionnel en ajoutant une photo.",
+        "success": "Informations utilisateur mises à jour avec succès",
+        "error": "Échec de la mise à jour. Veuillez réessayer"
+      },
+      "newsletter": {
+        "title": "Abonnement à la newsletter",
+        "description": "Nous vous enverrons occasionnellement des e-mails sur les nouvelles fonctionnalités, les mises à jour et les offres. Vous pouvez vous désabonner à tout moment.",
+        "label": "Recevoir la newsletter et les mises à jour produit",
+        "submit": "Enregistrer les préférences",
+        "success_sub": "Abonnement à la newsletter réussi",
+        "success_unsub": "Désabonnement de la newsletter réussi",
+        "error": "Échec de la mise à jour. Veuillez réessayer"
+      },
+      "delete": {
+        "title": "Supprimer le compte",
+        "description": "Attention : cette action est irréversible. Cela supprimera définitivement votre compte et toutes vos données de nos serveurs.",
+        "confirm_label": "Tapez <strong>SUPPRIMER</strong> pour confirmer",
+        "confirm_placeholder": "Tapez SUPPRIMER ici",
+        "button": "Supprimer le compte",
+        "reason_title": "Quelle est la principale raison de la suppression de votre compte ?",
+        "other_reason_label": "Autre raison (200 caractères max)",
+        "other_reason_placeholder": "Dites-nous en plus (200 caractères max)",
+        "reasons": {
+          "complex": "Trop complexe ou difficile à utiliser",
+          "not_work": "Ne fonctionnait pas pour mon site web",
+          "poor_design": "Mauvaise conception ou expérience utilisateur",
+          "bugs": "Trop de bugs",
+          "missing_features": "Fonctionnalités manquantes",
+          "better_alternative": "Trouvé une meilleure alternative",
+          "other": "Autre"
+        },
+        "feedback": {
+          "demo_disabled": "La suppression de compte est désactivée en mode démo.",
+          "success": "Compte supprimé avec succès",
+          "error": "Veuillez réessayer plus tard."
+        }
+      }
+    },
+    "sitepins_ai": {
+      "title": "Sitepins AI",
+      "description": "Configurez votre fournisseur d'IA pour activer les suggestions de contenu intelligentes et les fonctionnalités d'autocomplétion.",
+      "provider_label": "Fournisseur",
+      "provider_placeholder": "Sélectionnez un fournisseur",
+      "model_label": "Modèle",
+      "model_placeholder": "Sélectionnez un modèle",
+      "api_key_label": "Clé API",
+      "api_key_placeholder": "Entrez votre clé API",
+      "show": "Afficher",
+      "hide": "Masquer",
+      "copilot_title": "Sitepins Copilot",
+      "copilot_description": "Suggérer l'autocomplétion lors de la saisie.",
+      "delete_key": "Supprimer la clé",
+      "save_changes": "Enregistrer les modifications",
+      "save_success": "Paramètres enregistrés avec succès",
+      "save_error": "Une erreur s'est produite !",
+      "security_title": "Avis de sécurité important",
+      "security1": "Nous **ne stockons pas votre clé API** dans notre base de données pour garantir votre confidentialité et respecter les politiques de sécurité.",
+      "security2": "Votre clé est stockée localement dans votre navigateur uniquement. Si vous changez de navigateur ou effacez les données, la clé sera perdue.",
+      "security3": "Veuillez garder votre clé API en sécurité et accessible uniquement pour vous, car nous ne pouvons pas la récupérer à votre place.",
+      "custom_model": "Saisir manuellement",
+      "custom_model_input_label": "ID du modèle",
+      "custom_model_input_placeholder": "Saisir l'ID du modèle personnalisé",
+      "find_model_id": "Trouvez l'ID de votre modèle"
+    },
+    "sidebar": {
+      "back": "Retour"
+    },
+    "refetch_preview": "Actualiser l'aperçu",
+    "preview_unavailable": "Aperçu indisponible",
+    "website": "Site web",
+    "edit_website": "Modifier le site web",
+    "build_status": "Statut de build",
+    "last_updated": "Dernière mise à jour",
+    "source": "Source",
+    "recently": "récemment",
+    "last_updated_by": "Il y a {distance} par {author}",
+    "switcher": {
+      "default_site": "Sélectionner un site",
+      "search": "Rechercher...",
+      "not_found": "Aucun projet trouvé.",
+      "add_new": "Ajouter un nouveau site"
+    },
+    "archived_project": {
+      "title": "Projet archivé",
+      "description": "Ce projet a été archivé et la plupart des fonctionnalités sont désactivées. Vous pouvez toujours accéder aux paramètres du projet pour le restaurer ou modifier son statut.",
+      "open_settings": "Ouvrir les paramètres"
+    },
+    "project_overview": {
+      "preview_alt": "Aperçu en direct de {name}"
+    }
+  }
+}

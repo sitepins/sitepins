@@ -1,0 +1,138 @@
+{
+  "common": {
+    "settings": "Settings",
+    "overview": "Overview",
+    "archived": "Archived",
+    "locale": "en",
+    "language": "Language",
+    "theme": "Theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System",
+    "logout": {
+      "label": "Log out",
+      "demo_disabled": "Logout is disabled in demo mode.",
+      "confirm_title": "Confirm Logout",
+      "confirm_description": "Are you sure you want to log out of your account?"
+    },
+    "accessibility": {
+      "trigger": "Open accessibility menu"
+    },
+    "actions": {
+      "save": "Save",
+      "cancel": "Cancel",
+      "delete": "Delete",
+      "edit": "Edit",
+      "create": "Create",
+      "update": "Update",
+      "add": "Add",
+      "rename": "Rename",
+      "duplicate": "Duplicate",
+      "back": "Back",
+      "close": "Close",
+      "archive": "Archive",
+      "restore": "Restore",
+      "move": "Move",
+      "disconnect": "Disconnect",
+      "connect": "Connect",
+      "finish": "Finish",
+      "next": "Next",
+      "previous": "Previous",
+      "edit_as_code": "Edit As Code",
+      "continue": "Continue",
+      "replace": "Replace",
+      "confirm": "Confirm",
+      "reset": "Reset"
+    },
+    "status": {
+      "loading": "Loading...",
+      "saving": "Saving...",
+      "saved": "Saved",
+      "no_results": "No results found.",
+      "error": "Something went wrong"
+    },
+    "confirm": {
+      "are_you_sure": "Are you sure?",
+      "absolutely_sure": "Are you absolutely sure?",
+      "cannot_be_undone": "This action cannot be undone.",
+      "type_to_confirm": "type {confirm} to confirm",
+      "confirm_value": "CONFIRM",
+      "delete_description": "This action cannot be undone. This will permanently delete your data from our servers.",
+      "delete_media": "Delete Media File",
+      "delete_media_description": "Are you sure you want to delete this file?",
+      "enter_new_name": "Enter a new name for the file.",
+      "duplicate_file": "Duplicate File",
+      "duplicate_file_description": "Enter a new name for the duplicated file."
+    },
+    "feedback": {
+      "language_updated": "Language updated successfully",
+      "language_update_failed": "Failed to update language",
+      "duplicate_success": "File duplicated successfully!",
+      "duplicate_failed": "Failed to duplicate file",
+      "uploaded_success": "Uploaded successfully",
+      "upload_failed": "Failed to upload",
+      "error_processing": "Error processing files",
+      "image_deleted": "Image deleted successfully",
+      "rename_success": "File renamed successfully",
+      "rename_failed": "Failed to rename file",
+      "delete_success": "File deleted successfully",
+      "delete_failed": "Failed to delete file",
+      "folder_rename_success": "Folder renamed successfully",
+      "folder_rename_failed": "Failed to rename folder",
+      "folder_delete_success": "Folder deleted successfully",
+      "folder_delete_failed": "Failed to delete folder",
+      "folder_duplicate_success": "Folder duplicated successfully",
+      "folder_duplicate_failed": "Failed to duplicate folder",
+      "draft_saved": "Draft saved to database",
+      "draft_saved_error": "Failed to save draft",
+      "draft_success": "Draft saved successfully",
+      "publish_success": "Published successfully",
+      "fetch_failed": "Failed to fetch some files. Please try again.",
+      "invalid_path": "Folder path is invalid.",
+      "missing_context": "Repository context is missing. Please reload and try again.",
+      "unable_to_locate": "Unable to locate files for this folder. Please refresh and try again.",
+      "demo_mode": "This action is disabled in demo mode.",
+      "draft_discard_success": "Draft discarded successfully",
+      "draft_discard_error": "Failed to discard draft"
+    },
+    "labels": {
+      "name": "Name",
+      "date": "Date",
+      "size": "Size",
+      "dimensions": "Dimensions",
+      "required": "Required",
+      "fields": "Fields",
+      "user": "User",
+      "site_favicon": "Site Favicon",
+      "or": "Or"
+    },
+    "errors": {
+      "missing_git_info": "Missing required Git information",
+      "unable_to_determine_path": "Unable to determine file path",
+      "required_fields_empty": "Please fill in all required fields: {fields}"
+    },
+    "search": "Search",
+    "search_placeholder": "Search...",
+    "search_sites_placeholder": "Search Sites...",
+    "prevent_navigation": {
+      "title": "Save Changes Before Closing?",
+      "description": "You have unsaved changes. If you continue without saving, these changes will be lost.",
+      "stay": "Stay",
+      "leave": "Leave",
+      "browser_prompt": "You have unsaved changes. Are you sure you want to leave?"
+    },
+    "error_page": {
+      "something_went_wrong": "Something went wrong",
+      "error_code": "Error code: {code}",
+      "go_home": "Go home",
+      "contact_support": "Contact support",
+      "show_technical_details": "Show technical details"
+    },
+    "image_upload": {
+      "file_too_large": "File size exceeds the {limit}MB limit.",
+      "preview_title": "Preview Image",
+      "preview_desc": "Confirm if you want to upload this image.",
+      "upload": "Upload"
+    }
+  }
+}

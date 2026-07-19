@@ -1,0 +1,35 @@
+{
+  "provider-install": {
+    "authenticating_aria": "正在验证",
+    "request_title": "安装请求已发送",
+    "auth_title": "正在与 {provider} 验证",
+    "request_description": "安装请求已发送给该组织所有者。对方将收到通知并可批准仓库访问权限。",
+    "auth_description": "我们正在完成与 {provider} 的身份验证。完成后此窗口将自动关闭。",
+    "manual_close_hint": "如果此窗口未自动关闭，您可以放心手动关闭。",
+    "providers": {
+      "github": "GitHub",
+      "gitlab": "GitLab"
+    },
+    "github_integration": {
+      "title": "连接您的 GitHub 账户",
+      "description": "Sitepins 需要访问权限以创建分支并同步您的项目内容。",
+      "allow_all_repos": "我将选择所有仓库",
+      "connect_btn": "通过 Github 连接",
+      "grant_access_link": "我不会授予所有仓库的访问权限",
+      "selective_title": "选择性仓库访问",
+      "selective_desc1": "如果您选择选择性仓库访问，我们将无法为您自动创建仓库。",
+      "selective_desc2": "不用担心！您仍然可以通过以下步骤手动开始：",
+      "step_download": "手动下载模板。",
+      "step_fork": "手动 fork 仓库。",
+      "step_push": "将源码推送到您的 GitHub 仓库。",
+      "step_go_to": "前往 Sitepins",
+      "step_new_site": "点击右上角的 + 新建站点 按钮。",
+      "step_grant_access": "选择 GitHub 并授予对您仓库的访问权限。",
+      "step_grant_forked": "选择 GitHub 并仅授予对您已 fork 仓库的访问权限。",
+      "step_final": "填写必要细节并按下 创建站点。",
+      "revoke_access": "随时可以在 GitHub 设置中撤销访问权限",
+      "watch_tutorial": "观看快速教程",
+      "close": "关闭"
+    }
+  }
+}

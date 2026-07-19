@@ -1,0 +1,138 @@
+{
+  "common": {
+    "settings": "設定",
+    "overview": "概要",
+    "archived": "アーカイブ済み",
+    "locale": "ja",
+    "language": "言語",
+    "theme": "テーマ",
+    "light": "ライト",
+    "dark": "ダーク",
+    "system": "システム",
+    "logout": {
+      "label": "ログアウト",
+      "demo_disabled": "デモモードではログアウトが無効になっています。",
+      "confirm_title": "ログアウトの確認",
+      "confirm_description": "本当にアカウントからログアウトしますか？"
+    },
+    "accessibility": {
+      "trigger": "アクセシビリティメニューを開く"
+    },
+    "actions": {
+      "save": "保存",
+      "cancel": "キャンセル",
+      "delete": "削除",
+      "edit": "編集",
+      "create": "作成",
+      "update": "更新",
+      "add": "追加",
+      "rename": "名前変更",
+      "duplicate": "複製",
+      "back": "戻る",
+      "close": "閉じる",
+      "archive": "アーカイブ",
+      "restore": "復元",
+      "move": "移動",
+      "disconnect": "切断",
+      "connect": "接続",
+      "finish": "完了",
+      "next": "次へ",
+      "previous": "前へ",
+      "edit_as_code": "コードで編集",
+      "continue": "続ける",
+      "replace": "置換",
+      "confirm": "確認",
+      "reset": "リセット"
+    },
+    "status": {
+      "loading": "読み込み中...",
+      "saving": "保存中...",
+      "saved": "保存済み",
+      "no_results": "結果が見つかりません。",
+      "error": "エラーが発生しました"
+    },
+    "confirm": {
+      "are_you_sure": "よろしいですか？",
+      "absolutely_sure": "本当によろしいですか？",
+      "cannot_be_undone": "この操作は元に戻せません。",
+      "type_to_confirm": "{confirm} と入力して確認",
+      "confirm_value": "CONFIRM",
+      "delete_description": "この操作は元に戻せません。データはサーバーから完全に削除されます。",
+      "delete_media": "メディアファイルを削除",
+      "delete_media_description": "このファイルを削除してもよろしいですか？",
+      "enter_new_name": "ファイルの新しい名前を入力してください。",
+      "duplicate_file": "ファイルを複製",
+      "duplicate_file_description": "複製したファイルの新しい名前を入力してください。"
+    },
+    "feedback": {
+      "language_updated": "言語が正常に更新されました",
+      "language_update_failed": "言語の更新に失敗しました",
+      "duplicate_success": "ファイルが正常に複製されました！",
+      "duplicate_failed": "ファイルの複製に失敗しました",
+      "uploaded_success": "アップロードが完了しました",
+      "upload_failed": "アップロードに失敗しました",
+      "error_processing": "ファイルの処理中にエラーが発生しました",
+      "image_deleted": "画像が正常に削除されました",
+      "rename_success": "ファイル名が正常に変更されました",
+      "rename_failed": "ファイル名の変更に失敗しました",
+      "delete_success": "ファイルが正常に削除されました",
+      "delete_failed": "ファイルの削除に失敗しました",
+      "folder_rename_success": "フォルダー名が正常に変更されました",
+      "folder_rename_failed": "フォルダー名の変更に失敗しました",
+      "folder_delete_success": "フォルダーが正常に削除されました",
+      "folder_delete_failed": "フォルダーの削除に失敗しました",
+      "folder_duplicate_success": "フォルダーが正常に複製されました",
+      "folder_duplicate_failed": "フォルダーの複製に失敗しました",
+      "draft_success": "下書きが正常に保存されました",
+      "publish_success": "正常に公開されました",
+      "fetch_failed": "一部のファイルの取得に失敗しました。再試行してください。",
+      "invalid_path": "フォルダーパスが無効です。",
+      "missing_context": "リポジトリのコンテキストが見つかりません。再読み込みして再試行してください。",
+      "unable_to_locate": "このフォルダーのファイルが見つかりません。更新して再試行してください。",
+      "demo_mode": "この操作はデモモードでは無効です。",
+      "draft_saved": "下書きをデータベースに保存しました",
+      "draft_saved_error": "下書きの保存に失敗しました",
+      "draft_discard_success": "下書きを正常に破棄しました",
+      "draft_discard_error": "下書きの破棄に失敗しました"
+    },
+    "labels": {
+      "name": "名前",
+      "date": "日付",
+      "size": "サイズ",
+      "dimensions": "寸法",
+      "required": "必須",
+      "fields": "フィールド",
+      "user": "ユーザー",
+      "site_favicon": "サイトのファビコン",
+      "or": "または"
+    },
+    "errors": {
+      "missing_git_info": "必要な Git 情報が不足しています",
+      "unable_to_determine_path": "ファイルパスを特定できません",
+      "required_fields_empty": "必須フィールドをすべて入力してください: {fields}"
+    },
+    "search": "検索",
+    "search_placeholder": "検索...",
+    "search_sites_placeholder": "サイトを検索...",
+    "prevent_navigation": {
+      "title": "閉じる前に変更を保存しますか？",
+      "description": "未保存の変更があります。保存せずに続けると、変更内容が失われます。",
+      "stay": "このページに留まる",
+      "leave": "離れる",
+      "browser_prompt": "未保存の変更があります。本当にページを離れますか？"
+    },
+    "error_page": {
+      "something_went_wrong": "何か問題が発生しました",
+      "error_code": "エラーコード: {code}",
+      "go_home": "ホームに戻る",
+      "contact_support": "サポートに連絡する",
+      "show_technical_details": "技術情報を表示"
+    },
+    "image_upload": {
+      "file_too_large": "ファイルサイズが制限の {limit}MB を超えています。",
+      "preview_title": "画像のプレビュー",
+      "preview_desc": "この画像をアップロードしてもよろしいですか？",
+      "upload": "アップロード"
+    }
+  }
+}

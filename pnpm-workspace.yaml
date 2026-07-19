@@ -1,0 +1,34 @@
+packages:
+  - "app"
+  - "api"
+
+allowBuilds:
+  "@parcel/watcher": true
+  "@swc/core": false
+  bcrypt: true
+  core-js: false
+  protobufjs: false
+  sharp: true
+  unrs-resolver: false
+
+minimumReleaseAgeExclude:
+  - "@ai-sdk/gateway@4.0.3"
+  - "@ai-sdk/google@4.0.1"
+  - "@ai-sdk/mcp@2.0.2"
+  - "@ai-sdk/openai@4.0.1"
+  - "@ai-sdk/react@4.0.4"
+  - "@ai-sdk/xai@4.0.1"
+  - "@better-auth/core@1.6.22"
+  - "@better-auth/drizzle-adapter@1.6.22"
+  - "@better-auth/kysely-adapter@1.6.22"
+  - "@better-auth/memory-adapter@1.6.22"
+  - "@better-auth/mongo-adapter@1.6.22"
+  - "@better-auth/prisma-adapter@1.6.22"
+  - "@better-auth/telemetry@1.6.22"
+  - "@posthog/core@1.38.0"
+  - ai@7.0.3
+  - better-auth@1.6.22
+  - eslint@10.6.0
+  - mongoose@9.7.3
+  - posthog-js@1.395.0
+  - prettier@3.8.5

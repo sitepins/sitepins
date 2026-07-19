@@ -1,0 +1,131 @@
+{
+  "project": {
+    "activity": {
+      "recent_file_changes": "Alterações de Arquivo Recentes",
+      "latest_activity": "Atividade mais recente por você ou sua equipe",
+      "updated": "Atualizado",
+      "created": "Criado",
+      "deleted": "Deletado",
+      "renamed": "Renomeado",
+      "duplicated": "Duplicado",
+      "no_more": "Sem mais",
+      "load_more": "Carregar Mais"
+    },
+    "branching": {
+      "incoming_request": "Solicitação Recebida de {provider}",
+      "merge": "Mesclar",
+      "details": "Detalhes",
+      "changes_detected": "Alterações detectadas",
+      "view_request": "Ver Solicitação",
+      "create_request": "Criar Solicitação {provider}",
+      "title": "Título",
+      "description_optional": "Descrição (Opcional)",
+      "placeholder_title": "Título do recurso",
+      "placeholder_description": "Descreva suas alterações...",
+      "merge_into": "Mesclar {head} em {base}",
+      "merge_description": "Mesclar alterações de {head} em {base}",
+      "success_created": "{type} criado com sucesso!",
+      "success_merged": "Mesclado {branch} com sucesso!",
+      "error_create": "Falha ao criar {type}",
+      "error_merge": "Falha ao mesclar",
+      "permission_error_title": "Erro de Permissão da GitHub App",
+      "permission_error_description": "Sua GitHub App precisa da permissão 'Pull requests: Write'. Por favor, aceite as novas permissões nas suas configurações do GitHub.",
+      "review": "Revisar",
+      "switcher": {
+        "placeholder": "Procurar branch...",
+        "no_results": "Nenhuma branch encontrada.",
+        "default": "padrão",
+        "create_new": "Criar Nova Branch"
+      },
+      "create": {
+        "title": "Criar Nova Branch",
+        "desc": "Criar uma nova branch a partir de <branch>{branchName}</branch>",
+        "label": "Nome da Branch",
+        "placeholder": "ex: staging",
+        "submit": "Criar Branch",
+        "error": {
+          "required": "Nome da branch é obrigatório",
+          "sha": "Não foi possível encontrar SHA da branch base",
+          "failed": "Falha ao criar nova branch"
+        },
+        "success": "Branch {name} criada com sucesso!"
+      },
+      "status": {
+        "on_default": "Você está na branch padrão: {branch}",
+        "ahead": "{branch} está à frente de {base}."
+      }
+    },
+    "git": {
+      "recent_activities": "Atividades Git Recentes",
+      "recent_commits": "Commits recentes no seu repositório",
+      "revert": "Reverter",
+      "reset": "Redefinir",
+      "commit": "Confirmar",
+      "restore_version": "Restaurar versão",
+      "undo_commit": "Desfazer commit",
+      "admin_only": "Apenas admins e proprietários podem realizar esta ação",
+      "restore_title": "Restaurar para esta versão",
+      "restore_description_github": "Isto voltará no tempo para exatamente como seu site parecia neste momento. Quaisquer alterações feitas após esta versão serão removidas.",
+      "restore_description_gitlab": "Isto trará seu site de volta para exatamente como parecia neste momento. Criaremos uma nova atualização para fazer isso, para que seu histórico permaneça seguro.",
+      "restore_warning_github": "⚠️ Aviso: Esta é uma mudança permanente. Todas as atualizações mais recentes serão excluídas deste branch. Use isso apenas se você quiser descartar completamente o trabalho recente.",
+      "restore_warning_gitlab": "✓ Isto é seguro. Seu trabalho recente não será excluído; nós apenas criamos uma nova versão baseada nesta antiga.",
+      "undo_title": "Desfazer este commit",
+      "undo_description": "Isso criará uma nova atualização que reverte tudo que foi alterado nesta versão específica.",
+      "undo_warning": "✓ Isto é seguro! Adicionaremos uma nova versão ao seu histórico que cancela essas mudanças específicas, mantendo tudo mais intacto.",
+      "feedback": {
+        "reset_success": "Branch redefinido para {sha} com sucesso!",
+        "revert_success": "Commit revertido! Novo commit: {sha}",
+        "revert_failed": "Falha ao reverter"
+      },
+      "actions": {
+        "restoring": "Restaurando",
+        "undoing": "Desfazendo",
+        "confirm_restore": "Confirmar Restauração",
+        "confirm_undo": "Confirmar Desfeita"
+      },
+      "commit_messages": {
+        "add_file": "Adicionar {name}",
+        "rename_file": "Renomear arquivo {name}",
+        "delete_file": "Excluir arquivo {name}",
+        "duplicate_file": "Duplicar arquivo {name}",
+        "create_schema": "Criar schema {name}",
+        "update_schema": "Atualizar schema {name}",
+        "delete_schema": "Excluir schema {name}",
+        "update_config": "Atualizar configurações do site"
+      }
+    },
+    "setup-steps": {
+      "getting_started": "Começando",
+      "description": "Complete essas etapas para configurar o Sitepins e publicar seu primeiro conteúdo",
+      "progress": "Progresso",
+      "progress_count": "{completed} de {total}",
+      "steps": {
+        "add_site": {
+          "title": "Adicionar Novo Site",
+          "description": "Seu site foi criado e está pronto para configuração"
+        },
+        "configure_project": {
+          "title": "Configurar Projeto",
+          "description": "Configure sua estrutura de repositório (Pasta de Conteúdo, Raiz de Mídia, etc.)"
+        },
+        "publish_content": {
+          "title": "Publicar Primeiro Conteúdo",
+          "description": "Publique seu primeiro conteúdo do painel esquerdo"
+        },
+        "deploy_site": {
+          "title": "Implantar Site",
+          "description": "Implante seu site no Vercel pela primeira vez"
+        }
+      },
+      "edit_config": "Editar Configuração do Projeto",
+      "deploy_to_vercel": "Implantar no Vercel",
+      "login_signup": "Faça Login ou Cadastre-se",
+      "create_account": "Crie uma conta",
+      "deploy_repo": "Implante seu repositório",
+      "one_click": "com um clique",
+      "or": "Ou",
+      "already_deployed": "Já implantado? Insira a URL agora",
+      "vercel_host": "no Vercel para hospedar seu site"
+    }
+  }
+}

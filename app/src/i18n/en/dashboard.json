@@ -1,0 +1,149 @@
+{
+  "dashboard": {
+    "preference": {
+      "title": "Preferences",
+      "coauthor": {
+        "title": "Git Co-authoring",
+        "description": "Choose which identity to use for repository actions.",
+        "as_you": "Acting as You",
+        "as_you_desc": "The bot will use your personal identity for commits, branches, and pull requests, giving you full credit for the changes.",
+        "as_you_fallback": "Automatically falls back to the bot if personal permissions are insufficient to ensure tasks are completed.",
+        "as_bot": "Acting as the Bot",
+        "as_bot_desc": "All repository actions will be attributed to the system bot. This ensures a consistent audit trail and is the recommended setting for automated workflows.",
+        "updated": "Coauthor preference updated",
+        "error": "Failed to update impersonate preference"
+      },
+      "language": {
+        "title": "Language",
+        "description": "Choose your preferred language for the interface. Changes apply immediately.",
+        "label": "Interface language"
+      },
+      "theme": {
+        "title": "Theme",
+        "description": "Choose your preferred color theme.",
+        "updated_success": "Theme updated successfully",
+        "updated_failed": "Failed to update theme"
+      }
+    },
+    "account": {
+      "title": "Account",
+      "profile": {
+        "title": "Update Display Name",
+        "description": "This is the name that will be displayed on your profile.",
+        "full_name": "Full Name",
+        "submit": "Update Account",
+        "success": "User details updated successfully",
+        "error": "Failed to update, Please try again",
+        "demo_error": "This action is disabled in demo mode."
+      },
+      "password": {
+        "title": "Change Password",
+        "description": "Update your password regularly to keep your account secure and protected from unauthorized access.",
+        "current_password": "Current Password",
+        "new_password": "New Password",
+        "submit": "Update Password",
+        "success": "Password updated successfully",
+        "error": "Failed to update, Please try again"
+      },
+      "set_password": {
+        "title": "Set Password",
+        "description": "You signed in with a social provider. Create a password to enable additional security options and alternative login methods.",
+        "new_password": "New Password",
+        "submit": "Add Password",
+        "success": "Password added successfully",
+        "error": "Something went wrong! Try again later"
+      },
+      "picture": {
+        "title": "Update Display Picture",
+        "description": "Make your workspace professional by adding a photo.",
+        "success": "User details updated successfully",
+        "error": "Failed to update, Please try again"
+      },
+      "newsletter": {
+        "title": "Newsletter Subscription",
+        "description": "We'll send occasional emails about new features, updates, and offers. You can unsubscribe at any time.",
+        "label": "Receive newsletter and product updates",
+        "submit": "Save Preferences",
+        "success_sub": "Successfully subscribed to Newsletter",
+        "success_unsub": "Successfully unsubscribed from Newsletter",
+        "error": "Failed to update, Please try again"
+      },
+      "delete": {
+        "title": "Delete Account",
+        "description": "Warning: This action cannot be undone. This will permanently delete your account and remove all your data from our servers.",
+        "confirm_label": "Type <strong>DELETE</strong> to confirm",
+        "confirm_placeholder": "Type DELETE here",
+        "button": "Delete Account",
+        "reason_title": "What's the main reason you're deleting your account?",
+        "other_reason_label": "Other reason (max 200 chars)",
+        "other_reason_placeholder": "Tell us more (max 200 chars)",
+        "reasons": {
+          "complex": "Too complex or hard to use",
+          "not_work": "Didn't work for my website",
+          "poor_design": "Poor design or user experience",
+          "bugs": "Too many bugs",
+          "missing_features": "Missing features I need",
+          "better_alternative": "Found a better alternative",
+          "other": "Other"
+        },
+        "feedback": {
+          "demo_disabled": "Delete account is disabled in demo mode.",
+          "success": "Account deleted successfully",
+          "error": "Please try again later."
+        }
+      }
+    },
+    "sitepins_ai": {
+      "title": "Sitepins AI",
+      "description": "Configure your AI provider to enable intelligent content suggestions and autocomplete features.",
+      "provider_label": "Provider",
+      "provider_placeholder": "Select Provider",
+      "model_label": "Model",
+      "model_placeholder": "Select Model",
+      "api_key_label": "API Key",
+      "api_key_placeholder": "Enter your API key",
+      "show": "Show",
+      "hide": "Hide",
+      "copilot_title": "Sitepins Copilot",
+      "copilot_description": "Suggest autocomplete when typing.",
+      "delete_key": "Delete Key",
+      "save_changes": "Save Changes",
+      "save_success": "Settings saved successfully",
+      "save_error": "Something went wrong!",
+      "security_title": "Important Security Notice",
+      "security1": "We **do not store your API key** in our database to ensure your privacy and comply with security policies.",
+      "security2": "Your key is stored locally in your browser only. If you switch or clear your browser, the key will be lost.",
+      "security3": "Please keep your API key secure and accessible to yourself, as we cannot recover it for you.",
+      "custom_model": "Enter manually",
+      "custom_model_input_label": "Model ID",
+      "custom_model_input_placeholder": "Enter custom model ID",
+      "find_model_id": "Find your model ID"
+    },
+    "sidebar": {
+      "back": "Back"
+    },
+    "refetch_preview": "Refetch Preview",
+    "preview_unavailable": "Preview unavailable",
+    "website": "Website",
+    "edit_website": "Edit Website",
+    "build_status": "Build Status",
+    "last_updated": "Last Updated",
+    "source": "Source",
+    "recently": "recently",
+    "last_updated_by": "{distance} ago by {author}",
+    "switcher": {
+      "default_site": "Select Site",
+      "search": "Search...",
+      "not_found": "No project found.",
+      "add_new": "Add New Site"
+    },
+    "archived_project": {
+      "title": "Project archived",
+      "description": "This project has been archived and most functionality is disabled. You can still access project settings to restore or change the project status.",
+      "open_settings": "Open Settings"
+    },
+    "project_overview": {
+      "preview_alt": "Live preview of {name}"
+    }
+  }
+}

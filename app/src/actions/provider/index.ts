@@ -40,3 +40,30 @@ export const createProvider = async (provider: TProvider) => {
   revalidateTag("providers", "max");
   return providers.body.result;
 };
+
+// Persist rotated OAuth tokens. The API updates the row holding
+// old_refresh_token — the token owner's row, which is not necessarily the
+// session user (a collaborator refreshes the project creator's token).
+export const rotateProviderTokens = async (payload: {
+  provider: "Github" | "Gitlab";
+  old_refresh_token: string;
+  access_token: string;
+  refresh_token: string;
+  access_token_expires_at?: number;
+  refresh_token_expires_at?: number;
+}) => {
+  const rotated = await fetchApi<
+    TInsertionSuccess<
+      TProvider & {
+        variables: TProvider;
+      }
+    >
+  >({
+    endPoint: "/provider/rotate",
+    method: "POST",
+    body: payload as any,
+  });
+
+  revalidateTag("providers", "max");
+  return rotated.body.result;
+};

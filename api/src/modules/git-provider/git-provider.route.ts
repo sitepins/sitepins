@@ -12,6 +12,13 @@ gitProviderRouter.post(
   gitProviderController.createProviderController
 );
 
+// persist rotated oauth tokens
+gitProviderRouter.post(
+  "/rotate",
+  authMiddleware.verifyAuth(ENUM_ROLE.ADMIN, ENUM_ROLE.USER),
+  gitProviderController.rotateProviderController
+);
+
 //  get user All Provider
 gitProviderRouter.get(
   "/:userId",

@@ -1,4 +1,4 @@
-import { createProvider } from "@/actions/provider";
+import { rotateProviderTokens } from "@/actions/provider";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
@@ -41,15 +41,21 @@ export async function POST(request: NextRequest) {
 
     const accessTokenExpiresAt = Date.now() + tokenData.expires_in * 1000;
 
-    await createProvider({
-      provider: "Gitlab",
-      access_token: tokenData.access_token,
-      refresh_token: tokenData.refresh_token,
-      access_token_expires_at: accessTokenExpiresAt,
-      token_type: tokenData.token_type,
-      installation_access_token: "",
-      user_id: "", // Handled by backend/session
-    });
+    // Persist onto the row that held the consumed refresh token — the token
+    // OWNER's row, which is not necessarily the session user (a collaborator
+    // refreshes the project creator's token).
+    try {
+      await rotateProviderTokens({
+        provider: "Gitlab",
+        old_refresh_token: refresh_token,
+        access_token: tokenData.access_token,
+        refresh_token: tokenData.refresh_token,
+        access_token_expires_at: accessTokenExpiresAt,
+      });
+    } catch (persistError) {
+      // Still return the fresh token so the current session keeps working.
+      console.error("Failed to persist rotated GitLab tokens:", persistError);
+    }
 
     return NextResponse.json({
       success: true,

@@ -1,4 +1,4 @@
-import { createProvider } from "@/actions/provider";
+import { rotateProviderTokens } from "@/actions/provider";
 import { NextRequest, NextResponse } from "next/server";
 import { App } from "octokit";
 
@@ -36,18 +36,23 @@ export async function POST(request: NextRequest) {
       ? new Date((authentication as any).refreshTokenExpiresAt).getTime()
       : undefined;
 
-    // Store updated provider data
-    await createProvider({
-      provider: "Github",
-      access_token: authentication.token,
-      // @ts-ignore
-      refresh_token: (authentication as any).refreshToken || refresh_token,
-      access_token_expires_at: accessTokenExpiresAt,
-      refresh_token_expires_at: refreshTokenExpiresAt,
-      token_type: authentication.tokenType as any,
-      installation_access_token: "", // Keep empty to prevent overwriting existing installation token
-      user_id: "", // Handled by backend/session
-    });
+    // Persist onto the row that held the consumed refresh token — the token
+    // OWNER's row, which is not necessarily the session user (a collaborator
+    // refreshes the project creator's token). GitHub refresh tokens are
+    // single-use, so failing to persist would permanently break the row.
+    try {
+      await rotateProviderTokens({
+        provider: "Github",
+        old_refresh_token: refresh_token,
+        access_token: authentication.token,
+        refresh_token: (authentication as any).refreshToken || refresh_token,
+        access_token_expires_at: accessTokenExpiresAt,
+        refresh_token_expires_at: refreshTokenExpiresAt,
+      });
+    } catch (persistError) {
+      // Still return the fresh token so the current session keeps working.
+      console.error("Failed to persist rotated GitHub tokens:", persistError);
+    }
 
     return NextResponse.json({
       success: true,

@@ -58,13 +58,13 @@ bucketRouter.post(
 );
 
 // delete router
+// Delete by raw object key. Bucket keys carry no per-user/per-org ownership,
+// so a regular user deleting an arbitrary key would be a cross-tenant delete.
+// Restricted to ADMIN (no self-serve caller exists; the web app never calls
+// this route).
 bucketRouter.delete(
   "/delete/:key",
-  authMiddleware.verifyAuth(
-    ENUM_ROLE.ADMIN,
-    ENUM_ROLE.MODERATOR,
-    ENUM_ROLE.USER,
-  ),
+  authMiddleware.verifyAuth(ENUM_ROLE.ADMIN),
   async (req, res, next) => {
     const key = decodeURIComponent(req.params.key as string);
 

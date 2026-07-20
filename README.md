@@ -16,7 +16,7 @@ api/   # Express + MongoDB backend — auth, orgs, projects, git providers
 
 ## Self-hosting quickstart
 
-Requirements: Node.js 20+ (CI runs on 22), pnpm 11+, a MongoDB instance (local or [Atlas](https://www.mongodb.com/atlas) free tier).
+Requirements: Node.js 22+, pnpm 11+, a MongoDB instance (local or [Atlas](https://www.mongodb.com/atlas) free tier).
 
 ```bash
 pnpm install

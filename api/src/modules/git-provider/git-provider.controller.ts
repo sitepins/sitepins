@@ -23,10 +23,11 @@ const createProviderController = catchAsync(
 // get all provider
 const getProviderController = catchAsync(
   async (req: Request, res: Response) => {
-    const provider = await gitProviderService.getProviderService({
-      userId: req.params.userId as string,
-      currentLoginUser: req.user?.user_id,
-    });
+    // Ignore the :userId path param — only the authenticated user's own
+    // providers are ever returned (prevents cross-user token disclosure).
+    const provider = await gitProviderService.getProviderService(
+      req.user?.user_id,
+    );
     sendResponse(res, {
       success: true,
       statusCode: 200,

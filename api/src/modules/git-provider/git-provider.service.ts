@@ -15,16 +15,11 @@ const createProviderService = async (
   return updateProvider;
 };
 
-const getProviderService = async ({
-  userId,
-  currentLoginUser,
-}: {
-  userId: string;
-  currentLoginUser: string;
-}) => {
-  const providers = await GitProvider.find({
-    $or: [{ user_id: userId }, { user_id: currentLoginUser }],
-  });
+// Always scoped to the authenticated user. Git provider records hold OAuth
+// access/refresh tokens with repo read/write scope, so they must never be
+// readable across users — the caller's own id is the only permitted filter.
+const getProviderService = async (userId: string) => {
+  const providers = await GitProvider.find({ user_id: userId });
 
   return providers;
 };

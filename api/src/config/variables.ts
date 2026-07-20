@@ -39,6 +39,11 @@ export default {
     true,
   ),
 
+  // Public demo mode. When off (default) the unauthenticated demo-auth
+  // endpoints (/api/v1/demo/auth/*) are not mounted, so a self-hosted instance
+  // exposes no anonymous-signup surface. The hosted demo turns this on.
+  demo_mode: bool(process.env.DEMO_MODE, false),
+
   // ---- Media storage (S3-compatible: AWS S3, Cloudflare R2, MinIO,
   // Backblaze B2, DigitalOcean Spaces) ----
   s3_endpoint: process.env.S3_ENDPOINT,

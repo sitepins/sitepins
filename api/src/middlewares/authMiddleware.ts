@@ -1,5 +1,6 @@
 import { auth, Session } from "@/auth";
 import { authDemo } from "@/auth-demo";
+import config from "@/config/variables";
 import { ENUM_ROLE, ENUM_ROLE_ORG } from "@/enums/roles";
 import { getJwtIssuers } from "@/lib/authIssuers";
 import ApiError from "@/errors/ApiError";
@@ -21,7 +22,9 @@ class AuthMiddleware {
         let session: Session | null = null;
 
         const headers = req.headers;
-        const isDemo = headers["x-app-context"] === "demo";
+        // Only honor the demo session context when demo mode is enabled.
+        const isDemo =
+          config.demo_mode && headers["x-app-context"] === "demo";
 
         const sessionAuth = isDemo ? authDemo : auth;
         session = await sessionAuth.api.getSession({

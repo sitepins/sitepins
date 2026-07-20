@@ -3,6 +3,9 @@
   "private": true,
   "description": "Sitepins — open-source git-based CMS",
   "packageManager": "pnpm@11.15.0",
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "dev": "pnpm --parallel --filter ./app --filter ./api dev",
     "dev:app": "pnpm --filter sitepins dev",

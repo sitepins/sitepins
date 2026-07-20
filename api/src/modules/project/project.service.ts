@@ -1,5 +1,6 @@
 import { checkOrder } from "@/lib/entitlements";
 import { paginationHelpers } from "@/lib/paginationHelper";
+import { escapeRegex } from "@/lib/regexEscape";
 import { deleteFile } from "@/lib/s3-utils";
 import { IPagination } from "@/types";
 import { PipelineStage } from "mongoose";
@@ -31,7 +32,7 @@ const getAllProjectService = async (
     const searchKeyword = String(search).replace(/\+/g, " ");
     const keywords = searchKeyword.split("|");
     const searchConditions = keywords.map((keyword) => ({
-      $or: [{ project_name: { $regex: keyword, $options: "i" } }],
+      $or: [{ project_name: { $regex: escapeRegex(keyword), $options: "i" } }],
     }));
     matchStage.$match.$or = searchConditions;
   }

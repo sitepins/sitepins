@@ -55,6 +55,16 @@ export async function startServer() {
   try {
     await dbConnect();
 
+    // Config sanity: the web app's server-to-server calls (e.g. project
+    // preview) authenticate with INTERNAL_API_SECRET. If it's unset in
+    // production those calls silently fall back to session auth and break, so
+    // surface the misconfiguration loudly at boot rather than at request time.
+    if (config.env === "production" && !config.internal_secret) {
+      console.warn(
+        "[!] INTERNAL_API_SECRET is not set — internal server-to-server calls (project preview) will fail. Set it to the same value in both api/.env and app/.env.",
+      );
+    }
+
     const httpServer = http.createServer(app);
 
     const io = new IOServer(httpServer, {

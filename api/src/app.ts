@@ -46,7 +46,10 @@ const conditionalCors = (req: Request, res: Response, next: NextFunction) => {
 app.use(conditionalCors);
 // must place better auth handlers before express.json()
 app.all("/api/v1/auth/*splat", toNodeHandler(auth));
-app.all("/api/v1/demo/auth/*splat", toNodeHandler(authDemo));
+// Demo auth is an anonymous-signup surface — only mount it when DEMO_MODE is on.
+if (config.demo_mode) {
+  app.all("/api/v1/demo/auth/*splat", toNodeHandler(authDemo));
+}
 
 // Cap request body size to prevent trivial memory-exhaustion DoS. Override
 // with JSON_BODY_LIMIT if your content payloads are larger.

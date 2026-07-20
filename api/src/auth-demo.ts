@@ -26,8 +26,8 @@ export const authDemo = betterAuth({
   appName: "Sitepins Demo",
   rateLimit: {
     // enabled: true, // enabled only if you want to test it in development
-    window: parseInt(process.env.RATELIMIT_WINDOW!), // time window in seconds
-    max: parseInt(process.env.RATELIMIT_MAX!), // max requests in the window
+    window: parseInt(process.env.RATELIMIT_WINDOW || "10"), // seconds
+    max: parseInt(process.env.RATELIMIT_MAX || "100"), // max requests / window
   },
   user: {
     modelName: "user",

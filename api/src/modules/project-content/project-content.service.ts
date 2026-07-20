@@ -1,4 +1,5 @@
 import { paginationHelpers } from "@/lib/paginationHelper";
+import { escapeRegex } from "@/lib/regexEscape";
 import { IPagination } from "@/types";
 import { PipelineStage } from "mongoose";
 import { ProjectContent } from "./project-content.model";
@@ -25,9 +26,10 @@ const getProjectContentListService = async (
   }
 
   if (search) {
+    const safeSearch = escapeRegex(search);
     matchStage.$or = [
-      { file: { $regex: search, $options: "i" } },
-      { content: { $regex: search, $options: "i" } },
+      { file: { $regex: safeSearch, $options: "i" } },
+      { content: { $regex: safeSearch, $options: "i" } },
     ];
   }
 

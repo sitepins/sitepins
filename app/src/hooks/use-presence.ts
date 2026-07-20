@@ -29,6 +29,9 @@ export function usePresence(
   projectId: string,
   filePath: string,
 ) {
+  // Callers pass the URL param, which carries the "org-" routing prefix; the
+  // server checks membership against the bare Organization.org_id.
+  const orgIdSafe = orgId?.startsWith("org-") ? orgId.slice(4) : orgId;
   const [activeUsers, setActiveUsers] = useState<PresenceUser[]>([]);
   const { data: session } = authClient.useSession();
 
@@ -49,7 +52,7 @@ export function usePresence(
   }, [userId, userName, userEmail, userImage]);
 
   useEffect(() => {
-    if (!user || !orgId || !projectId || !filePath) return;
+    if (!user || !orgIdSafe || !projectId || !filePath) return;
 
     const socketOrigin = getSocketOrigin();
     if (!socketOrigin) return;
@@ -62,7 +65,7 @@ export function usePresence(
     });
 
     socket.on("connect", () => {
-      socket!.emit("join-file", { orgId, projectId, filePath, user });
+      socket!.emit("join-file", { orgId: orgIdSafe, projectId, filePath, user });
     });
 
     socket.on("connect_error", (err) => {
@@ -79,12 +82,12 @@ export function usePresence(
 
     return () => {
       if (socket) {
-        socket.emit("leave-file", { orgId, projectId, filePath });
+        socket.emit("leave-file", { orgId: orgIdSafe, projectId, filePath });
         socket.disconnect();
       }
       setActiveUsers([]);
     };
-  }, [user, orgId, projectId, filePath]);
+  }, [user, orgIdSafe, projectId, filePath]);
 
   return { activeUsers };
 }

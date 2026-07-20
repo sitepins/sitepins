@@ -19,7 +19,7 @@ import { useGetProjectsQuery } from "@/redux/features/project/project-api";
 import { MoreHorizontal } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
-import { usePathname, useSearchParams } from "next/navigation";
+import { useParams, usePathname, useSearchParams } from "next/navigation";
 import { useSelector } from "react-redux";
 import FolderActions from "./folder-actions";
 import PreviewButton from "./preview-button";
@@ -27,8 +27,14 @@ import PreviewButton from "./preview-button";
 export default function ProjectHeader({ project }: { project: any }) {
   const tCommon = useTranslations("common");
   const tMedia = useTranslations("media");
-  const { data: projects = [] } = useGetProjectsQuery(project?.org_id, {
-    skip: !project?.org_id,
+  // Org id from the URL, not the async project query — while the project is
+  // loading, project?.org_id is undefined and links would point to
+  // "/org-undefined" (which Next.js then prefetches).
+  const params = useParams();
+  const rawOrgId = params?.orgId as string;
+  const orgIdSafe = rawOrgId?.startsWith("org-") ? rawOrgId.slice(4) : rawOrgId;
+  const { data: projects = [] } = useGetProjectsQuery(orgIdSafe, {
+    skip: !orgIdSafe,
   });
 
   const pathname = usePathname();
@@ -123,7 +129,7 @@ export default function ProjectHeader({ project }: { project: any }) {
   if (isSettingsPage) {
     const activeSetting = projectSettingsMenu.find((item) => {
       const href = item.href({
-        orgId: project?.org_id,
+        orgId: orgIdSafe,
         projectId: project?.project_id,
       });
       return pathname.startsWith(href);
@@ -142,7 +148,7 @@ export default function ProjectHeader({ project }: { project: any }) {
       <ProjectSwitcher
         projects={projects}
         currentProject={project}
-        orgId={project?.org_id}
+        orgId={orgIdSafe}
         className="hidden w-60 justify-between xl:flex"
       />
 
@@ -193,7 +199,7 @@ export default function ProjectHeader({ project }: { project: any }) {
                 <DropdownMenuItem key={item.name} asChild>
                   <Link
                     href={item.href({
-                      orgId: project?.org_id,
+                      orgId: orgIdSafe,
                       projectId: project?.project_id,
                     })}
                   >

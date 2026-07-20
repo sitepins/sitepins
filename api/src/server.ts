@@ -12,10 +12,14 @@ import { isOrgMember } from "./lib/orgAccess";
 import { authenticateSocket } from "./lib/socketAuth";
 import { initEditorGateway } from "./modules/common/editor.gateway";
 
-// Collaborative document names are the editor pathname: "/<orgId>/<projectId>/…".
-// (localePrefix is "never", so there is no locale segment.)
-const orgIdFromDocumentName = (documentName: string): string | undefined =>
-  documentName.split("/").filter(Boolean)[0];
+// Collaborative document names are the editor pathname:
+// "/org-<orgId>/<projectId>/…". (localePrefix is "never", so there is no
+// locale segment.) App URLs prefix the bare org id with "org-", which must be
+// stripped before comparing against Organization.org_id.
+const orgIdFromDocumentName = (documentName: string): string | undefined => {
+  const segment = documentName.split("/").filter(Boolean)[0];
+  return segment?.startsWith("org-") ? segment.slice(4) : segment;
+};
 
 const hocuspocus = new Hocuspocus({
   timeout: 30000,

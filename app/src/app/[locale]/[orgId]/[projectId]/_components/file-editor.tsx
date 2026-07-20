@@ -85,7 +85,7 @@ export default function FileEditor() {
 
     s.on("connect", () => {
       s.emit("join-editor", {
-        org_id: orgId,
+        org_id: orgIdSafe,
         project_id: projectId,
         file: filepath,
       });
@@ -96,7 +96,7 @@ export default function FileEditor() {
     return () => {
       s.disconnect();
     };
-  }, [orgId, projectId, filepath]);
+  }, [orgIdSafe, projectId, filepath]);
 
   const isConfigReady =
     token && branch && provider && owner && repoName && filepath;

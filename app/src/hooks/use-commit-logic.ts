@@ -366,8 +366,9 @@ export function useCommitLogic({
         );
         setShowCommitModal(false);
 
+        const rawOrgId = params.orgId as string;
         socket?.emit("commit", {
-          org_id: params.orgId as string,
+          org_id: rawOrgId?.startsWith("org-") ? rawOrgId.slice(4) : rawOrgId,
           project_id: params.projectId as string,
           file: filePath,
           action: isRename ? EAction.RENAME : EAction.UPDATE,

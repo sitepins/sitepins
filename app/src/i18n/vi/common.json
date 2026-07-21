@@ -132,7 +132,9 @@
       "file_too_large": "Kích thước tệp vượt quá giới hạn {limit} MB.",
       "preview_title": "Xem trước hình ảnh",
       "preview_desc": "Xác nhận nếu bạn muốn tải lên hình ảnh này.",
-      "upload": "Tải lên"
+      "upload": "Tải lên",
+      "delete_title": "Xóa hình ảnh",
+      "delete_desc": "Thao tác này sẽ xóa vĩnh viễn hình ảnh này. Không thể hoàn tác."
     }
   }
 }

@@ -93,8 +93,8 @@
         }
       }
     },
-    "sitepins_ai": {
-      "title": "Sitepins AI",
+    "ai_agent": {
+      "title": "KI-Agent",
       "description": "Konfiguriere deinen KI-Provider, um intelligente Inhaltsvorschläge und Autovervollständigungsfunktionen zu aktivieren.",
       "provider_label": "Provider",
       "provider_placeholder": "Provider auswählen",
@@ -104,8 +104,8 @@
       "api_key_placeholder": "Gib deinen API-Key ein",
       "show": "Anzeigen",
       "hide": "Ausblenden",
-      "copilot_title": "Sitepins Copilot",
-      "copilot_description": "Schlägt beim Tippen Autovervollständigungen vor.",
+      "copilot_title": "Autovervollständigungsvorschlag",
+      "copilot_description": "Schlägt beim Tippen im Editor eine Autovervollständigung für die aktuelle Zeile vor.",
       "delete_key": "Key löschen",
       "save_changes": "Änderungen speichern",
       "save_success": "Einstellungen erfolgreich gespeichert",

@@ -6,7 +6,7 @@
       "preferences": "偏好设置",
       "billing": "账单",
       "organization_settings": "组织设置",
-      "sitepins_ai": "SitePins AI",
+      "ai_agent": "AI 代理",
       "support_updates": "支持与更新",
       "account": "账户",
       "files": "文件"
@@ -291,16 +291,16 @@
           "subscription"
         ]
       },
-      "sitepins-ai": {
-        "label": "SitePins AI 设置",
-        "href": "/dashboard/sitepins-ai",
+      "ai-agent": {
+        "label": "AI 代理设置",
+        "href": "/dashboard/ai-agent",
         "keywords": [
           "AI",
           "人工智能",
           "智能助手",
           "copilot",
           "副驾驶",
-          "sitepins ai",
+          "ai agent",
           "助手",
           "机器人",
           "自动化",
@@ -311,7 +311,7 @@
           "配置",
           "ai",
           "copilot",
-          "sitepins ai",
+          "ai agent",
           "artificial intelligence",
           "assistant",
           "bot",

@@ -14,7 +14,7 @@ export function getAICredential():
     const provider = localStorage.getItem("sitepins-ai-provider");
     const model = localStorage.getItem("sitepins-ai-model");
     const apiKey = localStorage.getItem("sitepins-ai-apiKey");
-    const autocomplete = localStorage.getItem("sitepins-copilot") === "true";
+    const autocomplete = localStorage.getItem("sitepins-ai-autocomplete") === "true";
 
     if (
       typeof provider !== "string" ||

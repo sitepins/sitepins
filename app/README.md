@@ -22,7 +22,7 @@ src/
   app/
     [locale]/          # all user-facing routes, locale-prefixed
       (auth)/           # login/signup
-      dashboard/         # account, billing (cloud-only), sitepins-ai settings
+      dashboard/         # account, billing (cloud-only), ai-agent settings
       [orgId]/           # org + project workspace, the editor, settings
       github-installed/  # GitHub App OAuth callback landing page
       gitlab-installed/  # GitLab OAuth callback landing page
@@ -66,7 +66,7 @@ A fork or self-hosted instance can override the upstream Sitepins name and links
 | `NEXT_PUBLIC_COMMUNITY_URL` | `https://discord.gg/KrpvHfqcNA` |
 | `NEXT_PUBLIC_GIT_COMMIT_EMAIL_DOMAIN` | host of `BRAND_URL` |
 
-Note: the AI writing assistant primarily uses a per-user key — each user pastes their own key at `/dashboard/sitepins-ai`, stored server-side per account. `AI_GATEWAY_API_KEY` is only a fallback when a user hasn't set one.
+Note: the AI writing assistant primarily uses a per-user key — each user pastes their own key at `/dashboard/ai-agent`, stored server-side per account. `AI_GATEWAY_API_KEY` is only a fallback when a user hasn't set one.
 
 ## Scripts
 

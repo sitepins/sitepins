@@ -93,8 +93,8 @@
         }
       }
     },
-    "sitepins_ai": {
-      "title": "Ghim trang web AI",
+    "ai_agent": {
+      "title": "Tác nhân AI",
       "description": "Định cấu hình nhà cung cấp AI của bạn để bật các đề xuất nội dung thông minh và tính năng tự động hoàn thành.",
       "provider_label": "Nhà cung cấp",
       "provider_placeholder": "Chọn Nhà cung cấp",
@@ -104,8 +104,8 @@
       "api_key_placeholder": "Nhập khóa API của bạn",
       "show": "Hiển thị",
       "hide": "Ẩn",
-      "copilot_title": "Sitepin Copilot",
-      "copilot_description": "Đề xuất tự động hoàn thành khi gõ.",
+      "copilot_title": "Gợi ý tự động hoàn thành",
+      "copilot_description": "Gợi ý tự động hoàn thành cho dòng hiện tại khi bạn gõ trong trình soạn thảo.",
       "delete_key": "Xóa khóa",
       "save_changes": "Lưu thay đổi",
       "save_success": "Đã lưu cài đặt thành công",

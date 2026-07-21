@@ -6,7 +6,7 @@
       "preferences": "환경설정",
       "billing": "청구",
       "organization_settings": "조직 설정",
-      "sitepins_ai": "SitePins AI",
+      "ai_agent": "AI 에이전트",
       "support_updates": "지원 및 업데이트",
       "account": "계정",
       "files": "파일"
@@ -288,14 +288,14 @@
           "subscription"
         ]
       },
-      "sitepins-ai": {
-        "label": "SitePins AI 설정",
-        "href": "/dashboard/sitepins-ai",
+      "ai-agent": {
+        "label": "AI 에이전트 설정",
+        "href": "/dashboard/ai-agent",
         "keywords": [
           "AI",
           "인공지능",
           "코파일럿",
-          "sitepins ai",
+          "ai agent",
           "어시스턴트",
           "봇",
           "자동화",
@@ -306,7 +306,7 @@
           "구성",
           "ai",
           "copilot",
-          "sitepins ai",
+          "ai agent",
           "artificial intelligence",
           "assistant",
           "bot",

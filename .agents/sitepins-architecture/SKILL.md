@@ -165,7 +165,7 @@ pnpm start        # Run production build
 - **Multiple AI providers**: Anthropic, Google, OpenAI, XAI via `@ai-sdk/*` packages
 - **AI features**: Content generation, SEO suggestions, Copilot plugin in editor
 - **AI API route**: [`../../src/app/api/ai/`](../../src/app/api/ai/) handles streaming responses.
-- **Per-user settings**: Locale dashboard page [`../../src/app/[locale]/dashboard/sitepins-ai/page.tsx`](../../src/app/[locale]/dashboard/sitepins-ai/page.tsx) stores API keys + preferred model/provider configuration.
+- **Per-user settings**: Locale dashboard page [`../../src/app/[locale]/dashboard/ai-agent/page.tsx`](../../src/app/[locale]/dashboard/ai-agent/page.tsx) stores API keys + preferred model/provider configuration.
 
 ### Billing & Subscriptions
 - **Paddle integration**: Payment processing with `@paddle/paddle-js` and `@paddle/paddle-node-sdk`

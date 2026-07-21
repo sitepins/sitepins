@@ -6,7 +6,7 @@
       "preferences": "পছন্দসমূহ",
       "billing": "বিলিং",
       "organization_settings": "সংস্থা সেটিংস",
-      "sitepins_ai": "SitePins AI",
+      "ai_agent": "এআই এজেন্ট",
       "support_updates": "সাপোর্ট ও আপডেট",
       "account": "অ্যাকাউন্ট",
       "files": "ফাইলগুলি"
@@ -282,13 +282,13 @@
           "subscription"
         ]
       },
-      "sitepins-ai": {
-        "label": "SitePins AI সেটিংস",
-        "href": "/dashboard/sitepins-ai",
+      "ai-agent": {
+        "label": "এআই এজেন্ট সেটিংস",
+        "href": "/dashboard/ai-agent",
         "keywords": [
           "এআই",
           "কপাইলট",
-          "sitepins ai",
+          "ai agent",
           "কৃত্রিম বুদ্ধিমত্তা",
           "সহায়ক",
           "বট",
@@ -300,7 +300,7 @@
           "কনফিগারেশন",
           "ai",
           "copilot",
-          "sitepins ai",
+          "ai agent",
           "artificial intelligence",
           "assistant",
           "bot",

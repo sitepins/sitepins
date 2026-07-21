@@ -132,7 +132,9 @@
       "file_too_large": "File size exceeds the {limit}MB limit.",
       "preview_title": "Preview Image",
       "preview_desc": "Confirm if you want to upload this image.",
-      "upload": "Upload"
+      "upload": "Upload",
+      "delete_title": "Remove Image",
+      "delete_desc": "This will permanently delete this image. This action cannot be undone."
     }
   }
 }

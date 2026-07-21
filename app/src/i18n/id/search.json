@@ -6,7 +6,7 @@
       "preferences": "Preferensi",
       "billing": "Tagihan",
       "organization_settings": "Pengaturan Organisasi",
-      "sitepins_ai": "SitePins AI",
+      "ai_agent": "Agen AI",
       "support_updates": "Dukungan & Pembaruan",
       "account": "Akun",
       "files": "File"
@@ -290,14 +290,14 @@
           "subscription"
         ]
       },
-      "sitepins-ai": {
-        "label": "Pengaturan SitePins AI",
-        "href": "/dashboard/sitepins-ai",
+      "ai-agent": {
+        "label": "Pengaturan Agen AI",
+        "href": "/dashboard/ai-agent",
         "keywords": [
           "ai",
           "kecerdasan buatan",
           "copilot",
-          "sitepins ai",
+          "ai agent",
           "asisten",
           "bot",
           "otomatisasi",
@@ -308,7 +308,7 @@
           "konfigurasi",
           "ai",
           "copilot",
-          "sitepins ai",
+          "ai agent",
           "artificial intelligence",
           "assistant",
           "bot",

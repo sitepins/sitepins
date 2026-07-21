@@ -132,7 +132,9 @@
       "file_too_large": "El tamaño del archivo supera el límite de {limit}MB.",
       "preview_title": "Vista Previa de Imagen",
       "preview_desc": "Confirma si deseas subir esta imagen.",
-      "upload": "Subir"
+      "upload": "Subir",
+      "delete_title": "Eliminar imagen",
+      "delete_desc": "Esto eliminará esta imagen de forma permanente. Esta acción no se puede deshacer."
     }
   }
 }

@@ -5,14 +5,14 @@
         "account": "Akun",
         "updates": "Pembaruan",
         "support": "Dukungan",
-        "sitepins_ai": "AI Sitepin",
+        "ai_agent": "Agen AI",
         "preferences": "Preferensi"
       },
       "user_dashboard": {
         "overview": "Ikhtisar",
         "account": "Akun",
         "preferences": "Preferensi",
-        "sitepins_ai": "AI Sitepin"
+        "ai_agent": "Agen AI"
       },
       "org_dashboard": {
         "websites": "Situs web",

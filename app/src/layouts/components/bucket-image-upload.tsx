@@ -2,8 +2,8 @@
 
 import Avatar from "@/components/avatar";
 import { useImageUpload } from "@/hooks/use-image-upload";
-import { AcceptImages, MAX_SIZE } from "@/lib/constant";
-import { Camera } from "lucide-react";
+import { AcceptImages, BUCKET_URL, MAX_SIZE } from "@/lib/constant";
+import { Camera, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { useDropzone } from "react-dropzone";
 import Gravatar from "react-gravatar";
@@ -42,6 +42,14 @@ const SIZES = {
   lg: "size-25",
 };
 
+// Raw S3 keys (e.g. "sitepins/users/123.png") or URLs pointing at our own
+// bucket are deletable. External avatars (Google/GitHub OAuth) never are.
+function isBucketImage(src?: string): boolean {
+  if (!src) return false;
+  if (!src.startsWith("http")) return true;
+  return !!BUCKET_URL && src.includes(BUCKET_URL);
+}
+
 export function BucketImageUpload({
   folder,
   defaultImage,
@@ -58,6 +66,8 @@ export function BucketImageUpload({
   const tCommonImageUpload = useTranslations("common.image_upload");
   const tCommon = useTranslations("common");
   const [previewDialog, setPreviewDialog] = useState(false);
+  const [deleteDialog, setDeleteDialog] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const {
     previewSrc,
     file,
@@ -91,6 +101,19 @@ export function BucketImageUpload({
       onUploadSuccess(imageUrl);
       setPreviewDialog(false);
       reset();
+    }
+  };
+
+  const canDelete =
+    !isDisabled && !previewSrc && isBucketImage(defaultImage);
+
+  const handleDelete = async () => {
+    try {
+      setIsDeleting(true);
+      await onUploadSuccess("");
+      setDeleteDialog(false);
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -173,10 +196,10 @@ export function BucketImageUpload({
             )}
 
             <span
-              onClick={open}
+              onClick={canDelete ? () => setDeleteDialog(true) : open}
               className="absolute inset-0 top-0 left-0 flex cursor-pointer items-center justify-center rounded-full bg-black/50 text-white opacity-0 transition-all duration-500 group-hover/thumb:opacity-100"
             >
-              <Camera />
+              {canDelete ? <Trash2 className="text-destructive" /> : <Camera />}
             </span>
           </div>
         </div>
@@ -215,6 +238,31 @@ export function BucketImageUpload({
             </AlertDialogCancel>
             <Button isLoading={isUploading} onClick={handleUpload}>
               {tCommonImageUpload("upload")}
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog open={deleteDialog} onOpenChange={setDeleteDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              {tCommonImageUpload("delete_title")}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {tCommonImageUpload("delete_desc")}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setDeleteDialog(false)}>
+              {tCommon("actions.cancel")}
+            </AlertDialogCancel>
+            <Button
+              variant="destructive"
+              isLoading={isDeleting}
+              onClick={handleDelete}
+            >
+              {tCommon("actions.delete")}
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>

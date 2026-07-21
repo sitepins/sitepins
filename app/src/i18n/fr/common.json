@@ -132,7 +132,9 @@
       "file_too_large": "La taille du fichier dépasse la limite de {limit} Mo.",
       "preview_title": "Aperçu de l'image",
       "preview_desc": "Confirmez si vous souhaitez télécharger cette image.",
-      "upload": "Télécharger"
+      "upload": "Télécharger",
+      "delete_title": "Supprimer l'image",
+      "delete_desc": "Cela supprimera définitivement cette image. Cette action est irréversible."
     }
   }
 }

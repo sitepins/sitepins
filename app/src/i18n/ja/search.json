@@ -6,7 +6,7 @@
       "preferences": "環境設定",
       "billing": "請求",
       "organization_settings": "組織の設定",
-      "sitepins_ai": "SitePins AI",
+      "ai_agent": "AIエージェント",
       "support_updates": "サポートとアップデート",
       "account": "アカウント",
       "files": "ファイル"
@@ -286,14 +286,14 @@
           "subscription"
         ]
       },
-      "sitepins-ai": {
-        "label": "SitePins AI の設定",
-        "href": "/dashboard/sitepins-ai",
+      "ai-agent": {
+        "label": "AIエージェントの設定",
+        "href": "/dashboard/ai-agent",
         "keywords": [
           "AI",
           "人工知能",
           "コパイロット",
-          "sitepins ai",
+          "ai agent",
           "アシスタント",
           "ボット",
           "自動化",
@@ -304,7 +304,7 @@
           "コンフィグ",
           "ai",
           "copilot",
-          "sitepins ai",
+          "ai agent",
           "artificial intelligence",
           "assistant",
           "bot",

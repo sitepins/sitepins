@@ -5,14 +5,14 @@
         "account": "账户",
         "updates": "更新",
         "support": "支持",
-        "sitepins_ai": "Sitepins AI",
+        "ai_agent": "AI 代理",
         "preferences": "偏好设置"
       },
       "user_dashboard": {
         "overview": "概览",
         "account": "账户",
         "preferences": "偏好设置",
-        "sitepins_ai": "Sitepins AI"
+        "ai_agent": "AI 代理"
       },
       "org_dashboard": {
         "websites": "网站",

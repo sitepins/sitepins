@@ -46,7 +46,7 @@ export function AIToolbarButton(
         onClick?.(event);
         if (event.defaultPrevented) return;
         if (!localStorage.getItem("sitepins-ai-model")) {
-          window.open("/dashboard/sitepins-ai", "_blank");
+          window.open("/dashboard/ai-agent", "_blank");
           return;
         }
         api.aiChat.show();

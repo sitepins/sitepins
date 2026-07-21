@@ -5,14 +5,14 @@
         "account": "계정",
         "updates": "업데이트",
         "support": "지원",
-        "sitepins_ai": "사이트핀 AI",
+        "ai_agent": "AI 에이전트",
         "preferences": "환경설정"
       },
       "user_dashboard": {
         "overview": "개요",
         "account": "계정",
         "preferences": "환경설정",
-        "sitepins_ai": "사이트핀 AI"
+        "ai_agent": "AI 에이전트"
       },
       "org_dashboard": {
         "websites": "웹사이트",

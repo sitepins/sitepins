@@ -5,14 +5,14 @@
         "account": "Учётная запись",
         "updates": "Обновления",
         "support": "Поддержка",
-        "sitepins_ai": "Sitepins AI",
+        "ai_agent": "ИИ-агент",
         "preferences": "Настройки"
       },
       "user_dashboard": {
         "overview": "Обзор",
         "account": "Учётная запись",
         "preferences": "Настройки",
-        "sitepins_ai": "Sitepins AI"
+        "ai_agent": "ИИ-агент"
       },
       "org_dashboard": {
         "websites": "Сайты",

@@ -5,14 +5,14 @@
         "account": "アカウント",
         "updates": "アップデート",
         "support": "サポート",
-        "sitepins_ai": "Sitepins AI",
+        "ai_agent": "AIエージェント",
         "preferences": "設定"
       },
       "user_dashboard": {
         "overview": "概要",
         "account": "アカウント",
         "preferences": "設定",
-        "sitepins_ai": "Sitepins AI"
+        "ai_agent": "AIエージェント"
       },
       "org_dashboard": {
         "websites": "ウェブサイト",

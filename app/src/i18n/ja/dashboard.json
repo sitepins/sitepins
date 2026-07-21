@@ -93,8 +93,8 @@
         }
       }
     },
-    "sitepins_ai": {
-      "title": "Sitepins AI",
+    "ai_agent": {
+      "title": "AIエージェント",
       "description": "AI プロバイダーを設定して、インテリジェントなコンテンツ提案とオートコンプリート機能を有効にしてください。",
       "provider_label": "プロバイダー",
       "provider_placeholder": "プロバイダーを選択",
@@ -104,8 +104,8 @@
       "api_key_placeholder": "API Key を入力",
       "show": "表示",
       "hide": "非表示",
-      "copilot_title": "Sitepins コパイロット",
-      "copilot_description": "入力時にオートコンプリートを提案します。",
+      "copilot_title": "オートコンプリート候補",
+      "copilot_description": "エディタで入力中に、現在の行のオートコンプリートを提案します。",
       "delete_key": "キーを削除",
       "save_changes": "変更を保存",
       "save_success": "設定が正常に保存されました",

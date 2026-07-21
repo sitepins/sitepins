@@ -316,8 +316,8 @@ export function GlobalSearch({
         items: filterItems(orgId ? getOrgSearchSettings(orgId) : []),
       },
       {
-        groupLabel: tSearch("groupLabels.sitepins_ai"),
-        items: filterItems([createSearchItem("sitepins-ai")]),
+        groupLabel: tSearch("groupLabels.ai_agent"),
+        items: filterItems([createSearchItem("ai-agent")]),
       },
       {
         groupLabel: tSearch("groupLabels.support_updates"),

@@ -132,7 +132,9 @@
       "file_too_large": "ファイルサイズが制限の {limit}MB を超えています。",
       "preview_title": "画像のプレビュー",
       "preview_desc": "この画像をアップロードしてもよろしいですか？",
-      "upload": "アップロード"
+      "upload": "アップロード",
+      "delete_title": "画像を削除",
+      "delete_desc": "この画像を完全に削除します。この操作は元に戻せません。"
     }
   }
 }

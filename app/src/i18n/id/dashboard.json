@@ -93,8 +93,8 @@
         }
       }
     },
-    "sitepins_ai": {
-      "title": "AI Sitepin",
+    "ai_agent": {
+      "title": "Agen AI",
       "description": "Konfigurasikan penyedia AI Anda untuk mengaktifkan saran konten cerdas dan fitur pelengkapan otomatis.",
       "provider_label": "Penyedia",
       "provider_placeholder": "Pilih Penyedia",
@@ -104,8 +104,8 @@
       "api_key_placeholder": "Masukkan kunci API Anda",
       "show": "Tunjukkan",
       "hide": "Sembunyikan",
-      "copilot_title": "Salinan Sitepins",
-      "copilot_description": "Sarankan pelengkapan otomatis saat mengetik.",
+      "copilot_title": "Saran Pelengkapan Otomatis",
+      "copilot_description": "Menyarankan pelengkapan otomatis untuk baris saat ini ketika Anda mengetik di editor.",
       "delete_key": "Hapus Kunci",
       "save_changes": "Simpan Perubahan",
       "save_success": "Pengaturan berhasil disimpan",

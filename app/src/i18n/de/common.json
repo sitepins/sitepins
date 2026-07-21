@@ -132,7 +132,9 @@
       "file_too_large": "Dateigröße überschreitet das Limit von {limit} MB.",
       "preview_title": "Bildvorschau",
       "preview_desc": "Bestätigen Sie, ob Sie dieses Bild hochladen möchten.",
-      "upload": "Hochladen"
+      "upload": "Hochladen",
+      "delete_title": "Bild entfernen",
+      "delete_desc": "Dadurch wird dieses Bild dauerhaft gelöscht. Diese Aktion kann nicht rückgängig gemacht werden."
     }
   }
 }

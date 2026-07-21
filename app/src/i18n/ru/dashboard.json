@@ -93,8 +93,8 @@
         }
       }
     },
-    "sitepins_ai": {
-      "title": "Sitepins AI",
+    "ai_agent": {
+      "title": "ИИ-агент",
       "description": "Настройте провайдера AI для включения интеллектуальных предложений контента и функций автодополнения.",
       "provider_label": "Провайдер",
       "provider_placeholder": "Выберите провайдера",
@@ -104,8 +104,8 @@
       "api_key_placeholder": "Введите ваш API-ключ",
       "show": "Показать",
       "hide": "Скрыть",
-      "copilot_title": "Sitepins Copilot",
-      "copilot_description": "Предлагать автодополнение при вводе.",
+      "copilot_title": "Предложение автодополнения",
+      "copilot_description": "Предлагает автодополнение текущей строки во время ввода текста в редакторе.",
       "delete_key": "Удалить ключ",
       "save_changes": "Сохранить изменения",
       "save_success": "Настройки успешно сохранены",

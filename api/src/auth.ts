@@ -178,8 +178,8 @@ export const auth = betterAuth({
       },
       update: {
         before: async (user, ctx) => {
-          // Auto-delete old display picture when updating to a new one
-          if (user.image) {
+          // Auto-delete old display picture when updating to a new one, or clearing it
+          if (user.image !== undefined) {
             try {
               // Get the authenticated user ID from the session context
               const identifier = (ctx as any)?.context?.session?.user?.id;

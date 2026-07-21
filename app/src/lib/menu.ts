@@ -66,10 +66,10 @@ export const getFooterAccountMenu = (locale?: string) => {
       icon: SiDiscord,
     },
     {
-      name: tMenu.footer_account.sitepins_ai,
-      tKey: "sitepins_ai",
+      name: tMenu.footer_account.ai_agent,
+      tKey: "ai_agent",
       icon: Sparkles,
-      href: "/dashboard/sitepins-ai",
+      href: "/dashboard/ai-agent",
     },
     ...getCloudFooterAccountItems(locale),
     {
@@ -98,10 +98,10 @@ export const getUserDashboardMenu = (locale?: string) => {
       href: "/dashboard/preference",
     },
     {
-      name: tMenu.user_dashboard.sitepins_ai,
-      tKey: "sitepins_ai",
+      name: tMenu.user_dashboard.ai_agent,
+      tKey: "ai_agent",
       icon: Sparkles,
-      href: "/dashboard/sitepins-ai",
+      href: "/dashboard/ai-agent",
     },
     ...getCloudDashboardSecondaryItems(locale),
   ];

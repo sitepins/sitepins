@@ -5,14 +5,14 @@
         "account": "Tài khoản",
         "updates": "Cập nhật",
         "support": "Hỗ trợ",
-        "sitepins_ai": "Ghim trang web AI",
+        "ai_agent": "Tác nhân AI",
         "preferences": "Tùy chọn"
       },
       "user_dashboard": {
         "overview": "Tổng quan",
         "account": "Tài khoản",
         "preferences": "Tùy chọn",
-        "sitepins_ai": "Ghim trang web AI"
+        "ai_agent": "Tác nhân AI"
       },
       "org_dashboard": {
         "websites": "Trang web",

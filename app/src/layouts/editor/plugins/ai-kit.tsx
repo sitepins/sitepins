@@ -22,6 +22,9 @@ export const aiChatPlugin = AIChatPlugin.extend({
       api: "/api/ai/command",
       body: {},
     },
+    // Disable the built-in "press space on an empty line" trigger —
+    // the menu should only open via the "/" slash command.
+    trigger: [],
   },
   render: {
     afterContainer: AILoadingBar,

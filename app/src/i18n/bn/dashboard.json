@@ -93,8 +93,8 @@
         }
       }
     },
-    "sitepins_ai": {
-      "title": "Sitepins AI",
+    "ai_agent": {
+      "title": "এআই এজেন্ট",
       "description": "ইন্টেলিজেন্ট কন্টেন্ট সাজেশন এবং অটো-কমপ্লিট ফিচার সক্ষম করতে আপনার AI প্রোভাইডার কনফিগার করুন।",
       "provider_label": "প্রোভাইডার",
       "provider_placeholder": "প্রোভাইডার নির্বাচন করুন",
@@ -104,8 +104,8 @@
       "api_key_placeholder": "আপনার API কী লিখুন",
       "show": "দেখুন",
       "hide": "লুকান",
-      "copilot_title": "Sitepins Copilot",
-      "copilot_description": "টাইপ করার সময় স্বয়ংক্রিয়ভাবে শব্দ সাজেস্ট করুন।",
+      "copilot_title": "অটো-কমপ্লিট সাজেশন",
+      "copilot_description": "এডিটরে টাইপ করার সময় বর্তমান লাইনের জন্য অটো-কমপ্লিট সাজেস্ট করে।",
       "delete_key": "কী মুছে ফেলুন",
       "save_changes": "পরিবর্তনগুলো সংরক্ষণ করুন",
       "save_success": "সেটিংস সফলভাবে সংরক্ষিত হয়েছে",

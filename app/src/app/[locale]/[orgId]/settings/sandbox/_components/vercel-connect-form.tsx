@@ -200,7 +200,7 @@ export default function VercelConnectForm({
         <li>
           1.{" "}
           <a
-            href="https://vercel.com/account/tokens"
+            href="https://vercel.com/account/settings/tokens"
             target="_blank"
             rel="noopener noreferrer"
             className="text-primary inline-flex items-center gap-1 underline"

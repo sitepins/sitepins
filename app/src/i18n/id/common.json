@@ -132,7 +132,9 @@
       "file_too_large": "Ukuran file melebihi batas {limit} MB.",
       "preview_title": "Pratinjau Gambar",
       "preview_desc": "Konfirmasikan jika Anda ingin mengunggah gambar ini.",
-      "upload": "Unggah"
+      "upload": "Unggah",
+      "delete_title": "Hapus Gambar",
+      "delete_desc": "Ini akan menghapus gambar ini secara permanen. Tindakan ini tidak dapat dibatalkan."
     }
   }
 }

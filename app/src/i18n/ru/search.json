@@ -6,7 +6,7 @@
       "preferences": "Настройки",
       "billing": "Оплата",
       "organization_settings": "Настройки организации",
-      "sitepins_ai": "SitePins AI",
+      "ai_agent": "ИИ-агент",
       "support_updates": "Поддержка и обновления",
       "account": "Аккаунт",
       "files": "Файлы"
@@ -290,15 +290,15 @@
           "subscription"
         ]
       },
-      "sitepins-ai": {
-        "label": "Настройки SitePins AI",
-        "href": "/dashboard/sitepins-ai",
+      "ai-agent": {
+        "label": "Настройки ИИ-агента",
+        "href": "/dashboard/ai-agent",
         "keywords": [
           "ии",
           "искусственный интеллект",
           "ИИ",
           "копайлот",
-          "sitepins ai",
+          "ai agent",
           "ассистент",
           "бот",
           "автоматизация",
@@ -309,7 +309,7 @@
           "конфигурация",
           "ai",
           "copilot",
-          "sitepins ai",
+          "ai agent",
           "artificial intelligence",
           "assistant",
           "bot",

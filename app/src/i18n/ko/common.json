@@ -132,7 +132,9 @@
       "file_too_large": "파일 크기가 {limit}MB 제한을 초과합니다.",
       "preview_title": "미리보기 이미지",
       "preview_desc": "이 이미지를 업로드할지 확인하세요.",
-      "upload": "업로드"
+      "upload": "업로드",
+      "delete_title": "이미지 삭제",
+      "delete_desc": "이 이미지가 영구적으로 삭제됩니다. 이 작업은 되돌릴 수 없습니다."
     }
   }
 }

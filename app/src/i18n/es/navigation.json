@@ -5,14 +5,14 @@
         "account": "Cuenta",
         "updates": "Actualizaciones",
         "support": "Soporte",
-        "sitepins_ai": "Sitepins AI",
+        "ai_agent": "Agente de IA",
         "preferences": "Preferencias"
       },
       "user_dashboard": {
         "overview": "Descripción general",
         "account": "Cuenta",
         "preferences": "Preferencias",
-        "sitepins_ai": "Sitepins AI"
+        "ai_agent": "Agente de IA"
       },
       "org_dashboard": {
         "websites": "Sitios web",

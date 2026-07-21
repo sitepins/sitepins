@@ -127,24 +127,33 @@ export function SortableFieldItem({
       className="list-none"
     >
       <div
+        role="button"
+        tabIndex={0}
+        onClick={onSelect}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            onSelect();
+          }
+        }}
         className={cn(
-          "group flex w-full items-center gap-2 px-3 py-2 text-left transition-all duration-200",
+          "group flex w-full cursor-pointer items-center gap-2 px-3 py-2 text-left transition-all duration-200 focus:outline-none",
           isActive ? "bg-primary/10" : "hover:bg-muted/40",
           item.isIgnored && "opacity-50",
         )}
       >
         <span
           className="cursor-grab touch-none"
-          onPointerDown={(e) => dragControls.start(e)}
+          onPointerDown={(e) => {
+            e.stopPropagation();
+            dragControls.start(e);
+          }}
+          onClick={(e) => e.stopPropagation()}
         >
           <GripVertical className="text-muted-foreground/30 hover:text-muted-foreground/60 size-5 shrink-0 transition-colors" />
         </span>
 
-        <button
-          type="button"
-          onClick={onSelect}
-          className="flex min-w-0 flex-1 items-center gap-2 focus:outline-none"
-        >
+        <div className="flex min-w-0 flex-1 items-center gap-2">
           <div className="bg-muted/40 border-border/40 flex size-8 shrink-0 items-center justify-center rounded-lg border">
             <Icon className="text-muted-foreground/80 size-4" />
           </div>
@@ -167,7 +176,7 @@ export function SortableFieldItem({
               {tCommon("labels.required")}
             </Badge>
           )}
-        </button>
+        </div>
       </div>
     </Reorder.Item>
   );

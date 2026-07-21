@@ -93,8 +93,8 @@
         }
       }
     },
-    "sitepins_ai": {
-      "title": "Sitepins AI",
+    "ai_agent": {
+      "title": "AI 代理",
       "description": "配置您的 AI 提供商以启用智能内容建议和自动补全功能。",
       "provider_label": "提供商",
       "provider_placeholder": "选择提供商",
@@ -104,8 +104,8 @@
       "api_key_placeholder": "输入您的 API 密钥",
       "show": "显示",
       "hide": "隐藏",
-      "copilot_title": "Sitepins Copilot",
-      "copilot_description": "输入时提供自动补全建议。",
+      "copilot_title": "自动补全建议",
+      "copilot_description": "在编辑器中输入时，为当前行提供自动补全建议。",
       "delete_key": "删除密钥",
       "save_changes": "保存更改",
       "save_success": "设置保存成功",

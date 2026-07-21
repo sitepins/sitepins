@@ -38,7 +38,7 @@ const SECURITY_NOTICE_KEYS = ["security1", "security2", "security3"];
 
 // --- Components ---
 export default function AISettings() {
-  const tDashboardSitepinsAi = useTranslations("dashboard.sitepins_ai");
+  const tDashboardAiAgent = useTranslations("dashboard.ai_agent");
   const {
     aiCredential,
     showKey,
@@ -53,7 +53,7 @@ export default function AISettings() {
     autocomplete,
     toggleAutocomplete,
     isHydrated,
-  } = useAISettings(tDashboardSitepinsAi);
+  } = useAISettings(tDashboardAiAgent);
 
   const [explicitCustom, setExplicitCustom] = useState(false);
 
@@ -83,11 +83,11 @@ export default function AISettings() {
       value: m,
     }));
     opts.push({
-      label: tDashboardSitepinsAi("custom_model"),
+      label: tDashboardAiAgent("custom_model"),
       value: "custom",
     });
     return opts;
-  }, [models, tDashboardSitepinsAi]);
+  }, [models, tDashboardAiAgent]);
 
   const handleProviderSelect = (val: string) => {
     setExplicitCustom(false);
@@ -108,30 +108,30 @@ export default function AISettings() {
     <>
       <Card>
         <CardHeader>
-          <CardTitle>{tDashboardSitepinsAi("title")}</CardTitle>
+          <CardTitle>{tDashboardAiAgent("title")}</CardTitle>
           <CardDescription>
-            {tDashboardSitepinsAi("description")}
+            {tDashboardAiAgent("description")}
           </CardDescription>
         </CardHeader>
         <form onSubmit={saveSettings}>
           <CardContent className="space-y-6">
             <div className="space-y-4">
               <SelectionSelect
-                label={tDashboardSitepinsAi("provider_label")}
+                label={tDashboardAiAgent("provider_label")}
                 value={aiCredential.provider}
                 options={providerOptions}
                 onSelect={handleProviderSelect}
-                placeholder={tDashboardSitepinsAi("provider_placeholder")}
+                placeholder={tDashboardAiAgent("provider_placeholder")}
                 isLoading={!isHydrated}
               />
 
               <SelectionSelect
-                label={tDashboardSitepinsAi("model_label")}
+                label={tDashboardAiAgent("model_label")}
                 value={isCustomMode ? "custom" : aiCredential.model}
                 options={modelOptions}
                 onSelect={handleModelSelect}
                 disabled={!aiCredential.provider}
-                placeholder={tDashboardSitepinsAi("model_placeholder")}
+                placeholder={tDashboardAiAgent("model_placeholder")}
                 isLoading={!isHydrated}
               />
 
@@ -142,7 +142,7 @@ export default function AISettings() {
                       className="text-sm font-medium"
                       htmlFor="ai-custom-model"
                     >
-                      {tDashboardSitepinsAi("custom_model_input_label")}
+                      {tDashboardAiAgent("custom_model_input_label")}
                     </label>
                     {currentProviderDocsUrl && (
                       <a
@@ -151,7 +151,7 @@ export default function AISettings() {
                         rel="noopener noreferrer"
                         className="text-muted-foreground hover:text-primary text-xs underline-offset-4 transition-colors hover:underline"
                       >
-                        {tDashboardSitepinsAi("find_model_id")} ↗
+                        {tDashboardAiAgent("find_model_id")} ↗
                       </a>
                     )}
                   </div>
@@ -160,7 +160,7 @@ export default function AISettings() {
                     name="model"
                     value={aiCredential.model}
                     onChange={handleChangeValue}
-                    placeholder={tDashboardSitepinsAi(
+                    placeholder={tDashboardAiAgent(
                       "custom_model_input_placeholder",
                     )}
                   />
@@ -172,7 +172,7 @@ export default function AISettings() {
                   className="inline-block text-sm font-medium"
                   htmlFor="ai-api-key"
                 >
-                  {tDashboardSitepinsAi("api_key_label")}
+                  {tDashboardAiAgent("api_key_label")}
                 </label>
                 <div className="relative">
                   <Input
@@ -180,7 +180,7 @@ export default function AISettings() {
                     className="pr-10"
                     value={aiCredential.apiKey}
                     onChange={handleChangeValue}
-                    placeholder={tDashboardSitepinsAi("api_key_placeholder")}
+                    placeholder={tDashboardAiAgent("api_key_placeholder")}
                     data-1p-ignore
                     type={showKey ? "text" : "password"}
                     name="apiKey"
@@ -199,9 +199,9 @@ export default function AISettings() {
                     )}
                     <span className="sr-only">
                       {showKey
-                        ? tDashboardSitepinsAi("hide")
-                        : tDashboardSitepinsAi("show")}{" "}
-                      {tDashboardSitepinsAi("api_key_label")}
+                        ? tDashboardAiAgent("hide")
+                        : tDashboardAiAgent("show")}{" "}
+                      {tDashboardAiAgent("api_key_label")}
                     </span>
                   </Button>
                 </div>
@@ -211,10 +211,10 @@ export default function AISettings() {
             <div className="border-border bg-background flex flex-row items-center justify-between rounded-lg border p-4">
               <div className="space-y-0.5">
                 <label className="text-base font-medium">
-                  {tDashboardSitepinsAi("copilot_title")}
+                  {tDashboardAiAgent("copilot_title")}
                 </label>
                 <p className="text-muted-foreground text-xs">
-                  {tDashboardSitepinsAi("copilot_description")}
+                  {tDashboardAiAgent("copilot_description")}
                 </p>
               </div>
               <Switch
@@ -232,7 +232,7 @@ export default function AISettings() {
                 className="mr-auto"
               >
                 <Trash className="mr-2 size-4" />
-                {tDashboardSitepinsAi("delete_key")}
+                {tDashboardAiAgent("delete_key")}
               </Button>
             )}
             <Button
@@ -245,7 +245,7 @@ export default function AISettings() {
               type="submit"
               className="ml-auto"
             >
-              {tDashboardSitepinsAi("save_changes")}
+              {tDashboardAiAgent("save_changes")}
             </Button>
           </CardFooter>
         </form>
@@ -254,14 +254,14 @@ export default function AISettings() {
       <Card className="border-warning bg-warning/10 border">
         <CardContent className="space-y-2 p-4">
           <strong className="text-text-dark mb-4 block text-sm">
-            {tDashboardSitepinsAi("security_title")}
+            {tDashboardAiAgent("security_title")}
           </strong>
           {SECURITY_NOTICE_KEYS.map((key, i) => (
             <p key={i} className="text-xs">
               •{" "}
               <span
                 dangerouslySetInnerHTML={{
-                  __html: tDashboardSitepinsAi(key).replace(
+                  __html: tDashboardAiAgent(key).replace(
                     /\*\*(.*?)\*\*/g,
                     "<strong>$1</strong>",
                   ),
@@ -342,7 +342,7 @@ function useAISettings(t: (key: string) => string) {
       apiKey: localStorage.getItem("sitepins-ai-apiKey") || "",
     };
     const loadedAutocomplete =
-      localStorage.getItem("sitepins-copilot") === "true";
+      localStorage.getItem("sitepins-ai-autocomplete") === "true";
 
     setAiCredential(loaded);
     setInitialAiCredential(loaded);
@@ -392,7 +392,7 @@ function useAISettings(t: (key: string) => string) {
         localStorage.removeItem("sitepins-ai-apiKey");
       }
 
-      localStorage.setItem("sitepins-copilot", String(autocomplete));
+      localStorage.setItem("sitepins-ai-autocomplete", String(autocomplete));
 
       setInitialAiCredential(aiCredential);
       setInitialAutocomplete(autocomplete);

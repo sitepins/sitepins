@@ -6,7 +6,7 @@
       "preferences": "Préférences",
       "billing": "Facturation",
       "organization_settings": "Paramètres de l'organisation",
-      "sitepins_ai": "SitePins AI",
+      "ai_agent": "Agent IA",
       "support_updates": "Support et mises à jour",
       "account": "Compte",
       "files": "Fichiers"
@@ -284,14 +284,14 @@
           "subscription"
         ]
       },
-      "sitepins-ai": {
-        "label": "Paramètres SitePins AI",
-        "href": "/dashboard/sitepins-ai",
+      "ai-agent": {
+        "label": "Paramètres Agent IA",
+        "href": "/dashboard/ai-agent",
         "keywords": [
           "ia",
           "intelligence artificielle",
           "copilot",
-          "sitepins ai",
+          "ai agent",
           "assistant",
           "bot",
           "automatisation",
@@ -302,7 +302,7 @@
           "configuration",
           "ai",
           "copilot",
-          "sitepins ai",
+          "ai agent",
           "artificial intelligence",
           "assistant",
           "bot",

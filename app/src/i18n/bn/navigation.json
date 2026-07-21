@@ -5,14 +5,14 @@
         "account": "অ্যাকাউন্ট",
         "updates": "আপডেটসমূহ",
         "support": "সাপোর্ট",
-        "sitepins_ai": "Sitepins AI",
+        "ai_agent": "এআই এজেন্ট",
         "preferences": "পছন্দসমূহ"
       },
       "user_dashboard": {
         "overview": "সারসংক্ষেপ",
         "account": "অ্যাকাউন্ট",
         "preferences": "পছন্দসমূহ",
-        "sitepins_ai": "Sitepins AI"
+        "ai_agent": "এআই এজেন্ট"
       },
       "org_dashboard": {
         "websites": "ওয়েবসাইটসমূহ",

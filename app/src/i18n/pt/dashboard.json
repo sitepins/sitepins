@@ -93,8 +93,8 @@
         }
       }
     },
-    "sitepins_ai": {
-      "title": "Sitepins AI",
+    "ai_agent": {
+      "title": "Agente de IA",
       "description": "Configure seu provedor de IA para ativar sugestões de conteúdo inteligentes e recursos de preenchimento automático.",
       "provider_label": "Provedor",
       "provider_placeholder": "Selecionar Provedor",
@@ -104,8 +104,8 @@
       "api_key_placeholder": "Digite sua chave de API",
       "show": "Mostrar",
       "hide": "Ocultar",
-      "copilot_title": "Sitepins Copilot",
-      "copilot_description": "Sugerir preenchimento automático ao digitar.",
+      "copilot_title": "Sugestão de preenchimento automático",
+      "copilot_description": "Sugere um preenchimento automático para a linha atual enquanto você digita no editor.",
       "delete_key": "Deletar Chave",
       "save_changes": "Salvar Alterações",
       "save_success": "Configurações salvas com sucesso",

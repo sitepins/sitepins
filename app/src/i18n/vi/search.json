@@ -6,7 +6,7 @@
       "preferences": "Tùy chọn",
       "billing": "Thanh toán",
       "organization_settings": "Cài đặt tổ chức",
-      "sitepins_ai": "SitePins AI",
+      "ai_agent": "Tác nhân AI",
       "support_updates": "Hỗ trợ & Cập nhật",
       "account": "Tài khoản",
       "files": "Tệp"
@@ -286,14 +286,14 @@
           "subscription"
         ]
       },
-      "sitepins-ai": {
-        "label": "Cài đặt SitePins AI",
-        "href": "/dashboard/sitepins-ai",
+      "ai-agent": {
+        "label": "Cài đặt Tác nhân AI",
+        "href": "/dashboard/ai-agent",
         "keywords": [
           "ai",
           "trí tuệ nhân tạo",
           "copilot",
-          "sitepins ai",
+          "ai agent",
           "trợ lý",
           "bot",
           "tự động hóa",
@@ -304,7 +304,7 @@
           "cấu hình",
           "ai",
           "copilot",
-          "sitepins ai",
+          "ai agent",
           "artificial intelligence",
           "assistant",
           "bot",

@@ -3,6 +3,7 @@ import { decrypt, encrypt } from "@/lib/encrypt";
 import { sendMail } from "@/lib/mailer";
 import { checkOrder } from "@/lib/entitlements";
 import { nanoId } from "@/lib/nanoId";
+import { deleteFile } from "@/lib/s3-utils";
 import { ProjectLog } from "../project-log/project-log.model";
 import { ProjectPreview } from "../project-preview/project-preview.model";
 import { ProjectContent } from "../project-content/project-content.model";
@@ -511,7 +512,22 @@ const updateOrganizationService = async ({
   // Build a $set payload with only the defined fields
   const setFields: Record<string, any> = {};
   if (organization.org_name !== undefined) setFields.org_name = organization.org_name;
-  if (organization.org_image) setFields.org_image = organization.org_image;
+  if (organization.org_image !== undefined) {
+    const existingOrg = await Organization.findOne({ org_id });
+    if (
+      existingOrg?.org_image &&
+      existingOrg.org_image !== organization.org_image &&
+      !existingOrg.org_image.startsWith("http")
+    ) {
+      await deleteFile(existingOrg.org_image).catch((err) => {
+        console.error(
+          `Failed to delete old org image (${existingOrg.org_image}):`,
+          err.message,
+        );
+      });
+    }
+    setFields.org_image = organization.org_image;
+  }
   if (organization.sandbox !== undefined) {
     if (organization.sandbox?.token) {
       setFields.sandbox = {

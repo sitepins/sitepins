@@ -93,8 +93,8 @@
         }
       }
     },
-    "sitepins_ai": {
-      "title": "사이트핀 AI",
+    "ai_agent": {
+      "title": "AI 에이전트",
       "description": "지능형 콘텐츠 제안 및 자동 완성 기능을 활성화하도록 AI 공급자를 구성하세요.",
       "provider_label": "제공자",
       "provider_placeholder": "제공업체 선택",
@@ -104,8 +104,8 @@
       "api_key_placeholder": "API 키를 입력하세요",
       "show": "보여주기",
       "hide": "숨기기",
-      "copilot_title": "사이트핀 부조종사",
-      "copilot_description": "입력할 때 자동 완성을 제안합니다.",
+      "copilot_title": "자동 완성 제안",
+      "copilot_description": "편집기에서 입력하는 동안 현재 줄에 대한 자동 완성을 제안합니다.",
       "delete_key": "키 삭제",
       "save_changes": "변경 사항 저장",
       "save_success": "설정이 성공적으로 저장되었습니다",

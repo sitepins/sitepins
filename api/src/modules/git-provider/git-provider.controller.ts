@@ -70,7 +70,16 @@ const rotateProviderController = catchAsync(
       refresh_token_expires_at,
     } = req.body ?? {};
 
-    if (!provider || !old_refresh_token || !access_token || !refresh_token) {
+    // Require plain strings — never let an object through, or a Mongo operator
+    // (e.g. {"$gt": ""}) in old_refresh_token/provider would turn the row match
+    // into a NoSQL-injection filter and overwrite an arbitrary user's tokens
+    // without possessing their refresh token.
+    if (
+      (provider !== "Github" && provider !== "Gitlab") ||
+      typeof old_refresh_token !== "string" ||
+      typeof access_token !== "string" ||
+      typeof refresh_token !== "string"
+    ) {
       sendResponse(res, {
         success: false,
         statusCode: 400,
@@ -81,13 +90,16 @@ const rotateProviderController = catchAsync(
       return;
     }
 
+    const toEpoch = (v: unknown) =>
+      typeof v === "number" && Number.isFinite(v) ? v : undefined;
+
     const updated = await gitProviderService.rotateProviderTokensService({
       provider,
       old_refresh_token,
       access_token,
       refresh_token,
-      access_token_expires_at,
-      refresh_token_expires_at,
+      access_token_expires_at: toEpoch(access_token_expires_at),
+      refresh_token_expires_at: toEpoch(refresh_token_expires_at),
     });
 
     sendResponse(res, {

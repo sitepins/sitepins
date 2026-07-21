@@ -12,6 +12,9 @@ const projectExistsMock = vi.fn();
 const getProviderServiceMock = vi.fn(async (userId: string) => [
   { user_id: userId, provider: "github" },
 ]);
+const rotateProviderTokensServiceMock = vi.fn(
+  async (..._args: unknown[]) => ({ _id: "row-1" }),
+);
 
 vi.mock("@/modules/organization/organization.model", () => ({
   Organization: {
@@ -28,6 +31,8 @@ vi.mock("@/modules/project/project.model", () => ({
 vi.mock("./git-provider.service", () => ({
   gitProviderService: {
     getProviderService: (...args: [string]) => getProviderServiceMock(...args),
+    rotateProviderTokensService: (...args: unknown[]) =>
+      rotateProviderTokensServiceMock(...args),
   },
 }));
 
@@ -56,7 +61,16 @@ beforeEach(() => {
   organizationFindMock.mockReset();
   projectExistsMock.mockReset();
   getProviderServiceMock.mockClear();
+  rotateProviderTokensServiceMock.mockClear();
 });
+
+function makeBodyReqRes(body: unknown) {
+  const req = { body } as unknown as Request;
+  const json = vi.fn();
+  const status = vi.fn(() => ({ json }));
+  const res = { status } as unknown as Response;
+  return { req, res, json, status };
+}
 
 describe("getProviderController", () => {
   it("serves the requester's own providers when no target user is given", async () => {
@@ -128,5 +142,61 @@ describe("getProviderController", () => {
     await gitProviderController.getProviderController(req, res, vi.fn());
 
     expect(getProviderServiceMock).toHaveBeenCalledWith("departed-creator");
+  });
+});
+
+describe("rotateProviderController", () => {
+  it("rejects a Mongo-operator object as old_refresh_token (NoSQL-injection guard)", async () => {
+    const { gitProviderController } = await import("./git-provider.controller.js");
+    const { req, res, status } = makeBodyReqRes({
+      provider: "Github",
+      old_refresh_token: { $gt: "" },
+      access_token: "new-access",
+      refresh_token: "new-refresh",
+    });
+
+    await gitProviderController.rotateProviderController(req, res, vi.fn());
+
+    expect(status).toHaveBeenCalledWith(400);
+    // Never reaches the DB layer with an operator filter.
+    expect(rotateProviderTokensServiceMock).not.toHaveBeenCalled();
+  });
+
+  it("rejects a missing refresh token with 400", async () => {
+    const { gitProviderController } = await import("./git-provider.controller.js");
+    const { req, res, status } = makeBodyReqRes({
+      provider: "Github",
+      access_token: "new-access",
+      refresh_token: "new-refresh",
+    });
+
+    await gitProviderController.rotateProviderController(req, res, vi.fn());
+
+    expect(status).toHaveBeenCalledWith(400);
+    expect(rotateProviderTokensServiceMock).not.toHaveBeenCalled();
+  });
+
+  it("rotates when all fields are valid strings and drops non-numeric expiries", async () => {
+    const { gitProviderController } = await import("./git-provider.controller.js");
+    const { req, res, status } = makeBodyReqRes({
+      provider: "Github",
+      old_refresh_token: "old-refresh",
+      access_token: "new-access",
+      refresh_token: "new-refresh",
+      access_token_expires_at: 123456,
+      refresh_token_expires_at: "not-a-number",
+    });
+
+    await gitProviderController.rotateProviderController(req, res, vi.fn());
+
+    expect(rotateProviderTokensServiceMock).toHaveBeenCalledWith({
+      provider: "Github",
+      old_refresh_token: "old-refresh",
+      access_token: "new-access",
+      refresh_token: "new-refresh",
+      access_token_expires_at: 123456,
+      refresh_token_expires_at: undefined,
+    });
+    expect(status).toHaveBeenCalledWith(200);
   });
 });

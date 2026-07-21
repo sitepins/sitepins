@@ -3,7 +3,8 @@ import { PartneroScript } from "@/helpers/partnero-script";
 import config from "@/lib/config";
 import MaintenanceScreen from "@/partials/maintenance";
 import "@/styles/main.css";
-import { getLocale } from "next-intl/server";
+import { NextIntlClientProvider } from "next-intl";
+import { getLocale, getMessages } from "next-intl/server";
 import { Inter } from "next/font/google";
 import React from "react";
 
@@ -14,7 +15,15 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  if (config.maintenance.enabled) return <MaintenanceScreen />;
+  if (config.maintenance.enabled) {
+    const locale = await getLocale();
+    const messages = await getMessages();
+    return (
+      <NextIntlClientProvider locale={locale} messages={messages}>
+        <MaintenanceScreen />
+      </NextIntlClientProvider>
+    );
+  }
 
   const locale = await getLocale();
 

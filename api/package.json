@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "ts-node-dev -r tsconfig-paths/register --respawn --transpile-only ./src/server.ts",
     "start": "node ./dist/server.js",
-    "build": "tsc && tsc-alias",
+    "build": "tsc -p tsconfig.build.json && tsc-alias",
     "test": "vitest run",
     "format": "prettier --w ./src"
   },

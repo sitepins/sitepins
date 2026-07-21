@@ -60,7 +60,7 @@ beforeEach(() => {
 
 describe("getProviderController", () => {
   it("serves the requester's own providers when no target user is given", async () => {
-    const { gitProviderController } = await import("./git-provider.controller");
+    const { gitProviderController } = await import("./git-provider.controller.js");
     const { req, res } = makeReqRes("user-1");
 
     await gitProviderController.getProviderController(req, res, vi.fn());
@@ -70,7 +70,7 @@ describe("getProviderController", () => {
   });
 
   it("serves own providers when target === requester", async () => {
-    const { gitProviderController } = await import("./git-provider.controller");
+    const { gitProviderController } = await import("./git-provider.controller.js");
     const { req, res } = makeReqRes("user-1", "user-1");
 
     await gitProviderController.getProviderController(req, res, vi.fn());
@@ -80,7 +80,7 @@ describe("getProviderController", () => {
   });
 
   it("denies a stranger — falls back to the requester's own providers", async () => {
-    const { gitProviderController } = await import("./git-provider.controller");
+    const { gitProviderController } = await import("./git-provider.controller.js");
     mockMyOrgs([]); // requester shares no org with the target at all
     projectExistsMock.mockResolvedValue(null);
     const { req, res } = makeReqRes("stranger", "victim");
@@ -91,7 +91,7 @@ describe("getProviderController", () => {
   });
 
   it("denies an org-mate with no shared project", async () => {
-    const { gitProviderController } = await import("./git-provider.controller");
+    const { gitProviderController } = await import("./git-provider.controller.js");
     mockMyOrgs(["org-1"]);
     projectExistsMock.mockResolvedValue(null); // no project by target in that org
     const { req, res } = makeReqRes("user-1", "user-2");
@@ -102,7 +102,7 @@ describe("getProviderController", () => {
   });
 
   it("allows an org-mate to load the creator's providers for a shared project", async () => {
-    const { gitProviderController } = await import("./git-provider.controller");
+    const { gitProviderController } = await import("./git-provider.controller.js");
     mockMyOrgs(["org-1", "org-2"]);
     projectExistsMock.mockResolvedValue(true);
     const { req, res } = makeReqRes("collaborator", "creator");
@@ -120,7 +120,7 @@ describe("getProviderController", () => {
     // Project.exists only checks the project's own org_id/user_id, not the
     // creator's current membership — so a creator who left after creating
     // the project must not break collaborators still in that org.
-    const { gitProviderController } = await import("./git-provider.controller");
+    const { gitProviderController } = await import("./git-provider.controller.js");
     mockMyOrgs(["org-1"]);
     projectExistsMock.mockResolvedValue(true);
     const { req, res } = makeReqRes("member", "departed-creator");

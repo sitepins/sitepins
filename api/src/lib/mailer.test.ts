@@ -17,8 +17,8 @@ const { mockConfig, sendBrevoMailMock, createTransportMock, transportSendMailMoc
       smtp_user: undefined as string | undefined,
       smtp_pass: undefined as string | undefined,
     },
-    sendBrevoMailMock: vi.fn(async () => undefined),
-    transportSendMailMock: vi.fn(async () => undefined),
+    sendBrevoMailMock: vi.fn(async (..._args: unknown[]) => undefined),
+    transportSendMailMock: vi.fn(async (..._args: unknown[]) => undefined),
     createTransportMock: vi.fn(),
   }));
 
@@ -56,7 +56,7 @@ function resetConfig() {
 
 async function freshMailer() {
   vi.resetModules();
-  return import("./mailer");
+  return import("./mailer.js");
 }
 
 let warnSpy: ReturnType<typeof vi.spyOn>;

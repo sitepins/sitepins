@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 
 async function freshAuthIssuers() {
   vi.resetModules();
-  return import("./authIssuers");
+  return import("./authIssuers.js");
 }
 
 describe("JWT issuer registry", () => {

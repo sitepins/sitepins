@@ -7,7 +7,7 @@ import type { ClientSession } from "mongoose";
 // test so registrations from one test never leak into the next.
 async function freshEntitlements() {
   vi.resetModules();
-  return import("./entitlements");
+  return import("./entitlements.js");
 }
 
 describe("entitlements provider", () => {

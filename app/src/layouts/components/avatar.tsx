@@ -2,6 +2,7 @@
 
 import { BUCKET_URL } from "@/lib/constant";
 import { cn } from "@/lib/utils/cn";
+import { getFaviconUrl } from "@/lib/utils/favicon";
 import Image from "next/image";
 import { ComponentProps } from "react";
 import Gravatar from "react-gravatar";
@@ -25,7 +26,7 @@ export default function Avatar(props: Props) {
           preview
             ? src
             : !src
-              ? `https://t1.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${site_url}&size=64`
+              ? getFaviconUrl(site_url)
               : source
         }
         {...rest}

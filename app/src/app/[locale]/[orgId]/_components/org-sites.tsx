@@ -1,6 +1,7 @@
 import Avatar from "@/components/avatar";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
+import { getFaviconUrl } from "@/lib/utils/favicon";
 import { isGitLabProvider } from "@/lib/utils/provider-checker";
 import { TProject } from "@/redux/features/project/type";
 import { SiGithub, SiGitlab } from "@icons-pack/react-simple-icons";
@@ -23,17 +24,8 @@ function ProjectAvatar({
   const hasImage = Boolean(projectImage || siteUrl);
   const shouldShowFavicon = Boolean(siteUrl && !projectImage);
 
-  // Prepare a safe favicon URL
-  const normalizedSiteUrl = siteUrl
-    ? siteUrl.startsWith("http")
-      ? siteUrl
-      : `https://${siteUrl}`
-    : "";
-  const faviconUrl = normalizedSiteUrl
-    ? `https://t1.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${encodeURIComponent(
-        normalizedSiteUrl,
-      )}&size=64`
-    : "";
+  // Same-origin favicon URL (proxied) to avoid cross-origin CORS errors.
+  const faviconUrl = getFaviconUrl(siteUrl);
 
   return (
     <div className="bg-light relative h-12 w-12 overflow-hidden rounded-full text-center lg:h-full lg:w-47 lg:rounded-none lg:px-10">

@@ -17,6 +17,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils/cn";
+import { getFaviconUrl } from "@/lib/utils/favicon";
 import { selectConfig } from "@/redux/features/config/slice";
 import { TProject } from "@/redux/features/project/type";
 import { useAppSelector } from "@/redux/store";
@@ -65,7 +66,7 @@ export default function ProjectSwitcher({
           currentProject?.site_url && !currentProject?.project_image ? (
             <img
               className="size-8 rounded-full object-cover"
-              src={`https://t1.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${currentProject?.site_url}&size=64`}
+              src={getFaviconUrl(currentProject?.site_url)}
               alt={currentProject?.project_name}
               width={32}
               height={32}
@@ -134,7 +135,7 @@ export default function ProjectSwitcher({
                           p.site_url && !p.project_image ? (
                             <img
                               className="size-5 rounded object-cover"
-                              src={`https://t1.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${p.site_url}&size=64`}
+                              src={getFaviconUrl(p.site_url)}
                               alt={p.project_name}
                               width={20}
                               height={20}

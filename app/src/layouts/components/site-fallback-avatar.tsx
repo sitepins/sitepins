@@ -1,18 +1,10 @@
 import Avatar from "@/components/avatar";
+import { getFaviconUrl } from "@/lib/utils/favicon";
 import { useTranslations } from "next-intl";
 
 export default function SiteFallbackAvatar({ siteUrl }: { siteUrl: string }) {
-  // Prepare a safe favicon URL
-  const normalizedSiteUrl = siteUrl
-    ? siteUrl.startsWith("http")
-      ? siteUrl
-      : `https://${siteUrl}`
-    : "";
-  const faviconUrl = normalizedSiteUrl
-    ? `https://t1.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${encodeURIComponent(
-        normalizedSiteUrl,
-      )}&size=64`
-    : "";
+  // Same-origin favicon URL (proxied) to avoid cross-origin CORS errors.
+  const faviconUrl = getFaviconUrl(siteUrl);
 
   const tCommon = useTranslations("common");
 

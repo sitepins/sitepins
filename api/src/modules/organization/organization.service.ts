@@ -1,20 +1,17 @@
 import { ENUM_ROLE_ORG } from "@/enums/roles";
 import { decrypt, encrypt } from "@/lib/encrypt";
-import { sendMail } from "@/lib/mailer";
 import { checkOrder } from "@/lib/entitlements";
+import { sendMail } from "@/lib/mailer";
 import { nanoId } from "@/lib/nanoId";
+import { assertAssignableRole } from "@/lib/orgRoles";
 import { deleteFile } from "@/lib/s3-utils";
+import { ProjectContent } from "../project-content/project-content.model";
 import { ProjectLog } from "../project-log/project-log.model";
 import { ProjectPreview } from "../project-preview/project-preview.model";
-import { ProjectContent } from "../project-content/project-content.model";
 import { Project } from "../project/project.model";
 import { User } from "../user/user.model";
 import { Organization } from "./organization.model";
-import {
-  Member,
-  OrganizationType,
-  OrgFilterOptions,
-} from "./organization.type";
+import { Member, OrganizationType } from "./organization.type";
 
 function decryptOrgSandboxToken(org: any): any {
   if (org?.sandbox?.token) {
@@ -302,6 +299,8 @@ const addTeamMemberService = async ({
     throw Error("Only admins can add team members.");
   }
 
+  assertAssignableRole(teamMember.role);
+
   let userId =
     "@user_" +
     teamMember.user_id?.replace(/[@.!#$%&'*+-/=?^_`{|}~]/g, "_").toLowerCase();
@@ -373,6 +372,8 @@ const updateRoleService = async ({
     throw Error("Only admins can update team members.");
   }
 
+  assertAssignableRole(teamMember.role);
+
   const userId = teamMember.user_id;
 
   if (userId === loggedInUserId) {
@@ -392,14 +393,12 @@ const updateRoleService = async ({
     throw Error("You cannot change the owner's role.");
   }
 
+  // update only the role
   await Organization.findOneAndUpdate(
     { org_id, "members.user_id": userId },
     {
       $set: {
-        "members.$": {
-          user_id: userId,
-          role: teamMember.role,
-        },
+        "members.$.role": teamMember.role,
       },
     },
   );
@@ -511,7 +510,8 @@ const updateOrganizationService = async ({
 }) => {
   // Build a $set payload with only the defined fields
   const setFields: Record<string, any> = {};
-  if (organization.org_name !== undefined) setFields.org_name = organization.org_name;
+  if (organization.org_name !== undefined)
+    setFields.org_name = organization.org_name;
   if (organization.org_image !== undefined) {
     const existingOrg = await Organization.findOne({ org_id });
     if (

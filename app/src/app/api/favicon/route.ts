@@ -49,7 +49,9 @@ export async function GET(request: NextRequest) {
     });
 
     if (!res.ok || !res.body) {
-      return transparentResponse(200);
+      // 404 (not 200) so the <img> fires onError and the client falls back
+      // to the initials avatar instead of rendering an invisible pixel.
+      return transparentResponse(404);
     }
 
     const contentType = res.headers.get("content-type") ?? "image/png";
@@ -63,6 +65,6 @@ export async function GET(request: NextRequest) {
       },
     });
   } catch {
-    return transparentResponse(200);
+    return transparentResponse(404);
   }
 }

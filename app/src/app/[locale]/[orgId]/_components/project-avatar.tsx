@@ -25,16 +25,12 @@ export function ProjectAvatar({
 
   return (
     <div className="bg-light relative h-12 w-12 overflow-hidden rounded-full text-center lg:h-full lg:w-47 lg:rounded-none lg:px-10">
-      {showFavicon ? (
-        <img
-          className="size-12 rounded-full object-cover lg:absolute lg:top-1/2 lg:left-1/2 lg:-translate-x-1/2 lg:-translate-y-1/2"
-          src={faviconUrl}
-          alt={projectName}
-          width={188}
-          height={188}
-          onError={() => setFaviconFailed(true)}
-        />
-      ) : showImage ? (
+      {/* Base layer: initial letter, always rendered behind */}
+      <h3 className="text-primary absolute inset-0 flex items-center justify-center capitalize">
+        {projectName[0]}
+      </h3>
+
+      {showImage ? (
         <Avatar
           email=""
           site_url={siteUrl}
@@ -44,11 +40,16 @@ export function ProjectAvatar({
           height={188}
           className="absolute inset-0 h-full w-full object-cover"
         />
-      ) : (
-        <h3 className="text-primary flex h-full items-center justify-center capitalize">
-          {projectName[0]}
-        </h3>
-      )}
+      ) : showFavicon ? (
+        <img
+          className="absolute top-1/2 left-1/2 size-12 -translate-x-1/2 -translate-y-1/2 rounded-full object-cover"
+          src={faviconUrl}
+          alt={projectName}
+          width={188}
+          height={188}
+          onError={() => setFaviconFailed(true)}
+        />
+      ) : null}
     </div>
   );
 }

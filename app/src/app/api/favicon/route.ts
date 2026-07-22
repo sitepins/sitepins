@@ -14,13 +14,14 @@ const TRANSPARENT_PNG = Buffer.from(
   "base64",
 );
 
-function transparentResponse(status = 200): Response {
+function transparentResponse(status = 404): Response {
   return new Response(new Uint8Array(TRANSPARENT_PNG), {
     status,
     headers: {
       "Content-Type": "image/png",
-      // Short cache so transient failures aren't pinned.
-      "Cache-Control": "public, max-age=300",
+      // Never cache failures: a cached blank would suppress the <img> onError
+      // and pin the empty avatar instead of the initials fallback.
+      "Cache-Control": "no-store",
     },
   });
 }
@@ -30,7 +31,7 @@ export async function GET(request: NextRequest) {
   const url = searchParams.get("url");
 
   if (!url || !/^https?:\/\//i.test(url)) {
-    return transparentResponse(200);
+    return transparentResponse(404);
   }
 
   const sizeParam = Number(searchParams.get("size"));

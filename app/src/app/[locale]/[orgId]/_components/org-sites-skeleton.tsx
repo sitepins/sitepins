@@ -5,7 +5,7 @@ export default function OrgSitesSkeleton() {
   return (
     <Container className="space-y-0">
       {/* Search Header Skeleton */}
-      <div className="mb-8 flex items-center gap-4">
+      <div className="mb-10 flex items-center justify-between gap-4">
         {/* Search Bar Skeleton */}
         <Skeleton className="h-10 flex-1 rounded-lg" />
         {/* Add New Site Button Skeleton */}
@@ -24,12 +24,12 @@ export default function OrgSitesSkeleton() {
         {[...Array(5)].map((_, i) => (
           <div
             key={i}
-            className="border-border/60 relative flex grid-cols-12 items-center gap-x-3 overflow-hidden rounded-lg border px-2.5 *:py-8 md:grid lg:gap-x-0 lg:px-0"
+            className="border-border relative flex grid-cols-12 items-center gap-x-3 overflow-hidden rounded-lg border px-2.5 *:py-8 md:grid lg:gap-x-0 lg:px-0"
           >
-            {/* Avatar + Name Section */}
-            <div className="col-span-6 flex h-full items-center space-x-5 px-1 py-0!">
-              {/* Avatar */}
-              <Skeleton className="h-12 w-12 rounded-full lg:h-20 lg:w-47 lg:rounded-sm" />
+            {/* Avatar + Name Section — mirrors ProjectNameSection */}
+            <div className="col-span-6 flex h-full items-center py-0! md:space-x-5">
+              {/* Avatar — mirrors ProjectAvatar container footprint */}
+              <Skeleton className="h-12 w-12 rounded-full lg:h-full lg:w-47 lg:rounded-none" />
               {/* Name - Hidden on mobile */}
               <Skeleton className="hidden h-6 w-32 md:block" />
             </div>

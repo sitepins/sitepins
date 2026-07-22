@@ -21,6 +21,7 @@ import { useSchemaData } from "@/hooks/use-schema-data";
 import { authClient } from "@/lib/auth/auth-client";
 import { cn } from "@/lib/utils/cn";
 import { contentFormatter } from "@/lib/utils/content-serializer";
+import { resolveRepoPath } from "@/lib/utils/common";
 import { getLogType } from "@/lib/utils/project-log-type-detector";
 import { isGitLabProvider } from "@/lib/utils/provider-checker";
 import { slugify } from "@/lib/utils/text-converter";
@@ -80,9 +81,11 @@ export default function AddFile({
 
   const schemaData = useSchemaData(filePath ?? "", schemaDir);
 
-  const decodedFilepath = decodeURIComponent(
+  // Resolve arranged folder slug to real repo path before writing.
+  const rawUrlPath = decodeURIComponent(
     (params.file as string[])?.join("/") || "",
   );
+  const decodedFilepath = resolveRepoPath(rawUrlPath, config);
 
   const createFileForm = useForm<z.infer<typeof createFileSchema>>({
     resolver: zodResolver(createFileSchema),

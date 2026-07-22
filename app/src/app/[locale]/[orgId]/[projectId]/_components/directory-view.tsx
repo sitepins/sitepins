@@ -87,7 +87,7 @@ export default function DirectoryView({
     normalizedContentRoot || config?.content || "src/content",
   );
 
-  // Schema logic for AddFile
+  // Schema logic for AddFile. Keyed by raw URL slug, not resolved repo path.
   const schemaPath =
     SCHEMA_FOLDER +
     "/" +
@@ -342,15 +342,7 @@ export default function DirectoryView({
           />
           {!isCodePath && (
             <AddFile
-              schemaDir={
-                SCHEMA_FOLDER +
-                "/" +
-                generateSchemaName(
-                  params.file?.join("/") || "",
-                  config.content,
-                ) +
-                ".json"
-              }
+              schemaDir={schemaPath}
               targetPath={params.orgId + "/" + params.projectId}
               folderName={name}
               filePath={params.file?.join("/") || ""}

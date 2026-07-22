@@ -12,6 +12,7 @@ import {
 import { SCHEMA_FOLDER } from "@/lib/constant";
 import { getProjectSettingsMenu } from "@/lib/menu";
 import { cn } from "@/lib/utils/cn";
+import { resolveRepoPath } from "@/lib/utils/common";
 import { generateSchemaName } from "@/lib/utils/schema-generator";
 import { useVercelIntegration } from "@/hooks/use-vercel-integration";
 import { selectConfig } from "@/redux/features/config/slice";
@@ -82,14 +83,16 @@ export default function ProjectHeader({ project }: { project: any }) {
       if (config.content) {
         const fileSegments = pathSegments.slice(3);
         const filePathStr = fileSegments.join("/");
+        // Schema keyed by raw URL slug, not resolved repo path.
         const schemaName = generateSchemaName(filePathStr, config.content);
         let schemaDir = SCHEMA_FOLDER + "/" + schemaName + ".json";
 
-        // Check if it's a content route to determine if schema should be shown
+        // Resolve slug to real path just for the content-route check.
+        const resolvedFilePathStr = resolveRepoPath(filePathStr, config);
         const isContentRoute =
           config.content &&
-          (filePathStr === config.content ||
-            filePathStr.startsWith(config.content + "/"));
+          (resolvedFilePathStr === config.content ||
+            resolvedFilePathStr.startsWith(config.content + "/"));
 
         if (!isContentRoute) {
           schemaDir = undefined as any;

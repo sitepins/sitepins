@@ -68,7 +68,7 @@ export default function LanguageSwitcher({
             <SelectValue placeholder={currentLanguageName} />
           )}
           {compact && (
-            <span className="text-xs font-medium uppercase">{locale}</span>
+            <span className="text-xs font-medium">{currentLanguageName}</span>
           )}
         </SelectTrigger>
         <SelectContent position="popper">

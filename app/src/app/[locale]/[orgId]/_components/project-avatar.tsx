@@ -25,11 +25,6 @@ export function ProjectAvatar({
 
   return (
     <div className="bg-light relative h-12 w-12 overflow-hidden rounded-full text-center lg:h-full lg:w-47 lg:rounded-none lg:px-10">
-      {/* Base layer: initial letter, always rendered behind */}
-      <h3 className="text-primary absolute inset-0 flex items-center justify-center capitalize">
-        {projectName[0]}
-      </h3>
-
       {showImage ? (
         <Avatar
           email=""
@@ -48,8 +43,15 @@ export function ProjectAvatar({
           width={188}
           height={188}
           onError={() => setFaviconFailed(true)}
+          onLoad={(e) => {
+            if (e.currentTarget.naturalWidth <= 1) setFaviconFailed(true);
+          }}
         />
-      ) : null}
+      ) : (
+        <h3 className="text-primary absolute inset-0 flex items-center justify-center capitalize">
+          {projectName[0]}
+        </h3>
+      )}
     </div>
   );
 }

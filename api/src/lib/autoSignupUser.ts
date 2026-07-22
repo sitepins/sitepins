@@ -32,13 +32,7 @@ export const customEndpoints = () => {
           const { success, error } = schema.safeParse({ email, name });
 
           if (!success) {
-            const tree = z.treeifyError(error);
-
-            const message =
-              tree.errors?.[0] ??
-              tree.properties?.email?.errors?.[0] ??
-              tree.properties?.name?.errors?.[0] ??
-              "Invalid input";
+            const message = error.issues[0]?.message ?? "Invalid input";
 
             throw new APIError("BAD_REQUEST", {
               message,

@@ -63,7 +63,7 @@ export default {
   // (logs the message + OTP/link to stdout).
   mail_provider: process.env.MAIL_PROVIDER,
   mail_from_name: process.env.MAIL_FROM_NAME || "Sitepins",
-  mail_from_email: process.env.MAIL_FROM_EMAIL || "noreply@example.com",
+  mail_from_email: process.env.MAIL_FROM_EMAIL,
 
   // Brevo
   brevo_api_key: process.env.BREVO_API_KEY,

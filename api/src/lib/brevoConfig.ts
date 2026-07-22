@@ -2,10 +2,9 @@ import config from "@/config/variables";
 import { Brevo, BrevoClient } from "@getbrevo/brevo";
 
 // --- CONFIGURATION ---
-const BREVO_SENDER = {
-  name: config.mail_from_name,
-  email: config.mail_from_email,
-};
+const BREVO_SENDER = config.mail_from_email
+  ? { name: config.mail_from_name, email: config.mail_from_email }
+  : undefined;
 
 // Brevo mail template IDs. These reference numeric template IDs configured
 // in your own Brevo account (Transactional > Templates). Override any of them
@@ -45,7 +44,7 @@ const sendBrevoMail = async ({
 }): Promise<Brevo.SendTransacEmailResponse | undefined> => {
   try {
     const data = await brevo.transactionalEmails.sendTransacEmail({
-      sender: BREVO_SENDER,
+      ...(BREVO_SENDER && { sender: BREVO_SENDER }),
       to: [{ email: to }],
       ...(subject && { subject }),
       ...(htmlContent && { htmlContent }),

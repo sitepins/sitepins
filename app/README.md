@@ -91,19 +91,12 @@ Sitepins commits to your repos on your behalf, so it authenticates as a [GitHub 
 
    | Permission | Access |
    | --- | --- |
-   | Actions | Read and write |
    | Administration | Read and write |
-   | Attestations | Read and write |
-   | Checks | Read and write |
-   | Codespaces | Read and write |
-   | Codespaces lifecycle admin | Read and write |
-   | Commit statuses | Read and write |
-   | Contents | Read and write |
+   | Code | Read and write |
+   | Commit statuses | Read-only |
+   | Deployments | Read-only |
    | Metadata | Read-only (mandatory) |
    | Pull requests | Read and write |
-   | Repository advisories | Read and write |
-   | Repository custom properties | Read and write |
-   | Security events | Read and write |
 
 7. **Where can this GitHub App be installed?** — "Any account" if you want your users to install it on their own orgs/repos (the normal case); "Only on this account" if you're self-hosting for a single org.
 

@@ -37,6 +37,14 @@ describe("validateSeoInsights", () => {
       const { results } = validateSeoInsights({}, content);
       expect(results.heading_structure.valid).toBe(false);
     });
+
+    it("does not treat # comments inside fenced code as headings", () => {
+      const content =
+        "Intro paragraph here.\n\n```bash\n# not a heading\n# also not a heading\nnpm run build\n```\n\nOutro paragraph here.";
+      const { results } = validateSeoInsights({}, content);
+      expect(results.heading_structure.count).toBe(0);
+      expect(results.heading_structure.valid).toBeUndefined();
+    });
   });
 
   describe("keyword_first_paragraph", () => {
@@ -119,6 +127,13 @@ describe("validateSeoInsights", () => {
       const { results } = validateSeoInsights({}, content);
       expect(results.passive_voice.valid).toBe(false);
     });
+
+    it("does not flag short -ed adjectives after a be-verb as passive", () => {
+      const content = "The sky is red. The wall is old. The path is wide.";
+      const { results } = validateSeoInsights({}, content);
+      expect(results.passive_voice.percentage).toBe(0);
+      expect(results.passive_voice.valid).toBe(true);
+    });
   });
 
   describe("subheading_distribution", () => {
@@ -166,6 +181,22 @@ describe("validateSeoInsights", () => {
       expect(results.keyphrase_in_slug.valid).toBe(true);
       expect(results.keyphrase_in_subheadings.valid).toBe(true);
       expect(results.keyphrase_in_alt.valid).toBe(true);
+    });
+
+    it("matches punctuated keywords against a slugified slug", () => {
+      const { results } = validateSeoInsights(
+        { keywords: ["Next.js"], slug: "speed-up-nextjs-app" },
+        content,
+      );
+      expect(results.keyphrase_in_slug.valid).toBe(true);
+    });
+
+    it("still fails the slug check when the keyword is genuinely absent", () => {
+      const { results } = validateSeoInsights(
+        { keywords: ["banana bread"], slug: "best-apple-pie-recipe" },
+        content,
+      );
+      expect(results.keyphrase_in_slug.valid).toBe(false);
     });
 
     it("is undefined for placement checks when no keyword is defined", () => {
@@ -216,6 +247,12 @@ describe("validateSeoInsights", () => {
       const { results } = validateSeoInsights({}, "Just text, no media.");
       expect(results.media_count.valid).toBe(false);
     });
+
+    it("does not count example image syntax inside fenced code", () => {
+      const content = "Text here.\n\n```md\n![example](/x.png)\n![two](/y.png)\n```";
+      const { results } = validateSeoInsights({}, content);
+      expect(results.media_count.count).toBe(0);
+    });
   });
 
   describe("slug_length", () => {
@@ -253,5 +290,36 @@ describe("validateSeoInsights", () => {
     expect(summary.improvement).toBe(
       values.filter((r) => r.valid === undefined).length,
     );
+  });
+
+  it("handles empty content without throwing and returns all keys", () => {
+    const { results, summary } = validateSeoInsights({}, "");
+    expect(Object.keys(results).length).toBe(20);
+    expect(summary.good + summary.bad + summary.improvement).toBe(20);
+    // No content and no keyword -> nothing should be a confident pass except
+    // checks whose "empty" state is acceptable; just assert no crash + shape.
+    expect(results.readability.valid).toBeUndefined();
+  });
+
+  it("unwraps frontmatter values shaped as { value } objects", () => {
+    const entry = {
+      title: { value: "7 Proven Apple Pie Tips" },
+      keywords: { value: ["apple pie"] },
+      slug: { value: "apple-pie-tips" },
+    };
+    const { results } = validateSeoInsights(entry, "## Apple pie basics\n\ntext");
+    expect(results.keyphrase_in_title.valid).toBe(true);
+    expect(results.keyphrase_in_slug.valid).toBe(true);
+    expect(results.keyphrase_in_subheadings.valid).toBe(true);
+    expect(results.title_has_number.valid).toBe(true);
+  });
+
+  it("handles a keyword array of wrapped { value } items without throwing", () => {
+    const entry = {
+      title: "All about apple pie",
+      tags: [{ value: "apple pie" }, { value: "dessert" }],
+    };
+    const { results } = validateSeoInsights(entry, "Some apple pie content.");
+    expect(results.keyphrase_in_title.valid).toBe(true);
   });
 });

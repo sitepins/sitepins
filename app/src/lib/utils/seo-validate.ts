@@ -624,13 +624,14 @@ const SENTIMENT_WORDS = [
 // Passive-voice heuristic: a "to be" verb followed (optionally via an adverb)
 // by a past participle. Covers regular "-ed" endings plus common irregulars.
 const PASSIVE_RE =
-  /\b(?:is|are|was|were|be|been|being)\s+(?:\w+ly\s+)?(?:\w+ed|written|done|made|given|taken|seen|known|shown|held|brought|built|sent|kept|left|found|told|thought|caught|taught|bought|sold|paid|put|set|read|met|won|lost|chosen|driven|broken|spoken|drawn|grown)\b/i;
+  /\b(?:is|are|was|were|be|been|being)\s+(?:\w+ly\s+)?(?:\w{2,}ed|written|done|made|given|taken|seen|known|shown|held|brought|built|sent|kept|left|found|told|thought|caught|taught|bought|sold|paid|put|set|read|met|won|lost|chosen|driven|broken|spoken|drawn|grown)\b/i;
 
 // Strips code, resolves links/images to their visible text, and drops markdown
 // punctuation so word/sentence/syllable counts run against prose only.
 function stripMarkdownSyntax(text: string): string {
   return text
     .replace(/```[\s\S]*?```/g, " ")
+    .replace(/~~~[\s\S]*?~~~/g, " ")
     .replace(/`[^`]*`/g, " ")
     .replace(/!\[([^\]]*)\]\([^)]*\)/g, "$1")
     .replace(/\[([^\]]*)\]\([^)]*\)/g, "$1")
@@ -661,7 +662,9 @@ function splitSentences(text: string): string[] {
 
 // Blank-line-separated blocks, excluding headings/list items/fenced code.
 function getParagraphs(markdownContent: string): string[] {
-  const withoutCode = markdownContent.replace(/```[\s\S]*?```/g, "\n\n");
+  const withoutCode = markdownContent
+    .replace(/```[\s\S]*?```/g, "\n\n")
+    .replace(/~~~[\s\S]*?~~~/g, "\n\n");
   return withoutCode
     .split(/\n\s*\n/)
     .map((block) => block.trim())
@@ -704,6 +707,13 @@ export function validateSeoInsights(
   const wordCount = words.length;
   const sentenceCount = sentences.length;
 
+  // Fenced code blocks are removed before any markdown-structure detection so
+  // that `#` comments, example image syntax, or anchor links inside code are
+  // not miscounted as real headings/media/TOC links.
+  const contentNoCode = markdownContent
+    .replace(/```[\s\S]*?```/g, "\n")
+    .replace(/~~~[\s\S]*?~~~/g, "\n");
+
   // --- Readability (Flesch Reading Ease) ---
   const syllableCount = words.reduce((sum, w) => sum + countSyllables(w), 0);
   const readabilityScore =
@@ -735,7 +745,7 @@ export function validateSeoInsights(
   });
 
   // --- Heading Structure ---
-  const headingLevels = [...markdownContent.matchAll(/^(#{1,6})\s+.+$/gm)].map(
+  const headingLevels = [...contentNoCode.matchAll(/^(#{1,6})\s+.+$/gm)].map(
     (m) => m[1].length,
   );
 
@@ -759,11 +769,13 @@ export function validateSeoInsights(
   // --- Keyword in Intro Paragraph ---
   const keywordKeyUsed = KEYWORD_KEYS.find((k) => entry[k] !== undefined);
   const keywords = unwrap(keywordKeyUsed ? entry[keywordKeyUsed] : undefined);
-  const keywordList: string[] = Array.isArray(keywords)
-    ? keywords
-    : typeof keywords === "string" && keywords
-      ? [keywords]
-      : [];
+  // Normalise to a string[]: arrays may hold plain strings or wrapped
+  // { value } items; a scalar keyphrase comes through as a single string.
+  const keywordList: string[] = (
+    Array.isArray(keywords) ? keywords : keywords != null ? [keywords] : []
+  )
+    .map((k) => unwrap(k))
+    .filter((k): k is string => typeof k === "string" && k.trim().length > 0);
 
   const paragraphs = getParagraphs(markdownContent).map(stripMarkdownSyntax);
   const introText = (paragraphs[0] || "").toLowerCase();
@@ -874,7 +886,7 @@ export function validateSeoInsights(
   });
 
   // --- Subheading Distribution ---
-  const sectionsBetweenHeadings = markdownContent.split(/^#{1,6}\s+.+$/gm);
+  const sectionsBetweenHeadings = contentNoCode.split(/^#{1,6}\s+.+$/gm);
   const hasLongSectionWithoutHeading = sectionsBetweenHeadings.some(
     (section) =>
       stripMarkdownSyntax(section).split(/\s+/).filter(Boolean).length > 300,
@@ -930,10 +942,10 @@ export function validateSeoInsights(
   ) as string | undefined;
   const slug = unwrap(entry.slug) as string | undefined;
 
-  const headingTexts = [...markdownContent.matchAll(/^#{1,6}\s+(.+)$/gm)].map(
+  const headingTexts = [...contentNoCode.matchAll(/^#{1,6}\s+(.+)$/gm)].map(
     (m) => m[1],
   );
-  const imageAlts = [...markdownContent.matchAll(/!\[([^\]]*)\]/g)].map(
+  const imageAlts = [...contentNoCode.matchAll(/!\[([^\]]*)\]/g)].map(
     (m) => m[1],
   );
 
@@ -951,15 +963,15 @@ export function validateSeoInsights(
       : "Include your focus keyword in the meta description.",
   });
 
+  // Compare on alphanumeric-only forms so punctuation/spacing differences
+  // (e.g. keyword "Next.js" vs slug "nextjs") still match.
+  const alnum = (s: string) => s.toLowerCase().replace(/[^a-z0-9]/g, "");
   const slugKeywordMatch =
     hasKeyword &&
     !!slug &&
     keywordList.some((kw) => {
-      const lower = kw.toLowerCase();
-      return (
-        slug.toLowerCase().includes(lower) ||
-        slug.toLowerCase().includes(lower.replace(/\s+/g, "-"))
-      );
+      const k = alnum(kw);
+      return k.length > 0 && alnum(slug).includes(k);
     });
 
   trackResult("keyphrase_in_slug", {
@@ -1024,8 +1036,8 @@ export function validateSeoInsights(
 
   // --- Media Usage ---
   const mediaCount =
-    (markdownContent.match(/!\[[^\]]*\]\([^)]+\)/g) || []).length +
-    (markdownContent.match(/<(?:img|video|iframe)\b/gi) || []).length;
+    (contentNoCode.match(/!\[[^\]]*\]\([^)]+\)/g) || []).length +
+    (contentNoCode.match(/<(?:img|video|iframe)\b/gi) || []).length;
 
   trackResult("media_count", {
     count: mediaCount,
@@ -1047,9 +1059,9 @@ export function validateSeoInsights(
 
   // --- Table of Contents ---
   const tocDetected =
-    /^#{1,6}\s+(?:table of contents|contents|toc)\b/im.test(markdownContent) ||
-    /\{\{<?\s*toc/i.test(markdownContent) ||
-    /\[[^\]]+\]\(#[^)]+\)/.test(markdownContent);
+    /^#{1,6}\s+(?:table of contents|contents|toc)\b/im.test(contentNoCode) ||
+    /\{\{<?\s*toc/i.test(contentNoCode) ||
+    /\[[^\]]+\]\(#[^)]+\)/.test(contentNoCode);
 
   trackResult("toc_present", {
     valid:

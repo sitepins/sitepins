@@ -333,10 +333,12 @@ const addTeamMemberService = async ({
 
   const recipientUser = await User.findOne({ user_id: userId });
 
-  // send mail only if user was found and has an email
-  if (recipientUser?.email) {
+  // send mail to the invited member
+  const recipientEmail = recipientUser?.email || teamMember.email;
+
+  if (recipientEmail) {
     await sendMail({
-      to: recipientUser.email,
+      to: recipientEmail,
       kind: "org_member_added",
       params: {
         org_name: member?.org_name!,

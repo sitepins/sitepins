@@ -99,7 +99,7 @@ export function SnippetControls({
 
   return (
     <div
-      className={`bg-light absolute z-50 flex items-center gap-1 rounded-sm p-1 transition-colors ${
+      className={`bg-light absolute z-20 flex items-center gap-1 rounded-sm p-1 transition-colors ${
         isBlock ? "top-3 right-3" : "-top-8 right-0"
       } ${className}`}
       contentEditable={false}

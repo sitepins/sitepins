@@ -281,8 +281,12 @@
         "title_sentiment": "Judul yang membangkitkan emosi (positif atau negatif) cenderung menarik lebih banyak klik.",
         "media_count": "Tambahkan gambar atau video untuk memperkaya konten. Sasar setidaknya beberapa media yang relevan.",
         "slug_length": "Jaga slug URL tetap ringkas — 75 karakter atau kurang.",
-        "toc_present": "Untuk artikel panjang dengan beberapa bagian, tambahkan daftar isi untuk memudahkan navigasi."
+        "toc_present": "Untuk artikel panjang dengan beberapa bagian, tambahkan daftar isi untuk memudahkan navigasi.",
+        "em_dash_overuse": "Penggunaan tanda pisah (—) yang terlalu sering terasa seperti konten buatan AI. Gunakan koma, tanda kurung, atau pecah kalimatnya."
       },
+      "focus_keyword_label": "Kata Kunci Target",
+      "focus_keyword_placeholder": "mis. generator situs statis",
+      "focus_keyword_help": "Dipakai untuk menilai penempatan kata kunci. Pisahkan beberapa dengan koma. Jika kosong, tag Anda yang dipakai.",
       "insights": {
         "teaser": "Buka {count} pemeriksaan SEO lagi dengan paket Team",
         "labels": {
@@ -305,7 +309,8 @@
           "title_sentiment": "Sentimen Judul",
           "media_count": "Penggunaan Media",
           "slug_length": "Panjang URL",
-          "toc_present": "Daftar Isi"
+          "toc_present": "Daftar Isi",
+          "em_dash_overuse": "Tanda Pisah Berlebihan"
         }
       }
     },

@@ -281,8 +281,12 @@
         "title_sentiment": "能引发情感(正面或负面)的标题往往能吸引更多点击。",
         "media_count": "添加图片或视频以丰富内容。至少加入几个相关的媒体元素。",
         "slug_length": "保持URL别名简洁——不超过75个字符。",
-        "toc_present": "对于包含多个部分的长文,添加目录以方便导航。"
+        "toc_present": "对于包含多个部分的长文,添加目录以方便导航。",
+        "em_dash_overuse": "频繁使用破折号(—)会让人觉得是 AI 生成的内容。建议改用逗号、括号或拆分句子。"
       },
+      "focus_keyword_label": "目标关键词",
+      "focus_keyword_placeholder": "例如:静态站点生成器",
+      "focus_keyword_help": "用于评估关键词布局。多个关键词用逗号分隔。留空时使用你的标签。",
       "insights": {
         "teaser": "升级 Team 套餐,再解锁 {count} 项 SEO 检查",
         "labels": {
@@ -305,7 +309,8 @@
           "title_sentiment": "标题情感",
           "media_count": "媒体使用",
           "slug_length": "URL长度",
-          "toc_present": "目录"
+          "toc_present": "目录",
+          "em_dash_overuse": "破折号过多"
         }
       }
     },

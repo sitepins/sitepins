@@ -281,8 +281,12 @@
         "title_sentiment": "感情(肯定的または否定的)を喚起するタイトルは、より多くのクリックを集める傾向があります。",
         "media_count": "画像や動画を追加してコンテンツを充実させましょう。関連するメディアを少なくとも数点用意しましょう。",
         "slug_length": "URLスラッグは簡潔に — 75文字以内に収めましょう。",
-        "toc_present": "複数のセクションがある長い投稿では、ナビゲーションを助ける目次を追加しましょう。"
+        "toc_present": "複数のセクションがある長い投稿では、ナビゲーションを助ける目次を追加しましょう。",
+        "em_dash_overuse": "ダッシュ(—)の多用はAI生成の文章という印象を与えます。読点や括弧を使うか、文を分けましょう。"
       },
+      "focus_keyword_label": "ターゲットキーワード",
+      "focus_keyword_placeholder": "例:静的サイトジェネレーター",
+      "focus_keyword_help": "キーワードの配置を評価するために使用します。複数はカンマ区切り。空の場合はタグが使われます。",
       "insights": {
         "teaser": "Teamプランでさらに{count}件のSEOチェックを解除",
         "labels": {
@@ -305,7 +309,8 @@
           "title_sentiment": "タイトルの感情",
           "media_count": "メディアの使用",
           "slug_length": "URLの長さ",
-          "toc_present": "目次"
+          "toc_present": "目次",
+          "em_dash_overuse": "ダッシュの多用"
         }
       }
     },

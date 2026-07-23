@@ -681,6 +681,10 @@ export function validateSeoInsights(
   entry: Record<string, any>,
   markdownContent: string,
   t?: (key: string, args?: any) => string,
+  // Explicit target keyphrase from the SEO panel. When set it overrides the
+  // frontmatter-derived keywords (tags etc.), which are a loose proxy at best.
+  // Accepts a comma-separated list.
+  focusKeyword?: string,
 ) {
   const results: Record<string, any> = {};
   let good = 0;
@@ -771,11 +775,20 @@ export function validateSeoInsights(
   const keywords = unwrap(keywordKeyUsed ? entry[keywordKeyUsed] : undefined);
   // Normalise to a string[]: arrays may hold plain strings or wrapped
   // { value } items; a scalar keyphrase comes through as a single string.
-  const keywordList: string[] = (
+  const frontmatterKeywords: string[] = (
     Array.isArray(keywords) ? keywords : keywords != null ? [keywords] : []
   )
     .map((k) => unwrap(k))
     .filter((k): k is string => typeof k === "string" && k.trim().length > 0);
+
+  const explicitKeywords = (focusKeyword ?? "")
+    .split(",")
+    .map((k) => k.trim())
+    .filter(Boolean);
+
+  const keywordList: string[] = explicitKeywords.length
+    ? explicitKeywords
+    : frontmatterKeywords;
 
   const paragraphs = getParagraphs(markdownContent).map(stripMarkdownSyntax);
   const introText = (paragraphs[0] || "").toLowerCase();
@@ -883,6 +896,29 @@ export function validateSeoInsights(
     tip: t
       ? t("tips.passive_voice")
       : "Keep passive voice under 10% of sentences. Prefer active voice for clearer, more direct writing.",
+  });
+
+  // --- Em Dash Overuse ---
+  // Heavy em-dash use is a common tell of AI-generated prose. Counted on
+  // contentNoCode so dashes inside code samples don't skew the ratio.
+  const emDashCount = (contentNoCode.match(/—|\s--\s/g) || []).length;
+  const emDashPerSentence =
+    sentenceCount > 0 ? emDashCount / sentenceCount : 0;
+
+  trackResult("em_dash_overuse", {
+    count: emDashCount,
+    percentage: Math.min(Math.round(emDashPerSentence * 100), 100),
+    valid:
+      sentenceCount < 3
+        ? undefined
+        : emDashPerSentence <= 0.1
+          ? true
+          : emDashPerSentence <= 0.25
+            ? undefined
+            : false,
+    tip: t
+      ? t("tips.em_dash_overuse")
+      : "Frequent em dashes (—) read as AI-generated. Prefer commas, parentheses, or splitting the sentence.",
   });
 
   // --- Subheading Distribution ---

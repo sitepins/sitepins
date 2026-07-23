@@ -164,6 +164,62 @@ describe("validateSeoInsights", () => {
     });
   });
 
+  describe("em_dash_overuse", () => {
+    it("passes when there are no em dashes", () => {
+      const content = "Cats are great. Dogs are fun. Birds can fly.";
+      const { results } = validateSeoInsights({}, content);
+      expect(results.em_dash_overuse.count).toBe(0);
+      expect(results.em_dash_overuse.valid).toBe(true);
+    });
+
+    it("flags content with an em dash in most sentences", () => {
+      const content =
+        "Cats — as everyone knows — are great. Dogs are fun — truly fun. Birds can fly — high.";
+      const { results } = validateSeoInsights({}, content);
+      expect(results.em_dash_overuse.count).toBe(4);
+      expect(results.em_dash_overuse.valid).toBe(false);
+    });
+
+    it("ignores dashes inside fenced code", () => {
+      const content =
+        "Cats are great. Dogs are fun. Birds can fly.\n\n```bash\nnpm run build -- --flag\n```";
+      const { results } = validateSeoInsights({}, content);
+      expect(results.em_dash_overuse.count).toBe(0);
+    });
+  });
+
+  describe("focus keyword override", () => {
+    const content = "## Static site generator basics\n\nIntro text about it.";
+
+    it("grades against the explicit keyword instead of frontmatter tags", () => {
+      const entry = { tags: ["nextjs"], title: "A guide to static site generator setup" };
+      const { results } = validateSeoInsights(
+        entry,
+        content,
+        undefined,
+        "static site generator",
+      );
+      expect(results.keyphrase_in_title.valid).toBe(true);
+      expect(results.keyphrase_in_subheadings.valid).toBe(true);
+    });
+
+    it("supports a comma-separated list", () => {
+      const { results } = validateSeoInsights(
+        { title: "All about hugo" },
+        content,
+        undefined,
+        "astro, hugo",
+      );
+      expect(results.keyphrase_in_title.valid).toBe(true);
+    });
+
+    it("falls back to frontmatter keywords when blank", () => {
+      const entry = { tags: ["nextjs"], title: "Why nextjs wins" };
+      const { results } = validateSeoInsights(entry, content, undefined, "   ");
+      expect(results.keyphrase_in_title.valid).toBe(true);
+    });
+  });
+
   describe("keyphrase placement", () => {
     const entry = {
       keywords: ["apple pie"],
@@ -294,8 +350,8 @@ describe("validateSeoInsights", () => {
 
   it("handles empty content without throwing and returns all keys", () => {
     const { results, summary } = validateSeoInsights({}, "");
-    expect(Object.keys(results).length).toBe(20);
-    expect(summary.good + summary.bad + summary.improvement).toBe(20);
+    expect(Object.keys(results).length).toBe(21);
+    expect(summary.good + summary.bad + summary.improvement).toBe(21);
     // No content and no keyword -> nothing should be a confident pass except
     // checks whose "empty" state is acceptable; just assert no crash + shape.
     expect(results.readability.valid).toBeUndefined();

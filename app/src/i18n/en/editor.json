@@ -281,8 +281,12 @@
         "title_sentiment": "A title that evokes emotion (positive or negative) tends to attract more clicks.",
         "media_count": "Add images or videos to enrich the content. Aim for at least a few relevant media items.",
         "slug_length": "Keep the URL slug concise — 75 characters or fewer.",
-        "toc_present": "For long posts with several sections, add a table of contents to aid navigation."
+        "toc_present": "For long posts with several sections, add a table of contents to aid navigation.",
+        "em_dash_overuse": "Frequent em dashes (—) read as AI-generated. Prefer commas, parentheses, or splitting the sentence."
       },
+      "focus_keyword_label": "Target Keyword",
+      "focus_keyword_placeholder": "e.g. static site generator",
+      "focus_keyword_help": "Used to grade keyword placement. Separate multiple with commas. Falls back to your tags when empty.",
       "insights": {
         "teaser": "Unlock {count} more SEO checks with the Team plan",
         "labels": {
@@ -305,7 +309,8 @@
           "title_sentiment": "Title Sentiment",
           "media_count": "Media Usage",
           "slug_length": "URL Length",
-          "toc_present": "Table of Contents"
+          "toc_present": "Table of Contents",
+          "em_dash_overuse": "Em Dash Overuse"
         }
       }
     },

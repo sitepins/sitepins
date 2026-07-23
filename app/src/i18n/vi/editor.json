@@ -281,8 +281,12 @@
         "title_sentiment": "Tiêu đề khơi gợi cảm xúc (tích cực hoặc tiêu cực) thường thu hút nhiều lượt nhấp hơn.",
         "media_count": "Thêm hình ảnh hoặc video để làm phong phú nội dung. Nên có ít nhất vài mục media liên quan.",
         "slug_length": "Giữ slug URL ngắn gọn — 75 ký tự trở xuống.",
-        "toc_present": "Với các bài dài nhiều phần, hãy thêm mục lục để hỗ trợ điều hướng."
+        "toc_present": "Với các bài dài nhiều phần, hãy thêm mục lục để hỗ trợ điều hướng.",
+        "em_dash_overuse": "Dùng gạch ngang dài (—) quá nhiều khiến bài viết giống nội dung do AI tạo. Hãy dùng dấu phẩy, ngoặc đơn hoặc tách câu."
       },
+      "focus_keyword_label": "Từ Khóa Mục Tiêu",
+      "focus_keyword_placeholder": "ví dụ: trình tạo trang tĩnh",
+      "focus_keyword_help": "Dùng để chấm điểm vị trí từ khóa. Nhiều từ khóa cách nhau bằng dấu phẩy. Để trống sẽ dùng thẻ tag của bạn.",
       "insights": {
         "teaser": "Mở khóa thêm {count} kiểm tra SEO với gói Team",
         "labels": {
@@ -305,7 +309,8 @@
           "title_sentiment": "Cảm Xúc Tiêu Đề",
           "media_count": "Sử Dụng Media",
           "slug_length": "Độ Dài URL",
-          "toc_present": "Mục Lục"
+          "toc_present": "Mục Lục",
+          "em_dash_overuse": "Lạm Dụng Gạch Ngang Dài"
         }
       }
     },

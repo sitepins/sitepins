@@ -23,6 +23,7 @@ const INSIGHT_KEYS = [
   "passive_voice",
   "transition_words",
   "repeated_sentence_start",
+  "em_dash_overuse",
   "heading_structure",
   "subheading_distribution",
   "toc_present",

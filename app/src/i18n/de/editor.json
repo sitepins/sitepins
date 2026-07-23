@@ -281,8 +281,12 @@
         "title_sentiment": "Ein Titel, der Emotionen weckt (positiv oder negativ), zieht in der Regel mehr Klicks an.",
         "media_count": "Füge Bilder oder Videos hinzu, um den Inhalt anzureichern. Ziel: mindestens einige relevante Medien.",
         "slug_length": "Halte den URL-Slug kurz — 75 Zeichen oder weniger.",
-        "toc_present": "Füge bei langen Beiträgen mit mehreren Abschnitten ein Inhaltsverzeichnis zur Navigation hinzu."
+        "toc_present": "Füge bei langen Beiträgen mit mehreren Abschnitten ein Inhaltsverzeichnis zur Navigation hinzu.",
+        "em_dash_overuse": "Häufige Gedankenstriche (—) wirken KI-generiert. Nutze lieber Kommas, Klammern oder kürzere Sätze."
       },
+      "focus_keyword_label": "Ziel-Keyword",
+      "focus_keyword_placeholder": "z. B. Static-Site-Generator",
+      "focus_keyword_help": "Dient zur Bewertung der Keyword-Platzierung. Mehrere durch Kommas trennen. Leer: Es werden deine Tags verwendet.",
       "insights": {
         "teaser": "Schalte {count} weitere SEO-Prüfungen mit dem Team-Plan frei",
         "labels": {
@@ -305,7 +309,8 @@
           "title_sentiment": "Titel-Stimmung",
           "media_count": "Mediennutzung",
           "slug_length": "URL-Länge",
-          "toc_present": "Inhaltsverzeichnis"
+          "toc_present": "Inhaltsverzeichnis",
+          "em_dash_overuse": "Zu viele Gedankenstriche"
         }
       }
     },

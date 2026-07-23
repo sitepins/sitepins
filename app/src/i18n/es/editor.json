@@ -281,8 +281,12 @@
         "title_sentiment": "Un título que evoca emoción (positiva o negativa) suele atraer más clics.",
         "media_count": "Añade imágenes o vídeos para enriquecer el contenido. Apunta al menos a algunos elementos multimedia relevantes.",
         "slug_length": "Mantén el slug de la URL conciso: 75 caracteres o menos.",
-        "toc_present": "En publicaciones largas con varias secciones, añade una tabla de contenidos para facilitar la navegación."
+        "toc_present": "En publicaciones largas con varias secciones, añade una tabla de contenidos para facilitar la navegación.",
+        "em_dash_overuse": "El uso frecuente de rayas (—) suena a contenido generado por IA. Prefiere comas, paréntesis o dividir la frase."
       },
+      "focus_keyword_label": "Palabra Clave Objetivo",
+      "focus_keyword_placeholder": "p. ej. generador de sitios estáticos",
+      "focus_keyword_help": "Se usa para evaluar la colocación de la palabra clave. Separa varias con comas. Si se deja vacío, se usan tus etiquetas.",
       "insights": {
         "teaser": "Desbloquea {count} comprobaciones SEO más con el plan Team",
         "labels": {
@@ -305,7 +309,8 @@
           "title_sentiment": "Sentimiento del Título",
           "media_count": "Uso de Multimedia",
           "slug_length": "Longitud de la URL",
-          "toc_present": "Tabla de Contenidos"
+          "toc_present": "Tabla de Contenidos",
+          "em_dash_overuse": "Uso Excesivo de Rayas"
         }
       }
     },

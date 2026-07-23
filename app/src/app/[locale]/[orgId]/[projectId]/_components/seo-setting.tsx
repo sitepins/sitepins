@@ -1,6 +1,8 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { UpgradeDialog } from "@/components/upgrade-dialog";
 import { revertToOriginal } from "@/editor/utils/plate-utils";
 import { useOwnerPlan } from "@/hooks/use-owner-plan";
@@ -68,6 +70,7 @@ export default function SeoSetting({
 
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [showUpgradeOrg, setShowUpgradeOrg] = useState(false);
+  const [focusKeyword, setFocusKeyword] = useState("");
   const [portalContainer, setPortalContainer] = useState<HTMLElement | null>(
     null,
   );
@@ -77,6 +80,36 @@ export default function SeoSetting({
     // Set portal container on client side only
     setPortalContainer(document.body);
   }, []);
+
+  // The target keyphrase is a per-file editor preference, so it is kept in
+  // localStorage rather than written into the user's frontmatter.
+  const focusKeywordStorageKey = `sitepins:seo-focus-keyword:${orgId}/${projectId}/${
+    fileParams?.join("/") ?? ""
+  }`;
+
+  useEffect(() => {
+    try {
+      setFocusKeyword(localStorage.getItem(focusKeywordStorageKey) ?? "");
+    } catch {
+      setFocusKeyword("");
+    }
+  }, [focusKeywordStorageKey]);
+
+  const handleFocusKeywordChange = useCallback(
+    (value: string) => {
+      setFocusKeyword(value);
+      try {
+        if (value.trim()) {
+          localStorage.setItem(focusKeywordStorageKey, value);
+        } else {
+          localStorage.removeItem(focusKeywordStorageKey);
+        }
+      } catch {
+        // Storage unavailable (private mode / quota) — keep in-memory only.
+      }
+    },
+    [focusKeywordStorageKey],
+  );
 
   const hasSlugInFrontmatter = useMemo(() => {
     return data && Object.keys(data).some((k) => k === "slug");
@@ -250,8 +283,16 @@ export default function SeoSetting({
       revertToOriginal(displayData),
       content,
       tEditorSeo,
+      focusKeyword,
     ).results;
-  }, [isSidebarOpen, canAccessProPlusFeatures, displayData, content, tEditorSeo]);
+  }, [
+    isSidebarOpen,
+    canAccessProPlusFeatures,
+    displayData,
+    content,
+    tEditorSeo,
+    focusKeyword,
+  ]);
 
   return (
     <div>
@@ -301,6 +342,25 @@ export default function SeoSetting({
                   <h5 className="mb-5 block text-lg font-semibold">
                     {tEditorSeo("title")}
                   </h5>
+                  {canAccessProPlusFeatures && (
+                    <div className="space-y-1.5">
+                      <Label htmlFor="seo-focus-keyword">
+                        {tEditorSeo("focus_keyword_label")}
+                      </Label>
+                      <Input
+                        id="seo-focus-keyword"
+                        value={focusKeyword}
+                        autoComplete="off"
+                        placeholder={tEditorSeo("focus_keyword_placeholder")}
+                        onChange={(e) =>
+                          handleFocusKeywordChange(e.target.value)
+                        }
+                      />
+                      <p className="text-muted-foreground text-xs">
+                        {tEditorSeo("focus_keyword_help")}
+                      </p>
+                    </div>
+                  )}
                   <SearchPreview
                     title={metaTitle}
                     description={metaDescription}

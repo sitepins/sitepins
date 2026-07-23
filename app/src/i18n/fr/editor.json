@@ -281,8 +281,12 @@
         "title_sentiment": "Un titre qui suscite une émotion (positive ou négative) attire généralement plus de clics.",
         "media_count": "Ajoutez des images ou des vidéos pour enrichir le contenu. Visez au moins quelques éléments multimédias pertinents.",
         "slug_length": "Gardez le slug de l'URL concis — 75 caractères ou moins.",
-        "toc_present": "Pour les longs articles à plusieurs sections, ajoutez une table des matières pour faciliter la navigation."
+        "toc_present": "Pour les longs articles à plusieurs sections, ajoutez une table des matières pour faciliter la navigation.",
+        "em_dash_overuse": "L'usage fréquent de tirets cadratins (—) évoque un contenu généré par IA. Préférez des virgules, des parenthèses ou des phrases plus courtes."
       },
+      "focus_keyword_label": "Mot-clé Cible",
+      "focus_keyword_placeholder": "ex. générateur de site statique",
+      "focus_keyword_help": "Sert à évaluer le placement du mot-clé. Séparez-en plusieurs par des virgules. Vos tags sont utilisés si le champ est vide.",
       "insights": {
         "teaser": "Débloquez {count} vérifications SEO de plus avec le plan Team",
         "labels": {
@@ -305,7 +309,8 @@
           "title_sentiment": "Sentiment du Titre",
           "media_count": "Utilisation de Médias",
           "slug_length": "Longueur de l'URL",
-          "toc_present": "Table des Matières"
+          "toc_present": "Table des Matières",
+          "em_dash_overuse": "Excès de Tirets Cadratins"
         }
       }
     },

@@ -281,8 +281,12 @@
         "title_sentiment": "감정(긍정 또는 부정)을 불러일으키는 제목은 더 많은 클릭을 유도하는 경향이 있습니다.",
         "media_count": "이미지나 동영상을 추가해 콘텐츠를 풍부하게 하세요. 관련 미디어를 최소 몇 개 이상 넣으세요.",
         "slug_length": "URL 슬러그를 간결하게 유지하세요 — 75자 이하.",
-        "toc_present": "여러 섹션이 있는 긴 글에는 탐색을 돕는 목차를 추가하세요."
+        "toc_present": "여러 섹션이 있는 긴 글에는 탐색을 돕는 목차를 추가하세요.",
+        "em_dash_overuse": "줄표(—)를 자주 쓰면 AI가 쓴 글처럼 보입니다. 쉼표나 괄호를 쓰거나 문장을 나누세요."
       },
+      "focus_keyword_label": "타겟 키워드",
+      "focus_keyword_placeholder": "예: 정적 사이트 생성기",
+      "focus_keyword_help": "키워드 배치를 평가하는 데 사용됩니다. 여러 개는 쉼표로 구분하세요. 비워 두면 태그가 사용됩니다.",
       "insights": {
         "teaser": "Team 플랜으로 SEO 검사 {count}개를 추가로 잠금 해제하세요",
         "labels": {
@@ -305,7 +309,8 @@
           "title_sentiment": "제목 감정",
           "media_count": "미디어 사용",
           "slug_length": "URL 길이",
-          "toc_present": "목차"
+          "toc_present": "목차",
+          "em_dash_overuse": "줄표 과다 사용"
         }
       }
     },

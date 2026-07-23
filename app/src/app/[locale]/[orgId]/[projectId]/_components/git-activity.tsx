@@ -40,7 +40,7 @@ export default function GitActivity() {
   const [lastCommitNumber, setLastCommitNumber] = useState<number | null>(null);
   const [showUpgradeDialog, setShowUpgradeDialog] = useState(false);
 
-  const { canAccessPremiumFeatures } = useOwnerPlan();
+  const { canAccessProFeatures } = useOwnerPlan();
 
   const isGitHub = isGitHubProvider(provider);
   const isGitLab = isGitLabProvider(provider);
@@ -129,7 +129,7 @@ export default function GitActivity() {
                 setShowUpgradeDialog={setShowUpgradeDialog}
                 onSuccess={handleSuccess}
                 isLatest={isLatest}
-                canAccessPremiumFeatures={canAccessPremiumFeatures}
+                canAccessProFeatures={canAccessProFeatures}
                 owner={owner}
                 repoName={repoName}
                 branch={branch}
@@ -164,7 +164,7 @@ function CommitWrapper({
   setShowUpgradeDialog,
   onSuccess,
   isLatest,
-  canAccessPremiumFeatures,
+  canAccessProFeatures,
   owner,
   repoName,
   branch,
@@ -174,7 +174,7 @@ function CommitWrapper({
   setShowUpgradeDialog: (show: boolean) => void;
   onSuccess?: () => void;
   isLatest: boolean;
-  canAccessPremiumFeatures: boolean;
+  canAccessProFeatures: boolean;
   owner: string;
   repoName: string;
   branch: string;
@@ -197,7 +197,7 @@ function CommitWrapper({
   const { data: ghStatus } = useGetGitHubCommitStatusQuery(
     { owner, repo: repoName, ref: commit.sha },
     {
-      skip: !isGitHub || !canAccessPremiumFeatures,
+      skip: !isGitHub || !canAccessProFeatures,
       pollingInterval: ghPollingInterval,
     },
   );
@@ -209,7 +209,7 @@ function CommitWrapper({
   const { data: glStatus } = useGetGitLabCommitStatusQuery(
     { id: `${owner}/${repoName}`, sha: commit.id, ref: branch },
     {
-      skip: !isGitLab || !canAccessPremiumFeatures,
+      skip: !isGitLab || !canAccessProFeatures,
       pollingInterval: glPollingInterval,
     },
   );

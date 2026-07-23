@@ -107,11 +107,11 @@ export default function EditorHeader({
   const config = useAppSelector(selectConfig);
   const tEditorHeader = useTranslations("editor.header");
   const tCommon = useTranslations("common");
-  const { canAccessPremiumFeatures } = useOwnerPlan();
+  const { canAccessProFeatures } = useOwnerPlan();
   const [showResetDialog, setShowResetDialog] = useState(false);
   const [showUpgradeDialog, setShowUpgradeDialog] = useState(false);
   const isDbDraftLoaded = Boolean(isLoadedFromDbDraft && hasSavedDraft);
-  const canUseDraftSave = canAccessPremiumFeatures;
+  const canUseDraftSave = canAccessProFeatures;
   const [actionType, setActionType] = useState<"save" | "draft" | "publish">(
     isDbDraftLoaded && canUseDraftSave ? "save" : isDraft ? "draft" : "publish",
   );
@@ -153,7 +153,7 @@ export default function EditorHeader({
           !config.repoName ||
           !config.branch ||
           !isGitHub ||
-          !canAccessPremiumFeatures,
+          !canAccessProFeatures,
         pollingInterval: ghPollingInterval,
       },
     );
@@ -176,7 +176,7 @@ export default function EditorHeader({
           !config.repoName ||
           !config.branch ||
           !isGitLab ||
-          !canAccessPremiumFeatures,
+          !canAccessProFeatures,
         pollingInterval: glPollingInterval,
       },
     );
@@ -194,15 +194,15 @@ export default function EditorHeader({
     if (prevPendingRef.current && !pending) {
       setGhStatusState(undefined);
       setGlStatusState(undefined);
-      if (isGitHub && canAccessPremiumFeatures) refetchGhStatus();
-      if (isGitLab && canAccessPremiumFeatures) refetchGlStatus();
+      if (isGitHub && canAccessProFeatures) refetchGhStatus();
+      if (isGitLab && canAccessProFeatures) refetchGlStatus();
     }
     prevPendingRef.current = pending;
   }, [
     pending,
     isGitHub,
     isGitLab,
-    canAccessPremiumFeatures,
+    canAccessProFeatures,
     refetchGhStatus,
     refetchGlStatus,
   ]);
@@ -348,7 +348,7 @@ export default function EditorHeader({
                 </span>
               </Button>
 
-              {canAccessPremiumFeatures &&
+              {canAccessProFeatures &&
                 isDisplayableDeploymentStatus(deploymentStatus) && (
                   <div className="flex min-w-0 items-center space-x-1 sm:space-x-2">
                     {/* Mobile: Just colored dot */}

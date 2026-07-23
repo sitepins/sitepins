@@ -50,7 +50,7 @@ type SchemaFile = {
 };
 
 const SnippetList = () => {
-  const { canAccessPremiumFeatures, isLoading } = useOwnerPlan();
+  const { canAccessProFeatures, isLoading } = useOwnerPlan();
   const config = useSelector(selectConfig);
   const dispatch = useAppDispatch();
   const tProjectSettingsSnippets = useTranslations("project-settings.snippets");
@@ -231,7 +231,7 @@ const SnippetList = () => {
             </div>
             {isLoading || !isConfigReady ? (
               <Skeleton className="hidden h-9 w-36 md:block" />
-            ) : canAccessPremiumFeatures ? (
+            ) : canAccessProFeatures ? (
               <Button className="hidden md:flex" onClick={handleCreateSnippet}>
                 <Plus className="mr-2 size-4" />
                 {tCommon("actions.add")}
@@ -301,7 +301,7 @@ const SnippetList = () => {
         <CardFooter className="md:hidden">
           {isLoading || !isConfigReady ? (
             <Skeleton className="h-9 w-full" />
-          ) : canAccessPremiumFeatures ? (
+          ) : canAccessProFeatures ? (
             <Button className="w-full" onClick={handleCreateSnippet}>
               <Plus className="mr-2 size-4" />
               {tCommon("actions.add")}

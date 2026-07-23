@@ -38,6 +38,26 @@ export const META_DESC_KEYS = [
   "summary",
 ];
 
+export const KEYWORD_KEYS = [
+  "keywords",
+  "tags",
+  "keyWords",
+  "keyword",
+  "tag",
+  "metaKeywords",
+  "meta_keywords",
+  "meta-keywords",
+  "seoKeywords",
+  "seo_keywords",
+  "seo-keywords",
+  "focusKeywords",
+  "focus_keywords",
+  "focus-keywords",
+  "searchTags",
+  "search_tags",
+  "search-tags",
+];
+
 export function validateSEO(
   entry: Record<string, any>,
   markdownContent: string,
@@ -133,26 +153,7 @@ export function validateSEO(
   }
 
   // --- Keyword Density ---
-  const keywordKeys = [
-    "keywords",
-    "tags",
-    "keyWords",
-    "keyword",
-    "tag",
-    "metaKeywords",
-    "meta_keywords",
-    "meta-keywords",
-    "seoKeywords",
-    "seo_keywords",
-    "seo-keywords",
-    "focusKeywords",
-    "focus_keywords",
-    "focus-keywords",
-    "searchTags",
-    "search_tags",
-    "search-tags",
-  ];
-  let keywordKeyUsed = keywordKeys.find((k) => entry[k] !== undefined);
+  let keywordKeyUsed = KEYWORD_KEYS.find((k) => entry[k] !== undefined);
   const keywords = unwrap(keywordKeyUsed ? entry[keywordKeyUsed] : undefined);
   let keywordDensity: Record<string, number> = {};
   if (Array.isArray(keywords) && keywords.length && text) {
@@ -509,6 +510,561 @@ export function validateSEO(
         descriptive: descriptiveLinks.length,
         generic: allLinks.length - descriptiveLinks.length,
       },
+    },
+  };
+}
+
+const TRANSITION_WORDS = [
+  "however",
+  "therefore",
+  "moreover",
+  "furthermore",
+  "additionally",
+  "meanwhile",
+  "consequently",
+  "nonetheless",
+  "nevertheless",
+  "in addition",
+  "for example",
+  "for instance",
+  "such as",
+  "in fact",
+  "as a result",
+  "in conclusion",
+  "to summarize",
+  "on the other hand",
+  "in contrast",
+  "similarly",
+  "likewise",
+  "in other words",
+  "finally",
+  "also",
+  "besides",
+  "indeed",
+  "thus",
+  "hence",
+  "otherwise",
+  "specifically",
+  "in particular",
+  "overall",
+  "ultimately",
+];
+
+// Emotionally charged words that lift click-through when present in a title.
+const POWER_WORDS = [
+  "free",
+  "instantly",
+  "proven",
+  "ultimate",
+  "essential",
+  "guaranteed",
+  "effortless",
+  "exclusive",
+  "secret",
+  "powerful",
+  "incredible",
+  "amazing",
+  "surprising",
+  "unbelievable",
+  "remarkable",
+  "effective",
+  "complete",
+  "definitive",
+  "critical",
+  "urgent",
+  "limited",
+  "quick",
+  "easy",
+  "simple",
+  "best",
+  "top",
+  "new",
+  "boost",
+  "unlock",
+  "master",
+  "avoid",
+  "mistake",
+  "warning",
+  "save",
+  "win",
+];
+
+// Sentiment-bearing words used to detect whether a title evokes emotion.
+const SENTIMENT_WORDS = [
+  "amazing",
+  "awesome",
+  "best",
+  "brilliant",
+  "great",
+  "love",
+  "perfect",
+  "stunning",
+  "wonderful",
+  "success",
+  "win",
+  "happy",
+  "smart",
+  "beautiful",
+  "worst",
+  "bad",
+  "terrible",
+  "awful",
+  "fail",
+  "mistake",
+  "danger",
+  "warning",
+  "avoid",
+  "hate",
+  "painful",
+  "shocking",
+  "scary",
+  "fear",
+];
+
+// Passive-voice heuristic: a "to be" verb followed (optionally via an adverb)
+// by a past participle. Covers regular "-ed" endings plus common irregulars.
+const PASSIVE_RE =
+  /\b(?:is|are|was|were|be|been|being)\s+(?:\w+ly\s+)?(?:\w+ed|written|done|made|given|taken|seen|known|shown|held|brought|built|sent|kept|left|found|told|thought|caught|taught|bought|sold|paid|put|set|read|met|won|lost|chosen|driven|broken|spoken|drawn|grown)\b/i;
+
+// Strips code, resolves links/images to their visible text, and drops markdown
+// punctuation so word/sentence/syllable counts run against prose only.
+function stripMarkdownSyntax(text: string): string {
+  return text
+    .replace(/```[\s\S]*?```/g, " ")
+    .replace(/`[^`]*`/g, " ")
+    .replace(/!\[([^\]]*)\]\([^)]*\)/g, "$1")
+    .replace(/\[([^\]]*)\]\([^)]*\)/g, "$1")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/[#*_>~`-]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+// Approximate vowel-group syllable counter (standard readability-formula heuristic).
+function countSyllables(word: string): number {
+  const cleaned = word.toLowerCase().replace(/[^a-z]/g, "");
+  if (!cleaned) return 0;
+  if (cleaned.length <= 3) return 1;
+  const reduced = cleaned
+    .replace(/(?:[^laeiouy]es|ed|[^laeiouy]e)$/, "")
+    .replace(/^y/, "");
+  const matches = reduced.match(/[aeiouy]{1,2}/g);
+  return matches ? matches.length : 1;
+}
+
+function splitSentences(text: string): string[] {
+  return text
+    .split(/(?<=[.!?])\s+/)
+    .map((s) => s.trim())
+    .filter((s) => s.split(/\s+/).filter(Boolean).length > 2);
+}
+
+// Blank-line-separated blocks, excluding headings/list items/fenced code.
+function getParagraphs(markdownContent: string): string[] {
+  const withoutCode = markdownContent.replace(/```[\s\S]*?```/g, "\n\n");
+  return withoutCode
+    .split(/\n\s*\n/)
+    .map((block) => block.trim())
+    .filter(
+      (block) =>
+        block.length > 0 &&
+        !/^#{1,6}\s+/.test(block) &&
+        !/^[-*+]\s+/.test(block) &&
+        !/^\d+\.\s+/.test(block),
+    );
+}
+
+export function validateSeoInsights(
+  entry: Record<string, any>,
+  markdownContent: string,
+  t?: (key: string, args?: any) => string,
+) {
+  const results: Record<string, any> = {};
+  let good = 0;
+  let bad = 0;
+  let improvement = 0;
+
+  function trackResult(key: string, obj: any) {
+    results[key] = obj;
+    if (obj.valid === true) good++;
+    else if (obj.valid === false) bad++;
+    else improvement++;
+  }
+
+  function unwrap(val: any): any {
+    if (val && typeof val === "object" && "value" in val) {
+      return unwrap(val.value);
+    }
+    return val;
+  }
+
+  const plainText = stripMarkdownSyntax(markdownContent);
+  const words = plainText.split(/\s+/).filter(Boolean);
+  const sentences = splitSentences(plainText);
+  const wordCount = words.length;
+  const sentenceCount = sentences.length;
+
+  // --- Readability (Flesch Reading Ease) ---
+  const syllableCount = words.reduce((sum, w) => sum + countSyllables(w), 0);
+  const readabilityScore =
+    wordCount > 0 && sentenceCount > 0
+      ? Math.round(
+          206.835 -
+            1.015 * (wordCount / sentenceCount) -
+            84.6 * (syllableCount / wordCount),
+        )
+      : undefined;
+
+  trackResult("readability", {
+    value: readabilityScore,
+    valid:
+      readabilityScore === undefined
+        ? undefined
+        : readabilityScore >= 60
+          ? true
+          : readabilityScore >= 30
+            ? undefined
+            : false,
+    percentage:
+      readabilityScore === undefined
+        ? 0
+        : Math.max(0, Math.min(100, readabilityScore)),
+    tip: t
+      ? t("tips.readability")
+      : "Aim for a readability score of 60+ (Flesch Reading Ease). Use shorter sentences and simpler words.",
+  });
+
+  // --- Heading Structure ---
+  const headingLevels = [...markdownContent.matchAll(/^(#{1,6})\s+.+$/gm)].map(
+    (m) => m[1].length,
+  );
+
+  let hasSkippedLevel = false;
+  for (let i = 1; i < headingLevels.length; i++) {
+    if (headingLevels[i] > headingLevels[i - 1] + 1) {
+      hasSkippedLevel = true;
+      break;
+    }
+  }
+
+  trackResult("heading_structure", {
+    count: headingLevels.length,
+    valid:
+      headingLevels.length === 0 ? undefined : hasSkippedLevel ? false : true,
+    tip: t
+      ? t("tips.heading_structure")
+      : "Keep a logical heading order (H2 → H3 → H4) without skipping levels, and use subheadings to break up content.",
+  });
+
+  // --- Keyword in Intro Paragraph ---
+  const keywordKeyUsed = KEYWORD_KEYS.find((k) => entry[k] !== undefined);
+  const keywords = unwrap(keywordKeyUsed ? entry[keywordKeyUsed] : undefined);
+  const keywordList: string[] = Array.isArray(keywords)
+    ? keywords
+    : typeof keywords === "string" && keywords
+      ? [keywords]
+      : [];
+
+  const paragraphs = getParagraphs(markdownContent).map(stripMarkdownSyntax);
+  const introText = (paragraphs[0] || "").toLowerCase();
+
+  trackResult("keyword_first_paragraph", {
+    valid:
+      keywordList.length === 0
+        ? undefined
+        : keywordList.some((kw) => introText.includes(kw.toLowerCase())),
+    tip: t
+      ? t("tips.keyword_first_paragraph")
+      : "Mention your focus keyword within the first paragraph to strengthen topical relevance.",
+  });
+
+  // --- Paragraph Length ---
+  const paragraphWordCounts = paragraphs.map(
+    (p) => p.split(/\s+/).filter(Boolean).length,
+  );
+  const longParagraphs = paragraphWordCounts.filter((c) => c > 150).length;
+
+  trackResult("paragraph_length", {
+    count: longParagraphs,
+    length: paragraphs.length,
+    percentage:
+      paragraphs.length > 0
+        ? Math.round((longParagraphs / paragraphs.length) * 100)
+        : 0,
+    valid:
+      paragraphs.length === 0
+        ? undefined
+        : longParagraphs === 0
+          ? true
+          : longParagraphs / paragraphs.length > 0.5
+            ? false
+            : undefined,
+    tip: t
+      ? t("tips.paragraph_length")
+      : "Keep paragraphs under ~150 words. Long paragraphs are harder to read and scan.",
+  });
+
+  // --- Sentence Length ---
+  const sentenceWordCounts = sentences.map(
+    (s) => s.split(/\s+/).filter(Boolean).length,
+  );
+  const longSentences = sentenceWordCounts.filter((c) => c > 20).length;
+  const longSentencePercentage =
+    sentenceCount > 0 ? Math.round((longSentences / sentenceCount) * 100) : 0;
+
+  trackResult("sentence_length", {
+    length: sentenceCount > 0 ? Math.round(wordCount / sentenceCount) : 0,
+    percentage: longSentencePercentage,
+    valid:
+      sentenceCount === 0
+        ? undefined
+        : longSentencePercentage <= 25
+          ? true
+          : longSentencePercentage <= 50
+            ? undefined
+            : false,
+    tip: t
+      ? t("tips.sentence_length")
+      : "Keep most sentences under 20 words. Long sentences hurt readability.",
+  });
+
+  // --- Transition Words ---
+  const sentencesWithTransition = sentences.filter((s) => {
+    const lower = s.toLowerCase();
+    return TRANSITION_WORDS.some((w) => lower.includes(w));
+  }).length;
+  const transitionPercentage =
+    sentenceCount > 0
+      ? Math.round((sentencesWithTransition / sentenceCount) * 100)
+      : 0;
+
+  trackResult("transition_words", {
+    percentage: transitionPercentage,
+    valid:
+      sentenceCount < 3
+        ? undefined
+        : transitionPercentage >= 30
+          ? true
+          : transitionPercentage > 0
+            ? undefined
+            : false,
+    tip: t
+      ? t("tips.transition_words")
+      : "Use transition words (e.g., however, therefore, for example) to improve flow between sentences.",
+  });
+
+  // --- Passive Voice ---
+  const passiveCount = sentences.filter((s) => PASSIVE_RE.test(s)).length;
+  const passivePercentage =
+    sentenceCount > 0 ? Math.round((passiveCount / sentenceCount) * 100) : 0;
+
+  trackResult("passive_voice", {
+    percentage: passivePercentage,
+    valid:
+      sentenceCount < 3
+        ? undefined
+        : passivePercentage <= 10
+          ? true
+          : passivePercentage <= 20
+            ? undefined
+            : false,
+    tip: t
+      ? t("tips.passive_voice")
+      : "Keep passive voice under 10% of sentences. Prefer active voice for clearer, more direct writing.",
+  });
+
+  // --- Subheading Distribution ---
+  const sectionsBetweenHeadings = markdownContent.split(/^#{1,6}\s+.+$/gm);
+  const hasLongSectionWithoutHeading = sectionsBetweenHeadings.some(
+    (section) =>
+      stripMarkdownSyntax(section).split(/\s+/).filter(Boolean).length > 300,
+  );
+
+  trackResult("subheading_distribution", {
+    valid:
+      wordCount < 300
+        ? undefined
+        : hasLongSectionWithoutHeading
+          ? false
+          : true,
+    tip: t
+      ? t("tips.subheading_distribution")
+      : "Break up long sections with subheadings. Avoid stretches of 300+ words without an H2 or H3.",
+  });
+
+  // --- Repeated Sentence Starts ---
+  const firstWordOf = (s: string) =>
+    s.trim().split(/\s+/)[0]?.toLowerCase().replace(/[^a-z]/g, "") || "";
+  let hasRepeatedStart = false;
+  for (let i = 2; i < sentences.length; i++) {
+    const a = firstWordOf(sentences[i - 2]);
+    const b = firstWordOf(sentences[i - 1]);
+    const c = firstWordOf(sentences[i]);
+    if (a && a === b && b === c) {
+      hasRepeatedStart = true;
+      break;
+    }
+  }
+
+  trackResult("repeated_sentence_start", {
+    valid:
+      sentenceCount < 3 ? undefined : hasRepeatedStart ? undefined : true,
+    tip: t
+      ? t("tips.repeated_sentence_start")
+      : "Avoid starting three or more consecutive sentences with the same word.",
+  });
+
+  // --- Focus Keyphrase Placement ---
+  const kwMatch = (text?: string) =>
+    !!text &&
+    keywordList.some((kw) => text.toLowerCase().includes(kw.toLowerCase()));
+  const hasKeyword = keywordList.length > 0;
+
+  const metaTitleKey = META_TITLE_KEYS.find((k) => entry[k] !== undefined);
+  const metaTitle = unwrap(metaTitleKey ? entry[metaTitleKey] : undefined) as
+    | string
+    | undefined;
+  const metaDescKey = META_DESC_KEYS.find((k) => entry[k] !== undefined);
+  const metaDescription = unwrap(
+    metaDescKey ? entry[metaDescKey] : undefined,
+  ) as string | undefined;
+  const slug = unwrap(entry.slug) as string | undefined;
+
+  const headingTexts = [...markdownContent.matchAll(/^#{1,6}\s+(.+)$/gm)].map(
+    (m) => m[1],
+  );
+  const imageAlts = [...markdownContent.matchAll(/!\[([^\]]*)\]/g)].map(
+    (m) => m[1],
+  );
+
+  trackResult("keyphrase_in_title", {
+    valid: !hasKeyword ? undefined : kwMatch(metaTitle),
+    tip: t
+      ? t("tips.keyphrase_in_title")
+      : "Include your focus keyword in the SEO/meta title.",
+  });
+
+  trackResult("keyphrase_in_description", {
+    valid: !hasKeyword ? undefined : kwMatch(metaDescription),
+    tip: t
+      ? t("tips.keyphrase_in_description")
+      : "Include your focus keyword in the meta description.",
+  });
+
+  const slugKeywordMatch =
+    hasKeyword &&
+    !!slug &&
+    keywordList.some((kw) => {
+      const lower = kw.toLowerCase();
+      return (
+        slug.toLowerCase().includes(lower) ||
+        slug.toLowerCase().includes(lower.replace(/\s+/g, "-"))
+      );
+    });
+
+  trackResult("keyphrase_in_slug", {
+    value: slug,
+    valid: !hasKeyword ? undefined : slugKeywordMatch,
+    tip: t
+      ? t("tips.keyphrase_in_slug")
+      : "Include your focus keyword in the URL slug.",
+  });
+
+  trackResult("keyphrase_in_subheadings", {
+    valid:
+      !hasKeyword || headingTexts.length === 0
+        ? undefined
+        : headingTexts.some((h) => kwMatch(h)),
+    tip: t
+      ? t("tips.keyphrase_in_subheadings")
+      : "Use your focus keyword in at least one subheading (H2/H3).",
+  });
+
+  trackResult("keyphrase_in_alt", {
+    valid:
+      !hasKeyword || imageAlts.length === 0
+        ? undefined
+        : imageAlts.some((a) => kwMatch(a)),
+    tip: t
+      ? t("tips.keyphrase_in_alt")
+      : "Include your focus keyword in at least one image's alt text.",
+  });
+
+  // --- Title Engagement ---
+  const titleLower = (metaTitle || "").toLowerCase();
+
+  trackResult("title_has_number", {
+    valid: !metaTitle ? undefined : /\d/.test(metaTitle) ? true : undefined,
+    tip: t
+      ? t("tips.title_has_number")
+      : "Adding a number to the title (e.g., a year or list count) can improve click-through rate.",
+  });
+
+  trackResult("title_power_word", {
+    valid: !metaTitle
+      ? undefined
+      : POWER_WORDS.some((w) => titleLower.includes(w))
+        ? true
+        : undefined,
+    tip: t
+      ? t("tips.title_power_word")
+      : "Add a power word (e.g., essential, proven, ultimate) to make the title more compelling.",
+  });
+
+  trackResult("title_sentiment", {
+    valid: !metaTitle
+      ? undefined
+      : SENTIMENT_WORDS.some((w) => titleLower.includes(w))
+        ? true
+        : undefined,
+    tip: t
+      ? t("tips.title_sentiment")
+      : "A title that evokes emotion (positive or negative) tends to attract more clicks.",
+  });
+
+  // --- Media Usage ---
+  const mediaCount =
+    (markdownContent.match(/!\[[^\]]*\]\([^)]+\)/g) || []).length +
+    (markdownContent.match(/<(?:img|video|iframe)\b/gi) || []).length;
+
+  trackResult("media_count", {
+    count: mediaCount,
+    valid: mediaCount >= 3 ? true : mediaCount >= 1 ? undefined : false,
+    tip: t
+      ? t("tips.media_count")
+      : "Add images or videos to enrich the content. Aim for at least a few relevant media items.",
+  });
+
+  // --- Slug Length ---
+  trackResult("slug_length", {
+    value: slug,
+    length: slug?.length ?? 0,
+    valid: !slug ? undefined : slug.length <= 75 ? true : false,
+    tip: t
+      ? t("tips.slug_length")
+      : "Keep the URL slug concise — 75 characters or fewer.",
+  });
+
+  // --- Table of Contents ---
+  const tocDetected =
+    /^#{1,6}\s+(?:table of contents|contents|toc)\b/im.test(markdownContent) ||
+    /\{\{<?\s*toc/i.test(markdownContent) ||
+    /\[[^\]]+\]\(#[^)]+\)/.test(markdownContent);
+
+  trackResult("toc_present", {
+    valid:
+      headingTexts.length < 3 ? undefined : tocDetected ? true : undefined,
+    tip: t
+      ? t("tips.toc_present")
+      : "For long posts with several sections, add a table of contents to aid navigation.",
+  });
+
+  return {
+    results,
+    summary: {
+      good,
+      bad,
+      improvement,
     },
   };
 }

@@ -11,7 +11,7 @@ export function AIToolbarButton(
   props: React.ComponentProps<typeof ToolbarButton>,
 ) {
   const { api } = useEditorPlugin(AIChatPlugin);
-  const { canAccessPremiumFeatures: canAccessAi } = useOwnerPlan();
+  const { canAccessProFeatures: canAccessAi } = useOwnerPlan();
 
   const { onClick, onMouseDown, ...restProps } = props;
 

@@ -65,7 +65,7 @@ export function BranchSwitcher({ project, config }: BranchSwitcherProps) {
 
   const tProjectBranching = useTranslations("project.branching");
   const tCommon = useTranslations("common");
-  const { canAccessPremiumFeatures } = useOwnerPlan();
+  const { canAccessProFeatures } = useOwnerPlan();
 
   const branchList = useMemo(() => {
     if (!branches) return [];
@@ -162,7 +162,7 @@ export function BranchSwitcher({ project, config }: BranchSwitcherProps) {
                       checked={config.branch === branch.name}
                       onSelect={(currentValue) => {
                         if (
-                          !canAccessPremiumFeatures &&
+                          !canAccessProFeatures &&
                           currentValue !== config.branch
                         ) {
                           setShowUpgradeOrg(true);
@@ -182,7 +182,7 @@ export function BranchSwitcher({ project, config }: BranchSwitcherProps) {
                             </span>
                           )}
                         </div>
-                        {!canAccessPremiumFeatures &&
+                        {!canAccessProFeatures &&
                           config.branch !== branch.name && (
                             <Lock className="text-muted-foreground size-3" />
                           )}
@@ -196,7 +196,7 @@ export function BranchSwitcher({ project, config }: BranchSwitcherProps) {
             <CommandGroup className="flex-none">
               <CommandItem
                 onSelect={() => {
-                  if (!canAccessPremiumFeatures) {
+                  if (!canAccessProFeatures) {
                     setShowUpgradeOrg(true);
                     return;
                   }
@@ -208,7 +208,7 @@ export function BranchSwitcher({ project, config }: BranchSwitcherProps) {
                     <Plus className="mr-2 size-4" />
                     {tProjectBranching("switcher.create_new")}
                   </div>
-                  {!canAccessPremiumFeatures && (
+                  {!canAccessProFeatures && (
                     <Lock className="text-muted-foreground size-3" />
                   )}
                 </div>

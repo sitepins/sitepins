@@ -36,7 +36,7 @@ export function GitCommitItem({
   deploymentStatus,
 }: CommitItemProps) {
   const tProjectGit = useTranslations("project.git");
-  const { canAccessPremiumFeatures } = useOwnerPlan();
+  const { canAccessProFeatures } = useOwnerPlan();
   const canRestore = usePermission(ENUM_PERMISSIONS.MANAGE_PROJECTS);
 
   const [revertDialog, setRevertDialog] = useState<"reset" | "revert" | null>(
@@ -44,7 +44,7 @@ export function GitCommitItem({
   );
 
   const handleActionClick = (type: "reset" | "revert") => {
-    if (!canAccessPremiumFeatures) {
+    if (!canAccessProFeatures) {
       setShowUpgradeDialog(true);
       return;
     }

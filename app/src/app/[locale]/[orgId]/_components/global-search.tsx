@@ -112,7 +112,7 @@ export function GlobalSearch({
   const orgId = params?.orgId;
   const projectId = params?.projectId;
   const { data: orgs } = useGetOrgsQuery();
-  const { canAccessPremiumFeatures } = useOwnerPlan();
+  const { canAccessProFeatures } = useOwnerPlan();
   const configs = config?.configs;
   const searchItems = tSearch.raw("items") as Record<
     string,
@@ -166,13 +166,13 @@ export function GlobalSearch({
     const contentFiles = flattenFiles(rootChildren);
     const configFiles = flattenConfigFiles(themeChildren, configs);
 
-    if (!canAccessPremiumFeatures) {
+    if (!canAccessProFeatures) {
       return [...contentFiles, ...configFiles];
     }
 
     const codeFiles = flattenFiles(codeChildren);
     return [...contentFiles, ...configFiles, ...codeFiles];
-  }, [files, canAccessPremiumFeatures, configs, projectId]);
+  }, [files, canAccessProFeatures, configs, projectId]);
 
   const handleFileSelect = (file: TFiles) => {
     setOpen(false);

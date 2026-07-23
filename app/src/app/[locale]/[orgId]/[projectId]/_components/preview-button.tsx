@@ -26,7 +26,6 @@ import {
   MonitorPlay,
   RefreshCw,
 } from "lucide-react";
-import { useTranslations } from "next-intl";
 import { useParams, useRouter } from "next/navigation";
 import { RefObject, useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
@@ -87,8 +86,7 @@ export default function PreviewButton({
 
   const router = useRouter();
   const { orgId } = useParams<{ orgId: string }>();
-  const tProjectPreview = useTranslations("project.preview");
-  const { canAccessPremiumFeatures } = useOwnerPlan();
+  const { canAccessProFeatures } = useOwnerPlan();
 
   const [showUpgradeDialog, setShowUpgradeDialog] = useState(false);
 
@@ -347,7 +345,7 @@ export default function PreviewButton({
   // ── Start / sync sandbox (SSE) ────────────────────────────────────────
 
   const startSandbox = async (isSync = false) => {
-    if (!canAccessPremiumFeatures) {
+    if (!canAccessProFeatures) {
       setShowUpgradeDialog(true);
       return;
     }
@@ -502,7 +500,7 @@ export default function PreviewButton({
     <UpgradeDialog
       open={showUpgradeDialog}
       onOpenChange={setShowUpgradeDialog}
-        contextKey="preview"
+      contextKey="preview"
     />
   );
 

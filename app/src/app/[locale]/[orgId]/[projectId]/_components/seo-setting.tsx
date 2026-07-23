@@ -8,6 +8,7 @@ import {
   META_DESC_KEYS,
   META_TITLE_KEYS,
   validateSEO,
+  validateSeoInsights,
 } from "@/lib/utils/seo-validate";
 import { useGetProjectQuery } from "@/redux/features/project/project-api";
 import { TField, TState } from "@/types";
@@ -240,7 +241,17 @@ export default function SeoSetting({
     return newSchema;
   }, [filteredSchema, filename, tEditorSeo]);
 
-  const { canAccessPremiumFeatures: canAccessSeo } = useOwnerPlan();
+  const { canAccessProFeatures: canAccessSeo, canAccessProPlusFeatures } =
+    useOwnerPlan();
+
+  const insightsResults = useMemo(() => {
+    if (!isSidebarOpen || !canAccessProPlusFeatures) return {};
+    return validateSeoInsights(
+      revertToOriginal(displayData),
+      content,
+      tEditorSeo,
+    ).results;
+  }, [isSidebarOpen, canAccessProPlusFeatures, displayData, content, tEditorSeo]);
 
   return (
     <div>
@@ -307,7 +318,12 @@ export default function SeoSetting({
                     internalLinks={seoInsights?.internalLinks?.length ?? 0}
                     externalLinks={seoInsights?.externalLinks?.length ?? 0}
                   />
-                  <SeoAnalysis results={results} schema={schema} />
+                  <SeoAnalysis
+                    results={results}
+                    schema={schema}
+                    insightsResults={insightsResults}
+                    canAccessInsights={canAccessProPlusFeatures}
+                  />
                 </div>
               </motion.div>
             )}

@@ -8,6 +8,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Skeleton } from "@/components/ui/skeleton";
+import { UpgradeDialog } from "@/components/upgrade-dialog";
 import { useOwnerPlan } from "@/hooks/use-owner-plan";
 import { useProjectBranch } from "@/hooks/use-project-branch";
 import { useSafeLocale } from "@/hooks/use-safe-locale";
@@ -55,7 +56,7 @@ export default function Layout(
   const { children } = props;
   const dispatch = useAppDispatch();
   const config = useSelector(selectConfig);
-  const { canAccessPremiumFeatures } = useOwnerPlan();
+  const { canAccessProFeatures } = useOwnerPlan();
   const { data: orgs, isLoading: isOrgsLoading } = useGetOrgsQuery();
   const pathname = usePathname() ?? "";
   const projectDashboardMenu = getProjectDashboardMenu(locale);
@@ -63,6 +64,7 @@ export default function Layout(
   const tSidebar = useTranslations("navigation.sidebar");
   const tDashboard = useTranslations("dashboard");
   const [searchOpen, setSearchOpen] = useState(false);
+  const [showUpgradeCode, setShowUpgradeCode] = useState(false);
 
   const {
     isLoading: isProjectLoading,
@@ -228,7 +230,7 @@ export default function Layout(
 
     // If no arrangements or no premium access, return original files
     if (
-      !canAccessPremiumFeatures ||
+      !canAccessProFeatures ||
       !arrangements ||
       arrangements.length <= 0
     ) {
@@ -308,7 +310,7 @@ export default function Layout(
               }
               dashboardMenu={projectDashboardMenu}
               settingsMenu={projectSettingsMenu.filter((item) => {
-                if (!canAccessPremiumFeatures && item.name === "Arrangement") {
+                if (!canAccessProFeatures && item.name === "Arrangement") {
                   return false;
                 }
                 return true;
@@ -399,7 +401,25 @@ export default function Layout(
                   )}
 
                   {/* Code */}
-                  {!isArchived && canAccessPremiumFeatures && (
+                  {!isArchived && !canAccessProFeatures && (
+                    <ul className="tree bg-background rounded [--tree-spacing:2rem]">
+                      <li>
+                        <button
+                          type="button"
+                          onClick={() => setShowUpgradeCode(true)}
+                          className={cn(
+                            "text-foreground flex h-auto w-full items-center justify-start space-x-2 py-3 pr-2.5 pl-3 text-sm",
+                          )}
+                        >
+                          <FileCode2 className="inline-block size-5 stroke-[1.5]" />
+                          <span className="flex-1 text-left">
+                            {tSidebar("code")}
+                          </span>
+                        </button>
+                      </li>
+                    </ul>
+                  )}
+                  {!isArchived && canAccessProFeatures && (
                     <ul className="tree bg-background rounded [--tree-spacing:2rem]">
                       <li>
                         <Accordion
@@ -451,6 +471,11 @@ export default function Layout(
                       </li>
                     </ul>
                   )}
+                  <UpgradeDialog
+                    open={showUpgradeCode}
+                    onOpenChange={setShowUpgradeCode}
+                    contextKey="code"
+                  />
 
                   {/* Config */}
                   {!isArchived && config.configs?.length > 0 && (

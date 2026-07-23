@@ -56,7 +56,7 @@ export default function ProjectOverview({
   const [hasImageError, setHasImageError] = useState(false);
   const logs = projectLogQuery?.data?.logs ?? [];
   const lastLog = logs.length > 0 ? logs[0] : null;
-  const { canAccessPremiumFeatures } = useOwnerPlan();
+  const { canAccessProFeatures } = useOwnerPlan();
   const provider = config?.provider || project?.provider;
   const isGitHub = isGitHubProvider(provider);
   const isGitLab = isGitLabProvider(provider);
@@ -120,7 +120,7 @@ export default function ProjectOverview({
           !config.owner ||
           !config.repoName ||
           !latestGhCommitRef ||
-          !canAccessPremiumFeatures,
+          !canAccessProFeatures,
         pollingInterval: ghPollingInterval,
       },
     );
@@ -140,7 +140,7 @@ export default function ProjectOverview({
           !isGitLab ||
           !project?.repository ||
           !latestGlCommitRef ||
-          !canAccessPremiumFeatures,
+          !canAccessProFeatures,
         pollingInterval: glPollingInterval,
       },
     );
@@ -193,7 +193,7 @@ export default function ProjectOverview({
         return;
       }
 
-      const cacheKey = canAccessPremiumFeatures
+      const cacheKey = canAccessProFeatures
         ? "preview_" + siteUrl
         : "preview_og_" + siteUrl;
 
@@ -217,7 +217,7 @@ export default function ProjectOverview({
       try {
         const res = await fetchProjectPreviewImage({
           url: normalizedUrl,
-          premium: canAccessPremiumFeatures,
+          premium: canAccessProFeatures,
         });
         if (!res.success) {
           throw new Error(res.error);
@@ -231,7 +231,7 @@ export default function ProjectOverview({
         setIsImageLoading(false);
       }
     },
-    [siteUrl, canAccessPremiumFeatures],
+    [siteUrl, canAccessProFeatures],
   );
 
   useEffect(() => {
@@ -255,7 +255,7 @@ export default function ProjectOverview({
               onError={() => setHasImageError(true)}
             />
             {/* Hover overlay with refresh button */}
-            {canAccessPremiumFeatures && (
+            {canAccessProFeatures && (
               <div className="absolute inset-0 flex items-center justify-center bg-[black]/40 opacity-0 transition-opacity group-hover:opacity-100">
                 <Button
                   variant="default"
@@ -322,9 +322,9 @@ export default function ProjectOverview({
               {tDashboard("build_status")}
             </Label>
             <div className="mt-1">
-              {canAccessPremiumFeatures && isStatusLoading ? (
+              {canAccessProFeatures && isStatusLoading ? (
                 <Loader2 className="size-4 animate-spin opacity-50" />
-              ) : canAccessPremiumFeatures &&
+              ) : canAccessProFeatures &&
                 isDisplayableDeploymentStatus(buildStatus) ? (
                 <Badge
                   variant={getDeploymentStatusVariant(buildStatus)}

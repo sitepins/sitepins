@@ -28,7 +28,7 @@ export function SnippetControls({
   const [showSaveDialog, setShowSaveDialog] = useState(false);
   const { snippets } = useSnippets();
   const editor = useEditorRef();
-  const { canAccessPremiumFeatures } = useOwnerPlan();
+  const { canAccessProFeatures } = useOwnerPlan();
 
   // Determine the content/code of the current element
   const code = useMemo(() => {
@@ -106,7 +106,7 @@ export function SnippetControls({
       style={{ pointerEvents: "all" }}
     >
       {extraControls}
-      {canAccessPremiumFeatures && !exists && code && (
+      {canAccessProFeatures && !exists && code && (
         <>
           <button
             type="button"

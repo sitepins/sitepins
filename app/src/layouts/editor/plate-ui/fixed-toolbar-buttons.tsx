@@ -83,7 +83,7 @@ type ToolbarItemDef = {
 export default function FixedToolbarButtons() {
   const tEditorToolbar = useTranslations("editor.toolbar");
   const { snippets } = useSnippets();
-  const { canAccessPremiumFeatures } = useOwnerPlan();
+  const { canAccessProFeatures } = useOwnerPlan();
   const isMobileMediaQuery = useMediaQuery("(max-width: 1536px)");
   const editor = useEditorRef();
   const toolbarRef = useRef<HTMLDivElement>(null);
@@ -306,7 +306,7 @@ export default function FixedToolbarButtons() {
       if (isTableFocused && unsupportedItemsInTable.has(item.key)) return false;
       if (
         item.key === "embed" &&
-        (snippets.length === 0 || !canAccessPremiumFeatures)
+        (snippets.length === 0 || !canAccessProFeatures)
       )
         return false;
       if (item.key === "expand" && isMobileMediaQuery) return false;
@@ -315,7 +315,7 @@ export default function FixedToolbarButtons() {
   }, [
     isTableFocused,
     snippets.length,
-    canAccessPremiumFeatures,
+    canAccessProFeatures,
     isMobileMediaQuery,
     TOOLBAR_ITEMS,
   ]);

@@ -62,7 +62,7 @@ const EditorWrapper: React.FC<EditorWrapperProps> = memo(
     const orgIdSafe = params.orgId?.startsWith("org-")
       ? params.orgId.slice(4)
       : params.orgId;
-    const { canAccessPremiumFeatures } = useOwnerPlan();
+    const { canAccessProFeatures } = useOwnerPlan();
     const { vercelToken, vercelTeamId, vercelProjectId } = useVercelIntegration(
       params.orgId,
     );
@@ -216,10 +216,10 @@ const EditorWrapper: React.FC<EditorWrapperProps> = memo(
         isDraftRef.current = !!isDraft;
         const passedIsDraft = isDraftRef.current;
         const shouldCommitManual =
-          config.customCommit && canAccessPremiumFeatures;
+          config.customCommit && canAccessProFeatures;
         prepareCommit(shouldCommitManual, passedIsDraft);
       },
-      [config.customCommit, canAccessPremiumFeatures, prepareCommit],
+      [config.customCommit, canAccessProFeatures, prepareCommit],
     );
 
     // Push to Git as draft (replaces the old "Save as Draft" Git behaviour)

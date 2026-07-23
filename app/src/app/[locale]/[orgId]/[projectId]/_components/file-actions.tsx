@@ -33,7 +33,7 @@ export default function FileAction({
   const tDirectoryViewActions = useTranslations("directory-view.actions");
   const tCommon = useTranslations("common");
   const params = useParams() as { orgId: string; projectId: string };
-  const { canAccessPremiumFeatures } = useOwnerPlan();
+  const { canAccessProFeatures } = useOwnerPlan();
   const filePath = file.path.replace("content/", "");
 
   const config = useSelector(selectConfig);
@@ -86,7 +86,7 @@ export default function FileAction({
               </Link>
             </DropdownMenuItem>
           )}
-          {canAccessPremiumFeatures && (
+          {canAccessProFeatures && (
             <DropdownMenuItem asChild onClick={() => setIsOpen(false)}>
               <Link
                 href={`/${params.orgId}/${params.projectId}/code/${filePath}`}

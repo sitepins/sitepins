@@ -1,8 +1,8 @@
 import { authClient } from "@/lib/auth/auth-client";
 import config from "@/lib/config";
 import { EPackage } from "@/lib/plan/types";
-import { selectCurrentPackage } from "@/redux/features/plan/slice";
 import { useGetOrgQuery } from "@/redux/features/orgs/org-api";
+import { selectCurrentPackage } from "@/redux/features/plan/slice";
 import { useGetProjectQuery } from "@/redux/features/project/project-api";
 import { useAppSelector } from "@/redux/store";
 import { useParams } from "next/navigation";
@@ -82,14 +82,26 @@ export function useOwnerPlan() {
     }
   }
 
-  const canAccessPremiumFeatures =
+  const canAccessProFeatures =
     !isFreeUser || ownerHasPaidPlan || orgHasPaidPlan || isOnTrial;
+
+  const isTeamTierOrHigher = (pkg?: string | null) =>
+    !!pkg &&
+    [EPackage.TEAM, EPackage.ENTERPRISE].includes(
+      pkg.toLowerCase() as EPackage,
+    );
+
+  const canAccessProPlusFeatures =
+    isTeamTierOrHigher(currentPackage) ||
+    isTeamTierOrHigher(ownerPackage) ||
+    orgOwnerData.some((item) => isTeamTierOrHigher(item?.active_package));
 
   return {
     orgHasPaidPlan,
     ownerHasPaidPlan,
     isFreeUser,
-    canAccessPremiumFeatures,
+    canAccessProFeatures,
+    canAccessProPlusFeatures,
     currentPackage,
     ownerPackage,
     project,

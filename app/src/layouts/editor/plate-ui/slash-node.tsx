@@ -140,7 +140,7 @@ export function SlashInputElement(
 ) {
   const tEditorSlash = useTranslations("editor.slash");
   const { editor, element } = props;
-  const { canAccessPremiumFeatures: canAccessAi } = useOwnerPlan();
+  const { canAccessProFeatures: canAccessAi } = useOwnerPlan();
   const aiUpsellItem = useAiSlashUpsellItem();
 
   const displayGroups =

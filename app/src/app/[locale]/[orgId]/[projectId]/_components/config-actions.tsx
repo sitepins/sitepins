@@ -44,7 +44,7 @@ export default function ConfigActions({
   const tCommon = useTranslations("common");
   const tGit = useTranslations("project.git");
   const dispatch = useAppDispatch();
-  const { canAccessPremiumFeatures } = useOwnerPlan();
+  const { canAccessProFeatures } = useOwnerPlan();
   const [showDuplicateDialog, setShowDuplicateDialog] = useState(false);
   const [duplicateName, setDuplicateName] = useState("");
   const { updateFiles, useGitTrees, useGitContent, provider, isPending } =
@@ -221,7 +221,7 @@ export default function ConfigActions({
             <CopyPlus className="mr-1 size-4" />
             <span>{tCommon("actions.duplicate")}</span>
           </DropdownMenuItem>
-          {canAccessPremiumFeatures && (
+          {canAccessProFeatures && (
             <DropdownMenuItem asChild>
               <Link
                 href={`/${params.orgId}/${params.projectId}/code/${currentFilepath}`}

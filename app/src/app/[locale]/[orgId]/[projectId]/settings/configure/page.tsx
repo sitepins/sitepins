@@ -6,7 +6,7 @@ import CommitDialogForm from "./_components/commit-dialog-form";
 import SiteConfig from "./_components/site-config-form";
 
 export default function ConfigurePage() {
-  const { canAccessPremiumFeatures, isLoading } = useOwnerPlan();
+  const { canAccessProFeatures, isLoading } = useOwnerPlan();
 
   return (
     <>
@@ -14,7 +14,7 @@ export default function ConfigurePage() {
       {isLoading ? (
         <CommitConfigSkeleton />
       ) : (
-        canAccessPremiumFeatures && <CommitDialogForm />
+        canAccessProFeatures && <CommitDialogForm />
       )}
     </>
   );

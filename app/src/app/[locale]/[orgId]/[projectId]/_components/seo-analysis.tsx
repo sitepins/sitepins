@@ -5,26 +5,81 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
+import { UpgradeDialog } from "@/components/upgrade-dialog";
 import { TField } from "@/types";
-import { AlertTriangle, CheckCircle, XCircle } from "lucide-react";
+import { AlertTriangle, CheckCircle, Lock, XCircle } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { useState } from "react";
+
+// Team+ (SEO Insights) checks, in display order. Rows come from
+// validateSeoInsights and are only populated for Pro+ plans; otherwise the
+// merged card shows just the base analysis-summary results plus a teaser.
+const INSIGHT_KEYS = [
+  "readability",
+  "sentence_length",
+  "paragraph_length",
+  "passive_voice",
+  "transition_words",
+  "repeated_sentence_start",
+  "heading_structure",
+  "subheading_distribution",
+  "toc_present",
+  "media_count",
+  "slug_length",
+  "keyword_first_paragraph",
+  "keyphrase_in_title",
+  "keyphrase_in_description",
+  "keyphrase_in_slug",
+  "keyphrase_in_subheadings",
+  "keyphrase_in_alt",
+  "title_has_number",
+  "title_power_word",
+  "title_sentiment",
+] as const;
+
+type Row = {
+  key: string;
+  name: string;
+  valid?: boolean;
+  value?: any;
+  length?: number;
+  percentage?: number;
+  tip?: string;
+};
 
 export default function SeoAnalysis({
   results,
   schema,
+  insightsResults = {},
+  canAccessInsights = true,
 }: {
   results: Record<string, any>;
   schema: TField[];
+  insightsResults?: Record<string, any>;
+  canAccessInsights?: boolean;
 }) {
   const tEditorSeo = useTranslations("editor.seo");
+  const [showUpgrade, setShowUpgrade] = useState(false);
 
-  const resultsArray = Object.keys(results).map((key) => {
-    return {
-      name: schema.find((field) => field.name === key)?.label || key,
-      ...results[key],
-    };
-  });
+  // Base analysis-summary rows (Pro), labelled via the content schema.
+  const baseRows: Row[] = Object.keys(results).map((key, index) => ({
+    key: `base-${key || index}`,
+    name: schema.find((field) => field.name === key)?.label || key,
+    ...results[key],
+  }));
+
+  // Team+ insight rows, labelled via the insights i18n namespace.
+  const insightRows: Row[] = INSIGHT_KEYS.filter(
+    (key) => insightsResults[key],
+  ).map((key) => ({
+    key: `insight-${key}`,
+    name: tEditorSeo(`insights.labels.${key}`),
+    ...insightsResults[key],
+  }));
+
+  const resultsArray = [...baseRows, ...insightRows];
 
   const goodResults = resultsArray.filter((result) => result.valid === true);
   const improvements = resultsArray.filter(
@@ -121,7 +176,7 @@ export default function SeoAnalysis({
                           </div>
                         </div>
 
-                        {result.value && (
+                        {result.value !== undefined && result.value !== "" && (
                           <div className="mb-2">
                             <span className="text-muted-foreground text-xs font-medium">
                               {tEditorSeo("current")}
@@ -184,6 +239,26 @@ export default function SeoAnalysis({
             </Accordion>
           );
         })}
+
+        {!canAccessInsights && (
+          <>
+            <button
+              type="button"
+              onClick={() => setShowUpgrade(true)}
+              className="border-border bg-light/50 hover:bg-light flex w-full items-center gap-2 rounded-lg border border-dashed px-4 py-3 text-left text-sm transition-colors"
+            >
+              <Lock className="text-muted-foreground size-4 shrink-0" />
+              <span className="text-text font-medium">
+                {tEditorSeo("insights.teaser", { count: INSIGHT_KEYS.length })}
+              </span>
+            </button>
+            <UpgradeDialog
+              open={showUpgrade}
+              onOpenChange={setShowUpgrade}
+              contextKey="seo_insights"
+            />
+          </>
+        )}
       </div>
     </Card>
   );

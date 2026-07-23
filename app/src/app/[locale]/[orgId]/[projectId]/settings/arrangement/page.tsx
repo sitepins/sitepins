@@ -97,7 +97,7 @@ function ArrangementHeaderSection({ isModified }: { isModified: boolean }) {
 }
 
 export default function ArrangementPage() {
-  const { canAccessPremiumFeatures, isLoading } = useOwnerPlan();
+  const { canAccessProFeatures, isLoading } = useOwnerPlan();
   const [isModified, setIsModified] = useState(false);
   const tProjectSettingsArrangement = useTranslations(
     "project-settings.arrangement",
@@ -107,7 +107,7 @@ export default function ArrangementPage() {
       <ArrangementHeaderSection isModified={isModified} />
       {isLoading ? (
         <ArrangeSiteSkeleton />
-      ) : canAccessPremiumFeatures ? (
+      ) : canAccessProFeatures ? (
         <Arrangements setIsModified={setIsModified} />
       ) : (
         <CardContent className="pt-0 text-center">

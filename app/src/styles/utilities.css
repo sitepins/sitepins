@@ -1,0 +1,55 @@
+.moving-border {
+  background: radial-gradient(
+    circle,
+    rgba(255, 98, 138, 1) 14%,
+    rgba(161, 68, 255, 0.8) 51%,
+    rgba(255, 98, 138, 0) 100%
+  );
+}
+
+/* bg colors */
+.bg-stripes {
+  background-size: 7.07px 7.07px;
+  background-color: #9ca3af1a;
+  background-image: linear-gradient(
+    135deg,
+    #6b728080 10%,
+    #0000 0,
+    #0000 50%,
+    #6b728080 0,
+    #6b728080 60%,
+    #0000 0,
+    #0000
+  );
+}
+
+@keyframes flash {
+  0% {
+    outline: 2px solid transparent;
+  }
+  50% {
+    outline: 2px solid var(--color-accent);
+  }
+  100% {
+    outline: 2px solid transparent;
+  }
+}
+
+.flash-sidebar {
+  animation: flash 1s ease-in-out 2;
+  border-radius: 0.5rem;
+  outline-offset: 2px;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(250%);
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 1.4s ease-in-out infinite;
+}

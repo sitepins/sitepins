@@ -1,0 +1,119 @@
+{
+  "schema": {
+    "types": {
+      "string": "String",
+      "number": "Number",
+      "boolean": "Boolean",
+      "media": "Media",
+      "gallery": "Gallery",
+      "array": "Array",
+      "date": "Date",
+      "object": "Object"
+    },
+    "fields": {
+      "label": "Label",
+      "name": "Name",
+      "type": "Field Type",
+      "placeholder": {
+        "type": "Choose type",
+        "label": "e.g., Title",
+        "name": "auto_generated"
+      },
+      "description": "Description",
+      "default_value": "Default Value",
+      "boolean": {
+        "true": "True",
+        "false": "False"
+      },
+      "input_style": {
+        "label": "Input Style",
+        "placeholder": "Choose input style",
+        "options": {
+          "standard_text": "Standard Textbox",
+          "standard_table": "Standard Table",
+          "dropdown": "Dropdown Selection",
+          "multi_dropdown": "Multi-select Dropdown"
+        }
+      }
+    },
+    "configuration": {
+      "title": "Field Configuration",
+      "dropdown": {
+        "title": "Dropdown Configuration",
+        "multi_title": "Multi-select Configuration",
+        "source": "Source",
+        "source_placeholder": "Choose source",
+        "sources": {
+          "static": "Static Options",
+          "folder": "Files from Folder",
+          "file": "Data from File"
+        },
+        "static": {
+          "placeholder": "Enter option value"
+        },
+        "folder": {
+          "path": "Folder Path",
+          "path_placeholder": "Select a folder",
+          "display_field": "Display Field (Frontmatter Key)",
+          "field_placeholder": "e.g. title (defaults to filename)",
+          "loading_fields": "Loading fields...",
+          "default_field": "filename (default)",
+          "include_pattern": "Include Pattern (Glob)",
+          "include_placeholder": "e.g. *.md",
+          "exclude_pattern": "Exclude Pattern (Glob)",
+          "exclude_placeholder": "e.g. index.md"
+        },
+        "file": {
+          "path": "File Path (JSON/YAML/TOML)",
+          "path_placeholder": "Select a file",
+          "data_key": "Data Key (Field to Extract)",
+          "key_placeholder": "e.g. categories or name",
+          "default_key": "Extract entire file/array"
+        }
+      }
+    },
+    "array": {
+      "label": "Array of",
+      "placeholder": "Choose subtype"
+    },
+    "nested": {
+      "title": "Nested fields",
+      "add_button": "Add nested field"
+    },
+    "date": {
+      "default_value": "Default Value",
+      "mode_placeholder": "Choose mode",
+      "static": "Fixed Date",
+      "dynamic": "Current Date (Live)",
+      "empty": "Empty",
+      "select_initial": "Select Initial Date",
+      "today": "Today"
+    },
+    "actions": {
+      "add_option": "Add Option",
+      "add_field": "Add Field",
+      "update_field": "Update Field",
+      "enter_option": "Enter option",
+      "include": "Include",
+      "ignore": "Ignore"
+    },
+    "builder": {
+      "add_new_field": "Add New Field",
+      "configure_properties": "Configure the new field properties",
+      "field_settings": "Field Settings",
+      "required": "Required",
+      "show": "Show",
+      "hide": "Hide",
+      "no_field_selected": "No field selected",
+      "select_to_edit": "Select a field from the list to edit its settings",
+      "no_fields": "No fields yet",
+      "add_first_field": "Add your first field below",
+      "back_to_fields": "Back to fields",
+      "field_count": "{count, plural, =0 {0 fields} one {1 field} other {# fields}}"
+    },
+    "errors": {
+      "name_required": "Field name is required",
+      "name_exists": "Field name already exists"
+    }
+  }
+}

@@ -1,0 +1,119 @@
+{
+  "schema": {
+    "types": {
+      "string": "স্ট্রিং",
+      "number": "নম্বর",
+      "boolean": "বুলিয়ান",
+      "media": "মিডিয়া",
+      "gallery": "গ্যালারি",
+      "array": "অ্যারে",
+      "date": "তারিখ",
+      "object": "অবজেক্ট"
+    },
+    "fields": {
+      "label": "লেবেল",
+      "name": "নাম",
+      "type": "ফিল্ডের ধরন",
+      "placeholder": {
+        "type": "ধরন বেছে নিন",
+        "label": "যেমন: টাইটেল",
+        "name": "auto_generated"
+      },
+      "description": "বর্ণনা",
+      "default_value": "ডিফল্ট ভ্যালু",
+      "boolean": {
+        "true": "সত্য",
+        "false": "মিথ্যা"
+      },
+      "input_style": {
+        "label": "ইনপুট স্টাইল",
+        "placeholder": "ইনপুট স্টাইল বেছে নিন",
+        "options": {
+          "standard_text": "স্ট্যান্ডার্ড টেক্সটবক্স",
+          "standard_table": "স্ট্যান্ডার্ড টেবিল",
+          "dropdown": "ড্রপডাউন সিলেকশন",
+          "multi_dropdown": "মাল্টি-সিলেক্ট ড্রপডাউন"
+        }
+      }
+    },
+    "configuration": {
+      "title": "ফিল্ড কনফিগারেশন",
+      "dropdown": {
+        "title": "ড্রপডাউন কনফিগারেশন",
+        "multi_title": "মাল্টি-সিলেক্ট কনফিগারেশন",
+        "source": "উৎস",
+        "source_placeholder": "উৎস বেছে নিন",
+        "sources": {
+          "static": "স্ট্যাটিক অপশনসমূহ",
+          "folder": "ফোল্ডার থেকে ফাইল",
+          "file": "ফাইল থেকে ডাটা"
+        },
+        "static": {
+          "placeholder": "অপশন ভ্যালু লিখুন"
+        },
+        "folder": {
+          "path": "ফোল্ডার পাথ",
+          "path_placeholder": "একটি ফোল্ডার নির্বাচন করুন",
+          "display_field": "ডিসপ্লে ফিল্ড (Frontmatter Key)",
+          "field_placeholder": "যেমন: title (ডিফল্ট হিসেবে ফাইলের নাম থাকবে)",
+          "loading_fields": "ফিল্ড লোড হচ্ছে...",
+          "default_field": "filename (ডিফল্ট)",
+          "include_pattern": "অন্তর্ভুক্তির প্যাটার্ন (Glob)",
+          "include_placeholder": "যেমন: *.md",
+          "exclude_pattern": "বর্জনের প্যাটার্ন (Glob)",
+          "exclude_placeholder": "যেমন: index.md"
+        },
+        "file": {
+          "path": "ফাইল পাথ (JSON/YAML/TOML)",
+          "path_placeholder": "একটি ফাইল নির্বাচন করুন",
+          "data_key": "ডাটা কী (যে ফিল্ডটি এক্সট্রাক্ট করতে হবে)",
+          "key_placeholder": "যেমন: categories অথবা name",
+          "default_key": "পুরো ফাইল/অ্যারে এক্সট্রাক্ট করুন"
+        }
+      }
+    },
+    "array": {
+      "label": "অ্যারে অফ",
+      "placeholder": "সাব-টাইপ বেছে নিন"
+    },
+    "nested": {
+      "title": "নেস্টেড ফিল্ডসমূহ",
+      "add_button": "নেস্টেড ফিল্ড যোগ করুন"
+    },
+    "date": {
+      "default_value": "ডিফল্ট ভ্যালু",
+      "mode_placeholder": "মোড বেছে নিন",
+      "static": "নির্দিষ্ট তারিখ",
+      "dynamic": "বর্তমান তারিখ (লাইভ)",
+      "empty": "খালি",
+      "select_initial": "প্রাথমিক তারিখ নির্বাচন করুন",
+      "today": "আজ"
+    },
+    "actions": {
+      "add_option": "অপশন যোগ করুন",
+      "add_field": "ফিল্ড যোগ করুন",
+      "update_field": "ফিল্ড আপডেট করুন",
+      "enter_option": "অপশন লিখুন",
+      "include": "অন্তর্ভুক্ত করুন",
+      "ignore": "উপেক্ষা করুন"
+    },
+    "builder": {
+      "add_new_field": "নতুন ফিল্ড যোগ করুন",
+      "configure_properties": "নতুন ফিল্ডের প্রপার্টি কনফিগার করুন",
+      "field_settings": "ফিল্ড সেটিংস",
+      "required": "প্রয়োজনীয় (Required)",
+      "show": "দেখান",
+      "hide": "লুকান",
+      "no_field_selected": "কোনো ফিল্ড নির্বাচন করা হয়নি",
+      "select_to_edit": "এডিট করার জন্য তালিকা থেকে একটি ফিল্ড নির্বাচন করুন",
+      "no_fields": "এখনও কোনো ফিল্ড নেই",
+      "add_first_field": "নিচে আপনার প্রথম ফিল্ডটি যোগ করুন",
+      "back_to_fields": "ফিল্ড তালিকায় ফিরে যান",
+      "field_count": "{count, plural, =0 {০টি ফিল্ড} one {১টি ফিল্ড} other {#টি ফিল্ড}}"
+    },
+    "errors": {
+      "name_required": "ফিল্ডের নাম আবশ্যক",
+      "name_exists": "এই নামের ফিল্ড ইতিমধ্যেই রয়েছে"
+    }
+  }
+}

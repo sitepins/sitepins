@@ -1,0 +1,35 @@
+{
+  "provider-install": {
+    "authenticating_aria": "인증 중",
+    "request_title": "설치 요청이 전송되었습니다",
+    "auth_title": "{provider}으로 인증 중",
+    "request_description": "설치 요청이 조직 소유자에게 전송되었습니다. 알림을 받고 리포지토리에 대한 액세스를 승인할 수 있습니다.",
+    "auth_description": "{provider} 으로 인증을 마무리하고 있습니다. 완료되면 이 창은 자동으로 닫힙니다.",
+    "manual_close_hint": "이 창이 닫히지 않으면 수동으로 안전하게 닫을 수 있습니다.",
+    "providers": {
+      "github": "GitHub",
+      "gitlab": "GitLab"
+    },
+    "github_integration": {
+      "title": "GitHub 계정을 연결하세요",
+      "description": "사이트핀은 프로젝트에 대한 분기를 만들고 콘텐츠를 동기화하려면 액세스 권한이 필요합니다.",
+      "allow_all_repos": "모든 저장소를 선택하겠습니다",
+      "connect_btn": "Github에 연결",
+      "grant_access_link": "모든 저장소에 대한 액세스 권한을 부여하지는 않겠습니다",
+      "selective_title": "선택적 저장소 액세스",
+      "selective_desc1": "선택적 저장소 액세스를 선택하면 자동으로 저장소를 생성할 수 없습니다.",
+      "selective_desc2": "걱정 마세요! 다음 단계에 따라 수동으로 시작할 수도 있습니다.",
+      "step_download": "템플릿을 수동으로 다운로드합니다.",
+      "step_fork": "저장소를 수동으로 포크합니다.",
+      "step_push": "소스 코드를 GitHub 저장소에 푸시합니다.",
+      "step_go_to": "사이트핀으로 이동",
+      "step_new_site": "오른쪽 상단에서 + 새 사이트 버튼을 클릭합니다.",
+      "step_grant_access": "GitHub를 선택하고 리포지토리에 대한 액세스 권한을 부여합니다.",
+      "step_grant_forked": "GitHub를 선택하고 포크된 저장소에만 액세스 권한을 부여하세요.",
+      "step_final": "필요한 세부 사항을 입력하고 사이트 만들기를 누르세요.",
+      "revoke_access": "GitHub 설정에서 언제든지 액세스를 취소할 수 있습니다",
+      "watch_tutorial": "빠른 튜토리얼 보기",
+      "close": "닫다"
+    }
+  }
+}

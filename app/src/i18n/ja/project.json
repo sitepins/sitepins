@@ -1,0 +1,131 @@
+{
+  "project": {
+    "activity": {
+      "recent_file_changes": "最近のファイル変更",
+      "latest_activity": "あなたまたはチームの最新アクティビティ",
+      "updated": "更新",
+      "created": "作成",
+      "deleted": "削除",
+      "renamed": "名前変更済み",
+      "duplicated": "複製済み",
+      "no_more": "これ以上なし",
+      "load_more": "さらに読み込む"
+    },
+    "branching": {
+      "incoming_request": "{provider} リクエストの受信",
+      "merge": "マージ",
+      "details": "詳細",
+      "changes_detected": "変更を検出しました",
+      "view_request": "リクエストを見る",
+      "create_request": "{provider} リクエストを作成",
+      "title": "タイトル",
+      "description_optional": "説明（任意）",
+      "placeholder_title": "機能のタイトル",
+      "placeholder_description": "変更内容を説明してください...",
+      "merge_into": "{head} を {base} にマージ",
+      "merge_description": "{head} から {base} に変更をマージ",
+      "success_created": "{type} が正常に作成されました！",
+      "success_merged": "{branch} が正常にマージされました！",
+      "error_create": "{type} の作成に失敗しました",
+      "error_merge": "マージに失敗しました",
+      "permission_error_title": "GitHub App の権限エラー",
+      "permission_error_description": "GitHub App に「プルリクエスト：書き込み」権限が必要です。GitHub の設定で新しい権限を承認してください。",
+      "review": "レビュー",
+      "switcher": {
+        "placeholder": "ブランチを検索...",
+        "no_results": "ブランチが見つかりません。",
+        "default": "デフォルト",
+        "create_new": "新しいブランチを作成"
+      },
+      "create": {
+        "title": "新しいブランチを作成",
+        "desc": "<branch>{branchName}</branch> から新しいブランチを作成",
+        "label": "ブランチ名",
+        "placeholder": "例：staging",
+        "submit": "ブランチを作成",
+        "error": {
+          "required": "ブランチ名は必須です",
+          "sha": "ベースブランチの SHA が見つかりませんでした",
+          "failed": "新しいブランチの作成に失敗しました"
+        },
+        "success": "ブランチ「{name}」が正常に作成されました！"
+      },
+      "status": {
+        "on_default": "デフォルトブランチ（{branch}）を使用中です",
+        "ahead": "{branch} は {base} より先行しています。"
+      }
+    },
+    "git": {
+      "recent_activities": "最近の Git アクティビティ",
+      "recent_commits": "リポジトリへの最近のコミット",
+      "revert": "リバート",
+      "reset": "リセット",
+      "commit": "コミット",
+      "restore_version": "バージョンを復元",
+      "undo_commit": "コミットを取り消す",
+      "admin_only": "この操作は管理者とオーナーのみが実行できます",
+      "restore_title": "このバージョンに復元",
+      "restore_description_github": "サイトがこの時点の状態に完全に戻ります。このバージョン以降に加えた変更はすべて削除されます。",
+      "restore_description_gitlab": "サイトをこの時点の状態に戻します。履歴を安全に保つために新しい更新が作成されます。",
+      "restore_warning_github": "⚠️ 警告：これは恒久的な変更です。このブランチから新しいすべての更新が削除されます。最近の作業を完全に破棄する場合のみ使用してください。",
+      "restore_warning_gitlab": "✓ 安全です。最近の作業は削除されません。この古いバージョンに基づいた新しいバージョンが作成されます。",
+      "undo_title": "このコミットを取り消す",
+      "undo_description": "この特定のバージョンで変更されたすべてを元に戻す新しい更新が作成されます。",
+      "undo_warning": "✓ 安全です！これらの特定の変更をキャンセルする新しいバージョンが履歴に追加され、他のすべては元のまま保持されます。",
+      "feedback": {
+        "reset_success": "ブランチが {sha} に正常にリセットされました！",
+        "revert_success": "コミットがリバートされました！新しいコミット：{sha}",
+        "revert_failed": "リバートに失敗しました"
+      },
+      "actions": {
+        "restoring": "復元中",
+        "undoing": "取り消し中",
+        "confirm_restore": "復元の確認",
+        "confirm_undo": "取り消しの確認"
+      },
+      "commit_messages": {
+        "add_file": "{name} を追加",
+        "rename_file": "ファイル {name} の名前を変更",
+        "delete_file": "ファイル {name} を削除",
+        "duplicate_file": "ファイル {name} を複製",
+        "create_schema": "Schema {name} を作成",
+        "update_schema": "Schema {name} を更新",
+        "delete_schema": "Schema {name} を削除",
+        "update_config": "サイト設定を更新"
+      }
+    },
+    "setup-steps": {
+      "getting_started": "はじめに",
+      "description": "これらのステップを完了して Sitepins をセットアップし、最初のコンテンツを公開しましょう",
+      "progress": "進捗",
+      "progress_count": "{total} 中 {completed} 完了",
+      "steps": {
+        "add_site": {
+          "title": "新しいサイトを追加",
+          "description": "サイトが作成され、設定の準備ができています"
+        },
+        "configure_project": {
+          "title": "プロジェクトを設定",
+          "description": "リポジトリの構造（コンテンツフォルダー、メディアルートなど）を設定してください"
+        },
+        "publish_content": {
+          "title": "最初のコンテンツを公開",
+          "description": "左パネルから最初のコンテンツを公開してください"
+        },
+        "deploy_site": {
+          "title": "サイトをデプロイ",
+          "description": "初めて Vercel にサイトをデプロイしてください"
+        }
+      },
+      "edit_config": "プロジェクト設定を編集",
+      "deploy_to_vercel": "Vercel にデプロイ",
+      "login_signup": "ログインまたは新規登録",
+      "create_account": "アカウントを作成",
+      "deploy_repo": "リポジトリをデプロイ",
+      "one_click": "ワンクリックで",
+      "or": "または",
+      "already_deployed": "すでにデプロイ済みですか？今すぐ URL を入力してください",
+      "vercel_host": "Vercel でサイトをホスト"
+    }
+  }
+}

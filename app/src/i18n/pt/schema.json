@@ -1,0 +1,119 @@
+{
+  "schema": {
+    "types": {
+      "string": "Texto",
+      "number": "Número",
+      "boolean": "Booleano",
+      "media": "Mídia",
+      "gallery": "Galeria",
+      "array": "Matriz",
+      "date": "Data",
+      "object": "Objeto"
+    },
+    "fields": {
+      "label": "Rótulo",
+      "name": "Nome",
+      "type": "Tipo de Campo",
+      "placeholder": {
+        "type": "Escolha o tipo",
+        "label": "ex., Título",
+        "name": "auto_generated"
+      },
+      "description": "Descrição",
+      "default_value": "Valor Padrão",
+      "boolean": {
+        "true": "Verdadeiro",
+        "false": "Falso"
+      },
+      "input_style": {
+        "label": "Estilo de Entrada",
+        "placeholder": "Escolha o estilo de entrada",
+        "options": {
+          "standard_text": "Caixa de Texto Padrão",
+          "standard_table": "Tabela Padrão",
+          "dropdown": "Seleção em Dropdown",
+          "multi_dropdown": "Dropdown Multi-seleção"
+        }
+      }
+    },
+    "configuration": {
+      "title": "Configuração de Campo",
+      "dropdown": {
+        "title": "Configuração de Dropdown",
+        "multi_title": "Configuração Multi-seleção",
+        "source": "Fonte",
+        "source_placeholder": "Escolha a fonte",
+        "sources": {
+          "static": "Opções Estáticas",
+          "folder": "Arquivos da Pasta",
+          "file": "Dados do Arquivo"
+        },
+        "static": {
+          "placeholder": "Insira o valor da opção"
+        },
+        "folder": {
+          "path": "Caminho da Pasta",
+          "path_placeholder": "Selecione uma pasta",
+          "display_field": "Campo de Exibição (Chave Frontmatter)",
+          "field_placeholder": "ex. título (padrão para nome do arquivo)",
+          "loading_fields": "Carregando campos...",
+          "default_field": "nome do arquivo (padrão)",
+          "include_pattern": "Incluir Padrão (Glob)",
+          "include_placeholder": "ex. *.md",
+          "exclude_pattern": "Excluir Padrão (Glob)",
+          "exclude_placeholder": "ex. index.md"
+        },
+        "file": {
+          "path": "Caminho do Arquivo (JSON/YAML/TOML)",
+          "path_placeholder": "Selecione um arquivo",
+          "data_key": "Chave de Dados (Campo a Extrair)",
+          "key_placeholder": "ex. categorias ou nome",
+          "default_key": "Extrair arquivo/matriz inteira"
+        }
+      }
+    },
+    "array": {
+      "label": "Matriz de",
+      "placeholder": "Escolha o subtipo"
+    },
+    "nested": {
+      "title": "Campos aninhados",
+      "add_button": "Adicionar campo aninhado"
+    },
+    "date": {
+      "default_value": "Valor Padrão",
+      "mode_placeholder": "Escolha o modo",
+      "static": "Data Fixa",
+      "dynamic": "Data Atual (Ao Vivo)",
+      "empty": "Vazio",
+      "select_initial": "Selecionar Data Inicial",
+      "today": "Hoje"
+    },
+    "actions": {
+      "add_option": "Adicionar Opção",
+      "add_field": "Adicionar Campo",
+      "update_field": "Atualizar Campo",
+      "enter_option": "Insira a opção",
+      "include": "Incluir",
+      "ignore": "Ignorar"
+    },
+    "builder": {
+      "add_new_field": "Adicionar Novo Campo",
+      "configure_properties": "Configure as propriedades do novo campo",
+      "field_settings": "Configurações de Campo",
+      "required": "Requerido",
+      "show": "Mostrar",
+      "hide": "Ocultar",
+      "no_field_selected": "Nenhum campo selecionado",
+      "select_to_edit": "Selecione um campo da lista para editar suas configurações",
+      "no_fields": "Nenhum campo ainda",
+      "add_first_field": "Adicione seu primeiro campo abaixo",
+      "back_to_fields": "Voltar para campos",
+      "field_count": "{count, plural, =0 {0 campos} one {1 campo} other {# campos}}"
+    },
+    "errors": {
+      "name_required": "O nome do campo é obrigatório",
+      "name_exists": "O nome do campo já existe"
+    }
+  }
+}

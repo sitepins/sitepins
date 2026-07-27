@@ -1,0 +1,19 @@
+{
+  "cSpell.words": [
+    "atrule",
+    "colour",
+    "colours",
+    "filedir",
+    "Invisibles",
+    "lucide",
+    "Sitepins",
+    "sonner",
+    "tanstack",
+    "uuidv",
+    "webp"
+  ],
+  "files.associations": {
+    "*.mdx": "markdown"
+  },
+  "tailwindCSS.experimental.configFile": "src/styles/main.css"
+}

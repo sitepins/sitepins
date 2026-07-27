@@ -1,0 +1,52 @@
+/* define font family into layout.tsx */
+
+/* font size and radius */
+:root {
+  --font-base: 16;
+  --font-scale: 1.125;
+  --radius: 0.375rem;
+}
+
+/* default colors */
+:root {
+  --body-color: #ffffff;
+  --primary-color: #171717;
+  --border-color: #e5e5e5;
+  --light-color: #f5f5f5;
+  --white-color: #ffffff;
+  --black-color: #000000;
+  --accent-color: #358df5;
+  --muted-color: #f5f5f5;
+  --danger-color: #da2f35;
+  --success-color: #008236;
+  --warning-color: #f59e42;
+  --ring-color: oklch(0.71 0 0);
+  --input-color: oklch(0.92 0 0);
+
+  --text-default-color: #262626;
+  --text-dark-color: #0a0a0a;
+  --text-muted-color: #737373;
+  --text-white-color: #ffffff;
+}
+
+/* darkmode colors */
+.dark {
+  --body-color: #1c1c1c;
+  --primary-color: #e5e5e5;
+  --border-color: #303030;
+  --light-color: #212121;
+  --white-color: #000000;
+  --black-color: #ffffff;
+  --accent-color: #5b7be4;
+  --muted-color: #262626;
+  --danger-color: #f84747;
+  --success-color: #059d44;
+  --warning-color: #de9400;
+  --ring-color: oklch(0.56 0 0);
+  --input-color: oklch(1 0 0 / 0.15);
+
+  --text-default-color: #d4d4d4;
+  --text-dark-color: #fafafa;
+  --text-muted-color: #888888;
+  --text-white-color: #000000;
+}

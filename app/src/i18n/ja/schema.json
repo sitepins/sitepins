@@ -1,0 +1,119 @@
+{
+  "schema": {
+    "types": {
+      "string": "文字列",
+      "number": "数値",
+      "boolean": "真偽値",
+      "media": "メディア",
+      "gallery": "ギャラリー",
+      "array": "配列",
+      "date": "日付",
+      "object": "オブジェクト"
+    },
+    "fields": {
+      "label": "ラベル",
+      "name": "名前",
+      "type": "フィールドタイプ",
+      "placeholder": {
+        "type": "タイプを選択",
+        "label": "例：タイトル",
+        "name": "auto_generated"
+      },
+      "description": "説明",
+      "default_value": "デフォルト値",
+      "boolean": {
+        "true": "True",
+        "false": "False"
+      },
+      "input_style": {
+        "label": "入力スタイル",
+        "placeholder": "入力スタイルを選択",
+        "options": {
+          "standard_text": "標準テキストボックス",
+          "standard_table": "標準テーブル",
+          "dropdown": "ドロップダウン選択",
+          "multi_dropdown": "複数選択ドロップダウン"
+        }
+      }
+    },
+    "configuration": {
+      "title": "フィールド設定",
+      "dropdown": {
+        "title": "ドロップダウン設定",
+        "multi_title": "複数選択設定",
+        "source": "ソース",
+        "source_placeholder": "ソースを選択",
+        "sources": {
+          "static": "静的オプション",
+          "folder": "フォルダーのファイル",
+          "file": "ファイルのデータ"
+        },
+        "static": {
+          "placeholder": "オプション値を入力"
+        },
+        "folder": {
+          "path": "フォルダーパス",
+          "path_placeholder": "フォルダーを選択",
+          "display_field": "表示フィールド（Frontmatter キー）",
+          "field_placeholder": "例：title（デフォルトはファイル名）",
+          "loading_fields": "フィールドを読み込み中...",
+          "default_field": "ファイル名（デフォルト）",
+          "include_pattern": "含むパターン（Glob）",
+          "include_placeholder": "例：*.md",
+          "exclude_pattern": "除外パターン（Glob）",
+          "exclude_placeholder": "例：index.md"
+        },
+        "file": {
+          "path": "ファイルパス（JSON/YAML/TOML）",
+          "path_placeholder": "ファイルを選択",
+          "data_key": "データキー（抽出するフィールド）",
+          "key_placeholder": "例：categories または name",
+          "default_key": "ファイル/配列全体を抽出"
+        }
+      }
+    },
+    "array": {
+      "label": "配列の要素",
+      "placeholder": "サブタイプを選択"
+    },
+    "nested": {
+      "title": "ネストされたフィールド",
+      "add_button": "ネストされたフィールドを追加"
+    },
+    "date": {
+      "default_value": "デフォルト値",
+      "mode_placeholder": "モードを選択",
+      "static": "固定日付",
+      "dynamic": "現在日付（ライブ）",
+      "empty": "空",
+      "select_initial": "初期日付を選択",
+      "today": "今日"
+    },
+    "actions": {
+      "add_option": "オプションを追加",
+      "add_field": "フィールドを追加",
+      "update_field": "フィールドを更新",
+      "enter_option": "オプションを入力",
+      "include": "含む",
+      "ignore": "無視"
+    },
+    "builder": {
+      "add_new_field": "新しいフィールドを追加",
+      "configure_properties": "新しいフィールドのプロパティを設定",
+      "field_settings": "フィールド設定",
+      "required": "必須",
+      "show": "表示",
+      "hide": "非表示",
+      "no_field_selected": "フィールドが選択されていません",
+      "select_to_edit": "リストからフィールドを選択して設定を編集してください",
+      "no_fields": "フィールドがまだありません",
+      "add_first_field": "以下から最初のフィールドを追加してください",
+      "back_to_fields": "フィールドに戻る",
+      "field_count": "{count, plural, =0 {0 フィールド} other {# フィールド}}"
+    },
+    "errors": {
+      "name_required": "フィールド名は必須です",
+      "name_exists": "フィールド名がすでに存在します"
+    }
+  }
+}

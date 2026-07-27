@@ -1,0 +1,7 @@
+{
+  "not-found": {
+    "not_found": "Página no encontrada",
+    "not_found_description": "La página que buscas no existe.",
+    "go_home": "Ir a inicio"
+  }
+}

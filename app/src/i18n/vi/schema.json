@@ -1,0 +1,119 @@
+{
+  "schema": {
+    "types": {
+      "string": "Chuỗi",
+      "number": "Số",
+      "boolean": "Boolean",
+      "media": "Truyền thông",
+      "gallery": "Thư viện ảnh",
+      "array": "Mảng",
+      "date": "Ngày",
+      "object": "Đối tượng"
+    },
+    "fields": {
+      "label": "Nhãn",
+      "name": "Tên",
+      "type": "Loại trường",
+      "placeholder": {
+        "type": "Chọn loại",
+        "label": "ví dụ: Tiêu đề",
+        "name": "được tạo tự động"
+      },
+      "description": "Mô tả",
+      "default_value": "Giá trị mặc định",
+      "boolean": {
+        "true": "Đúng",
+        "false": "Sai"
+      },
+      "input_style": {
+        "label": "Kiểu nhập liệu",
+        "placeholder": "Chọn kiểu nhập",
+        "options": {
+          "standard_text": "Hộp văn bản chuẩn",
+          "standard_table": "Bàn Tiêu Chuẩn",
+          "dropdown": "Lựa chọn thả xuống",
+          "multi_dropdown": "Thả xuống nhiều lựa chọn"
+        }
+      }
+    },
+    "configuration": {
+      "title": "Cấu hình trường",
+      "dropdown": {
+        "title": "Cấu hình thả xuống",
+        "multi_title": "Cấu hình chọn nhiều",
+        "source": "Nguồn",
+        "source_placeholder": "Chọn nguồn",
+        "sources": {
+          "static": "Tùy chọn tĩnh",
+          "folder": "Tệp từ Thư mục",
+          "file": "Dữ liệu từ Tệp"
+        },
+        "static": {
+          "placeholder": "Nhập giá trị tùy chọn"
+        },
+        "folder": {
+          "path": "Đường dẫn thư mục",
+          "path_placeholder": "Chọn thư mục",
+          "display_field": "Trường hiển thị (Khóa Frontmatter)",
+          "field_placeholder": "ví dụ. tiêu đề (mặc định là tên tệp)",
+          "loading_fields": "Đang tải các trường...",
+          "default_field": "tên tệp (mặc định)",
+          "include_pattern": "Bao gồm mẫu (Toàn cầu)",
+          "include_placeholder": "ví dụ. *.md",
+          "exclude_pattern": "Mẫu loại trừ (Toàn cầu)",
+          "exclude_placeholder": "ví dụ. index.md"
+        },
+        "file": {
+          "path": "Đường dẫn Tệp (JSON/YAML/TOML)",
+          "path_placeholder": "Chọn một tập tin",
+          "data_key": "Khóa dữ liệu (Trường cần trích xuất)",
+          "key_placeholder": "ví dụ. danh mục hoặc tên",
+          "default_key": "Trích xuất toàn bộ tập tin/mảng"
+        }
+      }
+    },
+    "array": {
+      "label": "Mảng",
+      "placeholder": "Chọn kiểu con"
+    },
+    "nested": {
+      "title": "Các trường lồng nhau",
+      "add_button": "Thêm trường lồng nhau"
+    },
+    "date": {
+      "default_value": "Giá trị mặc định",
+      "mode_placeholder": "Chọn chế độ",
+      "static": "Ngày cố định",
+      "dynamic": "Ngày Hiện Tại (Trực Tiếp)",
+      "empty": "Trống",
+      "select_initial": "Chọn ngày bắt đầu",
+      "today": "Hôm nay"
+    },
+    "actions": {
+      "add_option": "Thêm tùy chọn",
+      "add_field": "Thêm trường",
+      "update_field": "Trường cập nhật",
+      "enter_option": "Nhập tùy chọn",
+      "include": "Bao gồm",
+      "ignore": "Bỏ qua"
+    },
+    "builder": {
+      "add_new_field": "Thêm trường mới",
+      "configure_properties": "Định cấu hình thuộc tính trường mới",
+      "field_settings": "Cài đặt trường",
+      "required": "Bắt buộc",
+      "show": "Hiển thị",
+      "hide": "Ẩn",
+      "no_field_selected": "Không có trường nào được chọn",
+      "select_to_edit": "Chọn một trường từ danh sách để chỉnh sửa cài đặt của nó",
+      "no_fields": "Chưa có trường nào",
+      "add_first_field": "Thêm trường đầu tiên của bạn bên dưới",
+      "back_to_fields": "Quay lại trường",
+      "field_count": "{đếm, số nhiều, =0 {0 trường} một {1 trường} {# trường khác}}"
+    },
+    "errors": {
+      "name_required": "Tên trường là bắt buộc",
+      "name_exists": "Tên trường đã tồn tại"
+    }
+  }
+}

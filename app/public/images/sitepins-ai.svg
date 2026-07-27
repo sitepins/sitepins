@@ -1,0 +1,49 @@
+<svg width="35" height="35" viewBox="80 80 240 240" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="paint0_linear" x1="118.487" y1="30.5618" x2="7.496" y2="115.075" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#5D5FE5"/>
+      <stop offset="1" stop-color="#5ECFF9"/>
+    </linearGradient>
+    
+    <!-- Define the exact shape from your SVG -->
+    <g id="originalShape">
+      <path d="M107.803 33.5158C95.4224 13.2127 68.7928 7.34192 50.339 22.5081C36.557 34.005 34.9219 51.3728 34.9219 68.4959C34.9219 90.7559 34.9219 112.771 34.9219 135.031L58.2812 118.153C58.2812 98.5835 56.4124 78.0359 58.5148 58.7112C59.4491 50.8835 62.7194 41.3435 70.4279 38.4081C79.7716 34.7389 89.1154 42.8112 90.7505 52.3512C92.8529 65.0712 81.874 70.6974 75.3334 79.0143C68.3256 87.8205 66.9241 99.8066 68.5592 110.814C81.1732 101.519 96.1232 94.6697 105.934 81.7051C116.212 67.5174 116.679 48.4373 107.803 33.5158C115.044 45.502 100.094 21.0404 107.803 33.5158ZM109.204 72.4096C109.438 71.9204 110.139 70.2081 109.204 72.4096C109.204 72.4096 109.438 72.165 109.204 72.4096Z" 
+            fill="url(#paint0_linear)"/>
+    </g>
+  </defs>
+  
+  <!-- Center the arrangement and scale down to fit -->
+  <g transform="translate(200,200) scale(0.6)">
+    
+    <!-- Shape 1 (0 degrees) -->
+    <g transform="rotate(0) translate(0,-75) translate(-74.5,-74.5)">
+      <use href="#originalShape"/>
+    </g>
+    
+    <!-- Shape 2 (60 degrees) -->
+    <g transform="rotate(60) translate(0,-75) translate(-74.5,-74.5)">
+      <use href="#originalShape"/>
+    </g>
+    
+    <!-- Shape 3 (120 degrees) -->
+    <g transform="rotate(120) translate(0,-75) translate(-74.5,-74.5)">
+      <use href="#originalShape"/>
+    </g>
+    
+    <!-- Shape 4 (180 degrees) -->
+    <g transform="rotate(180) translate(0,-75) translate(-74.5,-74.5)">
+      <use href="#originalShape"/>
+    </g>
+    
+    <!-- Shape 5 (240 degrees) -->
+    <g transform="rotate(240) translate(0,-75) translate(-74.5,-74.5)">
+      <use href="#originalShape"/>
+    </g>
+    
+    <!-- Shape 6 (300 degrees) -->
+    <g transform="rotate(300) translate(0,-75) translate(-74.5,-74.5)">
+      <use href="#originalShape"/>
+    </g>
+    
+  </g>
+</svg>

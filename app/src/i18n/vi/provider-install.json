@@ -1,0 +1,35 @@
+{
+  "provider-install": {
+    "authenticating_aria": "Đang xác thực",
+    "request_title": "Yêu cầu cài đặt đã được gửi",
+    "auth_title": "Xác thực bằng {provider}",
+    "request_description": "Yêu cầu cài đặt đã được gửi đến chủ sở hữu của tổ chức. Họ sẽ nhận được thông báo và có thể phê duyệt quyền truy cập vào kho lưu trữ.",
+    "auth_description": "Chúng tôi đang hoàn tất xác thực bằng {provider} . Cửa sổ này sẽ tự động đóng khi hoàn tất.",
+    "manual_close_hint": "Nếu cửa sổ này không đóng, bạn có thể đóng nó bằng tay một cách an toàn.",
+    "providers": {
+      "github": "GitHub",
+      "gitlab": "GitLab"
+    },
+    "github_integration": {
+      "title": "Kết nối tài khoản GitHub của bạn",
+      "description": "Sitepins cần quyền truy cập để tạo nhánh và đồng bộ hóa nội dung cho dự án của bạn.",
+      "allow_all_repos": "Tôi sẽ chọn tất cả các kho lưu trữ",
+      "connect_btn": "Kết nối với Github",
+      "grant_access_link": "Tôi sẽ không cấp quyền truy cập vào tất cả các kho lưu trữ",
+      "selective_title": "Truy cập kho lưu trữ có chọn lọc",
+      "selective_desc1": "Nếu bạn chọn quyền truy cập kho lưu trữ có chọn lọc, chúng tôi sẽ không thể tự động tạo kho lưu trữ cho bạn.",
+      "selective_desc2": "Đừng lo lắng! Bạn vẫn có thể bắt đầu thủ công bằng cách làm theo các bước sau:",
+      "step_download": "Tải xuống mẫu theo cách thủ công.",
+      "step_fork": "Phân nhánh thủ công kho lưu trữ.",
+      "step_push": "Đẩy mã nguồn vào kho lưu trữ GitHub của bạn.",
+      "step_go_to": "Đi tới Ghim trang web",
+      "step_new_site": "Nhấp vào nút + Trang web mới từ trên cùng bên phải.",
+      "step_grant_access": "Chọn GitHub và cấp quyền truy cập vào kho lưu trữ của bạn.",
+      "step_grant_forked": "Chọn GitHub và chỉ cấp quyền truy cập vào kho lưu trữ phân nhánh của bạn.",
+      "step_final": "Điền các chi tiết cần thiết và nhấn Tạo trang web.",
+      "revoke_access": "Quyền truy cập có thể bị thu hồi bất cứ lúc nào trong cài đặt GitHub",
+      "watch_tutorial": "Xem hướng dẫn nhanh",
+      "close": "Đóng"
+    }
+  }
+}

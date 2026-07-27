@@ -1,0 +1,64 @@
+# One-command local/self-hosted stack: MongoDB + API + web.
+#
+#   cp api/.env.example api/.env      # fill in secrets + media bucket
+#   cp app/.env.example app/.env
+#   docker compose up --build
+#
+# Web:  http://localhost:3000
+# API:  http://localhost:4000  (health: /healthz)
+#
+# Media storage (S3-compatible) still has to be configured in api/.env —
+# see the README. MongoDB runs in the `mongo` service below.
+
+services:
+  mongo:
+    image: mongo:7
+    restart: unless-stopped
+    volumes:
+      - mongo-data:/data/db
+    ports:
+      - "27017:27017"
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: .
+      dockerfile: api/Dockerfile
+    restart: unless-stopped
+    env_file:
+      - api/.env
+    environment:
+      # Point the API at the compose Mongo unless api/.env overrides it.
+      MONGO_URI: ${MONGO_URI:-mongodb://mongo:27017/sitepins}
+      NODE_ENV: production
+      PORT: "4000"
+    depends_on:
+      mongo:
+        condition: service_healthy
+    ports:
+      - "4000:4000"
+
+  web:
+    build:
+      context: .
+      dockerfile: app/Dockerfile
+      args:
+        NEXT_PUBLIC_BACKEND_URL: ${NEXT_PUBLIC_BACKEND_URL:-http://localhost:4000}
+        NEXT_PUBLIC_HP_WS_URL: ${NEXT_PUBLIC_HP_WS_URL:-ws://localhost:4000/api/v1/editor/collab}
+        NEXT_PUBLIC_BUCKET_URL: ${NEXT_PUBLIC_BUCKET_URL:-}
+        NEXT_PUBLIC_BRAND_NAME: ${NEXT_PUBLIC_BRAND_NAME:-Sitepins}
+        NEXT_PUBLIC_BRAND_URL: ${NEXT_PUBLIC_BRAND_URL:-https://sitepins.com}
+    restart: unless-stopped
+    env_file:
+      - app/.env
+    depends_on:
+      - api
+    ports:
+      - "3000:3000"
+
+volumes:
+  mongo-data:

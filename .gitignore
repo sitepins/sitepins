@@ -1,0 +1,24 @@
+# dependencies
+node_modules/
+
+# builds
+.next/
+dist/
+out/
+*.tsbuildinfo
+
+# env
+.env
+.env.*
+!.env.example
+
+# misc
+.DS_Store
+*.log
+.vercel
+.turbo
+
+# agent tooling
+.agents/
+CLAUDE.md
+AGENTS.md

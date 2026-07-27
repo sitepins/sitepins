@@ -1,0 +1,19 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@plugin "@tailwindcss/forms";
+@plugin "@tailwindcss/typography";
+
+@import "./theme.css";
+@import "./variables.css";
+@import "./utilities.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@layer base {
+  @import "./base.css";
+}
+
+@layer components {
+  @import "./navigation.css";
+  @import "./components.css";
+}

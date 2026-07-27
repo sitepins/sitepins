@@ -1,0 +1,35 @@
+{
+  "provider-install": {
+    "authenticating_aria": "Authentifizierung läuft",
+    "request_title": "Installationsanfrage gesendet",
+    "auth_title": "Authentifizierung mit {provider}",
+    "request_description": "Eine Installationsanfrage wurde an den Eigentümer der Organisation gesendet. Er erhält eine Benachrichtigung und kann den Zugriff auf Repositories genehmigen.",
+    "auth_description": "Wir schließen die Authentifizierung mit {provider} ab. Dieses Fenster schließt sich automatisch, sobald der Vorgang abgeschlossen ist.",
+    "manual_close_hint": "Wenn sich dieses Fenster nicht schließt, kannst du es sicher manuell schließen.",
+    "providers": {
+      "github": "GitHub",
+      "gitlab": "GitLab"
+    },
+    "github_integration": {
+      "title": "Verbinde dein GitHub-Konto",
+      "description": "Sitepins benötigt Zugriff, um Branches zu erstellen und Inhalte für deine Projekte zu synchronisieren.",
+      "allow_all_repos": "Ich werde alle Repositories auswählen",
+      "connect_btn": "Mit GitHub verbinden",
+      "grant_access_link": "Ich werde nicht allen Repositories Zugriff gewähren",
+      "selective_title": "Selektiver Repository-Zugriff",
+      "selective_desc1": "Wenn du selektiven Repository-Zugriff wählst, können wir nicht automatisch ein Repository für dich erstellen.",
+      "selective_desc2": "Kein Problem! Du kannst trotzdem manuell starten, indem du diese Schritte befolgst:",
+      "step_download": "Die Vorlage manuell herunterladen.",
+      "step_fork": "Das Repository manuell forken.",
+      "step_push": "Den Quellcode in dein GitHub-Repository pushen.",
+      "step_go_to": "Zu Sitepins gehen",
+      "step_new_site": "Oben rechts auf die Schaltfläche + New Site klicken.",
+      "step_grant_access": "GitHub auswählen und Zugriff auf dein Repository gewähren.",
+      "step_grant_forked": "GitHub auswählen und Zugriff nur auf dein geforktes Repository gewähren.",
+      "step_final": "Erforderliche Details ausfüllen und auf Create Site klicken.",
+      "revoke_access": "Der Zugriff kann jederzeit in den GitHub-Einstellungen widerrufen werden",
+      "watch_tutorial": "Kurzes Tutorial ansehen",
+      "close": "Schließen"
+    }
+  }
+}

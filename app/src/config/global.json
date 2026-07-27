@@ -1,0 +1,81 @@
+{
+  "site": {
+    "title": "Sitepins",
+    "favicon": "/images/favicon.png",
+    "logo": "/images/logo.svg",
+    "logo_darkmode": "/images/logo-white.svg",
+    "logo_width": "136",
+    "logo_height": "40",
+    "logo_text": "Sitepins"
+  },
+  "pagination": {
+    "file_limit": 20,
+    "media_limit": 24
+  },
+  "allowExtensions": [
+    ".md",
+    ".mdx",
+    ".json",
+    ".jsonc",
+    ".yml",
+    ".yaml",
+    ".toml"
+  ],
+  "frameworks": {
+    "tanstack": {
+      "configFiles": [
+        "vite.config.ts",
+        "vite.config.js",
+        "vite.config.mjs",
+        "vite.config.mts",
+        "rsbuild.config.ts",
+        "rsbuild.config.js",
+        "rsbuild.config.mjs",
+        "app.config.ts",
+        "app.config.js",
+        "app.config.mjs"
+      ],
+      "requireAll": [
+        [
+          "src/routeTree.gen.ts",
+          "routeTree.gen.ts",
+          "app/routeTree.gen.ts",
+          "src/routes/__root.tsx",
+          "src/routes/__root.jsx",
+          "src/routes/__root.ts",
+          "app/routes/__root.tsx",
+          "routes/__root.tsx"
+        ]
+      ],
+      "packageDependencies": [
+        "@tanstack/react-start",
+        "@tanstack/solid-start",
+        "@tanstack/start"
+      ],
+      "matchNested": true
+    },
+    "nextjs": {
+      "configFiles": ["next.config.js", "next.config.mjs", "next.config.ts"],
+      "packageDependencies": ["next"]
+    },
+    "astro": {
+      "configFiles": ["astro.config.mjs", "astro.config.js", "astro.config.ts"],
+      "packageDependencies": ["astro"]
+    },
+    "hugo": {
+      "configFiles": [
+        "config.toml",
+        "config.yaml",
+        "config.yml",
+        "hugo.toml",
+        "hugo.yaml",
+        "hugo.json"
+      ],
+      "matchNested": true,
+      "variant": {
+        "name": "hugo_examplesite",
+        "whenPathStartsWith": ["exampleSite/", "./exampleSite/"]
+      }
+    }
+  }
+}

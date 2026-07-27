@@ -1,0 +1,131 @@
+{
+  "project": {
+    "activity": {
+      "recent_file_changes": "Последние изменения файлов",
+      "latest_activity": "Последняя активность вас или вашей команды",
+      "updated": "Обновлено",
+      "created": "Создано",
+      "deleted": "Удалено",
+      "renamed": "Переименовано",
+      "duplicated": "Дублировано",
+      "no_more": "Больше нет",
+      "load_more": "Загрузить ещё"
+    },
+    "branching": {
+      "incoming_request": "Входящий запрос {provider}",
+      "merge": "Слить",
+      "details": "Детали",
+      "changes_detected": "Обнаружены изменения",
+      "view_request": "Просмотр запроса",
+      "create_request": "Создать запрос {provider}",
+      "title": "Заголовок",
+      "description_optional": "Описание (необязательно)",
+      "placeholder_title": "Название функции",
+      "placeholder_description": "Опишите ваши изменения...",
+      "merge_into": "Слить {head} в {base}",
+      "merge_description": "Слить изменения из {head} в {base}",
+      "success_created": "{type} успешно создан!",
+      "success_merged": "{branch} успешно слит!",
+      "error_create": "Не удалось создать {type}",
+      "error_merge": "Не удалось выполнить слияние",
+      "permission_error_title": "Ошибка разрешений GitHub App",
+      "permission_error_description": "Вашему GitHub App требуется разрешение «Pull requests: Write». Примите новые разрешения в настройках GitHub.",
+      "review": "Проверка",
+      "switcher": {
+        "placeholder": "Поиск ветки...",
+        "no_results": "Ветки не найдены.",
+        "default": "по умолчанию",
+        "create_new": "Создать новую ветку"
+      },
+      "create": {
+        "title": "Создать новую ветку",
+        "desc": "Создать новую ветку из <branch>{branchName}</branch>",
+        "label": "Название ветки",
+        "placeholder": "например, staging",
+        "submit": "Создать ветку",
+        "error": {
+          "required": "Название ветки обязательно",
+          "sha": "Не удалось найти SHA базовой ветки",
+          "failed": "Не удалось создать новую ветку"
+        },
+        "success": "Ветка {name} успешно создана!"
+      },
+      "status": {
+        "on_default": "Вы находитесь на ветке по умолчанию: {branch}",
+        "ahead": "{branch} опережает {base}."
+      }
+    },
+    "git": {
+      "recent_activities": "Последние действия Git",
+      "recent_commits": "Последние коммиты в ваш репозиторий",
+      "revert": "Откатить",
+      "reset": "Сбросить",
+      "commit": "Коммит",
+      "restore_version": "Восстановить версию",
+      "undo_commit": "Отменить коммит",
+      "admin_only": "Это действие могут выполнять только администраторы и владельцы",
+      "restore_title": "Восстановить до этой версии",
+      "restore_description_github": "Это вернёт сайт к тому виду, каким он был в этот момент. Все изменения, сделанные после этой версии, будут удалены.",
+      "restore_description_gitlab": "Это вернёт сайт к тому виду, каким он был в этот момент. Мы создадим новое обновление, чтобы история оставалась безопасной.",
+      "restore_warning_github": "⚠️ Внимание: это необратимое изменение. Все более новые обновления будут удалены из этой ветки. Используйте только если хотите полностью отказаться от последних изменений.",
+      "restore_warning_gitlab": "✓ Это безопасно. Ваши последние изменения не будут удалены; мы просто создадим новую версию на основе старой.",
+      "undo_title": "Отменить этот коммит",
+      "undo_description": "Это создаст новое обновление, которое отменит все изменения из этой конкретной версии.",
+      "undo_warning": "✓ Это безопасно! Мы добавим новую версию в историю, которая отменит эти конкретные изменения, сохраняя всё остальное нетронутым.",
+      "feedback": {
+        "reset_success": "Ветка успешно сброшена до {sha}!",
+        "revert_success": "Коммит откачен! Новый коммит: {sha}",
+        "revert_failed": "Не удалось откатить"
+      },
+      "actions": {
+        "restoring": "Восстановление",
+        "undoing": "Отмена",
+        "confirm_restore": "Подтвердить восстановление",
+        "confirm_undo": "Подтвердить отмену"
+      },
+      "commit_messages": {
+        "add_file": "Добавить {name}",
+        "rename_file": "Переименовать файл {name}",
+        "delete_file": "Удалить файл {name}",
+        "duplicate_file": "Дублировать файл {name}",
+        "create_schema": "Создать схему {name}",
+        "update_schema": "Обновить схему {name}",
+        "delete_schema": "Удалить схему {name}",
+        "update_config": "Обновить конфигурацию сайта"
+      }
+    },
+    "setup-steps": {
+      "getting_started": "Начало работы",
+      "description": "Выполните эти шаги для настройки Sitepins и публикации первого контента",
+      "progress": "Прогресс",
+      "progress_count": "{completed} из {total}",
+      "steps": {
+        "add_site": {
+          "title": "Добавить новый сайт",
+          "description": "Ваш сайт создан и готов к настройке"
+        },
+        "configure_project": {
+          "title": "Настроить проект",
+          "description": "Настройте структуру репозитория (папка контента, корень медиа и т.д.)"
+        },
+        "publish_content": {
+          "title": "Опубликовать первый контент",
+          "description": "Опубликуйте первый контент из левой панели"
+        },
+        "deploy_site": {
+          "title": "Задеплоить сайт",
+          "description": "Задеплойте сайт на Vercel впервые"
+        }
+      },
+      "edit_config": "Редактировать конфигурацию проекта",
+      "deploy_to_vercel": "Деплой на Vercel",
+      "login_signup": "Войти или зарегистрироваться",
+      "create_account": "Создать учётную запись",
+      "deploy_repo": "Задеплоить репозиторий",
+      "one_click": "в один клик",
+      "or": "Или",
+      "already_deployed": "Уже задеплоено? Вставьте URL сейчас",
+      "vercel_host": "на Vercel для хостинга вашего сайта"
+    }
+  }
+}

@@ -1,0 +1,119 @@
+{
+  "schema": {
+    "types": {
+      "string": "Chaîne",
+      "number": "Nombre",
+      "boolean": "Booléen",
+      "media": "Média",
+      "gallery": "Galerie",
+      "array": "Tableau",
+      "date": "Date",
+      "object": "Objet"
+    },
+    "fields": {
+      "label": "Libellé",
+      "name": "Nom",
+      "type": "Type de champ",
+      "placeholder": {
+        "type": "Choisissez un type",
+        "label": "ex. Titre",
+        "name": "auto_generated"
+      },
+      "description": "Description",
+      "default_value": "Valeur par défaut",
+      "boolean": {
+        "true": "Vrai",
+        "false": "Faux"
+      },
+      "input_style": {
+        "label": "Style de saisie",
+        "placeholder": "Choisissez un style de saisie",
+        "options": {
+          "standard_text": "Zone de texte standard",
+          "standard_table": "Tableau standard",
+          "dropdown": "Sélection déroulante",
+          "multi_dropdown": "Menu déroulant multi-sélection"
+        }
+      }
+    },
+    "configuration": {
+      "title": "Configuration du champ",
+      "dropdown": {
+        "title": "Configuration du menu déroulant",
+        "multi_title": "Configuration multi-sélection",
+        "source": "Source",
+        "source_placeholder": "Choisissez une source",
+        "sources": {
+          "static": "Options statiques",
+          "folder": "Fichiers d'un dossier",
+          "file": "Données d'un fichier"
+        },
+        "static": {
+          "placeholder": "Entrez la valeur de l'option"
+        },
+        "folder": {
+          "path": "Chemin du dossier",
+          "path_placeholder": "Sélectionnez un dossier",
+          "display_field": "Champ d'affichage (clé Frontmatter)",
+          "field_placeholder": "ex. title (par défaut : nom du fichier)",
+          "loading_fields": "Chargement des champs...",
+          "default_field": "nom du fichier (par défaut)",
+          "include_pattern": "Motif d'inclusion (Glob)",
+          "include_placeholder": "ex. *.md",
+          "exclude_pattern": "Motif d'exclusion (Glob)",
+          "exclude_placeholder": "ex. index.md"
+        },
+        "file": {
+          "path": "Chemin du fichier (JSON/YAML/TOML)",
+          "path_placeholder": "Sélectionnez un fichier",
+          "data_key": "Clé de données (champ à extraire)",
+          "key_placeholder": "ex. categories ou name",
+          "default_key": "Extraire le fichier/tableau entier"
+        }
+      }
+    },
+    "array": {
+      "label": "Tableau de",
+      "placeholder": "Choisissez un sous-type"
+    },
+    "nested": {
+      "title": "Champs imbriqués",
+      "add_button": "Ajouter un champ imbriqué"
+    },
+    "date": {
+      "default_value": "Valeur par défaut",
+      "mode_placeholder": "Choisissez un mode",
+      "static": "Date fixe",
+      "dynamic": "Date actuelle (dynamique)",
+      "empty": "Vide",
+      "select_initial": "Sélectionnez la date initiale",
+      "today": "Aujourd'hui"
+    },
+    "actions": {
+      "add_option": "Ajouter une option",
+      "add_field": "Ajouter un champ",
+      "update_field": "Mettre à jour le champ",
+      "enter_option": "Entrez une option",
+      "include": "Inclure",
+      "ignore": "Ignorer"
+    },
+    "builder": {
+      "add_new_field": "Ajouter un nouveau champ",
+      "configure_properties": "Configurez les propriétés du nouveau champ",
+      "field_settings": "Paramètres du champ",
+      "required": "Requis",
+      "show": "Afficher",
+      "hide": "Masquer",
+      "no_field_selected": "Aucun champ sélectionné",
+      "select_to_edit": "Sélectionnez un champ dans la liste pour modifier ses paramètres",
+      "no_fields": "Aucun champ pour l'instant",
+      "add_first_field": "Ajoutez votre premier champ ci-dessous",
+      "back_to_fields": "Retour aux champs",
+      "field_count": "{count, plural, =0 {0 champ} one {1 champ} other {# champs}}"
+    },
+    "errors": {
+      "name_required": "Le nom du champ est requis",
+      "name_exists": "Le nom du champ existe déjà"
+    }
+  }
+}

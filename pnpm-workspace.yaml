@@ -1,0 +1,12 @@
+packages:
+  - "app"
+  - "api"
+
+allowBuilds:
+  "@parcel/watcher": true
+  "@swc/core": false
+  bcrypt: true
+  core-js: false
+  protobufjs: false
+  sharp: true
+  unrs-resolver: false

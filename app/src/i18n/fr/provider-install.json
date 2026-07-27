@@ -1,0 +1,35 @@
+{
+  "provider-install": {
+    "authenticating_aria": "Authentification",
+    "request_title": "Demande d'installation envoyée",
+    "auth_title": "Authentification avec {provider}",
+    "request_description": "Une demande d'installation a été envoyée au propriétaire de l'organisation. Il recevra une notification et pourra approuver l'accès aux dépôts.",
+    "auth_description": "Nous finalisons l'authentification avec {provider}. Cette fenêtre se fermera automatiquement une fois terminé.",
+    "manual_close_hint": "Si cette fenêtre ne se ferme pas, vous pouvez la fermer manuellement en toute sécurité.",
+    "providers": {
+      "github": "GitHub",
+      "gitlab": "GitLab"
+    },
+    "github_integration": {
+      "title": "Connectez votre compte GitHub",
+      "description": "Sitepins a besoin d'un accès pour créer des branches et synchroniser le contenu de vos projets.",
+      "allow_all_repos": "Je sélectionnerai tous les dépôts",
+      "connect_btn": "Se connecter avec Github",
+      "grant_access_link": "Je n'accorderai pas l'accès à tous les dépôts",
+      "selective_title": "Accès sélectif aux dépôts",
+      "selective_desc1": "Si vous choisissez l'accès sélectif aux dépôts, nous ne pourrons pas créer automatiquement de dépôt pour vous.",
+      "selective_desc2": "Pas d'inquiétude ! Vous pouvez toujours commencer manuellement en suivant ces étapes :",
+      "step_download": "Téléchargez manuellement le modèle.",
+      "step_fork": "Forkez manuellement le dépôt.",
+      "step_push": "Poussez le code source vers votre dépôt GitHub.",
+      "step_go_to": "Allez sur Sitepins",
+      "step_new_site": "Cliquez sur le bouton + Nouveau site en haut à droite.",
+      "step_grant_access": "Sélectionnez GitHub et accordez l'accès à votre dépôt.",
+      "step_grant_forked": "Sélectionnez GitHub et accordez l'accès uniquement à votre dépôt forké.",
+      "step_final": "Remplissez les détails nécessaires et appuyez sur Créer le site.",
+      "revoke_access": "L'accès peut être révoqué à tout moment dans les paramètres GitHub",
+      "watch_tutorial": "Regarder un tutoriel rapide",
+      "close": "Fermer"
+    }
+  }
+}

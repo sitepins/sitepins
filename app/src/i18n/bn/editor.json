@@ -235,6 +235,7 @@
       "internal_links": "ইন্টারনাল লিঙ্ক",
       "external_links": "এক্সটারনাল লিঙ্ক",
       "analysis_summary": "বিশ্লেষণের সারসংক্ষেপ",
+      "score_label": "এসইও স্কোর: ১০০-এর মধ্যে {score}",
       "good_results": "ভালো ফলাফল",
       "improvements": "উন্নতি প্রয়োজন",
       "issues": "সমস্যা",

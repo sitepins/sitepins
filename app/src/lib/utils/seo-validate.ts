@@ -134,23 +134,28 @@ export function validateSEO(
   });
 
   // --- Word Count ---
+  // Body first, frontmatter keys as fallback.
   const contentKeys = ["content", "body", "text"];
   let contentKeyUsed = contentKeys.find((k) => entry[k] !== undefined);
-  const content = unwrap(contentKeyUsed ? entry[contentKeyUsed] : undefined);
-  const text = content?.replace(/<[^>]+>/g, "") ?? "";
+  const entryContent = unwrap(
+    contentKeyUsed ? entry[contentKeyUsed] : undefined,
+  );
+  const rawBody =
+    typeof markdownContent === "string" && markdownContent.trim()
+      ? markdownContent
+      : typeof entryContent === "string"
+        ? entryContent
+        : "";
+  const text = rawBody.replace(/<[^>]+>/g, "");
   const wordCount = text.trim().split(/\s+/).filter(Boolean).length;
-  if (contentKeyUsed) {
-    trackResult(contentKeyUsed, {
-      count: wordCount,
-      valid: wordCount >= 300,
-      percentage: Math.round((wordCount / 300) * 100),
-      tip: t
-        ? t("tips.content_length")
-        : "Content should have at least 300 words.",
-    });
-  } else {
-    improvement++;
-  }
+  trackResult(contentKeyUsed || "Content", {
+    count: wordCount,
+    valid: wordCount >= 300,
+    percentage: Math.round((wordCount / 300) * 100),
+    tip: t
+      ? t("tips.content_length")
+      : "Content should have at least 300 words.",
+  });
 
   // --- Keyword Density ---
   let keywordKeyUsed = KEYWORD_KEYS.find((k) => entry[k] !== undefined);
@@ -1111,4 +1116,25 @@ export function validateSeoInsights(
       improvement,
     },
   };
+}
+
+// `undefined` gets half credit: that bucket mixes "could be better" with
+// "not applicable here", which the checks don't distinguish.
+const SCORE_WEIGHTS = { pass: 1, warn: 0.5, fail: 0 } as const;
+
+/** Overall score (0-100) across every result set given. Null if nothing to score. */
+
+export function getSeoScore(
+  ...resultSets: Array<Record<string, { valid?: boolean }> | undefined | null>
+): number | null {
+  const rows = resultSets.flatMap((set) => (set ? Object.values(set) : []));
+  if (!rows.length) return null;
+
+  const earned = rows.reduce((sum, row) => {
+    if (row.valid === true) return sum + SCORE_WEIGHTS.pass;
+    if (row.valid === false) return sum + SCORE_WEIGHTS.fail;
+    return sum + SCORE_WEIGHTS.warn;
+  }, 0);
+
+  return Math.round((earned / rows.length) * 100);
 }

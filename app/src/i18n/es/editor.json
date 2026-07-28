@@ -235,6 +235,7 @@
       "internal_links": "Enlaces internos",
       "external_links": "Enlaces externos",
       "analysis_summary": "Resumen del análisis",
+      "score_label": "Puntuación SEO: {score} de 100",
       "good_results": "Buenos resultados",
       "improvements": "Mejoras",
       "issues": "Problemas",

@@ -18,14 +18,16 @@ export default function EditorSkeleton() {
           </div>
 
           <div className="flex items-center space-x-2">
-            {/* Action Buttons Placeholder */}
-            <Skeleton className="hidden h-7 w-20 rounded-md sm:block" />
+            {/* Preview, SEO and Reset collapse to icon-only below sm */}
+            <Skeleton className="h-7 w-9 rounded-md sm:w-24" />
+            <Skeleton className="h-7 w-9 rounded-md sm:w-20" />
+            <Skeleton className="h-7 w-9 rounded-md sm:w-20" />
+            {/* Publish + dropdown */}
             <div className="border-border flex h-7 items-center overflow-hidden rounded-md border">
               <Skeleton className="h-full w-20 rounded-none" />
               <div className="bg-border h-full w-px" />
               <Skeleton className="h-full w-8 rounded-none" />
             </div>
-            <Skeleton className="hidden h-7 w-20 rounded-md sm:block" />
           </div>
         </div>
       </header>

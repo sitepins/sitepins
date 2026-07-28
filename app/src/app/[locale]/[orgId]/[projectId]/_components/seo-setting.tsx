@@ -5,8 +5,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { UpgradeDialog } from "@/components/upgrade-dialog";
 import { revertToOriginal } from "@/editor/utils/plate-utils";
+import { useDebounce } from "@/hooks/use-debounce";
 import { useOwnerPlan } from "@/hooks/use-owner-plan";
 import {
+  getSeoScore,
   META_DESC_KEYS,
   META_TITLE_KEYS,
   validateSEO,
@@ -14,7 +16,7 @@ import {
 } from "@/lib/utils/seo-validate";
 import { useGetProjectQuery } from "@/redux/features/project/project-api";
 import { TField, TState } from "@/types";
-import { Settings2 } from "lucide-react";
+import { ChartSpline } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
@@ -40,12 +42,14 @@ export default function SeoSetting({
   setState,
   content,
   onSlugChange,
+  resetKey,
 }: {
   schema: TField[];
   data: TState["data"];
   setState: Dispatch<SetStateAction<TState | undefined>>;
   content: string;
   onSlugChange?: (newSlug: string) => void;
+  resetKey?: number;
 }) {
   const tEditorSeo = useTranslations("editor.seo");
   const {
@@ -118,8 +122,9 @@ export default function SeoSetting({
   const [virtualSlug, setVirtualSlug] = useState(filename);
 
   useEffect(() => {
+    pendingSlugUpdateRef.current = null;
     setVirtualSlug(filename);
-  }, [filename]);
+  }, [filename, resetKey]);
 
   const displayData = useMemo(() => {
     if (hasSlugInFrontmatter) return data;
@@ -171,46 +176,20 @@ export default function SeoSetting({
     }
   }, [displayData, onSlugChange, setVirtualSlug]);
 
-  const SEOCallback = useCallback(() => {
-    let results, summary, metaTitle, metaDescription, metaDate, seoInsights;
+  // Runs with the panel closed too — the button's score badge reads from it.
+  const debouncedContent = useDebounce(content, 600);
 
-    if (isSidebarOpen) {
-      ({ results, summary, metaTitle, metaDescription, metaDate, seoInsights } =
+  const { results, metaTitle, metaDescription, metaDate, seoInsights } =
+    useMemo(
+      () =>
         validateSEO(
           revertToOriginal(displayData),
-          content,
+          debouncedContent,
           baseUrl,
           tEditorSeo,
-        ));
-    } else {
-      results = {};
-      summary = { good: 0, improvement: 0, bad: 0 };
-      metaTitle = "";
-      metaDescription = "";
-      metaDate = undefined;
-      seoInsights = {
-        linkQuality: {
-          total: 0,
-          descriptive: 0,
-          generic: 0,
-        },
-        externalLinks: [],
-        internalLinks: [],
-        images: [],
-      };
-    }
-
-    return {
-      results,
-      summary,
-      metaTitle,
-      metaDescription,
-      metaDate,
-      seoInsights,
-    };
-  }, [isSidebarOpen, displayData, content, baseUrl, tEditorSeo]);
-  const { results, metaTitle, metaDescription, metaDate, seoInsights } =
-    SEOCallback();
+        ),
+      [displayData, debouncedContent, baseUrl, tEditorSeo],
+    );
 
   const formattedDate = metaDate
     ? new Date(metaDate).toLocaleDateString("en-US", {
@@ -277,22 +256,35 @@ export default function SeoSetting({
   const { canAccessProFeatures: canAccessSeo, canAccessProPlusFeatures } =
     useOwnerPlan();
 
-  const insightsResults = useMemo(() => {
-    if (!isSidebarOpen || !canAccessProPlusFeatures) return {};
-    return validateSeoInsights(
-      revertToOriginal(displayData),
-      content,
-      tEditorSeo,
-      focusKeyword,
-    ).results;
-  }, [
-    isSidebarOpen,
-    canAccessProPlusFeatures,
-    displayData,
-    content,
-    tEditorSeo,
-    focusKeyword,
-  ]);
+  // Computed on every plan so the score covers all checks; only the rows are gated.
+  const insightsResults = useMemo(
+    () =>
+      validateSeoInsights(
+        revertToOriginal(displayData),
+        debouncedContent,
+        tEditorSeo,
+        focusKeyword,
+      ).results,
+    [displayData, debouncedContent, tEditorSeo, focusKeyword],
+  );
+
+  const seoScore = getSeoScore(results, insightsResults);
+
+  const scoreBadge =
+    seoScore === null ? null : (
+      <span
+        aria-label={tEditorSeo("score_label", { score: seoScore })}
+        className={`rounded-full px-1.5 py-0.5 text-[11px] font-medium tabular-nums ${
+          seoScore >= 80
+            ? "bg-success/15 text-success"
+            : seoScore >= 50
+              ? "bg-warning/15 text-warning"
+              : "bg-destructive/15 text-destructive"
+        }`}
+      >
+        {seoScore}
+      </span>
+    );
 
   return (
     <div>
@@ -303,10 +295,12 @@ export default function SeoSetting({
             size={"lg"}
             variant={"outline"}
             type="button"
+            aria-label={tEditorSeo("title")}
             onClick={() => setShowUpgradeOrg(true)}
           >
-            <span className="mr-2 hidden sm:inline-block">SEO</span>
-            <Settings2 className="size-4" strokeWidth={1.5} />
+            <span className="hidden sm:inline-block">SEO</span>
+            <ChartSpline className="size-4 sm:hidden" strokeWidth={1.5} />
+            {scoreBadge}
           </Button>
           <UpgradeDialog
             open={showUpgradeOrg}
@@ -319,10 +313,12 @@ export default function SeoSetting({
           size={"lg"}
           variant={"outline"}
           type="button"
+          aria-label={tEditorSeo("title")}
           onClick={() => setSidebarOpen(!isSidebarOpen)}
         >
-          <span className="mr-2 hidden sm:inline-block">SEO</span>
-          <Settings2 className="size-4" strokeWidth={1.5} />
+          <span className="hidden sm:inline-block">SEO</span>
+          <ChartSpline className="size-4 sm:hidden" strokeWidth={1.5} />
+          {scoreBadge}
         </Button>
       )}
       {/* Sidebar */}
@@ -381,7 +377,9 @@ export default function SeoSetting({
                   <SeoAnalysis
                     results={results}
                     schema={schema}
-                    insightsResults={insightsResults}
+                    insightsResults={
+                      canAccessProPlusFeatures ? insightsResults : {}
+                    }
                     canAccessInsights={canAccessProPlusFeatures}
                   />
                 </div>

@@ -235,6 +235,7 @@
       "internal_links": "내부 링크",
       "external_links": "외부 링크",
       "analysis_summary": "분석 요약",
+      "score_label": "SEO 점수: 100점 만점에 {score}점",
       "good_results": "좋은 결과",
       "improvements": "개선",
       "issues": "문제",

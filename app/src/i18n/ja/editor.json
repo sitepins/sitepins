@@ -235,6 +235,7 @@
       "internal_links": "内部リンク",
       "external_links": "外部リンク",
       "analysis_summary": "分析サマリー",
+      "score_label": "SEOスコア: 100点中{score}点",
       "good_results": "良好な結果",
       "improvements": "改善点",
       "issues": "問題",

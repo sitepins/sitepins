@@ -129,8 +129,19 @@ const EditorWrapper: React.FC<EditorWrapperProps> = memo(
     const isContentChanged = contentRef !== markdownContent;
     // Check if slug changed (rename pending)
     const isRenamePending = !!newPath;
+    // An empty or unchanged slug yields no newPath, but an edited one is still
+    // a change the user needs to be able to reset.
+    const currentSlug =
+      filePath
+        .split("/")
+        .pop()
+        ?.replace(/\.mdx?$/, "") ?? "";
+    const isSlugChanged = pendingSlug !== null && pendingSlug !== currentSlug;
     const hasChanges =
-      isFrontmatterChange || isContentChanged || isRenamePending;
+      isFrontmatterChange ||
+      isContentChanged ||
+      isRenamePending ||
+      isSlugChanged;
 
     const onRenameComplete = useCallback(
       (targetPath: string) => {
@@ -342,6 +353,7 @@ const EditorWrapper: React.FC<EditorWrapperProps> = memo(
                 setState={setState}
                 content={markdownContent}
                 onSlugChange={onSlugChange}
+                resetKey={resetKey}
               />
             )}
           </EditorHeader>

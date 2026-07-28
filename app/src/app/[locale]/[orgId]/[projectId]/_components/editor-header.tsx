@@ -400,6 +400,7 @@ export default function EditorHeader({
                 spProjectId={params.projectId}
               />
             )}
+            {children}
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
@@ -516,7 +517,6 @@ export default function EditorHeader({
                 {tCommon("actions.save")}
               </Button>
             )}
-            {children}
             {isConfigsPath && (
               <ConfigActions
                 pathname={pathname}

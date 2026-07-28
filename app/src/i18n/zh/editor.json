@@ -235,6 +235,7 @@
       "internal_links": "内部链接",
       "external_links": "外部链接",
       "analysis_summary": "分析摘要",
+      "score_label": "SEO 评分：{score}/100",
       "good_results": "良好结果",
       "improvements": "有待改进",
       "issues": "问题",

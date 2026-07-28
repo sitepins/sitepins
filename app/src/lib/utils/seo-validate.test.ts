@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { validateSeoInsights } from "./seo-validate";
+import { getSeoScore, validateSEO, validateSeoInsights } from "./seo-validate";
 
 const words = (count: number, word = "cat") =>
   new Array(count).fill(word).join(" ");
@@ -384,5 +384,147 @@ describe("validateSeoInsights", () => {
     };
     const { results } = validateSeoInsights(entry, "Some apple pie content.");
     expect(results.keyphrase_in_title.valid).toBe(true);
+  });
+});
+
+describe("getSeoScore", () => {
+  it("returns null when there is nothing to score", () => {
+    expect(getSeoScore({})).toBeNull();
+  });
+
+  it("ignores empty and missing result sets", () => {
+    expect(getSeoScore({}, undefined, null)).toBeNull();
+  });
+
+  it("gives passes full credit, warnings half, issues none", () => {
+    expect(
+      getSeoScore({
+        a: { valid: true },
+        b: { valid: false },
+        c: { valid: undefined },
+        d: { valid: true },
+      }),
+    ).toBe(63); // (1 + 0 + 0.5 + 1) / 4
+  });
+
+  it("returns 100 when every check passes", () => {
+    expect(getSeoScore({ a: { valid: true }, b: { valid: true } })).toBe(100);
+  });
+
+  it("returns 0 only when every check is a hard failure", () => {
+    expect(getSeoScore({ a: { valid: false }, b: { valid: false } })).toBe(0);
+  });
+
+  it("returns 50 when every check is a warning", () => {
+    expect(getSeoScore({ a: {}, b: { valid: undefined } })).toBe(50);
+  });
+
+  it("rounds to a whole number", () => {
+    expect(
+      getSeoScore({
+        a: { valid: true },
+        b: { valid: false },
+        c: { valid: false },
+      }),
+    ).toBe(33);
+  });
+
+  it("pools every result set it is given", () => {
+    const base = { a: { valid: true }, b: { valid: true } };
+    const insights = { c: { valid: false }, d: { valid: false } };
+    expect(getSeoScore(base)).toBe(100);
+    expect(getSeoScore(base, insights)).toBe(50);
+  });
+
+  it("scores base and insight results together for a real post", () => {
+    const entry = {
+      title: "A perfectly reasonable title for a blog post here",
+      slug: "a-reasonable-title",
+      tags: ["blog"],
+    };
+    const body = "## Intro\n\nSome body copy about a blog.";
+    const score = getSeoScore(
+      validateSEO(entry, body).results,
+      validateSeoInsights(entry, body).results,
+    );
+    expect(score).not.toBeNull();
+    expect(score).toBeGreaterThanOrEqual(0);
+    expect(score).toBeLessThanOrEqual(100);
+  });
+
+  it("rates a well-optimised post above a bare one", () => {
+    const bare = { title: "Hi", slug: "hi" };
+    const bareBody = "Short.";
+
+    const good = {
+      title: "The Complete Guide to Static Site Generators in 2026",
+      description:
+        "A practical guide to static site generators: how they work, when to use them, and how to pick one for your next project.",
+      slug: "static-site-generators-guide",
+      tags: ["static site generators"],
+      lastUpdated: new Date().toISOString(),
+    };
+    const goodBody = [
+      "Static site generators turn content into fast, prerendered pages.",
+      "However, choosing one takes some thought.",
+      "",
+      "## Why static site generators win",
+      "",
+      words(150, "static site generators are worth learning because"),
+      "",
+      "## How to choose",
+      "",
+      words(150, "therefore you should compare build speed and ecosystem"),
+    ].join("\n");
+
+    const bareScore = getSeoScore(
+      validateSEO(bare, bareBody).results,
+      validateSeoInsights(bare, bareBody).results,
+    );
+    const goodScore = getSeoScore(
+      validateSEO(good, goodBody).results,
+      validateSeoInsights(good, goodBody).results,
+    );
+
+    expect(goodScore).toBeGreaterThan(bareScore!);
+  });
+});
+
+describe("validateSEO word count", () => {
+  const entry = {
+    title: "7 Best Git-Based Headless CMS for Static Sites - Statichunt",
+    description: words(12, "content"),
+    slug: "git-based-headless-cms",
+  };
+
+  it("counts the markdown body, not a frontmatter content field", () => {
+    const { results } = validateSEO(entry, "hello test");
+    expect(results.Content.count).toBe(2);
+    expect(results.Content.valid).toBe(false);
+  });
+
+  it("passes once the body reaches 300 words", () => {
+    const { results } = validateSEO(entry, `${words(300)}.`);
+    expect(results.Content.valid).toBe(true);
+  });
+
+  it("moves the score when the body grows", () => {
+    const short = getSeoScore(validateSEO(entry, "hello test").results);
+    const long = getSeoScore(validateSEO(entry, `${words(300)}.`).results);
+    expect(long).toBeGreaterThan(short!);
+  });
+
+  it("still honours a frontmatter body field when no markdown is passed", () => {
+    const { results } = validateSEO({ ...entry, body: `${words(300)}.` }, "");
+    expect(results.body.valid).toBe(true);
+  });
+
+  it("computes keyword density against the markdown body", () => {
+    const { results } = validateSEO(
+      { ...entry, tags: ["cat"] },
+      `${words(100)} and some other filler words here.`,
+    );
+    expect(results.tags).toBeDefined();
+    expect(results.tags.density.cat).toBeGreaterThan(0);
   });
 });

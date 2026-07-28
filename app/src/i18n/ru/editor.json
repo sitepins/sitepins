@@ -235,6 +235,7 @@
       "internal_links": "Внутренние ссылки",
       "external_links": "Внешние ссылки",
       "analysis_summary": "Сводка анализа",
+      "score_label": "SEO-оценка: {score} из 100",
       "good_results": "Хорошие результаты",
       "improvements": "Улучшения",
       "issues": "Проблемы",

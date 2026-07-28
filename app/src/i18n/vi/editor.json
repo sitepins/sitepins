@@ -235,6 +235,7 @@
       "internal_links": "Liên kết nội bộ",
       "external_links": "Liên kết ngoài",
       "analysis_summary": "Tóm tắt phân tích",
+      "score_label": "Điểm SEO: {score} trên 100",
       "good_results": "Kết Quả Tốt",
       "improvements": "Cải tiến",
       "issues": "Vấn đề",

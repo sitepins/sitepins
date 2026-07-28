@@ -235,6 +235,7 @@
       "internal_links": "Tautan Internal",
       "external_links": "Tautan Eksternal",
       "analysis_summary": "Ringkasan Analisis",
+      "score_label": "Skor SEO: {score} dari 100",
       "good_results": "Hasil Bagus",
       "improvements": "Perbaikan",
       "issues": "Masalah",

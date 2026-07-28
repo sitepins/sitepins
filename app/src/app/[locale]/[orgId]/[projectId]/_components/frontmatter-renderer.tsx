@@ -1407,7 +1407,9 @@ export default function FrontmatterRenderer({
                 // Render as dropdown
                 return (
                   <AnimatedListItem key={item.name}>
-                    <PreviewLabel {...item}>{item.label}</PreviewLabel>
+                    <PreviewLabel {...item} value={value}>
+                      {item.label}
+                    </PreviewLabel>
                     <ReferenceDropdown
                       item={item as Template}
                       value={value}
@@ -1428,7 +1430,9 @@ export default function FrontmatterRenderer({
               // Render as textarea
               return (
                 <AnimatedListItem key={item.name}>
-                  <PreviewLabel {...item}>{item.label}</PreviewLabel>
+                  <PreviewLabel {...item} value={value}>
+                    {item.label}
+                  </PreviewLabel>
                   <Textarea
                     className="text-text-dark h-auto min-h-10"
                     rows={value?.length > 100 ? 3 : 1}
@@ -2003,12 +2007,15 @@ function PreviewLabel({
   label,
   ...props
 }: PreviewLabelProps) {
+  // `length` on the schema field is a snapshot, so count the live value instead.
+  const currentLength = typeof value === "string" ? value.length : length;
+
   const getBadgeVariant = () => {
-    if (length === undefined || maxLength === undefined) return "default";
+    if (currentLength === undefined || maxLength === undefined) return "default";
 
-    const percentage = (length / maxLength) * 100;
+    const percentage = (currentLength / maxLength) * 100;
 
-    if (length > maxLength) return "destructive"; // Over limit
+    if (currentLength > maxLength) return "destructive"; // Over limit
     if (percentage >= 80) return "warning"; // Warning - close to limit
     if (percentage >= 50) return "success"; // Good range
     return "outline"; // Too short
@@ -2018,9 +2025,9 @@ function PreviewLabel({
     <Label className={cn("mb-2 flex capitalize", className)} {...props}>
       {children}
       {isRequired && <span className="text-destructive">*</span>}
-      {length !== undefined && maxLength !== undefined && (
+      {currentLength !== undefined && maxLength !== undefined && (
         <Badge variant={getBadgeVariant()} className="ml-auto">
-          {length}/{maxLength}
+          {currentLength}/{maxLength}
         </Badge>
       )}
     </Label>

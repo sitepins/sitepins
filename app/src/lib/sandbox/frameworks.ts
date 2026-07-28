@@ -22,7 +22,6 @@ export type FrameworkSpec = {
 
 export const FRAMEWORKS: Record<string, FrameworkSpec> = {
   nextjs: { port: 3000, patchScripts: true, bridge: "nextjs", draftEnv: true },
-  next: { port: 3000, draftEnv: true },
   tanstack: {
     port: 3000,
     bridge: "tanstack",
@@ -66,12 +65,20 @@ export const FRAMEWORKS: Record<string, FrameworkSpec> = {
   react: { port: 5173 },
 };
 
+const ALIASES: Record<string, string> = {
+  next: "nextjs",
+};
+
+function frameworkKey(generator: string): string {
+  const key = generator.toLowerCase().replace(/[^a-z_]/g, "");
+  return ALIASES[key] ?? key;
+}
+
 export function frameworkSpec(generator?: string | null): FrameworkSpec | null {
-  return FRAMEWORKS[(generator ?? "").toLowerCase()] ?? null;
+  return FRAMEWORKS[frameworkKey(generator ?? "")] ?? null;
 }
 
 /** Falls back to the Next.js port, matching the sandbox's historical default. */
 export function frameworkPort(generator?: string | null): number {
-  const key = (generator ?? "nextjs").toLowerCase().replace(/[^a-z_]/g, "");
-  return FRAMEWORKS[key]?.port ?? 3000;
+  return FRAMEWORKS[frameworkKey(generator ?? "nextjs")]?.port ?? 3000;
 }

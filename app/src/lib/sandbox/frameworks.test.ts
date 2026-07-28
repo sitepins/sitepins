@@ -26,7 +26,12 @@ describe("frameworkSpec", () => {
     expect(frameworkSpec("nextjs")?.bridge).toBe("nextjs");
     expect(frameworkSpec("tanstack")?.bridge).toBe("tanstack");
     expect(frameworkSpec("astro")?.bridge).toBeUndefined();
-    expect(frameworkSpec("next")?.bridge).toBeUndefined();
+  });
+
+  it("resolves the legacy 'next' spelling to the nextjs spec", () => {
+    expect(frameworkSpec("next")).toEqual(frameworkSpec("nextjs"));
+    expect(frameworkSpec("Next")?.bridge).toBe("nextjs");
+    expect(frameworkPort("next")).toBe(3000);
   });
 
   it("marks which frameworks get their package scripts patched", () => {

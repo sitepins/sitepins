@@ -49,4 +49,4 @@ Open a [GitHub issue](https://github.com/sitepins/sitepins/issues) with steps to
 
 ## License
 
-By contributing, you agree that your contributions will be licensed under the [Elastic License 2.0](./LICENSE).
+By contributing, you agree that your contributions will be licensed under the [GNU AGPLv3](./LICENSE).

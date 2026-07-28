@@ -2,7 +2,7 @@
   "name": "sitepins-backend",
   "version": "1.0.0",
   "author": "sitepins",
-  "license": "Elastic-2.0",
+  "license": "AGPL-3.0-or-later",
   "description": "backend for sitepins",
   "scripts": {
     "dev": "ts-node-dev -r tsconfig-paths/register --respawn --transpile-only ./src/server.ts",

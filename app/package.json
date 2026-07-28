@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "git based headless cms",
   "author": "sitepins",
-  "license": "Elastic-2.0",
+  "license": "AGPL-3.0-or-later",
   "packageManager": "pnpm@11.15.1",
   "scripts": {
     "dev": "next dev",

@@ -8,7 +8,7 @@ Connect your GitHub or GitLab repo and start editing. No schema setup. No manual
 
 [**Live Demo**](https://demo.sitepins.com) · [**Documentation**](https://docs.sitepins.com) · [**Website**](https://sitepins.com) · [**Start for Free**](https://sitepins.com/pricing?ref=github)
 
-![License](https://img.shields.io/badge/license-Elastic%202.0-2b7489)
+![License](https://img.shields.io/badge/license-AGPL%20v3-2b7489)
 ![Stars](https://img.shields.io/github/stars/sitepins/sitepins?style=social)
 ![TypeScript](https://img.shields.io/badge/TypeScript-99%25-3178c6)
 
@@ -122,7 +122,7 @@ Contributions are welcome. See [CONTRIBUTING.md](https://github.com/sitepins/sit
 
 ## License
 
-[Elastic License 2.0](https://github.com/sitepins/sitepins/blob/main/LICENSE). Free to use, modify, and self-host for your own projects and your company's. You may not offer Sitepins itself as a hosted or managed service.
+[GNU AGPLv3](https://github.com/sitepins/sitepins/blob/main/LICENSE). Free to use, modify, and self-host. If you run a modified version as a network service, you must make your modified source available to its users under the same license.
 
 ---
 

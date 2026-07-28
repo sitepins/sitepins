@@ -324,7 +324,7 @@ export default function Layout(
                   {!isArchived && files.length > 0 && (
                     <ul
                       id="sidebar-content-root"
-                      className="sidebar-content-root tree bg-background rounded"
+                      className="sidebar-content-root tree bg-background rounded pr-2"
                     >
                       <li>
                         <Accordion
@@ -343,14 +343,14 @@ export default function Layout(
                                   pathname.includes(
                                     `/${params.orgId}/${params.projectId}/configs/${config.content}`,
                                   )
-                                  ? "bg-background text-primary"
+                                  ? "text-primary"
                                   : "",
                               )}
                               href={`/${params.orgId}/${params.projectId}/content/${config.content}`}
                             >
                               <AccordionTrigger
                                 className={cn(
-                                  "h-auto w-full justify-start space-x-1 py-3 pr-2.5 pl-3 text-sm hover:no-underline",
+                                  "h-auto w-full justify-start space-x-1 py-3 pr-1 pl-3 text-sm hover:no-underline",
                                 )}
                               >
                                 <>
@@ -398,13 +398,13 @@ export default function Layout(
 
                   {/* Code */}
                   {!isArchived && !canAccessProFeatures && (
-                    <ul className="tree bg-background rounded [--tree-spacing:2rem]">
+                    <ul className="tree bg-background rounded pr-2 [--tree-spacing:2rem]">
                       <li>
                         <button
                           type="button"
                           onClick={() => setShowUpgradeCode(true)}
                           className={cn(
-                            "text-foreground flex h-auto w-full items-center justify-start space-x-2 py-3 pr-2.5 pl-3 text-sm",
+                            "text-foreground flex h-auto w-full items-center justify-start space-x-2 py-3 pr-1 pl-3 text-sm",
                           )}
                         >
                           <FileCode2 className="inline-block size-5 stroke-[1.5]" />
@@ -416,7 +416,7 @@ export default function Layout(
                     </ul>
                   )}
                   {!isArchived && canAccessProFeatures && (
-                    <ul className="tree bg-background rounded [--tree-spacing:2rem]">
+                    <ul className="tree bg-background rounded pr-2 [--tree-spacing:2rem]">
                       <li>
                         <Accordion
                           className={cn("relative")}
@@ -426,7 +426,7 @@ export default function Layout(
                           <AccordionItem value="code" className="border-0">
                             <AccordionTrigger
                               className={cn(
-                                "h-auto w-full justify-start space-x-2 py-3 pr-2.5 pl-3 text-sm hover:no-underline",
+                                "h-auto w-full justify-start space-x-2 py-3 pr-1 pl-3 text-sm hover:no-underline",
                               )}
                             >
                               <>
@@ -475,7 +475,7 @@ export default function Layout(
 
                   {/* Config */}
                   {!isArchived && config.configs?.length > 0 && (
-                    <ul className="tree bg-background rounded [--tree-spacing:2rem]">
+                    <ul className="tree bg-background rounded pr-2 [--tree-spacing:2rem]">
                       <li>
                         <Accordion
                           className={cn("relative")}
@@ -489,14 +489,14 @@ export default function Layout(
                                 pathname.includes(
                                   `/${params.orgId}/${params.projectId}/configs/`,
                                 )
-                                  ? "bg-background text-primary"
+                                  ? "text-primary"
                                   : "",
                               )}
                               href={""}
                             >
                               <AccordionTrigger
                                 className={cn(
-                                  "h-auto w-full justify-start space-x-2 py-3 pr-2.5 pl-3 text-sm hover:no-underline",
+                                  "h-auto w-full justify-start space-x-2 py-3 pr-1 pl-3 text-sm hover:no-underline",
                                 )}
                               >
                                 <>

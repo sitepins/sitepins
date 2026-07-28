@@ -52,7 +52,7 @@ const ContentMenu = ({
             trigger={
               <Link
                 className={cn(
-                  "text-foreground hover:text-primary group flex flex-1 items-center justify-between rounded",
+                  "text-foreground hover:text-primary group flex flex-1 items-center justify-between rounded transition-colors",
                   isFolderActive(item.path) &&
                     !(
                       item.path
@@ -60,7 +60,7 @@ const ContentMenu = ({
                         .startsWith(config.content || "") &&
                       item.path.replace("content/", "") === config.content
                     )
-                    ? "bg-background text-primary"
+                    ? "text-primary"
                     : "",
                 )}
                 href={resolveHref(item.path)}
@@ -82,9 +82,9 @@ const ContentMenu = ({
         ) : (
           <NavLink
             key={item.path}
-            className="text-foreground hover:text-primary ml-1 flex items-center rounded px-2.5 py-2.5"
+            className="text-foreground hover:text-primary hover:bg-muted/50 ml-1 flex items-center rounded px-2.5 py-2.5 transition-colors"
             href={resolveHref(item.path)}
-            activeClassName="bg-background text-primary"
+            activeClassName="bg-muted text-primary"
           >
             <span className="text-inherit">{item.name}</span>
           </NavLink>
@@ -121,8 +121,8 @@ const ContentMenu = ({
       return (
         <li key={item.path + "_" + item.type + "_" + index}>
           <NavLink
-            className="text-foreground ml-1 flex items-center rounded px-2.5 py-2.5"
-            activeClassName="bg-background text-primary"
+            className="text-foreground hover:text-primary hover:bg-muted/50 ml-1 flex items-center rounded px-2.5 py-2.5 transition-colors"
+            activeClassName="bg-muted text-primary"
             href={resolveHref(item.path)}
           >
             <span>{item.name}</span>

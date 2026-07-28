@@ -59,12 +59,12 @@ const ConfigsMenu = ({
             trigger={
               <NavLink
                 className={cn(
-                  "text-foreground hover:text-primary ml-1 flex flex-1 items-center justify-between rounded py-2.5 pr-2.5",
+                  "text-foreground hover:text-primary ml-1 flex flex-1 items-center justify-between rounded py-2.5 pr-2.5 transition-colors",
                 )}
                 href={resolveHref(file.path)}
                 activeClassName={
                   file.path.replace("content/", "") !== config.content
-                    ? "bg-background text-primary"
+                    ? "text-primary"
                     : ""
                 }
               >
@@ -89,8 +89,8 @@ const ConfigsMenu = ({
     return (
       <li key={file.path}>
         <NavLink
-          className="text-foreground hover:text-primary ml-1 flex items-center rounded px-2.5 py-2.5"
-          activeClassName="bg-background text-primary"
+          className="text-foreground hover:text-primary hover:bg-muted/50 ml-1 flex items-center rounded px-2.5 py-2.5 transition-colors"
+          activeClassName="bg-muted text-primary"
           href={resolveHref(file.path)}
         >
           <span className="text-inherit">{file.name}</span>

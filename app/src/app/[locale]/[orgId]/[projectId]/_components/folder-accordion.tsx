@@ -52,7 +52,7 @@ export function FolderAccordion({
         ) : (
           <AccordionTrigger
             className={cn(
-              "h-auto w-full items-center justify-start space-x-2 py-0 pr-2.5 text-sm hover:no-underline",
+              "hover:bg-muted/50 h-auto w-full items-center justify-start space-x-2 rounded py-0 pr-1 text-sm transition-colors hover:no-underline",
               triggerClassName,
             )}
           >

@@ -20,6 +20,23 @@ function getOrigin(url) {
   }
 }
 
+// Returns [apex, *.apex] for the root domain derived from env — no hardcoded hostname.
+function getFrameAncestors() {
+  const url =
+    process.env.NEXT_PUBLIC_BRAND_URL ||
+    process.env.NEXT_PUBLIC_APP_URL ||
+    process.env.NEXT_PUBLIC_BACKEND_URL ||
+    "";
+  if (!url) return [];
+  try {
+    const { protocol, hostname } = new URL(url);
+    const rootDomain = hostname.split(".").slice(-2).join("."); // e.g. "sitepins.com"
+    return [`${protocol}//${rootDomain}`, `${protocol}//*.${rootDomain}`];
+  } catch {
+    return [];
+  }
+}
+
 // Host of the configured media bucket (any S3-compatible provider), so
 // next/image can render uploads served from AWS S3 / R2 / MinIO / B2
 function getBucketHost() {
@@ -145,7 +162,7 @@ function buildHeaders(overlay) {
     "object-src": ["'none'"],
     "base-uri": [...HOSTS.SELF],
     "form-action": [...HOSTS.SELF],
-    "frame-ancestors": ["'none'"],
+    "frame-ancestors": ["'self'", ...getFrameAncestors()],
     "upgrade-insecure-requests": [],
   };
 
@@ -180,10 +197,7 @@ function buildHeaders(overlay) {
           key: "Content-Security-Policy",
           value: cspHeaderValue.replace(/\s{2,}/g, " ").trim(),
         },
-        {
-          key: "X-Frame-Options",
-          value: "SAMEORIGIN",
-        },
+        // X-Frame-Options removed — CSP frame-ancestors above takes precedence.
       ],
     },
   ];

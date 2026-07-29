@@ -139,7 +139,7 @@ function buildHeaders(overlay) {
       "*", // Allow all images for CMS support
       ...HOSTS.DATA_BLOB,
     ],
-    "frame-src": [...HOSTS.SELF],
+    "frame-src": [...HOSTS.SELF, ...getFrameAncestors()],
     "font-src": [
       ...HOSTS.SELF,
       ...HOSTS.DATA_BLOB,

@@ -51,6 +51,8 @@ Sitepins puts a visual editor on top of the repo you already have. They edit con
 
 ## How Sitepins works
 
+<img width="1160" height="460" alt="how-sitepins-works-visual-diagram" src="https://github.com/user-attachments/assets/94abc0b6-e4be-429b-b196-bdd446bb13d6" />
+
 1. **Connect your repo.** Authorize Sitepins on GitHub or GitLab and pick a repository.
 2. **Edit visually.** Sitepins reads your content files and renders a visual editor. No schema or config to write first.
 3. **Commit to Git.** Every edit becomes a normal commit in your repo. Your site rebuilds through your existing pipeline. Nothing leaves your Git history.

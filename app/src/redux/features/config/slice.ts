@@ -39,7 +39,7 @@ export const configSlice = createSlice({
     updateConfig: (state, action: PayloadAction<ConfigPayload>) => {
       const { templates, ...rest } = action.payload;
 
-      const framework = (rest.framework || state.framework) as any;
+      const framework = rest.framework || state.framework;
 
       // Apply migration if needed
       const migratedConfig = migrateConfig(rest, framework);

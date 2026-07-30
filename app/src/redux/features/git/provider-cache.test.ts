@@ -248,3 +248,126 @@ describe("updateContentCache", () => {
     expect(rawData.content).toBe("raw");
   });
 });
+
+/**
+ * Reading the cache only works when the args match what the subscriber wrote
+ * under. Hand-rolled args have silently missed on GitLab three times — the
+ * repo id is `owner/repo`, not `repo`.
+ */
+describe("selectCachedContent", () => {
+  const path = "posts/hello.md";
+
+  it("finds a GitHub entry seeded through contentArgs", async () => {
+    const args = github.contentArgs(config, path, { parser: true });
+    await store.dispatch(
+      githubContentApi.util.upsertQueryData("getGitHubContent", args as never, {
+        title: "Hello",
+      } as never),
+    );
+
+    expect(github.selectCachedContent(store.getState(), args)).toMatchObject({
+      title: "Hello",
+    });
+  });
+
+  it("finds a GitLab entry seeded through contentArgs", async () => {
+    const args = gitlab.contentArgs(config, path, { parser: true });
+    await store.dispatch(
+      gitlabContentApi.util.upsertQueryData("getGitLabContent", args as never, {
+        title: "Hello",
+      } as never),
+    );
+
+    expect(gitlab.selectCachedContent(store.getState(), args)).toMatchObject({
+      title: "Hello",
+    });
+  });
+
+  it("misses when the GitLab id drops the owner prefix", async () => {
+    const args = gitlab.contentArgs(config, path, { parser: true });
+    await store.dispatch(
+      gitlabContentApi.util.upsertQueryData("getGitLabContent", args as never, {
+        title: "Hello",
+      } as never),
+    );
+
+    const handRolled = { ...args, id: config.repoName };
+    expect(
+      gitlab.selectCachedContent(store.getState(), handRolled),
+    ).toBeUndefined();
+  });
+
+  it("returns undefined when nothing is cached", () => {
+    const args = github.contentArgs(config, path, { parser: true });
+    expect(github.selectCachedContent(store.getState(), args)).toBeUndefined();
+  });
+});
+
+/**
+ * Repo-wide changes (a folder rename, a media delete) must reach whichever
+ * listings are cached. Hand-built args missed the subscriber's entry on GitLab,
+ * because its listings are keyed by `path` as well — so the optimistic update
+ * silently did nothing.
+ */
+describe("updateAllTreeCaches", () => {
+  const subscriberArgs = () => gitlab.treesArgs(config, "", { recursive: true });
+
+  const seed = (args: Record<string, unknown>) =>
+    store.dispatch(
+      gitlabContentApi.util.upsertQueryData(
+        "getGitLabTrees",
+        args as never,
+        tree(["old/a.md", "keep.md"]) as never,
+      ),
+    );
+
+  const filesAt = (args: Record<string, unknown>) =>
+    (
+      gitlabContentApi.endpoints.getGitLabTrees.select(args as never)(
+        store.getState(),
+      ).data as TreeCache | undefined
+    )?.files.map((f) => f.path);
+
+  const dropOldFolder = (draft: TreeCache) => {
+    draft.files = draft.files.filter((f) => !f.path?.startsWith("old/"));
+  };
+
+  it("reaches the subscriber's entry", async () => {
+    const args = subscriberArgs();
+    await seed(args);
+
+    gitlab.updateAllTreeCaches(store.dispatch, store.getState(), dropOldFolder);
+
+    expect(filesAt(args)).toEqual(["keep.md"]);
+  });
+
+  it("args built without `path` miss that entry", async () => {
+    const args = subscriberArgs();
+    await seed(args);
+
+    // What the rename and media paths used to pass.
+    const handRolled = { ...args };
+    delete (handRolled as { path?: unknown }).path;
+    gitlab.updateTreeCache(store.dispatch, handRolled, dropOldFolder);
+
+    expect(filesAt(args)).toEqual(["old/a.md", "keep.md"]);
+  });
+
+  it("updates every cached listing, not just the first", async () => {
+    const root = subscriberArgs();
+    const nested = gitlab.treesArgs(config, "old", { recursive: true });
+    await seed(root);
+    await seed(nested);
+
+    gitlab.updateAllTreeCaches(store.dispatch, store.getState(), dropOldFolder);
+
+    expect(filesAt(root)).toEqual(["keep.md"]);
+    expect(filesAt(nested)).toEqual(["keep.md"]);
+  });
+
+  it("is a no-op when nothing is cached", () => {
+    expect(() =>
+      gitlab.updateAllTreeCaches(store.dispatch, store.getState(), dropOldFolder),
+    ).not.toThrow();
+  });
+});

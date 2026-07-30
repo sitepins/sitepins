@@ -18,7 +18,8 @@ import { useEffect, useMemo, useState } from "react";
 type ProjectContext = {
   orgId: string;
   projectId: string;
-  projectName: string;
+  /** Absent until the project record resolves; menu name/href builders tolerate it. */
+  projectName?: string;
   config?: TConfig;
 };
 

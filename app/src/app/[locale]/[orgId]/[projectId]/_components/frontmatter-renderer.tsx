@@ -1,5 +1,15 @@
 import { logger } from "@/lib/logger";
 import {
+  arrayAt,
+  asNode,
+  idOf,
+  arrayValue,
+  isWrappedValue,
+  stringValue,
+  unwrapValue,
+  type TMutableNode,
+} from "@/lib/utils/frontmatter-value";
+import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -276,7 +286,7 @@ export default function FrontmatterRenderer({
       return null;
     };
 
-    let current = result;
+    let current: TMutableNode = asNode(result);
     let currentSchemaFields = schema;
 
     // Navigate through the path
@@ -315,12 +325,12 @@ export default function FrontmatterRenderer({
           } else {
             current[index] = {
               value: newValue,
-              id: current[index]?.id || crypto.randomUUID(),
+              id: idOf(current[index]) || crypto.randomUUID(),
             };
           }
         } else {
           // Navigate into the array item's value
-          current = current[index].value;
+          current = asNode(asNode(current[index]).value);
           // For arrays, we need to find the schema for the array items
           // This is a bit tricky - we need to look at the parent field's schema
         }
@@ -359,10 +369,10 @@ export default function FrontmatterRenderer({
               });
             } else {
               // Single item being added to array
-              if (!Array.isArray(current[segment])) {
+              if (!arrayAt(current, segment)) {
                 current[segment] = [];
               }
-              current[segment].push({
+              arrayAt(current, segment)?.push({
                 value: newValue,
                 id: crypto.randomUUID(),
               });
@@ -380,11 +390,11 @@ export default function FrontmatterRenderer({
               typeof current[segment] === "object" &&
               "value" in current[segment]
             ) {
-              current[segment].value = newValue;
+              asNode(current[segment]).value = newValue;
             } else {
               current[segment] = {
                 value: newValue,
-                id: current[segment]?.id || crypto.randomUUID(),
+                id: idOf(current[segment]) || crypto.randomUUID(),
               };
             }
           }
@@ -397,10 +407,10 @@ export default function FrontmatterRenderer({
           }
 
           // Move to the next level
-          if (current[segment] && "value" in current[segment]) {
-            current = current[segment].value;
+          if (isWrappedValue(current[segment])) {
+            current = asNode(asNode(current[segment]).value);
           } else {
-            current = current[segment];
+            current = asNode(current[segment]);
           }
 
           // Update current schema fields for next iteration
@@ -425,17 +435,16 @@ export default function FrontmatterRenderer({
       if (curr.index) {
         if (Array.isArray(acc)) {
           const arrayItem = acc[parseInt(curr.name)];
-          return arrayItem?.value?.[curr.name] ?? arrayItem?.value;
+          const inner = asNode(arrayItem).value;
+          return asNode(inner)[curr.name] ?? inner;
         }
-        return acc?.[curr.name]?.value ?? acc?.[curr.name];
+        const entry = asNode(acc)[curr.name];
+        return isWrappedValue(entry) ? entry.value : entry;
       }
 
-      const nextValue = acc[curr.name];
+      const nextValue = asNode(acc)[curr.name];
       // Handle the value.id structure
-      if (nextValue && typeof nextValue === "object" && "value" in nextValue) {
-        return nextValue.value;
-      }
-      return nextValue;
+      return isWrappedValue(nextValue) ? nextValue.value : nextValue;
     }, data);
   };
 
@@ -572,7 +581,7 @@ export default function FrontmatterRenderer({
     };
 
     // Navigate to target location
-    let current = unwrap(result);
+    let current: TMutableNode = asNode(unwrap(result));
 
     for (let i = 0; i < segments.length; i++) {
       const seg = segments[i];
@@ -580,19 +589,19 @@ export default function FrontmatterRenderer({
       const isIndex = /^\d+$/.test(seg);
       const key = isIndex ? +seg : seg;
 
-      current = unwrap(current);
+      current = asNode(unwrap(current));
 
       if (isLast) {
-        if (!Array.isArray(current[key])) {
+        if (!arrayAt(current, key)) {
           current[key] = [];
         }
-        current[key].push(newElement);
+        arrayAt(current, key)?.push(newElement);
       } else {
         if (current[key] === undefined) {
           const nextIsIndex = /^\d+$/.test(segments[i + 1]);
           current[key] = nextIsIndex ? [] : {};
         }
-        current = current[key];
+        current = asNode(current[key]);
       }
     }
 
@@ -610,7 +619,7 @@ export default function FrontmatterRenderer({
     const normalizedPath = name.replace(/\[(\w+)\]/g, ".$1");
     const segments = normalizedPath.split(".");
 
-    let current = result;
+    let current: TMutableNode = asNode(result);
 
     // Helper function to unwrap {id, value} objects
     const unwrap = (obj: FormNode): FormNode => {
@@ -626,20 +635,16 @@ export default function FrontmatterRenderer({
       const segmentIndex = !isNaN(Number(segment)) ? Number(segment) : segment;
 
       // Unwrap the current level if it has id/value structure
-      current = unwrap(current);
+      current = asNode(unwrap(current));
 
       if (i === segments.length - 1) {
-        if (Array.isArray(current[segmentIndex])) {
+        const list = arrayAt(current, segmentIndex);
+        if (list) {
           // Remove the item at the specified index
-          current[segmentIndex].splice(index, 1);
-
-          // If the array is empty after removal, set it to an empty array
-          if (current[segmentIndex].length === 0) {
-            current[segmentIndex] = [];
-          }
+          list.splice(index, 1);
         }
       } else {
-        current = current[segmentIndex];
+        current = asNode(current[segmentIndex]);
       }
     }
 
@@ -649,6 +654,10 @@ export default function FrontmatterRenderer({
       return { ...prev, data: result };
     });
   }
+
+  /** The stored value of a top-level field, wrapped or raw. */
+  const fieldValue = (data: unknown, name: string) =>
+    unwrapValue(asNode(data)[name]);
 
   function regenerateIds(obj: FormNode) {
     if (!obj || typeof obj !== "object") return;
@@ -664,8 +673,9 @@ export default function FrontmatterRenderer({
         obj.id = `dup-${duplicateIdCounterRef.current}`;
       }
     }
-    for (const k of Object.keys(obj)) {
-      regenerateIds(obj[k]);
+    const node = asNode(obj);
+    for (const k of Object.keys(node)) {
+      regenerateIds(node[k] as FormNode);
     }
   }
 
@@ -754,10 +764,8 @@ export default function FrontmatterRenderer({
       // unwrap it and infer fields from the inner `value` object so the UI
       // renders the real nested fields rather than `id` and `value`.
       if (
-        obj &&
-        typeof obj === "object" &&
+        isWrappedValue(obj) &&
         Object.prototype.hasOwnProperty.call(obj, "id") &&
-        Object.prototype.hasOwnProperty.call(obj, "value") &&
         obj.value &&
         typeof obj.value === "object"
       ) {
@@ -768,14 +776,14 @@ export default function FrontmatterRenderer({
       // internal stored shape where each child is { value, id }), expose
       // those inner keys as primitive fields so the UI can render inputs
       // directly for them.
-      const looksLikeValueMap = Object.values(obj).every(
-        (v) => v && typeof v === "object" && "value" in v,
+      const objNode = asNode(obj);
+      const looksLikeValueMap = Object.values(objNode).every((v) =>
+        isWrappedValue(v),
       );
 
       if (looksLikeValueMap) {
-        return Object.keys(obj).map((childKey) => {
-          const childVal = obj[childKey];
-          const inner = childVal?.value;
+        return Object.keys(objNode).map((childKey) => {
+          const inner = unwrapValue(objNode[childKey]);
           let type: TField["type"] = "string";
           if (typeof inner === "number") type = "number";
           else if (typeof inner === "boolean") type = "boolean";
@@ -791,8 +799,8 @@ export default function FrontmatterRenderer({
       }
 
       // Fallback: infer at top level based on raw value types
-      return Object.keys(obj).map((k) => {
-        const val = obj[k];
+      return Object.keys(objNode).map((k) => {
+        const val = objNode[k];
         let type: TField["type"] = "string";
         if (typeof val === "number") type = "number";
         else if (typeof val === "boolean") type = "boolean";
@@ -914,7 +922,7 @@ export default function FrontmatterRenderer({
             } else if (item.type === "boolean" && item.name === "draft") {
               return null;
             } else if (item.type === "Date") {
-              const value = currentData?.[item.name]?.value;
+              const value = stringValue(fieldValue(currentData, item.name)) ?? "";
               return (
                 <div key={item.name}>
                   <PreviewLabel
@@ -925,13 +933,7 @@ export default function FrontmatterRenderer({
                   </PreviewLabel>
 
                   <DateTimePicker
-                    date={
-                      value
-                        ? value instanceof Date
-                          ? value
-                          : new Date(value)
-                        : undefined
-                    }
+                    date={value ? new Date(value) : undefined}
                     setDate={(date: Date | undefined) => {
                       handleUpdateData(
                         generateName({
@@ -947,7 +949,7 @@ export default function FrontmatterRenderer({
               );
             } else if (item.type === "color") {
               // Handle color fields from schema generator
-              const value = currentData?.[item.name]?.value;
+              const value = stringValue(fieldValue(currentData, item.name)) ?? "";
               return (
                 <div key={item.name} className="space-y-2">
                   <PreviewLabel {...item} className="text-sm">
@@ -969,7 +971,7 @@ export default function FrontmatterRenderer({
                 </div>
               );
             } else if (item.type === "string") {
-              const value = currentData?.[item.name]?.value;
+              const value = stringValue(fieldValue(currentData, item.name)) ?? "";
 
               // Check if the actual value is a hex color
               const isHexColor =
@@ -1051,7 +1053,7 @@ export default function FrontmatterRenderer({
                 </AnimatedListItem>
               );
             } else if (item.type === "number") {
-              const value = currentData?.[item.name]?.value;
+              const value = stringValue(fieldValue(currentData, item.name)) ?? "";
 
               return (
                 <AnimatedListItem key={item.name}>
@@ -1075,7 +1077,7 @@ export default function FrontmatterRenderer({
                 </AnimatedListItem>
               );
             } else if (item.type === "boolean") {
-              const checked = currentData?.[item.name]?.value;
+              const checked = fieldValue(currentData, item.name);
               const fieldName = generateName({
                 name: item.name,
                 breadcrumb,
@@ -1107,7 +1109,7 @@ export default function FrontmatterRenderer({
                 </AnimatedListItem>
               );
             } else if (item.type === "media") {
-              const media = currentData?.[item.name]?.value;
+              const media = stringValue(fieldValue(currentData, item.name)) ?? "";
               return (
                 <AnimatedListItem key={item.name}>
                   <PreviewLabel {...item}>{item.label}</PreviewLabel>
@@ -1135,11 +1137,8 @@ export default function FrontmatterRenderer({
                 </AnimatedListItem>
               );
             } else if (item.type === "gallery") {
-              const values = (
-                currentData?.value?.[item.name]
-                  ? currentData.value[item.name]
-                  : currentData?.[item.name]
-              ) as {
+              const nested = asNode(asNode(currentData).value)[item.name];
+              const values = (nested ?? asNode(currentData)[item.name]) as {
                 id: string;
                 value: string;
               }[];
@@ -1230,7 +1229,7 @@ export default function FrontmatterRenderer({
                 </AnimatedListItem>
               );
             } else if (item.type === "Array") {
-              const values = currentData?.[item.name] ?? [];
+              const values = arrayValue(asNode(currentData)[item.name]) ?? [];
               const isDropdown = item.isDropdown;
               const subType = item.subType;
 
@@ -1240,7 +1239,7 @@ export default function FrontmatterRenderer({
                     <PreviewLabel {...item}>{item.label}</PreviewLabel>
                     <ReferenceMultiSelect
                       item={item as Template}
-                      value={values}
+                      value={values as { id: string; value: string }[]}
                       onChange={(newValues) => {
                         const name = generateName({
                           name: item.name,
@@ -1304,14 +1303,16 @@ export default function FrontmatterRenderer({
                           }}
                           values={values || []}
                         >
-                          {values?.map((v: FormNode, index: number) => {
-                            const key = v.id;
-                            const currentVal = v;
-                            v = item.fields ? v.value : v;
+                          {values?.map((entry: unknown, index: number) => {
+                            const key = idOf(entry);
+                            const currentVal = entry as FormNode;
+                            const v = asNode(
+                              item.fields ? unwrapValue(entry) : entry,
+                            );
                             const label = item.fields
-                              ? v?.title?.value ||
-                                v?.name?.value ||
-                                v?.label?.value ||
+                              ? stringValue(v.title) ||
+                                stringValue(v.name) ||
+                                stringValue(v.label) ||
                                 item.name + " Item " + (index + 1)
                               : tEditor("renderer.item_at", {
                                   name: item.name,
@@ -1321,8 +1322,8 @@ export default function FrontmatterRenderer({
                             return (
                               <ListItem
                                 value={currentVal}
-                                listKey={key}
-                                key={key}
+                                listKey={key ?? String(index)}
+                                key={key ?? index}
                               >
                                 <div className="flex-1">
                                   {item.fields ? (
@@ -1393,7 +1394,9 @@ export default function FrontmatterRenderer({
                                           index: index,
                                         })}
                                         className="pr-10"
-                                        value={values?.[index].value || ""}
+                                        value={
+                                          stringValue(values?.[index]) || ""
+                                        }
                                         onChange={(e) => {
                                           handleUpdateData(
                                             e.target.name,

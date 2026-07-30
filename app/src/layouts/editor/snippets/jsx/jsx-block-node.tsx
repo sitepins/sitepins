@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { BaseSnippetBlock, SnippetTheme } from "../common/base-block-node";
 import { EditableTagLine } from "../common/editable-tag-line";
 import { parseJsxString } from "./jsx-parser";
+import type { JsxSlateElement } from "./jsx-serialization";
 
 const getJsxShortcodeTheme = (): SnippetTheme => {
   return {
@@ -23,9 +24,10 @@ export const JsxBlockElement = ({
   theme: _theme,
   ...props
 }: ComponentProps<typeof BaseSnippetBlock>) => {
-  const { children, element } = props;
-  const { name } = element as any;
-  const content = (element as any).content as string;
+  const { children } = props;
+  const element = props.element as JsxSlateElement;
+  const { name } = element;
+  const content = element.content;
   const editor = useEditorRef();
   const theme = getJsxShortcodeTheme();
 
@@ -39,8 +41,8 @@ export const JsxBlockElement = ({
     const parsed = parseJsxString(content);
 
     // Check if name or attributes have changed
-    const currentName = (element as any).name;
-    const currentAttributes = (element as any).attributes || {};
+    const currentName = element.name;
+    const currentAttributes = element.attributes || {};
 
     const nameChanged = parsed.name && parsed.name !== currentName;
     const attributesChanged =
@@ -49,7 +51,7 @@ export const JsxBlockElement = ({
     if (nameChanged || attributesChanged) {
       // Update the element with new name and attributes
       try {
-        const path = editor.api.findPath(element as any);
+        const path = editor.api.findPath(element);
         if (path) {
           editor.tf.setNodes(
             {

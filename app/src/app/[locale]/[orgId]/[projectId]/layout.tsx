@@ -78,7 +78,7 @@ export default function Layout(
 
   const { isLoading: isProviderLoading, isFetching: isProviderFetching } =
     useGetProvidersQuery(
-      { user_id: project?.user_id!, preferredProvider: project?.provider },
+      { user_id: project?.user_id, preferredProvider: project?.provider },
       {
         skip: !project?.user_id || isProjectFetching,
         refetchOnMountOrArgChange: true,
@@ -234,7 +234,7 @@ export default function Layout(
               projectContext={{
                 orgId: params.orgId.slice(4),
                 projectId: params.projectId,
-                projectName: project?.project_name!,
+                projectName: project?.project_name,
                 config,
               }}
               navChildren={

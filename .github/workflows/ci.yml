@@ -88,3 +88,12 @@ jobs:
 
       - name: Build API
         run: pnpm build:api
+
+      # Placeholders only. `next build` collects page data for the API routes,
+      # which construct URLs from these at module scope and throw on an empty
+      # value — the build does not reach the network.
+      - name: Build web
+        run: pnpm build:app
+        env:
+          NEXT_PUBLIC_BACKEND_URL: http://localhost:4000
+          NEXT_PUBLIC_HP_WS_URL: ws://localhost:4000/api/v1/editor/collab

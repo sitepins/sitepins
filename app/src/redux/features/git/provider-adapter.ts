@@ -20,6 +20,9 @@ export * from "./provider-args";
 
 export type GitProviderAdapter = GitProviderArgs & {
   selectCachedTreeArgs(state: unknown): QueryArgs[];
+  /** The cached tree result, found via whatever args the subscriber used. */
+  selectCachedTree(state: unknown): TreeCache | undefined;
+  selectCachedContent(state: unknown, args: QueryArgs): ContentCache | undefined;
   selectCachedContentArgs(state: unknown): QueryArgs[];
 
   // These dispatch rather than return an action: the thunk RTK Query builds
@@ -27,6 +30,16 @@ export type GitProviderAdapter = GitProviderArgs & {
   updateTreeCache(
     dispatch: AppDispatch,
     args: QueryArgs,
+    recipe: (draft: TreeCache) => void,
+  ): void;
+  /**
+   * Applies `recipe` to every cached tree listing. Use this when the repo
+   * itself changed: hand-built args miss the subscriber's entry, because
+   * GitLab keys its listings by `path` too.
+   */
+  updateAllTreeCaches(
+    dispatch: AppDispatch,
+    state: unknown,
     recipe: (draft: TreeCache) => void,
   ): void;
   /**
@@ -63,6 +76,19 @@ const githubAdapter: GitProviderAdapter = {
       "getGitHubContent",
     ) as unknown as QueryArgs[],
 
+  selectCachedTree: (state) => {
+    const [args] = githubAdapter.selectCachedTreeArgs(state);
+    if (!args) return undefined;
+    return githubContentApi.endpoints.getGitHubTrees.select(args as never)(
+      state as never,
+    )?.data as TreeCache | undefined;
+  },
+
+  selectCachedContent: (state, args) =>
+    githubContentApi.endpoints.getGitHubContent.select(args as never)(
+      state as never,
+    )?.data as ContentCache | undefined,
+
   updateTreeCache: (dispatch, args, recipe) => {
     dispatch(
       githubContentApi.util.updateQueryData(
@@ -71,6 +97,11 @@ const githubAdapter: GitProviderAdapter = {
         recipe as never,
       ),
     );
+  },
+  updateAllTreeCaches: (dispatch, state, recipe) => {
+    for (const args of githubAdapter.selectCachedTreeArgs(state)) {
+      githubAdapter.updateTreeCache(dispatch, args, recipe);
+    }
   },
   updateDirectoryCache: (dispatch, args, mutate) => {
     dispatch(
@@ -119,6 +150,19 @@ const gitlabAdapter: GitProviderAdapter = {
       "getGitLabContent",
     ) as unknown as QueryArgs[],
 
+  selectCachedTree: (state) => {
+    const [args] = gitlabAdapter.selectCachedTreeArgs(state);
+    if (!args) return undefined;
+    return gitlabContentApi.endpoints.getGitLabTrees.select(args as never)(
+      state as never,
+    )?.data as TreeCache | undefined;
+  },
+
+  selectCachedContent: (state, args) =>
+    gitlabContentApi.endpoints.getGitLabContent.select(args as never)(
+      state as never,
+    )?.data as ContentCache | undefined,
+
   updateTreeCache: (dispatch, args, recipe) => {
     dispatch(
       gitlabContentApi.util.updateQueryData(
@@ -127,6 +171,11 @@ const gitlabAdapter: GitProviderAdapter = {
         recipe as never,
       ),
     );
+  },
+  updateAllTreeCaches: (dispatch, state, recipe) => {
+    for (const args of gitlabAdapter.selectCachedTreeArgs(state)) {
+      gitlabAdapter.updateTreeCache(dispatch, args, recipe);
+    }
   },
   updateDirectoryCache: (dispatch, args, mutate) => {
     dispatch(

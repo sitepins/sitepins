@@ -2,6 +2,8 @@
 
 import Container from "@/components/container";
 import { isDemoUrl } from "@/lib/utils/demo-urls";
+import { treeItemsOf } from "@/lib/utils/tree-items";
+import { toRepoInfoView } from "@/redux/features/git/repo-info";
 import detectFramework, {
   refineFrameworkFromPackageJson,
 } from "@/lib/utils/framework-detector";
@@ -78,9 +80,9 @@ export default function Project(
     },
   );
 
-  const repoInfo = isGitLabProvider(project?.provider)
-    ? glRepoInfo
-    : ghRepoInfo;
+  const repoInfo = toRepoInfoView(
+    isGitLabProvider(project?.provider) ? glRepoInfo : ghRepoInfo,
+  );
 
   const [updateProjectVisibility] = useUpdateProjectVisibilityMutation();
   const [updateProjectGenerator] = useUpdateProjectGeneratorMutation();
@@ -138,15 +140,15 @@ export default function Project(
     },
   );
 
-  const treeData = isGitLabProvider(project?.provider)
-    ? glTreeData
-    : ghTreeData;
+  // GitLab's repo-tree endpoint returns the array itself, GitHub's resolves to
+  // `{ files }`; normalizing here is what lets detection run on both.
+  const treeFiles = treeItemsOf(
+    isGitLabProvider(project?.provider) ? glTreeData : ghTreeData,
+  );
 
   // Dependencies disambiguate frameworks that share a config file.
-  const hasPackageJson = Boolean(
-    treeData?.files?.some(
-      (file: { path?: string }) => file.path === "package.json",
-    ),
+  const hasPackageJson = treeFiles.some(
+    (file) => file.path === "package.json",
   );
 
   const { data: ghPackageJson, isLoading: isGhPackageJsonLoading } =
@@ -204,11 +206,7 @@ export default function Project(
     if (!project || !repoInfo) return;
 
     try {
-      const visibility = isGitLabProvider(project.provider)
-        ? repoInfo.visibility
-        : repoInfo.private
-          ? "private"
-          : "public";
+      const visibility = repoInfo.visibility;
 
       if (project.visibility !== visibility && !visibilityUpdatedRef.current) {
         visibilityUpdatedRef.current = true;
@@ -232,14 +230,14 @@ export default function Project(
       generatorSyncedRef.current ||
       !project ||
       project.generator ||
-      !treeData?.files?.length ||
+      !treeFiles.length ||
       (hasPackageJson && isPackageJsonLoading)
     ) {
       return;
     }
 
     const detected = refineFrameworkFromPackageJson(
-      detectFramework(treeData.files),
+      detectFramework(treeFiles),
       packageJsonRaw,
     );
     const generatorValue = detected ?? "undefined";
@@ -254,7 +252,7 @@ export default function Project(
     });
   }, [
     project,
-    treeData,
+    treeFiles,
     updateProjectGenerator,
     hasPackageJson,
     isPackageJsonLoading,
@@ -263,9 +261,7 @@ export default function Project(
 
   // Sync site_url from repo homepage
   useEffect(() => {
-    const homepage = isGitLabProvider(project?.provider)
-      ? repoInfo?.web_url
-      : repoInfo?.homepage;
+    const homepage = repoInfo?.homepage;
 
     if (
       !project ||

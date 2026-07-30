@@ -1,4 +1,3 @@
-import { authClient } from "@/lib/auth/auth-client";
 import { IS_DEMO, SCHEMA_FOLDER } from "@/lib/constant";
 import { logger } from "@/lib/logger";
 import { checkMedia } from "@/lib/utils/check-media-file";
@@ -14,6 +13,7 @@ import { RootState } from "@/redux/store";
 import path from "path";
 import { toast } from "sonner";
 import { updateConfig } from "../config/slice";
+import { getGitProviderAdapter } from "../git/provider-adapter";
 import {
   coAuthorOf,
   createCommitTokenSession,
@@ -21,13 +21,15 @@ import {
   resolveCommitAuthor,
   resolveImpersonatePreference,
 } from "../git/commit-session";
-import { userPreferenceApi } from "../user-preference/user-preference-api";
 import { encodeProjectPath, gitlabApi } from "./gitlab-api";
 import { gitlabContentApi } from "./gitlab-content-api";
 import {
+  TGitLabBranch,
   TGitLabCommit,
   TGitLabCommitAction,
+  TGitLabCompareResponse,
   TGitLabCreateCommitResponse,
+  TGitLabFile,
   TGitLabPipeline,
 } from "./gitlab-type";
 
@@ -89,7 +91,9 @@ export const gitlabCommitApi = gitlabApi.injectEndpoints({
         },
       }),
       providesTags(result, _error, arg) {
-        const tags: any[] = [{ type: "GitLabCommit", id: "LIST" }];
+        const tags: { type: "GitLabCommit"; id: string }[] = [
+          { type: "GitLabCommit", id: "LIST" },
+        ];
         if (arg.path) {
           tags.push({ type: "GitLabCommit", id: `${arg.path}` });
         }
@@ -105,9 +109,9 @@ export const gitlabCommitApi = gitlabApi.injectEndpoints({
           return newItems;
         }
 
-        const existingIds = new Set(currentCache.map((c: any) => c.id));
+        const existingIds = new Set(currentCache.map((c) => c.id));
         const filteredNewItems = newItems.filter(
-          (item: any) => !existingIds.has(item.id),
+          (item) => !existingIds.has(item.id),
         );
         return [...currentCache, ...filteredNewItems];
       },
@@ -285,23 +289,15 @@ export const gitlabCommitApi = gitlabApi.injectEndpoints({
               try {
                 const config = JSON.parse(file.content);
                 dispatch(updateConfig(config));
-                dispatch(
-                  gitlabContentApi.util.updateQueryData(
-                    "getGitLabTrees",
-                    {
-                      id: String(storeConfig.owner),
-                      ref: storeConfig.branch,
-                      recursive: true,
-                      config: storeConfig,
-                    },
-                    (draft) => {
-                      draft.trees = pathToDir(draft.files as any, {
-                        ...storeConfig,
-                        ...config,
-                      });
-                      return draft;
-                    },
-                  ),
+                getGitProviderAdapter("Gitlab").updateAllTreeCaches(
+                  dispatch,
+                  getState(),
+                  (draft) => {
+                    draft.trees = pathToDir(draft.files, {
+                      ...storeConfig,
+                      ...config,
+                    });
+                  },
                 );
               } catch {
                 // Ignore parse errors
@@ -409,107 +405,41 @@ export const gitlabCommitApi = gitlabApi.injectEndpoints({
       ) {
         const { config: storeConfig } = getState() as RootState;
 
-        // Helper to track whether to use user token (may switch to false on permission errors)
-        let useUserToken = Boolean(storeConfig.currentLoginUserToken);
-        const getToken = () =>
-          useUserToken ? storeConfig.currentLoginUserToken : storeConfig.token;
+        const session = createCommitTokenSession(
+          storeConfig.currentLoginUserToken,
+          storeConfig.token,
+        );
 
-        // Fetch user preference for co-authoring
-        let impersonate = false;
-        try {
-          const resolvedSession = await authClient.getSession();
-          const userId = resolvedSession?.data?.user?.user_id;
-          if (userId) {
-            // @ts-ignore - initiate is allowed here
-            const prefResult = await dispatch(
-              userPreferenceApi.endpoints.getUserPreference.initiate(userId),
-            );
-            impersonate = prefResult.data?.impersonate ?? false;
-          }
-        } catch (e) {
-          logger.warn("Failed to fetch user preferences", e);
-        }
-
-        // Helper to check if error is permission-related
-        const isPermissionError = (error: any) => {
-          const status = errorStatus(error) || error?.response?.status;
-          const statusNum = Number(status);
-          return statusNum === 401 || statusNum === 403;
-        };
+        const impersonate = await resolveImpersonatePreference(dispatch);
 
         try {
-          const { data: auth } = await authClient.getSession();
-          const user = auth?.user;
-
-          let userResult = useUserToken
-            ? await fetchWithBQ({
-                endpoint: "/user",
-                token: storeConfig.currentLoginUserToken,
-              })
-            : {
-                data: {
-                  username: user?.full_name?.replaceAll(" ", "").toLowerCase(),
-                  email: user?.email,
-                  name: user?.full_name,
-                },
+          const author = await resolveCommitAuthor({
+            session,
+            fetchUser: (token) => fetchWithBQ({ endpoint: "/user", token }),
+            mapUser: (data) => {
+              const user = data as {
+                name?: string;
+                username?: string;
+                email?: string;
               };
-
-          // Retry with session if user token fails with permission error
-          if (
-            userResult.error &&
-            isPermissionError(userResult.error) &&
-            useUserToken
-          ) {
-            useUserToken = false;
-            userResult = {
-              data: {
-                username: user?.full_name?.replaceAll(" ", "").toLowerCase(),
-                email: user?.email,
-                name: user?.full_name,
-              },
-            };
-          }
-
-          if (!userResult.data) {
-            throw new Error("Failed to fetch user details.");
-          }
-
-          const userData = userResult.data as {
-            username?: string;
-            email?: string;
-            name?: string;
-          };
-
-          const auth_details = getGitAuthDetails("Gitlab");
-
-          let treeResult = await fetchWithBQ({
-            endpoint: `/projects/${encodeProjectPath(String(id))}/repository/tree`,
-            params: {
-              ref: branch,
-              path: oldFolder,
-              recursive: true,
-              per_page: 1000,
-              ...(getToken() && { token: getToken() }),
+              return { name: user.name || user.username, email: user.email };
             },
           });
 
-          // Retry with bot identity if permission error
-          if (
-            treeResult.error &&
-            isPermissionError(treeResult.error) &&
-            useUserToken
-          ) {
-            useUserToken = false;
-            treeResult = await fetchWithBQ({
+          const auth_details = getGitAuthDetails("Gitlab");
+
+          const treeResult = await session.run((token) =>
+            fetchWithBQ({
               endpoint: `/projects/${encodeProjectPath(String(id))}/repository/tree`,
               params: {
                 ref: branch,
                 path: oldFolder,
                 recursive: true,
                 per_page: 1000,
+                ...(token && { token }),
               },
-            });
-          }
+            }),
+          );
 
           if (!treeResult.data || !Array.isArray(treeResult.data)) {
             throw new Error("Failed to fetch folder contents.");
@@ -529,82 +459,44 @@ export const gitlabCommitApi = gitlabApi.injectEndpoints({
             previous_path: file.path,
           }));
 
-          const _hasUserToken = Boolean(storeConfig.currentLoginUserToken);
-          const commitMessage = createGitCommitMessage(
-            `${message} by Sitepins`,
-            description,
-            !impersonate && useUserToken
-              ? userData.name || userData.username
-              : undefined,
-            !impersonate && useUserToken ? userData.email : undefined,
-            "Gitlab",
-          );
-
-          let commitResult = await fetchWithBQ({
-            endpoint: `/projects/${encodeProjectPath(String(id))}/repository/commits`,
-            method: "POST",
-            body: {
-              branch,
-              commit_message: commitMessage,
-              author_email: auth_details.email,
-              author_name: auth_details.name,
-              actions,
-              ...(getToken() && { token: getToken() }),
-            },
-          });
-
-          // Retry with bot identity if permission error
-          if (
-            commitResult.error &&
-            isPermissionError(commitResult.error) &&
-            useUserToken
-          ) {
-            useUserToken = false;
-            // Re-generate commit message without co-author on fallback
-            const fallbackCommitMessage = createGitCommitMessage(
-              `${message} by Sitepins`,
-              description,
-              undefined,
-              undefined,
-              "Gitlab",
-            );
-
-            commitResult = await fetchWithBQ({
+          // Rebuilt per attempt: once the retry drops to the app identity,
+          // `coAuthorOf` stops emitting the co-author trailer.
+          const commitResult = await session.run((token) => {
+            const coAuthor = coAuthorOf(author, { impersonate, session });
+            return fetchWithBQ({
               endpoint: `/projects/${encodeProjectPath(String(id))}/repository/commits`,
               method: "POST",
               body: {
                 branch,
-                commit_message: fallbackCommitMessage,
+                commit_message: createGitCommitMessage(
+                  `${message} by Sitepins`,
+                  description,
+                  coAuthor.name,
+                  coAuthor.email,
+                  "Gitlab",
+                ),
                 author_email: auth_details.email,
                 author_name: auth_details.name,
                 actions,
-                ...(getToken() && { token: getToken() }),
+                ...(token && { token }),
               },
             });
-          }
+          });
 
           if (!commitResult.data) {
             throw new Error("Failed to rename folder in GitLab.");
           }
 
-          dispatch(
-            gitlabContentApi.util.updateQueryData(
-              "getGitLabTrees",
-              {
-                id: String(id),
-                ref: branch,
-                recursive: true,
-                config: storeConfig,
-              },
-              (draft) => {
-                const files = draft.files.filter(
-                  (file) => !file.path?.startsWith(oldFolder),
-                );
-                draft.files = files;
-                draft.trees = pathToDir(files as any, storeConfig);
-                return draft;
-              },
-            ),
+          getGitProviderAdapter("Gitlab").updateAllTreeCaches(
+            dispatch,
+            getState(),
+            (draft) => {
+              const files = draft.files.filter(
+                (file) => !file.path?.startsWith(oldFolder),
+              );
+              draft.files = files;
+              draft.trees = pathToDir(files, storeConfig);
+            },
           );
 
           return { data: commitResult.data as TGitLabCreateCommitResponse };
@@ -683,10 +575,10 @@ export const gitlabCommitApi = gitlabApi.injectEndpoints({
           });
 
           if (commitCheck.error) {
-            return { error: commitCheck.error as any };
+            return { error: commitCheck.error };
           }
 
-          const commit = commitCheck.data as any;
+          const commit = commitCheck.data as TGitLabCommit;
 
           // Get current branch
           const branchCheck = await fetchWithBQ({
@@ -698,10 +590,10 @@ export const gitlabCommitApi = gitlabApi.injectEndpoints({
           });
 
           if (branchCheck.error) {
-            return { error: branchCheck.error as any };
+            return { error: branchCheck.error };
           }
 
-          const branchData = branchCheck.data as any;
+          const branchData = branchCheck.data as TGitLabBranch;
 
           if (branchData.commit?.id === sha) {
             return {
@@ -745,7 +637,7 @@ export const gitlabCommitApi = gitlabApi.injectEndpoints({
             };
           }
 
-          const compareData = compareRes.data as any;
+          const compareData = compareRes.data as TGitLabCompareResponse;
           const diffs = compareData.diffs || [];
 
           if (diffs.length === 0) {
@@ -775,7 +667,7 @@ export const gitlabCommitApi = gitlabApi.injectEndpoints({
               });
 
               if (!fileRes.error && fileRes.data) {
-                const fileData = fileRes.data as any;
+                const fileData = fileRes.data as TGitLabFile;
                 const isMedia = checkMedia(diff.old_path);
                 let content = fileData.content || "";
                 if (!isMedia && fileData.encoding === "base64") {
@@ -808,7 +700,7 @@ export const gitlabCommitApi = gitlabApi.injectEndpoints({
               });
 
               if (!fileRes.error && fileRes.data) {
-                const fileData = fileRes.data as any;
+                const fileData = fileRes.data as TGitLabFile;
                 const isMedia = checkMedia(diff.old_path);
                 let content = fileData.content || "";
                 if (!isMedia && fileData.encoding === "base64") {
@@ -827,6 +719,9 @@ export const gitlabCommitApi = gitlabApi.injectEndpoints({
             } else {
               // File was modified, fetch content from target commit and update
               const filePath = diff.new_path || diff.old_path || diff.path;
+              // Without a path the request would resolve to a file named
+              // "undefined"; a pathless diff carries nothing to revert.
+              if (!filePath) continue;
               const fileRes = await fetchWithBQ({
                 endpoint: `/projects/${encodedProjectId}/repository/files/${encodeURIComponent(
                   filePath,
@@ -835,7 +730,7 @@ export const gitlabCommitApi = gitlabApi.injectEndpoints({
               });
 
               if (!fileRes.error && fileRes.data) {
-                const fileData = fileRes.data as any;
+                const fileData = fileRes.data as TGitLabFile;
                 const isMedia = checkMedia(filePath);
                 let content = fileData.content || "";
                 if (!isMedia && fileData.encoding === "base64") {
@@ -882,10 +777,12 @@ export const gitlabCommitApi = gitlabApi.injectEndpoints({
           });
 
           if (commitRes.error) {
-            return { error: commitRes.error as any };
+            return { error: commitRes.error };
           }
 
-          const resultCommit = commitRes.data as any;
+          const resultCommit = commitRes.data as TGitLabCommit & {
+            commit?: TGitLabCommit;
+          };
           const resetSha = resultCommit.id || resultCommit.commit?.id || sha;
 
           return {

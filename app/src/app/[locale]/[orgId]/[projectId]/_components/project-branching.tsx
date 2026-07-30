@@ -27,6 +27,10 @@ import {
   useMergeGitHubPullRequestMutation,
 } from "@/redux/features/github";
 import {
+  findRequestForBranch,
+  toPullRequestViews,
+} from "@/redux/features/git/pull-request";
+import {
   useCompareGitLabBranchQuery,
   useCreateGitLabMergeRequestMutation,
   useGetGitLabMergeRequestsQuery,
@@ -198,16 +202,15 @@ const ProjectBranching = ({
   const isSyncing = isGhFetching || isGlFetching;
 
   const existingPR = isGitHubProvider(provider)
-    ? ghPulls?.find((req: any) => req.head.ref === currentBranch)
-    : glMergeRequests?.[0];
+    ? findRequestForBranch(ghPulls, currentBranch)
+    : toPullRequestViews(glMergeRequests)[0];
 
-  const incomingRequests = isGitHubProvider(provider)
-    ? incomingGhPulls
-    : incomingGlMRs;
+  const incomingRequests = toPullRequestViews(
+    isGitHubProvider(provider) ? incomingGhPulls : incomingGlMRs,
+  );
 
-  const existingPRLink = isGitHubProvider(provider)
-    ? existingPR?.html_url
-    : existingPR?.web_url;
+  const existingPRLink = existingPR?.url;
+  const requestLink = prLink || existingPRLink;
 
   const isAhead = isGitLabProvider(provider)
     ? (glCompare?.commits?.length || 0) > 0
@@ -399,15 +402,11 @@ const ProjectBranching = ({
       {/* Incoming Requests Section (Only on default branch) */}
       {isDefaultBranch && incomingRequests && incomingRequests.length > 0 && (
         <div className="space-y-3">
-          {incomingRequests.map((req: any) => {
-            const reqId = isGitHubProvider(provider) ? req.number : req.iid;
+          {incomingRequests.map((req) => {
+            const reqId = req.id;
             const reqTitle = req.title;
-            const reqBranch = isGitHubProvider(provider)
-              ? req.head.ref
-              : req.source_branch;
-            const reqUrl = isGitHubProvider(provider)
-              ? req.html_url
-              : req.web_url;
+            const reqBranch = req.sourceBranch;
+            const reqUrl = req.url;
 
             return (
               <div
@@ -492,7 +491,7 @@ const ProjectBranching = ({
           </div>
 
           <div className="flex items-center gap-3">
-            {(prLink || existingPRLink) && (
+            {requestLink && (
               <Button
                 variant="outline"
                 size="sm"
@@ -500,7 +499,7 @@ const ProjectBranching = ({
                 className="h-8 text-xs"
               >
                 <Link
-                  href={prLink || existingPRLink}
+                  href={requestLink}
                   target="_blank"
                   className="flex items-center gap-1"
                 >

@@ -92,10 +92,30 @@ export function chunk<T>(arr: T[], size: number): T[][] {
   return out;
 }
 
-function defaultIsRetriable(error: any) {
-  const status =
-    error?.status || error?.response?.status || error?.request?.status;
-  const msg = typeof error?.message === "string" ? error.message : "";
+/** Field readers for caught values, which TypeScript types as `unknown`. */
+const asRecord = (value: unknown): Record<string, unknown> | undefined =>
+  typeof value === "object" && value !== null
+    ? (value as Record<string, unknown>)
+    : undefined;
+
+const statusOf = (error: unknown): unknown => {
+  const err = asRecord(error);
+  return (
+    err?.status ??
+    asRecord(err?.response)?.status ??
+    asRecord(err?.request)?.status
+  );
+};
+
+const messageOf = (error: unknown): string => {
+  const msg = asRecord(error)?.message;
+  if (typeof msg === "string") return msg;
+  return typeof error === "string" ? error : "";
+};
+
+function defaultIsRetriable(error: unknown) {
+  const status = statusOf(error);
+  const msg = messageOf(error);
   return (
     status === 500 ||
     status === 502 ||
@@ -114,14 +134,14 @@ export async function retry<T>(
   options?: {
     retries?: number;
     baseDelayMs?: number;
-    isRetriable?: (error: any) => boolean;
+    isRetriable?: (error: unknown) => boolean;
   },
 ): Promise<T> {
   const retries = options?.retries ?? 2;
   const baseDelayMs = options?.baseDelayMs ?? 250;
   const isRetriable = options?.isRetriable ?? defaultIsRetriable;
 
-  let lastErr: any;
+  let lastErr: unknown;
   for (let attempt = 0; attempt <= retries; attempt++) {
     try {
       return await fn();
@@ -156,7 +176,7 @@ export function getGitAuthDetails(provider: "Github" | "Gitlab") {
  * Normalizes snippet payload from both GitHub and GitLab formats
  */
 export function normalizeSnippetPayload(
-  payload: Record<string, any>,
+  payload: Record<string, unknown>,
   filePath: string,
 ): MdxSnippet | null {
   if (!payload || typeof payload !== "object") {
@@ -175,7 +195,7 @@ export function normalizeSnippetPayload(
   // Legacy schema support
   const source =
     typeof payload.snippet === "object" && payload.snippet !== null
-      ? (payload.snippet as Record<string, any>)
+      ? (payload.snippet as Record<string, unknown>)
       : payload;
 
   if (!source || typeof source !== "object") {
@@ -196,7 +216,7 @@ export function normalizeSnippetPayload(
     code: "",
     schema: Array.isArray(source.schema)
       ? source.schema
-          .filter((s: any) => typeof s === "string")
+          .filter((s: unknown) => typeof s === "string")
           .map((s: string) => s.trim())
       : undefined,
   };
@@ -287,20 +307,11 @@ export function delay(ms: number) {
 /**
  * Checks if an error is a transient network error
  */
-export function isTransientNetworkError(error: any) {
-  const msg =
-    typeof error?.message === "string"
-      ? error.message
-      : typeof error === "string"
-        ? error
-        : "";
+export function isTransientNetworkError(error: unknown) {
+  const msg = messageOf(error);
 
   const status =
-    error?.status ||
-    error?.response?.status ||
-    (typeof (error as any)?.error?.status === "number"
-      ? (error as any).error.status
-      : undefined);
+    statusOf(error) ?? asRecord(asRecord(error)?.error)?.status;
 
   return (
     msg.toLowerCase().includes("failed to fetch") ||

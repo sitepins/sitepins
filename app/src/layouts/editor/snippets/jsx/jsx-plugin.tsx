@@ -4,8 +4,8 @@ import { createPlatePlugin } from "platejs/react";
 import { JsxBlockElement } from "./jsx-block-node";
 import { JsxInlineElement } from "./jsx-inline-node";
 
-export const KEY_JSX_BLOCK = "jsx_block";
-export const KEY_JSX_INLINE = "jsx_inline";
+export { KEY_JSX_BLOCK, KEY_JSX_INLINE } from "../snippet-keys";
+import { KEY_JSX_BLOCK, KEY_JSX_INLINE } from "../snippet-keys";
 
 export const JsxBlockKit = createPlatePlugin({
   key: KEY_JSX_BLOCK,

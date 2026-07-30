@@ -12,6 +12,8 @@ import { SnippetTheme } from "../common/base-block-node";
 import { EditableTagLine } from "../common/editable-tag-line";
 import { SnippetControls } from "../common/snippet-controls";
 import { parseJsxString } from "./jsx-parser";
+import type { TText } from "platejs";
+import type { JsxSlateElement } from "./jsx-serialization";
 
 // JSX-specific theme colors
 const getJsxTheme = (): SnippetTheme => {
@@ -27,13 +29,14 @@ const getJsxTheme = (): SnippetTheme => {
 
 export const JsxInlineElement = withRef<typeof PlateElement>(
   ({ className, ...props }, ref) => {
-    const { children, element } = props as any;
+    const { children } = props;
+    const element = props.element as JsxSlateElement;
     const editor = useEditorRef();
     const selected = useSelected();
     const focused = useFocused();
     const theme = getJsxTheme();
 
-    const { name, isSelfClosing, _attributes } = element as any;
+    const { name, isSelfClosing } = element;
     const content = element.content || `<${name}>`;
 
     // For non-self-closing, we need to show: <Tag> content </Tag>
@@ -45,7 +48,7 @@ export const JsxInlineElement = withRef<typeof PlateElement>(
     const _innerContent =
       !isSelfClosing && element.children?.length > 0
         ? element.children
-            .map((c: any) => c.text || "")
+            .map((c) => (c as TText).text || "")
             .join("")
             .replace(/[\u200B\u200C\u200D\uFEFF]/g, "")
         : "";

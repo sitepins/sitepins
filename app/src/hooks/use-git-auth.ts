@@ -26,7 +26,9 @@ export function useGitAuth({
   const ref = useRef<NodeJS.Timeout | null>(null);
   const [isTokenChanged, setTokenChanged] = useState(false);
   const [isClicked, setClicked] = useState(false);
-  const prevProvider = useRef<TProvider[] | null>(null);
+  // State, not a ref: `selectedProvider` is derived from this during render,
+  // so a snapshot update has to re-render.
+  const [prevProvider, setPrevProvider] = useState<TProvider[] | null>(null);
   const provider = selectedProviderProp || "Github";
 
   const {
@@ -39,13 +41,15 @@ export function useGitAuth({
     skip: !auth?.user.user_id || ignore,
   });
 
-  useEffect(() => {
-    if (isProvidersSuccess && providers) {
-      if (!prevProvider.current) {
-        prevProvider.current = providers;
-      }
+  // Seeding during render rather than in an effect: React re-runs the render
+  // without committing, so no extra paint and no cascading effect.
+  if (isProvidersSuccess && providers && !prevProvider) {
+    setPrevProvider(providers);
+  }
 
-      const currentSelectedProvider = prevProvider.current?.find(
+  useEffect(() => {
+    if (isProvidersSuccess && providers && prevProvider) {
+      const currentSelectedProvider = prevProvider.find(
         (item) => item.provider === provider,
       );
       const selectedProvider = providers.find(
@@ -57,14 +61,14 @@ export function useGitAuth({
 
       if (tokenChanged) {
         setTokenChanged(true);
-        prevProvider.current = providers;
+        setPrevProvider(providers);
         setClicked(false);
         if (isClicked) {
           onSuccess(selectedProvider!);
         }
       }
     }
-  }, [isProvidersSuccess, providers, provider, isClicked, onSuccess]);
+  }, [isProvidersSuccess, providers, provider, isClicked, onSuccess, prevProvider]);
 
   useEffect(() => {
     if (isClicked && !providersLoading) {
@@ -105,7 +109,7 @@ export function useGitAuth({
 
   return {
     isTokenChanged,
-    selectedProvider: prevProvider.current?.find(
+    selectedProvider: prevProvider?.find(
       (item) => item.provider === provider,
     ),
     providersLoading: providersLoading || isClicked,

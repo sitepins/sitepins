@@ -4,6 +4,32 @@ import { TTree } from "@/types";
 export type Framework =
   "nextjs" | "astro" | "hugo" | "hugo_examplesite" | "tanstack" | null;
 
+const FRAMEWORKS: readonly NonNullable<Framework>[] = [
+  "nextjs",
+  "astro",
+  "hugo",
+  "hugo_examplesite",
+  "tanstack",
+];
+
+/** Legacy spellings stored on existing projects. */
+const FRAMEWORK_ALIASES: Record<string, NonNullable<Framework>> = {
+  next: "nextjs",
+};
+
+/**
+ * Narrows a `generator` string coming off the API or a stored config to the
+ * frameworks the editor knows, so callers stop casting.
+ */
+export const asFramework = (value: unknown): Framework => {
+  if (typeof value !== "string") return null;
+  const key = value.toLowerCase().replace(/[^a-z_]/g, "");
+  const aliased = FRAMEWORK_ALIASES[key] ?? key;
+  return FRAMEWORKS.includes(aliased as NonNullable<Framework>)
+    ? (aliased as NonNullable<Framework>)
+    : null;
+};
+
 // Detection rule per framework, declared in `config/global.json`. `requireAll`
 // carries the extra evidence needed when `configFiles` isn't exclusive —
 // TanStack Start shares `vite.config.ts` with every other Vite app.

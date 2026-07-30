@@ -1,5 +1,6 @@
 import { Node, Parent } from "unist";
 import { visit } from "unist-util-visit";
+import { nodeValue } from "../snippet-mdast";
 
 type HtmlNode = Node & {
   type: "html";
@@ -10,7 +11,7 @@ type HtmlNode = Node & {
 };
 
 function isParent(node: Node): node is Parent {
-  return !!(node as any).children;
+  return !!(node as Partial<Parent>).children;
 }
 
 const getTagName = (html: string): string | null => {
@@ -57,7 +58,7 @@ const stitchSplitHtmlNodes = (tree: Node) => {
           !isClosingTag(startHtml) &&
           isClosingTag(endHtml)
         ) {
-          const textContent = (next as any).value || "";
+          const textContent = nodeValue(next);
           const mergedValue = `${startHtml}${textContent}${endHtml}`;
 
           // Create combined node

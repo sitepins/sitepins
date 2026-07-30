@@ -16,17 +16,15 @@ import { useDialog } from "@/hooks/use-dialog";
 import { isGitLabProvider } from "@/lib/utils/provider-checker";
 import { selectConfig } from "@/redux/features/config/slice";
 import {
-  githubContentApi,
   useUpdateGitHubFilesMutation,
 } from "@/redux/features/github";
 import {
-  gitlabContentApi,
   useUpdateGitLabFilesMutation,
 } from "@/redux/features/gitlab";
 import { excludeMedia } from "@/redux/features/media/slice";
 import { EAction, EProjectLogType } from "@/redux/features/project-log/type";
-import { useAppDispatch } from "@/redux/store";
-import { TFiles } from "@/types";
+import { getGitProviderAdapter } from "@/redux/features/git/provider-adapter";
+import { store, useAppDispatch } from "@/redux/store";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
 import { useSelector } from "react-redux";
@@ -111,47 +109,18 @@ export default function MediaDelete({
 
                     const filepath = `media/${dir}`;
 
-                    if (isGitLabProvider(config.provider)) {
-                      dispatch(
-                        gitlabContentApi.util.updateQueryData(
-                          "getGitLabTrees",
-                          {
-                            id: config.repoName
-                              ? `${config.owner}/${config.repoName}`
-                              : config.owner,
-                            ref: config.branch,
-                            recursive: true,
-                            config: config,
-                          },
-                          (draft: any) => {
-                            draft.files = draft.files.filter(
-                              (file: TFiles) => file.path !== filepath,
-                            );
-                          },
-                        ),
-                      );
-                    } else {
-                      dispatch(
-                        githubContentApi.util.updateQueryData(
-                          "getGitHubTrees",
-                          {
-                            owner: config.owner,
-                            repo: config.repoName,
-                            tree_sha: config.branch,
-                            recursive: "1",
-                            config: config,
-                          },
-                          (draft: any) => {
-                            draft.trees = draft.trees.filter(
-                              (file: TFiles) => file.path !== filepath,
-                            );
-                            draft.files = draft.files.filter(
-                              (file: TFiles) => file.path !== filepath,
-                            );
-                          },
-                        ),
-                      );
-                    }
+                    getGitProviderAdapter(config.provider).updateAllTreeCaches(
+                      dispatch,
+                      store.getState(),
+                      (draft) => {
+                        draft.trees = draft.trees.filter(
+                          (file) => file.path !== filepath,
+                        );
+                        draft.files = draft.files.filter(
+                          (file) => file.path !== filepath,
+                        );
+                      },
+                    );
                   }
                 });
               }}

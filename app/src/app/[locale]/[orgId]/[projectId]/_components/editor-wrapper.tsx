@@ -5,6 +5,7 @@ import { logger } from "@/lib/logger";
 import { revertToOriginal } from "@/editor/utils/plate-utils";
 import { useCommitLogic } from "@/hooks/use-commit-logic";
 import { useIsChanged } from "@/hooks/use-is-changed";
+import { unwrapValue } from "@/lib/utils/frontmatter-value";
 import { useOwnerPlan } from "@/hooks/use-owner-plan";
 import { useSandboxPreview } from "@/hooks/use-sandbox-preview";
 import { useSaveAsDraft } from "@/hooks/use-save-as-draft";
@@ -69,7 +70,9 @@ const EditorWrapper: React.FC<EditorWrapperProps> = memo(
       params.orgId,
     );
 
-    const storeRef = useRef<TState | undefined>({
+    // State, not a ref: the dirty-state check reads this during render, so a
+    // save has to re-render for the indicator to clear.
+    const [baseline, setBaseline] = useState<TState | undefined>({
       data,
       page_content: content ?? "",
     });
@@ -79,7 +82,9 @@ const EditorWrapper: React.FC<EditorWrapperProps> = memo(
       page_content: content ?? "",
     });
 
-    const isDraftRef = useRef<boolean>(state?.data?.draft?.value);
+    const isDraftRef = useRef<boolean>(
+      Boolean(unwrapValue(state?.data?.draft)),
+    );
     const isResettingRef = useRef<boolean>(false);
     const previewWindowRef = useRef<Window | null>(null);
 
@@ -127,7 +132,7 @@ const EditorWrapper: React.FC<EditorWrapperProps> = memo(
       }
     }, []);
 
-    const isFrontmatterChange = useIsChanged({ data: state?.data, storeRef });
+    const isFrontmatterChange = useIsChanged({ data: state?.data, baseline });
     const isContentChanged = contentRef !== markdownContent;
     // Check if slug changed (rename pending)
     const isRenamePending = !!newPath;
@@ -168,7 +173,7 @@ const EditorWrapper: React.FC<EditorWrapperProps> = memo(
       schema,
       snippets,
       startWith,
-      storeRef,
+      setBaseline,
       pageContent: markdownContent,
       onReplaceContentRef,
       newPath,
@@ -267,7 +272,7 @@ const EditorWrapper: React.FC<EditorWrapperProps> = memo(
           }
         })();
         if (cloned) cloned.page_content = markdownContent;
-        storeRef.current = cloned;
+        setBaseline(cloned);
         onReplaceContentRef(markdownContent);
       }, [state, markdownContent, onReplaceContentRef]),
     });
@@ -315,10 +320,10 @@ const EditorWrapper: React.FC<EditorWrapperProps> = memo(
       setResetKey((prev) => prev + 1);
       setPendingSlug(null); // Reset pending slug
 
-      if (storeRef.current) {
-        setState(JSON.parse(JSON.stringify(storeRef.current)));
+      if (baseline) {
+        setState(JSON.parse(JSON.stringify(baseline)));
       }
-    }, [contentRef]);
+    }, [contentRef, baseline]);
 
     const isDraft = isDraftRef.current;
 
@@ -348,7 +353,7 @@ const EditorWrapper: React.FC<EditorWrapperProps> = memo(
           >
             {shouldShowEditor && (
               <SeoSetting
-                data={state?.data!}
+                data={state?.data ?? {}}
                 schema={safeSchema.filter((field) => field.type !== "object")}
                 setState={setState}
                 content={markdownContent}
@@ -362,7 +367,7 @@ const EditorWrapper: React.FC<EditorWrapperProps> = memo(
             key={resetKey}
             shouldShowEditor={shouldShowEditor}
             schema={safeSchema}
-            data={state?.data!}
+            data={state?.data ?? {}}
             setData={setState}
             filePath={filePath}
             onUpdateMarkdown={onUpdateMarkdown}

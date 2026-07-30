@@ -11,9 +11,14 @@ import { EAction } from "@/redux/features/project-log/type";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { TField, TState } from "@/types";
 import { useTranslations } from "next-intl";
+import {
+  arrayValue,
+  recordValue,
+  unwrapValue,
+} from "@/lib/utils/frontmatter-value";
 import { useParams } from "next/navigation";
 import type { Socket } from "socket.io-client";
-import { RefObject, useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
 interface CommitData {
@@ -36,7 +41,7 @@ interface UseCommitLogicProps {
   schema: TField[];
   snippets: MdxSnippet[];
   startWith?: string;
-  storeRef: RefObject<TState | undefined>;
+  setBaseline?: (next: TState | undefined) => void;
   pageContent: string;
   onReplaceContentRef: (content: string) => void;
   newPath?: string;
@@ -72,25 +77,15 @@ function checkRequiredFields(
             if (fieldEntry.length === 0) {
               isEmpty = true;
             }
-          } else if (
-            fieldEntry &&
-            typeof fieldEntry === "object" &&
-            Array.isArray(fieldEntry.value)
-          ) {
-            if (fieldEntry.value.length === 0) {
+          } else if (arrayValue(fieldEntry)) {
+            if (arrayValue(fieldEntry)?.length === 0) {
               isEmpty = true;
             }
           } else {
             isEmpty = true;
           }
         } else {
-          // Regular fields are typically wrapped in { value, id }
-          const val =
-            fieldEntry &&
-            typeof fieldEntry === "object" &&
-            "value" in fieldEntry
-              ? fieldEntry.value
-              : fieldEntry;
+          const val = unwrapValue(fieldEntry);
 
           if (val === undefined || val === null || val === "") {
             isEmpty = true;
@@ -113,10 +108,7 @@ function checkRequiredFields(
         field.fields &&
         Array.isArray(field.fields)
       ) {
-        const objectData =
-          fieldEntry && typeof fieldEntry === "object" && "value" in fieldEntry
-            ? fieldEntry.value
-            : fieldEntry;
+        const objectData = recordValue(fieldEntry);
         emptyFields.push(
           ...checkRequiredFields(field.fields, objectData, fieldLabel),
         );
@@ -153,7 +145,7 @@ export function useCommitLogic({
   snippets,
   startWith,
   setState,
-  storeRef,
+  setBaseline,
   pageContent,
   onReplaceContentRef,
   newPath,
@@ -190,9 +182,7 @@ export function useCommitLogic({
       clonedState.page_content = pageContent;
     }
 
-    if (storeRef) {
-      storeRef.current = clonedState;
-    }
+    setBaseline?.(clonedState);
 
     if (setState) {
       setState(clonedState);
@@ -201,7 +191,7 @@ export function useCommitLogic({
     if (onReplaceContentRef) {
       onReplaceContentRef(pageContent);
     }
-  }, [state, pageContent, storeRef, setState, onReplaceContentRef]);
+  }, [state, pageContent, setBaseline, setState, onReplaceContentRef]);
 
   const updateSavedBaselineRef = useRef(updateSavedBaseline);
 
@@ -240,9 +230,10 @@ export function useCommitLogic({
         field?.type?.toLowerCase() === "date" &&
         field?.alwaysUseCurrentDate === true
       ) {
-        if (processedData[field.name]) {
+        const current = processedData[field.name];
+        if (current) {
           processedData[field.name] = {
-            ...processedData[field.name],
+            ...(recordValue(current) ?? {}),
             value: new Date().toISOString(),
           };
         }
@@ -346,7 +337,7 @@ export function useCommitLogic({
       updateFiles,
       state,
       pageContent,
-      storeRef,
+      setBaseline,
       setState,
       onReplaceContentRef,
       onRenameComplete,
@@ -461,7 +452,6 @@ export function useCommitLogic({
     prepareCommit,
     handleCommit,
     draftRef,
-    storeRef,
     commitData,
     showCommitModal,
     setShowCommitModal,

@@ -1,3 +1,4 @@
+import { asFramework } from "@/lib/utils/framework-detector";
 import { TExtractVariables } from "@/actions/utils";
 import { projectSchema } from "@/lib/validate";
 import { api } from "../api-slice";
@@ -43,7 +44,7 @@ export const projectApi = api.injectEndpoints({
               repoName: repoName,
               branch: data.branch,
               provider: data.provider as "Github" | "Gitlab",
-              framework: data.generator as any,
+              framework: asFramework(data.generator),
             }),
           );
         } catch {}
@@ -213,7 +214,7 @@ export const projectApi = api.injectEndpoints({
               repoName: repoName,
               branch: data.branch,
               provider: data.provider as "Github" | "Gitlab",
-              framework: data.generator as any,
+              framework: asFramework(data.generator),
             }),
           );
         } catch {}

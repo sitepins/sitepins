@@ -1,8 +1,8 @@
 export function parseJsxString(jsxString: string): {
   name: string;
-  attributes: Record<string, any>;
+  attributes: Record<string, unknown>;
 } {
-  const result = { name: "", attributes: {} as Record<string, any> };
+  const result = { name: "", attributes: {} as Record<string, unknown> };
 
   // Strip invisible characters and trim before parsing
   const cleanJsxString = jsxString

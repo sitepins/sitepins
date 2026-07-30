@@ -1,8 +1,8 @@
+import type { TElement } from "platejs";
 import { MdxSnippet } from "@/editor/utils/plate-types";
 import { MarkdownPlugin } from "@platejs/markdown";
 import type { PlateEditor } from "platejs/react";
-import { KEY_JSX_BLOCK } from "../jsx/jsx-plugin";
-import { KEY_SHORTCODE } from "./snippet-plugin";
+import { KEY_JSX_BLOCK, KEY_SHORTCODE } from "../snippet-keys";
 
 export const insertSnippet = (editor: PlateEditor, snippet: MdxSnippet) => {
   if (!snippet.code) return;
@@ -11,7 +11,7 @@ export const insertSnippet = (editor: PlateEditor, snippet: MdxSnippet) => {
     .getApi(MarkdownPlugin)
     .markdown.deserialize(snippet.code);
 
-  const firstNode = nodes[0] as any;
+  const firstNode = nodes[0] as TElement | undefined;
   const isSingleBlock = nodes.length === 1 && firstNode;
   const isParagraph = isSingleBlock && firstNode.type === "p";
   const _isBlockShortcode = isSingleBlock && firstNode.type === KEY_SHORTCODE;

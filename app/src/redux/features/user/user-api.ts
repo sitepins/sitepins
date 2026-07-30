@@ -45,7 +45,7 @@ export const userApi = api.injectEndpoints({
       }),
     }),
 
-    checkLimits: builder.mutation<void, any>({
+    checkLimits: builder.mutation<void, void>({
       query: () => ({
         url: `/user/check-limits`,
         method: "POST",

@@ -185,9 +185,10 @@ export type TGitRepo = {
   path_with_namespace?: string;
 };
 
+/** Frontmatter values are user-defined, so the map stays open. */
+export type TFrontmatterData = Record<string, unknown>;
+
 export type TState = {
-  data: {
-    [index: string]: any;
-  };
+  data: TFrontmatterData;
   page_content: string;
 };

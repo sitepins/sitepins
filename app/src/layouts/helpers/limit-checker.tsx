@@ -10,7 +10,7 @@ export default function LimitChecker() {
 
   useEffect(() => {
     if (session?.user) {
-      checkLimits({});
+      checkLimits();
     }
   }, [session, checkLimits]);
 

@@ -1,12 +1,36 @@
+import type {
+  DeserializeMdOptions,
+  MdDecoration,
+  MdRootContent,
+  SerializeMdOptions,
+} from "@platejs/markdown";
 import {
   convertNodesDeserialize,
   convertNodesSerialize,
 } from "@platejs/markdown";
-import { KEY_SHORTCODE, KEY_SHORTCODE_INLINE } from "../common/snippet-plugin";
+import type { Descendant, TElement, TText } from "platejs";
+import { KEY_SHORTCODE, KEY_SHORTCODE_INLINE } from "../snippet-keys";
+import type { ShortcodeMeta } from "../snippet-mdast";
 import {
   deserializeJsxFromShortcode,
   isJsxComponent,
+  type JsxSlateElement,
 } from "../jsx/jsx-serialization";
+
+/** The Slate element the shortcode plugins render. */
+export interface ShortcodeSlateElement extends TElement {
+  type: typeof KEY_SHORTCODE | typeof KEY_SHORTCODE_INLINE;
+  opening: string;
+  closing: string;
+  isBlock: boolean;
+}
+
+/** The mdast `shortcode` node as it reaches the deserializer. */
+type ShortcodeMdastNode = {
+  content?: string;
+  data?: { shortcode?: ShortcodeMeta };
+  children?: MdRootContent[];
+};
 
 /**
  * Deserializes Hugo shortcode mdast nodes to Slate nodes
@@ -16,10 +40,10 @@ import {
  * with isJsxComponent: true flag. So we need to check this flag and route to JSX types.
  */
 export const deserializeShortcode = (
-  mdastNode: any,
-  deco: any,
-  options: any,
-) => {
+  mdastNode: ShortcodeMdastNode,
+  deco: MdDecoration,
+  options: DeserializeMdOptions,
+): ShortcodeSlateElement | JsxSlateElement => {
   // Check if this is a JSX component that was previously serialized
   // (JSX serialization creates "shortcode" type nodes with isJsxComponent flag)
   if (isJsxComponent(mdastNode)) {
@@ -27,8 +51,7 @@ export const deserializeShortcode = (
   }
 
   // Handle regular Hugo shortcodes
-  const shortcodeMeta =
-    (mdastNode.data && (mdastNode.data as any).shortcode) || {};
+  const shortcodeMeta: Partial<ShortcodeMeta> = mdastNode.data?.shortcode ?? {};
 
   const opening =
     shortcodeMeta.startContent ||
@@ -57,20 +80,23 @@ export const deserializeShortcode = (
 /**
  * Serializes Hugo shortcode Slate nodes back to mdast
  */
-export const serializeShortcode = (slateNode: any, options: any) => {
+export const serializeShortcode = (
+  slateNode: ShortcodeSlateElement,
+  options: SerializeMdOptions,
+) => {
   const isBlock = Boolean(slateNode.isBlock);
   const fallbackText = (slateNode.children || [])
-    .map((child: any) => child.text || "")
+    .map((child: Descendant) => (child as TText).text || "")
     .join("");
   const opening = isBlock
     ? slateNode.opening || ""
     : fallbackText || slateNode.opening || "";
   const closing = isBlock ? slateNode.closing || "" : "";
 
-  const slateChildren =
+  const slateChildren: Descendant[] =
     slateNode.children && slateNode.children.length > 0
-      ? (slateNode.children as any)
-      : ([{ text: "" }] as any);
+      ? slateNode.children
+      : [{ text: "" }];
 
   const children = isBlock ? convertNodesSerialize(slateChildren, options) : [];
 

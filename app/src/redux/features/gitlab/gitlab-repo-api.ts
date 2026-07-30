@@ -1,5 +1,9 @@
 import { encodeProjectPath, gitlabApi } from "./gitlab-api";
-import { TGitLabProject } from "./gitlab-type";
+import {
+  TGitLabCompareResponse,
+  TGitLabMergeRequest,
+  TGitLabProject,
+} from "./gitlab-type";
 
 /**
  * GitLab Repository API
@@ -110,7 +114,7 @@ export const gitlabRepoApi = gitlabApi.injectEndpoints({
      * Compare branches
      */
     compareGitLabBranch: builder.query<
-      any,
+      TGitLabCompareResponse,
       { id: string | number; from: string; to: string }
     >({
       query: ({ id, from, to }) => ({
@@ -124,7 +128,7 @@ export const gitlabRepoApi = gitlabApi.injectEndpoints({
      * Create a merge request
      */
     createGitLabMergeRequest: builder.mutation<
-      any,
+      TGitLabMergeRequest,
       {
         id: string | number;
         source_branch: string;
@@ -145,7 +149,7 @@ export const gitlabRepoApi = gitlabApi.injectEndpoints({
      * List merge requests
      */
     getGitLabMergeRequests: builder.query<
-      any[],
+      TGitLabMergeRequest[],
       {
         id: string | number;
         state?: string;
@@ -164,7 +168,7 @@ export const gitlabRepoApi = gitlabApi.injectEndpoints({
      * Merge a merge request
      */
     mergeGitLabMergeRequest: builder.mutation<
-      any,
+      TGitLabMergeRequest,
       {
         id: string | number;
         merge_request_iid: number;

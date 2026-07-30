@@ -525,6 +525,6 @@ describe("validateSEO word count", () => {
       `${words(100)} and some other filler words here.`,
     );
     expect(results.tags).toBeDefined();
-    expect(results.tags.density.cat).toBeGreaterThan(0);
+    expect(results.tags.density?.cat).toBeGreaterThan(0);
   });
 });

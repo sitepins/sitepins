@@ -17,7 +17,7 @@ import { SnippetControls } from "../common/snippet-controls";
 
 export const HtmlInlineElement = withRef<typeof PlateElement>(
   ({ className, ...props }, ref) => {
-    const { children, element } = props as any;
+    const { children, element } = props;
     const editor = useEditorRef();
     const selected = useSelected();
     const focused = useFocused();
@@ -33,7 +33,8 @@ export const HtmlInlineElement = withRef<typeof PlateElement>(
 
     // Get the text content
     const textNode = element.children?.[0];
-    const text = (textNode && "text" in textNode ? textNode.text : "") || "";
+    const rawText = textNode && "text" in textNode ? textNode.text : "";
+    const text = typeof rawText === "string" ? rawText : "";
     const isClosingTag = String(text).trim().startsWith("</");
 
     // Parse the HTML to extract opening tag, content, and closing tag

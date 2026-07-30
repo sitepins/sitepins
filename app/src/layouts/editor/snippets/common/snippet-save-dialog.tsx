@@ -10,6 +10,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { SCHEMA_FOLDER } from "@/lib/constant";
+import { treeItemsOf } from "@/lib/utils/tree-items";
+import type { TTree } from "@/types";
 import {
   isGitHubProvider,
   isGitLabProvider,
@@ -83,20 +85,17 @@ export function SnippetSaveDialog({
                 ),
               ).unwrap();
 
-          const treeItems =
-            (treeResult &&
-              ((treeResult as any).files || (treeResult as any).tree)) ||
-            [];
+          const treeItems = treeItemsOf(treeResult);
           const schemaFiles = treeItems.filter(
-            (item: any) =>
+            (item): item is TTree & { path: string } =>
               item.type === "blob" &&
-              item.path &&
+              !!item.path &&
               item.path.startsWith(SCHEMA_FOLDER + "/") &&
               item.path.endsWith(".json"),
           );
 
           // Fetch content for each schema
-          const filePromises = schemaFiles.map(async (file: any) => {
+          const filePromises = schemaFiles.map(async (file) => {
             try {
               // @ts-ignore
               const _content = isGitLabProvider(config.provider)

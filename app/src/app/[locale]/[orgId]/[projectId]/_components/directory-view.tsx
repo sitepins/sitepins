@@ -18,8 +18,7 @@ import { generateSchemaName } from "@/lib/utils/schema-generator";
 import { slugify } from "@/lib/utils/text-converter";
 import { selectFileMetadata } from "@/redux/features/config/meta-slice";
 import { selectConfig } from "@/redux/features/config/slice";
-import { githubContentApi } from "@/redux/features/github";
-import { gitlabContentApi } from "@/redux/features/gitlab";
+import { getGitProviderAdapter } from "@/redux/features/git/provider-adapter";
 import { store } from "@/redux/store";
 import { TFiles } from "@/types";
 import { Folder } from "lucide-react";
@@ -235,23 +234,17 @@ export default function DirectoryView({
         return true;
       }
 
-      const select = isGitLabProvider(config.provider)
-        ? gitlabContentApi.endpoints.getGitLabContent.select({
-            id: config.repoName,
-            file_path: item.path.replace("content/", ""),
-            ref: config.branch,
-            parser: true,
-          })
-        : githubContentApi.endpoints.getGitHubContent.select({
-            owner: config.owner,
-            path: item.path.replace("content/", ""),
-            ref: config.branch,
-            repo: config.repoName,
-            parser: true,
-          });
-      const { data } = select(store.getState()) || {};
+      // The args must match what the subscriber cached under, so they come
+      // from the shared builder rather than being written out here.
+      const adapter = getGitProviderAdapter(config.provider);
+      const data = adapter.selectCachedContent(
+        store.getState(),
+        adapter.contentArgs(config, item.path.replace("content/", ""), {
+          parser: true,
+        }),
+      ) as { title?: string; data?: { title?: string } } | undefined;
 
-      const title = (data as any)?.title || (data as any)?.data?.title;
+      const title = data?.title || data?.data?.title;
       return title?.toLowerCase()?.includes(query);
     });
   }

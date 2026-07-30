@@ -283,3 +283,50 @@ export type TGitLabFileOperation = {
   delete?: boolean;
   previousPath?: string;
 };
+
+// ============================================================================
+// Compare Types
+// ============================================================================
+
+/** One entry of `GET /repository/compare` → `diffs[]`. */
+export type TGitLabDiff = {
+  old_path: string;
+  new_path: string;
+  /** Present on some responses in place of old/new path. */
+  path?: string;
+  a_mode?: string;
+  b_mode?: string;
+  diff?: string;
+  new_file?: boolean;
+  renamed_file?: boolean;
+  deleted_file?: boolean;
+};
+
+export type TGitLabCompareResponse = {
+  commit?: TGitLabCommit;
+  commits?: TGitLabCommit[];
+  diffs?: TGitLabDiff[];
+  compare_timeout?: boolean;
+  compare_same_ref?: boolean;
+};
+
+// ============================================================================
+// Merge Request Types
+// ============================================================================
+
+export type TGitLabMergeRequest = {
+  id: number;
+  iid: number;
+  project_id: number;
+  title: string;
+  description?: string;
+  state: "opened" | "closed" | "locked" | "merged";
+  source_branch: string;
+  target_branch: string;
+  web_url: string;
+  sha?: string;
+  merge_commit_sha?: string | null;
+  has_conflicts?: boolean;
+  created_at?: string;
+  updated_at?: string;
+};

@@ -4,8 +4,8 @@ import { createPlatePlugin } from "platejs/react";
 import { HtmlBlockElement } from "./html-block-node";
 import { HtmlInlineElement } from "./html-inline-node";
 
-export const KEY_HTML_BLOCK = "html_block";
-export const KEY_HTML_INLINE = "html_inline";
+export { KEY_HTML_BLOCK, KEY_HTML_INLINE } from "../snippet-keys";
+import { KEY_HTML_BLOCK, KEY_HTML_INLINE } from "../snippet-keys";
 
 export const HtmlBlockKit = createPlatePlugin({
   key: KEY_HTML_BLOCK,
@@ -25,7 +25,7 @@ export const HtmlBlockKit = createPlatePlugin({
       if (!isInHtmlBlock) return false;
 
       event.preventDefault();
-      (editor as any).tf.insertText("\n");
+      editor.tf.insertText("\n");
 
       return true;
     },

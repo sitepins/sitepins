@@ -18,7 +18,7 @@ import { TGitHubOption, TGitHubPromise } from "./github-type";
 
 export type TGitHubQueryArgs = {
   endpoint: string;
-  options?: any;
+  options?: Record<string, unknown>;
 };
 
 export type TGitHubQueryError = {
@@ -26,7 +26,7 @@ export type TGitHubQueryError = {
   message: string;
 };
 
-let refreshPromise: Promise<any> | null = null;
+let refreshPromise: Promise<string | null> | null = null;
 
 const octokitBaseQuery: BaseQueryFn<
   TGitHubQueryArgs,
@@ -207,7 +207,7 @@ export const githubApi = createApi({
     }),
 
     searchGitHubRepos: builder.query<
-      { items: any[] },
+      { items: TGitHubPromise<"GET /user/repos"> },
       { q: string; per_page?: number; page?: number }
     >({
       query: (options) => ({

@@ -19,16 +19,14 @@ import { toBase64 } from "@/lib/utils/git-utils";
 import { isGitLabProvider } from "@/lib/utils/provider-checker";
 import { selectConfig } from "@/redux/features/config/slice";
 import {
-  githubContentApi,
   useUpdateGitHubFilesMutation,
 } from "@/redux/features/github";
 import {
-  gitlabContentApi,
   useUpdateGitLabFilesMutation,
 } from "@/redux/features/gitlab";
 import { selectMediaInfo, setMedia } from "@/redux/features/media/slice";
-import { useAppDispatch } from "@/redux/store";
-import { TFiles } from "@/types";
+import { getGitProviderAdapter } from "@/redux/features/git/provider-adapter";
+import { store, useAppDispatch } from "@/redux/store";
 import { useTranslations } from "next-intl";
 import path from "path";
 import { useState } from "react";
@@ -199,67 +197,31 @@ export default function MediaRename({
       });
       dispatch(setMedia(newMediaList));
 
-      if (isGitLabProvider(config.provider)) {
-        dispatch(
-          gitlabContentApi.util.updateQueryData(
-            "getGitLabTrees",
-            {
-              id: config.repoName
-                ? `${config.owner}/${config.repoName}`
-                : config.owner,
-              ref: config.branch,
-              recursive: true,
-              config: config,
-            },
-            (draft: any) => {
-              const files = draft.files as (TFiles & {
-                commitDate: string;
-              })[];
-              const foundIndex = files.findIndex(
-                (file) => file.path === fullOldPath,
-              );
+      getGitProviderAdapter(config.provider).updateAllTreeCaches(
+        dispatch,
+        store.getState(),
+        (draft) => {
+          const renamedAt = new Date().toISOString();
 
-              if (foundIndex !== -1) {
-                files[foundIndex].name = newName;
-                files[foundIndex].path = fullNewPath;
-                files[foundIndex].commitDate = new Date().toISOString();
-              }
-            },
-          ),
-        );
-      } else {
-        dispatch(
-          githubContentApi.util.updateQueryData(
-            "getGitHubTrees",
-            {
-              owner: config.owner,
-              repo: config.repoName,
-              tree_sha: config.branch,
-              recursive: "1",
-              config: config,
-            },
-            (draft: any) => {
-              // Update trees
-              const treeIndex = draft.trees.findIndex(
-                (file: TFiles) => file.path === fullOldPath,
-              );
-              if (treeIndex !== -1) {
-                draft.trees[treeIndex].name = newName;
-                draft.trees[treeIndex].path = fullNewPath;
-                draft.trees[treeIndex].commitDate = new Date().toISOString();
-              }
+          const treeIndex = draft.trees.findIndex(
+            (file) => file.path === fullOldPath,
+          );
+          if (treeIndex !== -1) {
+            draft.trees[treeIndex].name = newName;
+            draft.trees[treeIndex].path = fullNewPath;
+            draft.trees[treeIndex].commitDate = renamedAt;
+          }
 
-              // Update files
-              const fileIndex = draft.files.findIndex(
-                (file: TFiles) => file.path === fullOldPath,
-              );
-              if (fileIndex !== -1) {
-                draft.files[fileIndex].path = fullNewPath;
-              }
-            },
-          ),
-        );
-      }
+          const fileIndex = draft.files.findIndex(
+            (file) => file.path === fullOldPath,
+          );
+          if (fileIndex !== -1) {
+            // `files` holds raw tree entries, which carry no display name.
+            draft.files[fileIndex].path = fullNewPath;
+            draft.files[fileIndex].commitDate = renamedAt;
+          }
+        },
+      );
 
       toast.success(tMedia("rename_successful", { name: newName }));
       setOpen(false);

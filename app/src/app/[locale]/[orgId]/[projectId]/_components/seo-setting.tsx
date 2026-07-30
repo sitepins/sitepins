@@ -18,6 +18,7 @@ import { useGetProjectQuery } from "@/redux/features/project/project-api";
 import { TField, TState } from "@/types";
 import { ChartSpline } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
+import { stringValue } from "@/lib/utils/frontmatter-value";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
 import {
@@ -26,7 +27,6 @@ import {
   useCallback,
   useEffect,
   useMemo,
-  useRef,
   useState,
 } from "react";
 import { createPortal } from "react-dom";
@@ -78,7 +78,9 @@ export default function SeoSetting({
   const [portalContainer, setPortalContainer] = useState<HTMLElement | null>(
     null,
   );
-  const pendingSlugUpdateRef = useRef<string | null>(null);
+  // State, not a ref: `displayData` reads this during render, and a memo
+  // cannot depend on a ref.
+  const [pendingSlug, setPendingSlug] = useState<string | null>(null);
 
   useEffect(() => {
     // Set portal container on client side only
@@ -122,21 +124,18 @@ export default function SeoSetting({
   const [virtualSlug, setVirtualSlug] = useState(filename);
 
   useEffect(() => {
-    pendingSlugUpdateRef.current = null;
+    setPendingSlug(null);
     setVirtualSlug(filename);
   }, [filename, resetKey]);
 
   const displayData = useMemo(() => {
     if (hasSlugInFrontmatter) return data;
-    const currentSlug =
-      pendingSlugUpdateRef.current !== null
-        ? pendingSlugUpdateRef.current
-        : virtualSlug;
+    const currentSlug = pendingSlug ?? virtualSlug;
     return {
       ...data,
       slug: { value: currentSlug, id: "00000000-0000-4000-8000-000000000000" },
     };
-  }, [data, hasSlugInFrontmatter, virtualSlug]);
+  }, [data, hasSlugInFrontmatter, virtualSlug, pendingSlug]);
 
   const handleSetData: Dispatch<SetStateAction<TState | undefined>> =
     useCallback(
@@ -153,8 +152,8 @@ export default function SeoSetting({
 
           if (wasVirtual && next.data && "slug" in next.data) {
             // Intercept the slug update
-            const newSlugVal = next.data.slug.value;
-            pendingSlugUpdateRef.current = newSlugVal;
+            const newSlugVal = stringValue(next.data.slug) ?? null;
+            setPendingSlug(newSlugVal);
 
             // Remove slug from the data to be saved to state
             const { _slug, ...restData } = next.data;
@@ -168,13 +167,12 @@ export default function SeoSetting({
     );
 
   useEffect(() => {
-    if (pendingSlugUpdateRef.current !== null) {
-      const newSlugVal = pendingSlugUpdateRef.current;
-      pendingSlugUpdateRef.current = null;
-      setVirtualSlug(newSlugVal);
-      onSlugChange?.(newSlugVal);
+    if (pendingSlug !== null) {
+      setPendingSlug(null);
+      setVirtualSlug(pendingSlug);
+      onSlugChange?.(pendingSlug);
     }
-  }, [displayData, onSlugChange, setVirtualSlug]);
+  }, [pendingSlug, onSlugChange, setVirtualSlug]);
 
   // Runs with the panel closed too — the button's score badge reads from it.
   const debouncedContent = useDebounce(content, 600);

@@ -23,8 +23,17 @@ import { TConfig } from "@/types";
  *   "custom-commit": true,
  * }
  */
+/** Pre-migration shape: paths were nested objects rather than strings. */
+type TLegacyPathEntry = { root?: string; public?: string };
+
+export type TLegacyConfig = Record<string, unknown> & {
+  content?: string | TLegacyPathEntry;
+  media?: string | TLegacyPathEntry;
+  public?: string;
+};
+
 export function migrateConfig(
-  config: any,
+  config: TLegacyConfig,
   framework: Framework = null,
 ): TConfig {
   // If already in new format (string values), return as is
@@ -33,7 +42,7 @@ export function migrateConfig(
     typeof config.media === "string" &&
     typeof config.public === "string"
   ) {
-    const migrated: any = { ...config };
+    const migrated: Record<string, unknown> = { ...config };
 
     // Move custom-commit to customCommit if exists
     if ("custom-commit" in migrated && !("customCommit" in migrated)) {
@@ -45,7 +54,7 @@ export function migrateConfig(
   }
 
   // Migrate from old nested format
-  const migrated: any = { ...config };
+  const migrated: Record<string, unknown> = { ...config };
 
   // Migrate content
   if (
@@ -69,7 +78,7 @@ export function migrateConfig(
   // Attempt to infer framework from paths.
   // We do this even if 'framework' is provided, because 'exampleSite' presence is a very strong indicator
   // that supersedes a generic 'hugo' or 'undefined' framework detection.
-  const contentPath = migrated.content || "";
+  const contentPath = String(migrated.content ?? "");
 
   if (contentPath.includes("exampleSite")) {
     framework = "hugo_examplesite";
@@ -117,15 +126,15 @@ export function migrateConfig(
 /**
  * Check if config is in old format
  */
-export function isOldConfigFormat(config: any): boolean {
-  return (
+export function isOldConfigFormat(config: TLegacyConfig): boolean {
+  return Boolean(
     (config.content &&
       typeof config.content === "object" &&
       "root" in config.content) ||
-    (config.media &&
-      typeof config.media === "object" &&
-      "root" in config.media) ||
-    "showCommitModal" in config
+      (config.media &&
+        typeof config.media === "object" &&
+        "root" in config.media) ||
+      "showCommitModal" in config,
   );
 }
 

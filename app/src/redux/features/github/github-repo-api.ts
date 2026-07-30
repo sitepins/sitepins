@@ -1,4 +1,5 @@
 import { githubApi } from "./github-api";
+import type { TGitHubPromise } from "./github-type";
 
 /**
  * GitHub Repository API
@@ -10,7 +11,10 @@ export const githubRepoApi = githubApi.injectEndpoints({
     /**
      * Get repository details
      */
-    getGitHubRepo: builder.query<any, { owner: string; repo: string }>({
+    getGitHubRepo: builder.query<
+      TGitHubPromise<"GET /repos/{owner}/{repo}">,
+      { owner: string; repo: string }
+    >({
       query: ({ owner, repo }) => ({
         endpoint: "GET /repos/{owner}/{repo}",
         options: { owner, repo },
@@ -21,7 +25,7 @@ export const githubRepoApi = githubApi.injectEndpoints({
      * Compare two branches
      */
     compareGitHubBranch: builder.query<
-      any,
+      TGitHubPromise<"GET /repos/{owner}/{repo}/compare/{basehead}">,
       { owner: string; repo: string; base: string; head: string }
     >({
       query: ({ owner, repo, base, head }) => ({
@@ -35,7 +39,7 @@ export const githubRepoApi = githubApi.injectEndpoints({
      * Create a pull request
      */
     createGitHubPullRequest: builder.mutation<
-      any,
+      TGitHubPromise<"POST /repos/{owner}/{repo}/pulls">,
       {
         owner: string;
         repo: string;
@@ -61,7 +65,7 @@ export const githubRepoApi = githubApi.injectEndpoints({
      * List pull requests
      */
     getGitHubPullRequests: builder.query<
-      any[],
+      TGitHubPromise<"GET /repos/{owner}/{repo}/pulls">,
       {
         owner: string;
         repo: string;
@@ -81,7 +85,7 @@ export const githubRepoApi = githubApi.injectEndpoints({
      * Merge a pull request
      */
     mergeGitHubPullRequest: builder.mutation<
-      any,
+      TGitHubPromise<"PUT /repos/{owner}/{repo}/pulls/{pull_number}/merge">,
       {
         owner: string;
         repo: string;

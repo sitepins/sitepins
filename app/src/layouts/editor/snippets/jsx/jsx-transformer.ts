@@ -1,10 +1,50 @@
+import type {
+  Data,
+  Html,
+  Parents,
+  PhrasingContent,
+  Root,
+  RootContent,
+  Text,
+} from "mdast";
+import type { MdxJsxFlowElement, MdxJsxTextElement } from "mdast-util-mdx";
 import { mdxToMarkdown } from "mdast-util-mdx";
+import type {
+  Options as ToMarkdownOptions,
+  State as ToMarkdownState,
+} from "mdast-util-to-markdown";
 import { toMarkdown } from "mdast-util-to-markdown";
 import remarkParse from "remark-parse";
-import { unified } from "unified";
+import { type Processor, unified } from "unified";
+import type { Node } from "unist";
 import { visit } from "unist-util-visit";
 import { remarkHtml } from "../html/html-transformer";
+import { nodeValue, type JsxNode } from "../snippet-mdast";
 import { parseJsxString } from "./jsx-parser";
+
+type MarkdownExtensions = NonNullable<ToMarkdownOptions["extensions"]>;
+type ProcessorData = { toMarkdownExtensions?: MarkdownExtensions };
+
+/** Node kinds the JSX-transform pass accepts. */
+type JsxSourceNode = Html | Text | MdxJsxFlowElement | MdxJsxTextElement;
+
+function isParentNode(node: Node): node is Node & { children: RootContent[] } {
+  return Array.isArray((node as { children?: unknown }).children);
+}
+
+/** An html/text node whose value opens or closes a PascalCase component. */
+function isJsxTagNode(node: Node): boolean {
+  if (node.type !== "html" && node.type !== "text") return false;
+  const value = normalizeForTagMatch(nodeValue(node));
+  return OPEN_TAG_REGEX.test(value) || /^<\/[A-Z]/.test(value);
+}
+
+/** True unless the node is text that is blank after stripping invisibles. */
+function hasMeaningfulValue(node: Node): boolean {
+  return (
+    node.type !== "text" || normalizeForTagMatch(nodeValue(node)).length > 0
+  );
+}
 
 const OPEN_TAG_REGEX = /^<([A-Z]\w*)([^>]*)>/;
 const CLOSE_TAG_REGEX = /^<\/([A-Z]\w*)\s*>/;
@@ -21,7 +61,7 @@ function normalizeForTagMatch(value: string): string {
   return stripInvisibleChars(value).trim();
 }
 
-function parseMarkdownFragment(fragment: string): any[] {
+function parseMarkdownFragment(fragment: string): RootContent[] {
   if (!fragment) return [];
 
   // Keep pure whitespace as a text node so spacing/newlines aren't lost.
@@ -29,7 +69,7 @@ function parseMarkdownFragment(fragment: string): any[] {
     return [{ type: "text", value: fragment }];
   }
 
-  const tree = markdownParser.parse(stripInvisibleChars(fragment)) as any;
+  const tree = markdownParser.parse(stripInvisibleChars(fragment));
   const children = Array.isArray(tree?.children) ? tree.children : [];
 
   // If parsing yields nothing, fall back to plain text.
@@ -42,9 +82,9 @@ function parseMarkdownFragment(fragment: string): any[] {
 
 function splitHtmlValue(
   value: string,
-  data: Record<string, unknown> | undefined,
-): any[] | null {
-  const nodes: any[] = [];
+  data: Data | undefined,
+): RootContent[] | null {
+  const nodes: RootContent[] = [];
   let position = 0;
 
   while (position < value.length) {
@@ -143,7 +183,7 @@ function isClosingTagFor(name: string, value: string): boolean {
 }
 
 function findMatchingClosingIndex(
-  children: any[],
+  children: RootContent[],
   startIndex: number,
   name: string,
 ): number {
@@ -173,7 +213,7 @@ function findMatchingClosingIndex(
   return -1;
 }
 
-function transformJsxTree(tree: any) {
+function transformJsxTree(tree: Root) {
   // Ensure inline HTML metadata exists even for trees parsed ad-hoc (inner JSX bodies)
   remarkHtml()(tree);
 
@@ -181,52 +221,35 @@ function transformJsxTree(tree: any) {
   visit(
     tree,
     "paragraph",
-    (node: any, index: number | undefined, parent: any | undefined) => {
+    (node, index, parent) => {
       if (!parent || index === undefined) return;
 
       const children = node.children;
       // Identify PascalCase tags (opening or closing)
-      const hasJsxTag = children.some(
-        (child: any) =>
-          (child.type === "html" || child.type === "text") &&
-          (OPEN_TAG_REGEX.test(normalizeForTagMatch(child.value)) ||
-            /^<\/[A-Z]/.test(normalizeForTagMatch(child.value))),
-      );
+      const hasJsxTag = children.some(isJsxTagNode);
 
       if (!hasJsxTag) return;
 
-      const newNodes: any[] = [];
-      let currentParagraphChildren: any[] = [];
+      const newNodes: RootContent[] = [];
+      let currentParagraphChildren: PhrasingContent[] = [];
 
       for (const child of children) {
-        if (
-          (child.type === "html" || child.type === "text") &&
-          (OPEN_TAG_REGEX.test(normalizeForTagMatch(child.value)) ||
-            /^<\/[A-Z]/.test(normalizeForTagMatch(child.value)))
-        ) {
+        if (isJsxTagNode(child)) {
           // Closing JSX tags (</Tab>, </Tabs>) are ALWAYS lifted regardless of surrounding text.
           const isClosingTag = /^<\/[A-Z]/.test(
-            normalizeForTagMatch(child.value),
+            normalizeForTagMatch(nodeValue(child)),
           );
 
           if (!isClosingTag) {
             // For opening/self-closing tags, only keep inline if real text has been
             // accumulated BEFORE this node in the current paragraph.
-            const hasRealTextBefore = currentParagraphChildren.some(
-              (c: any) => {
-                if (c.type === "text") {
-                  return c.value && normalizeForTagMatch(c.value).length > 0;
-                }
-                // Non-text, non-JSX elements count as real content
-                return (
-                  (c.type !== "html" && c.type !== "text") ||
-                  !(
-                    OPEN_TAG_REGEX.test(normalizeForTagMatch(c.value)) ||
-                    /^<\/[A-Z]/.test(normalizeForTagMatch(c.value))
-                  )
-                );
-              },
-            );
+            const hasRealTextBefore = currentParagraphChildren.some((c) => {
+              if (c.type === "text") {
+                return normalizeForTagMatch(nodeValue(c)).length > 0;
+              }
+              // Non-text, non-JSX elements count as real content
+              return c.type !== "html" || !isJsxTagNode(c);
+            });
 
             if (hasRealTextBefore) {
               currentParagraphChildren.push(child);
@@ -236,9 +259,7 @@ function transformJsxTree(tree: any) {
 
           if (currentParagraphChildren.length > 0) {
             const hasMeaningfulContent = currentParagraphChildren.some(
-              (c: any) =>
-                c.type !== "text" ||
-                (c.value && normalizeForTagMatch(c.value).length > 0),
+              hasMeaningfulValue,
             );
 
             if (hasMeaningfulContent) {
@@ -257,9 +278,7 @@ function transformJsxTree(tree: any) {
 
       if (currentParagraphChildren.length > 0) {
         const hasMeaningfulContent = currentParagraphChildren.some(
-          (c: any) =>
-            c.type !== "text" ||
-            (c.value && normalizeForTagMatch(c.value).length > 0),
+          hasMeaningfulValue,
         );
         if (hasMeaningfulContent) {
           newNodes.push({
@@ -277,6 +296,7 @@ function transformJsxTree(tree: any) {
   // First pass: Split HTML/text nodes so JSX and surrounding text become separate nodes
   visit(tree, ["html", "text"], (node, index, parent) => {
     if (index === undefined || !parent) return;
+    if (node.type !== "html" && node.type !== "text") return;
 
     const value = node.value;
     const jsxTagRegex = /<\/?([A-Z]\w*)\s*[^>]*\/?>/g;
@@ -297,15 +317,21 @@ function transformJsxTree(tree: any) {
   visit(
     tree,
     ["mdxJsxFlowElement", "mdxJsxTextElement", "html"],
-    (node, index, parent) => {
+    (visited, index, parent) => {
       if (index === undefined || !parent) return;
 
+      // The test above admits only these four; mdx nodes are not registered in
+      // mdast's content maps, so visit widens to the full union.
+      const node = visited as JsxSourceNode;
+
       let name = "";
-      let attributes: Record<string, any> = {};
+      let attributes: Record<string, unknown> = {};
       let isSelfClosing = false;
       let content = "";
-      let type = "";
-      let children = node.children || [{ type: "text", value: "" }];
+      let type: JsxNode["type"] = "jsx_block";
+      let children: RootContent[] = isParentNode(node)
+        ? node.children
+        : [{ type: "text", value: "" }];
 
       let closingTagValue = "";
 
@@ -407,7 +433,7 @@ function transformJsxTree(tree: any) {
               if (parsed.children && parsed.children.length > 0) {
                 // For inline elements, flatten nested paragraphs to maintain valid Slate structure (inline cannot contain block)
                 if (type === "jsx_inline") {
-                  children = parsed.children.flatMap((c: any) =>
+                  children = parsed.children.flatMap<RootContent>((c) =>
                     c.type === "paragraph" ? c.children : c,
                   );
                 } else {
@@ -416,7 +442,7 @@ function transformJsxTree(tree: any) {
 
                 // Filter out empty text nodes that can cause Slate normalization bugs
                 children = children.filter(
-                  (c: any) => !(c.type === "text" && !c.value.trim()),
+                  (c) => !(c.type === "text" && !nodeValue(c).trim()),
                 );
               } else {
                 children = [{ type: "text", value: innerContent }];
@@ -443,12 +469,12 @@ function transformJsxTree(tree: any) {
                 index + 1,
                 closingIndex,
               );
-              const childTree = { type: "root", children: rawChildren } as any;
+              const childTree: Root = { type: "root", children: rawChildren };
               transformJsxTree(childTree);
 
               // For inline elements, flatten nested paragraphs to maintain valid Slate structure
               if (type === "jsx_inline") {
-                children = childTree.children.flatMap((c: any) =>
+                children = childTree.children.flatMap<RootContent>((c) =>
                   c.type === "paragraph" ? c.children : c,
                 );
               } else {
@@ -458,12 +484,14 @@ function transformJsxTree(tree: any) {
               // Filter out pure whitespace text nodes to prevent Slate's mixed-content normalizer
               // from destroying the block structure.
               children = children.filter(
-                (c: any) => !(c.type === "text" && !c.value.trim()),
+                (c) => !(c.type === "text" && !nodeValue(c).trim()),
               );
 
               const closingSibling = parent.children[closingIndex];
-              if (closingSibling && typeof closingSibling.value === "string") {
-                closingTagValue = normalizeForTagMatch(closingSibling.value);
+              if (closingSibling && nodeValue(closingSibling)) {
+                closingTagValue = normalizeForTagMatch(
+                  nodeValue(closingSibling),
+                );
               }
 
               // Remove nodes from index to closingIndex (inclusive) and replace with new node
@@ -553,27 +581,21 @@ function transformJsxTree(tree: any) {
   visit(
     tree,
     "paragraph",
-    (node: any, index: number | undefined, parent: any | undefined) => {
+    (node, index, parent) => {
       if (!parent || index === undefined) return;
 
       const children = node.children;
       const hasJsxBlock = children.some(
-        (child: any) =>
-          child.type === "jsx_block" || child.type === "jsx_inline",
+        (child) => child.type === "jsx_block" || child.type === "jsx_inline",
       );
 
       if (!hasJsxBlock) return;
 
       // Check if the paragraph has meaningful non-JSX content
-      const hasNonJsxContent = children.some((child: any) => {
+      const hasNonJsxContent = children.some((child) => {
         if (child.type === "jsx_block" || child.type === "jsx_inline")
           return false;
-        if (child.type === "text") {
-          // Ignore whitespace and invisible characters
-          return normalizeForTagMatch(child.value || "").length > 0;
-        }
-        // Other node types (links, emphasis, etc.) count as content
-        return true;
+        return hasMeaningfulValue(child);
       });
 
       // If there's other meaningful content, keep all JSX inline
@@ -581,8 +603,8 @@ function transformJsxTree(tree: any) {
         return;
       }
 
-      const newNodes: any[] = [];
-      let currentParagraphChildren: any[] = [];
+      const newNodes: RootContent[] = [];
+      let currentParagraphChildren: PhrasingContent[] = [];
 
       for (const child of children) {
         if (child.type === "jsx_block" || child.type === "jsx_inline") {
@@ -595,9 +617,7 @@ function transformJsxTree(tree: any) {
           // Lift jsx_block out of paragraph
           if (currentParagraphChildren.length > 0) {
             const hasMeaningfulContent = currentParagraphChildren.some(
-              (c: any) =>
-                c.type !== "text" ||
-                (c.value && normalizeForTagMatch(c.value).length > 0),
+              hasMeaningfulValue,
             );
             if (hasMeaningfulContent) {
               newNodes.push({
@@ -615,9 +635,7 @@ function transformJsxTree(tree: any) {
 
       if (currentParagraphChildren.length > 0) {
         const hasMeaningfulContent = currentParagraphChildren.some(
-          (c: any) =>
-            c.type !== "text" ||
-            (c.value && normalizeForTagMatch(c.value).length > 0),
+          hasMeaningfulValue,
         );
         if (hasMeaningfulContent) {
           newNodes.push({
@@ -633,18 +651,14 @@ function transformJsxTree(tree: any) {
   );
   // Fourth pass: Clean up empty paragraphs at root level introduced by editor normalization
   if (tree.type === "root" && tree.children) {
-    tree.children = tree.children.filter((node: any) => {
+    tree.children = tree.children.filter((node) => {
       if (node.type === "paragraph") {
-        const hasContent = node.children.some((c: any) => {
-          if (c.type !== "text") return true;
-          return normalizeForTagMatch(c.value || "").length > 0;
-        });
-        return hasContent;
+        return node.children.some(hasMeaningfulValue);
       }
       // Remove whitespace-only text nodes at root level left by shortcode extraction.
       // These disrupt toMarkdown's block spacing causing all blocks to fuse.
       if (node.type === "text") {
-        return normalizeForTagMatch(node.value || "").length > 0;
+        return normalizeForTagMatch(nodeValue(node)).length > 0;
       }
       return true;
     });
@@ -652,7 +666,7 @@ function transformJsxTree(tree: any) {
 
   // Final pass: Upgrade root-level jsx_inline to jsx_block
   if (tree.type === "root" && tree.children) {
-    tree.children.forEach((node: any) => {
+    tree.children.forEach((node) => {
       if (node.type === "jsx_inline") {
         node.type = "jsx_block";
         if (node.data) node.data.hName = "jsx_block";
@@ -661,29 +675,43 @@ function transformJsxTree(tree: any) {
   }
 }
 
-export const remarkJsx = function (this: any) {
-  const data = this.data ? this.data() : {};
+export const remarkJsx = function (this: Processor) {
+  const data = (this.data ? this.data() : {}) as ProcessorData;
   const toMarkdownExtensions =
     data.toMarkdownExtensions || (data.toMarkdownExtensions = []);
 
   toMarkdownExtensions.push({
     handlers: {
-      jsx_block: (node: any, _parent: any, state: any) => {
+      jsx_block: (
+        node: JsxNode,
+        _parent: Parents | undefined,
+        state: ToMarkdownState,
+      ) => {
         const opening = node.content || `<${node.name}>`;
         const closing = node.closingTag || `</${node.name}>`;
-        const body = state.containerFlow(node, state);
+        const body = state.containerFlow(
+          node as unknown as Parameters<typeof state.containerFlow>[0],
+          state as unknown as Parameters<typeof state.containerFlow>[1],
+        );
         return body ? `${opening}\n${body}\n${closing}` : opening;
       },
-      jsx_inline: (node: any, _parent: any, state: any) => {
+      jsx_inline: (
+        node: JsxNode,
+        _parent: Parents | undefined,
+        state: ToMarkdownState,
+      ) => {
         const opening = node.content || `<${node.name}>`;
         const closing = node.closingTag || `</${node.name}>`;
-        const body = state.containerPhrasing(node, state);
+        const body = state.containerPhrasing(
+          node as unknown as Parameters<typeof state.containerPhrasing>[0],
+          state as unknown as Parameters<typeof state.containerPhrasing>[1],
+        );
         return `${opening}${body}${closing}`;
       },
     },
   });
 
-  return (tree: any) => {
-    transformJsxTree(tree);
+  return (tree: Node) => {
+    transformJsxTree(tree as Root);
   };
 };

@@ -1,9 +1,26 @@
-import { Root, RootContent } from "mdast";
+import {
+  Parent,
+  Parents,
+  PhrasingContent,
+  Root,
+  RootContent,
+  Text,
+} from "mdast";
+import type {
+  Options as ToMarkdownOptions,
+  State as ToMarkdownState,
+} from "mdast-util-to-markdown";
 import { toMarkdown } from "mdast-util-to-markdown";
 import remarkParse from "remark-parse";
 import { Processor, unified } from "unified";
-import { Node, Parent } from "unist";
+import { Node } from "unist";
 import { visit } from "unist-util-visit";
+import {
+  nodeValue,
+  shortcodeMetaOf,
+  type ShortcodeMeta,
+  type ShortcodeNode,
+} from "../snippet-mdast";
 
 export interface ShortcodeDefinition {
   start: string;
@@ -15,30 +32,17 @@ export interface ShortcodeOptions {
   inlineMode?: boolean;
 }
 
-interface ShortcodeNode extends Node {
-  type: "shortcode";
-  content: string;
-  children?: Node[];
-  data?: any;
-}
+/** Extensions handed to `toMarkdown` when re-stringifying a subtree. */
+type MarkdownExtensions = NonNullable<ToMarkdownOptions["extensions"]>;
+
+/** Data the unified processor accumulates across plugins. */
+type ProcessorData = { toMarkdownExtensions?: MarkdownExtensions };
 
 const DEFAULT_DEFINITIONS: ShortcodeDefinition[] = [
   { start: "<", end: ">" },
   { start: "{{<", end: ">}}" },
   { start: "{{%", end: "%}}" },
 ];
-
-interface ShortcodeMeta {
-  definitionIndex: number;
-  start?: string;
-  end?: string;
-  startContent?: string;
-  closingContent?: string;
-  name?: string;
-  params?: string;
-  isBlock?: boolean;
-  isClosing?: boolean;
-}
 
 interface ShortcodeInfo {
   definitionIndex: number;
@@ -70,9 +74,8 @@ function isParent(node: Node): node is Parent {
   return Array.isArray((node as Parent).children);
 }
 
-function getShortcodeMeta(node: ShortcodeNode): ShortcodeMeta | undefined {
-  const data = node.data as Record<string, unknown> | undefined;
-  return data?.[SHORTCODE_META_KEY] as ShortcodeMeta | undefined;
+function getShortcodeMeta(node: Node): ShortcodeMeta | undefined {
+  return shortcodeMetaOf(node);
 }
 
 function setShortcodeMeta(
@@ -140,7 +143,7 @@ function parseShortcodeNode(
 function mergeBlockShortcodes(
   node: Node,
   definitions: ShortcodeDefinition[],
-  markdownExtensions: any[],
+  markdownExtensions: MarkdownExtensions,
 ): void {
   if (!isParent(node)) return;
 
@@ -178,7 +181,7 @@ function mergeBlockShortcodes(
             const closingNode = children[closingIdx] as ShortcodeNode;
             const blockChildren = children
               .slice(idx + 1, closingIdx)
-              .filter((c: any) => !(c.type === "text" && !c.value.trim()));
+              .filter((c) => !(c.type === "text" && !nodeValue(c).trim()));
 
             shortcodeNode.children = blockChildren;
 
@@ -207,7 +210,10 @@ function mergeBlockShortcodes(
   }
 }
 
-function _stringifyNodes(nodes: Node[], markdownExtensions: any[]): string {
+function _stringifyNodes(
+  nodes: Node[],
+  markdownExtensions: MarkdownExtensions,
+): string {
   if (!nodes.length) return "";
 
   const root: Root = {
@@ -258,7 +264,7 @@ function findMatchingClosing(
 
 export function remarkHugo(this: Processor, options: ShortcodeOptions = {}) {
   const definitions = options.definitions || DEFAULT_DEFINITIONS;
-  const data = this.data() as any;
+  const data = this.data() as ProcessorData;
   const toMarkdownExtensions =
     data.toMarkdownExtensions || (data.toMarkdownExtensions = []);
 
@@ -288,11 +294,9 @@ export function remarkHugo(this: Processor, options: ShortcodeOptions = {}) {
       const next = children[i + 1];
       const nextNext = children[i + 2];
 
-      const currentText =
-        current.type === "text" ? (current as any).value || "" : "";
-      const nextHtml = next.type === "html" ? (next as any).value || "" : "";
-      const nextText =
-        nextNext.type === "text" ? (nextNext as any).value || "" : "";
+      const currentText = current.type === "text" ? nodeValue(current) : "";
+      const nextHtml = next.type === "html" ? nodeValue(next) : "";
+      const nextText = nextNext.type === "text" ? nodeValue(nextNext) : "";
 
       const startIdx = currentText.lastIndexOf("{{");
 
@@ -350,7 +354,7 @@ export function remarkHugo(this: Processor, options: ShortcodeOptions = {}) {
           // Mark if this is a JSX component
           const isJsxComponent = matchedDefinition.start === "<";
 
-          const nodeToAdd: Node = {
+          const nodeToAdd: ShortcodeNode = {
             type: "shortcode",
             content: potentialShortcode,
             data: {
@@ -367,15 +371,18 @@ export function remarkHugo(this: Processor, options: ShortcodeOptions = {}) {
                 content: potentialShortcode,
               },
             },
-          } as any;
+          };
 
-          const replacements: Node[] = [];
+          const replacements: RootContent[] = [];
           if (prefix) {
-            replacements.push({ type: "text", value: prefix } as any);
+            replacements.push({ type: "text", value: prefix } satisfies Text);
           }
           replacements.push(nodeToAdd);
           if (remainingText) {
-            replacements.push({ type: "text", value: remainingText } as any);
+            replacements.push({
+              type: "text",
+              value: remainingText,
+            } satisfies Text);
           }
 
           children.splice(i, 3, ...replacements);
@@ -409,11 +416,15 @@ export function remarkHugo(this: Processor, options: ShortcodeOptions = {}) {
   }
 
   // Transformer: Find and replace shortcodes in text nodes
-  function transformer(tree: Node) {
+  function transformer(treeNode: Node) {
+    // remark always hands a Root here.
+    const tree = treeNode as Root;
+
     visit(
       tree,
       ["text", "html"],
-      (node: any, index: number | undefined, parent: Parent | undefined) => {
+      (node, index, parent) => {
+        if (node.type !== "text" && node.type !== "html") return;
         if (!parent || index === undefined) return;
 
         const value = node.value;
@@ -501,15 +512,15 @@ export function remarkHugo(this: Processor, options: ShortcodeOptions = {}) {
             let siblingText = "";
 
             if (sibling.type === "text" || sibling.type === "html") {
-              siblingText = (sibling as any).value;
+              siblingText = nodeValue(sibling);
             } else if (
               sibling.type === "link" ||
               sibling.type === "strong" ||
               sibling.type === "emphasis"
             ) {
-              const firstChild = (sibling as any).children?.[0];
-              if (firstChild && firstChild.value) {
-                siblingText = firstChild.value;
+              const firstChild = sibling.children?.[0];
+              if (firstChild && nodeValue(firstChild)) {
+                siblingText = nodeValue(firstChild);
               } else {
                 siblingText = "";
               }
@@ -540,10 +551,10 @@ export function remarkHugo(this: Processor, options: ShortcodeOptions = {}) {
         // fullContent is the complete shortcode string
         const shortcodeRaw = fullContent;
 
-        const nodes: Node[] = [];
+        const nodes: RootContent[] = [];
 
         if (preText) {
-          nodes.push({ type: "text", value: preText } as any);
+          nodes.push({ type: "text", value: preText });
         }
 
         // Mark if this is a JSX component
@@ -565,10 +576,10 @@ export function remarkHugo(this: Processor, options: ShortcodeOptions = {}) {
               isJsxComponent, // Add metadata to distinguish JSX from Hugo
             },
           },
-        } as any);
+        });
 
         if (postText) {
-          nodes.push({ type: "text", value: postText } as any);
+          nodes.push({ type: "text", value: postText });
         }
 
         // Replace the current node AND any merged siblings
@@ -590,8 +601,8 @@ export function remarkHugo(this: Processor, options: ShortcodeOptions = {}) {
     // Dynamic Discovery: Collect all shortcode names that have closing tags in this document.
     // This allows us to handle user-defined block shortcodes without hardcoding names.
     const closingShortcodeNames = new Set<string>();
-    visit(tree, "shortcode", (node: any) => {
-      const info = parseShortcodeNode(node as ShortcodeNode, definitions);
+    visit(tree, "shortcode", (node) => {
+      const info = parseShortcodeNode(node, definitions);
       if (info && info.isClosing) {
         closingShortcodeNames.add(info.name);
       }
@@ -600,7 +611,7 @@ export function remarkHugo(this: Processor, options: ShortcodeOptions = {}) {
     visit(
       tree,
       "paragraph",
-      (node: Parent, index: number | undefined, parent: Parent | undefined) => {
+      (node, index, parent) => {
         if (!parent || index === undefined) return;
 
         const children = node.children;
@@ -610,21 +621,17 @@ export function remarkHugo(this: Processor, options: ShortcodeOptions = {}) {
 
         if (!hasShortcode) return;
 
-        const newNodes: Node[] = [];
-        let currentParagraphChildren: Node[] = [];
+        const newNodes: RootContent[] = [];
+        let currentParagraphChildren: PhrasingContent[] = [];
 
-        const containsRealText = children.some((c: any) => {
-          if (c.type !== "text") return false;
-          const val = c.value || "";
-          return (
-            val.replace(/[\u200B-\u200C\u200D\uFEFF]/g, "").trim().length > 0
-          );
-        });
+        const containsRealText = children.some(
+          (c) => c.type === "text" && normalizeForTagMatch(nodeValue(c)).length > 0,
+        );
 
         for (const child of children) {
           if (child.type === "shortcode") {
             // Check if this is a JSX inline component
-            const shortcodeMeta = (child as any).data?.shortcode;
+            const shortcodeMeta = shortcodeMetaOf(child);
 
             // If it's a JSX component, we MUST lift it if it's standalone or part of a PascalCase pair
             // To be safe and ensure nesting works, we lift if it's PascalCase
@@ -632,20 +639,15 @@ export function remarkHugo(this: Processor, options: ShortcodeOptions = {}) {
 
             if (isPascalCase) {
               // Closing JSX tags (</Tab>, </Tabs>, etc.) are ALWAYS lifted.
-              const isClosingTag = (child as any).content
-                ?.trimStart()
-                .startsWith("</");
+              const isClosingTag = child.content?.trimStart().startsWith("</");
 
               if (!isClosingTag) {
                 // For opening/self-closing tags, only keep inline if there is
                 // real text in the nodes accumulated BEFORE this one.
                 const hasRealTextBefore = currentParagraphChildren.some(
-                  (c: any) => {
+                  (c) => {
                     if (c.type === "text") {
-                      return (
-                        (c as any).value &&
-                        normalizeForTagMatch((c as any).value).length > 0
-                      );
+                      return normalizeForTagMatch(nodeValue(c)).length > 0;
                     }
                     return c.type !== "shortcode";
                   },
@@ -664,9 +666,7 @@ export function remarkHugo(this: Processor, options: ShortcodeOptions = {}) {
                 shortcodeMeta?.name || "",
               );
               const isAtStart = currentParagraphChildren.every(
-                (c) =>
-                  c.type === "text" &&
-                  !normalizeForTagMatch((c as any).value || ""),
+                (c) => c.type === "text" && !normalizeForTagMatch(nodeValue(c)),
               );
 
               const shouldLift =
@@ -690,21 +690,16 @@ export function remarkHugo(this: Processor, options: ShortcodeOptions = {}) {
             // Lift block shortcodes out of paragraphs (existing behavior)
             if (currentParagraphChildren.length > 0) {
               const hasMeaningfulText = currentParagraphChildren.some(
-                (c: any) => {
-                  if (c.type !== "text") return true;
-                  return (
-                    (c.value || "")
-                      .replace(/[\u200B-\u200C\u200D\uFEFF]/g, "")
-                      .trim().length > 0
-                  );
-                },
+                (c) =>
+                  c.type !== "text" ||
+                  normalizeForTagMatch(nodeValue(c)).length > 0,
               );
 
               if (hasMeaningfulText) {
                 newNodes.push({
                   type: "paragraph",
                   children: currentParagraphChildren,
-                } as Parent);
+                });
               }
               currentParagraphChildren = [];
             }
@@ -715,19 +710,16 @@ export function remarkHugo(this: Processor, options: ShortcodeOptions = {}) {
         }
 
         if (currentParagraphChildren.length > 0) {
-          const hasMeaningfulText = currentParagraphChildren.some((c: any) => {
-            if (c.type !== "text") return true;
-            return (
-              (c.value || "").replace(/[\u200B-\u200C\u200D\uFEFF]/g, "").trim()
-                .length > 0
-            );
-          });
+          const hasMeaningfulText = currentParagraphChildren.some(
+            (c) =>
+              c.type !== "text" || normalizeForTagMatch(nodeValue(c)).length > 0,
+          );
 
           if (hasMeaningfulText) {
             newNodes.push({
               type: "paragraph",
               children: currentParagraphChildren,
-            } as Parent);
+            });
           }
         }
 
@@ -757,11 +749,7 @@ export function remarkHugo(this: Processor, options: ShortcodeOptions = {}) {
           while (lastRealIdx >= 0) {
             const gc = child.children[lastRealIdx];
             if (gc.type === "text") {
-              const val = (gc as any).value || "";
-              if (
-                val.replace(/[\u200B-\u200C\u200D\uFEFF]/g, "").trim()
-                  .length === 0
-              ) {
+              if (normalizeForTagMatch(nodeValue(gc)).length === 0) {
                 lastRealIdx--;
                 continue;
               }
@@ -833,24 +821,21 @@ export function remarkHugo(this: Processor, options: ShortcodeOptions = {}) {
     visit(
       tree,
       "paragraph",
-      (node: Parent, index: number | undefined, parent: Parent | undefined) => {
+      (node, index, parent) => {
         if (!parent || index === undefined) return;
         const hasBlockShortcode = node.children.some(
-          (c: any) => c.type === "shortcode" && c.data?.shortcode?.isBlock,
+          (c) => c.type === "shortcode" && c.data?.shortcode?.isBlock,
         );
         if (!hasBlockShortcode) return;
 
         // If a paragraph contains a block shortcode, we should lift it.
-        const newNodes: Node[] = [];
-        let current: Node[] = [];
+        const newNodes: RootContent[] = [];
+        let current: PhrasingContent[] = [];
 
         for (const child of node.children) {
-          if (
-            child.type === "shortcode" &&
-            (child as any).data?.shortcode?.isBlock
-          ) {
+          if (child.type === "shortcode" && child.data?.shortcode?.isBlock) {
             if (current.length > 0) {
-              newNodes.push({ type: "paragraph", children: current } as Parent);
+              newNodes.push({ type: "paragraph", children: current });
               current = [];
             }
             newNodes.push(child);
@@ -859,7 +844,7 @@ export function remarkHugo(this: Processor, options: ShortcodeOptions = {}) {
           }
         }
         if (current.length > 0) {
-          newNodes.push({ type: "paragraph", children: current } as Parent);
+          newNodes.push({ type: "paragraph", children: current });
         }
 
         parent.children.splice(index, 1, ...newNodes);
@@ -871,23 +856,20 @@ export function remarkHugo(this: Processor, options: ShortcodeOptions = {}) {
     // - empty paragraphs injected by the editor
     // - whitespace-only text nodes left over from shortcode extraction
     //   (these disrupt toMarkdown block spacing, causing all blocks to fuse)
-    if (tree.type === "root" && (tree as any).children) {
-      (tree as any).children = (tree as any).children.filter((node: any) => {
+    if (tree.type === "root" && tree.children) {
+      tree.children = tree.children.filter((node) => {
         if (node.type === "paragraph") {
-          const hasContent = node.children.some((c: any) => {
+          const hasContent = node.children.some((c) => {
             if (c.type !== "text") return true;
-            return (
-              (c.value || "").replace(/[\u200B\u200C\u200D\uFEFF]/g, "").trim()
-                .length > 0
-            );
+            return normalizeForTagMatch(nodeValue(c)).length > 0;
           });
           return hasContent;
         }
         // Remove whitespace-only text nodes at root level
         if (node.type === "text") {
           return (
-            (node.value || "").replace(/[\u200B\u200C\u200D\uFEFF\s]/g, "")
-              .length > 0
+            nodeValue(node).replace(/[\u200B\u200C\u200D\uFEFF\s]/g, "").length >
+            0
           );
         }
         return true;
@@ -898,10 +880,10 @@ export function remarkHugo(this: Processor, options: ShortcodeOptions = {}) {
   // Compiler: Register visitor for remark-stringify
   toMarkdownExtensions.push({
     join: [
-      (left: any, right: any) => {
+      (left: Node, right: Node) => {
         if (left.type === "shortcode" && right.type === "shortcode") {
-          const leftMeta = left.data?.shortcode;
-          const rightMeta = right.data?.shortcode;
+          const leftMeta = shortcodeMetaOf(left);
+          const rightMeta = shortcodeMetaOf(right);
 
           // Only force flush (no blank line) for adjacent JSX components.
           if (leftMeta?.isJsxComponent && rightMeta?.isJsxComponent) {
@@ -917,13 +899,28 @@ export function remarkHugo(this: Processor, options: ShortcodeOptions = {}) {
       },
     ],
     handlers: {
-      shortcode: (node: ShortcodeNode, _parent: any, state: any) => {
+      shortcode: (
+        node: ShortcodeNode,
+        _parent: Parent | undefined,
+        state: ToMarkdownState,
+      ) => {
         const meta = getShortcodeMeta(node);
         const opening = meta?.startContent || node.content;
         const closing = meta?.closingContent || "";
 
+        // A shortcode is a registered parent, but not one of the built-in
+        // unions these state helpers are typed against. The second argument is
+        // typed `Info`; passing `state` preserves the existing output.
+        const asParent = node as unknown as Parents;
+        const asInfo = state as unknown as Parameters<
+          typeof state.containerFlow
+        >[1];
+
         if (meta?.isBlock) {
-          const body = state.containerFlow(node, state);
+          const body = state.containerFlow(
+            asParent as Parameters<typeof state.containerFlow>[0],
+            asInfo,
+          );
           const trimmedBody = body.trim();
 
           if (!trimmedBody) {
@@ -933,7 +930,10 @@ export function remarkHugo(this: Processor, options: ShortcodeOptions = {}) {
           return `${opening}\n${trimmedBody}\n${closing}`;
         }
 
-        const body = state.containerPhrasing(node, state);
+        const body = state.containerPhrasing(
+          asParent as Parameters<typeof state.containerPhrasing>[0],
+          state as unknown as Parameters<typeof state.containerPhrasing>[1],
+        );
         return `${opening}${body}${closing}`;
       },
     },

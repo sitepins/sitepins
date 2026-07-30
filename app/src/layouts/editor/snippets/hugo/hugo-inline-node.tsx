@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils/cn";
 import { PlateElement, useEditorRef, withRef } from "platejs/react";
 import { BaseInlineSnippet } from "../common/base-inline-node";
 import { EditableTagLine } from "../common/editable-tag-line";
+import type { TText } from "platejs";
 
 // Hugo-specific theme colors
 const getHugoShortcodeTheme = () => {
@@ -19,7 +20,7 @@ const getHugoShortcodeTheme = () => {
 
 export const HugoInlineElement = withRef<typeof PlateElement>(
   ({ className, ...props }, ref) => {
-    const { children, element } = props as any;
+    const { children, element } = props;
     const editor = useEditorRef();
     const theme = getHugoShortcodeTheme();
 
@@ -33,7 +34,7 @@ export const HugoInlineElement = withRef<typeof PlateElement>(
     };
 
     const text = (
-      element.children?.map((c: any) => c.text).join("") || ""
+      element.children?.map((c) => (c as TText).text).join("") || ""
     ).replace(/\n/g, "");
 
     return (

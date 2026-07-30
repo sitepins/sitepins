@@ -6,11 +6,10 @@ import {
   generateUniqueFileName,
   sanitizedPath,
 } from "@/lib/utils/common";
-import { isGitLabProvider } from "@/lib/utils/provider-checker";
 import { slugifyFilename } from "@/lib/utils/text-converter";
-import { githubContentApi } from "@/redux/features/github";
-import { gitlabApi } from "@/redux/features/gitlab";
+import { getGitProviderAdapter } from "@/redux/features/git/provider-adapter";
 import { store } from "@/redux/store";
+import type { TFiles } from "@/types";
 import { PlaceholderPlugin, PlaceholderProvider } from "@platejs/media/react";
 import type { TPlaceholderElement } from "platejs";
 import { KEYS } from "platejs";
@@ -26,25 +25,9 @@ export const PlaceholderElement = withHOC(
     const { api } = useEditorPlugin(PlaceholderPlugin);
 
     const config = store.getState().config;
-    const ghTrees = githubContentApi.endpoints.getGitHubTrees.select({
-      owner: config.owner,
-      repo: config.repoName,
-      tree_sha: config.branch,
-      recursive: "1",
-      config: config,
-    })(store.getState());
-
-    const glTrees = gitlabApi.endpoints.getGitLabRepoTree.select({
-      projectId: config.repoName
-        ? `${config.owner}/${config.repoName}`
-        : config.owner,
-      ref: config.branch,
-      recursive: true,
-    })(store.getState());
-
-    const trees = isGitLabProvider(config.provider)
-      ? glTrees?.data
-      : ghTrees?.data;
+    const trees = getGitProviderAdapter(config.provider).selectCachedTree(
+      store.getState(),
+    );
 
     const replaceCurrentPlaceholder = useCallback(
       (file: File) => {
@@ -69,7 +52,8 @@ export const PlaceholderElement = withHOC(
 
                 // Generate a unique file path for the image
                 const { fileName: filepath } = generateUniqueFileName(
-                  trees?.trees?.find((t: any) => t.name === "media")?.children!,
+                  trees?.trees?.find((t: TFiles) => t.name === "media")
+                    ?.children ?? [],
                   sanitizedPath(config.media, node.name),
                 );
 

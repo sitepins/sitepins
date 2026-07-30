@@ -3,9 +3,30 @@ import {
   isGitHubProvider,
   isGitLabProvider,
 } from "@/lib/utils/provider-checker";
+import { RootState } from "@/redux/store";
 import { api } from "../api-slice";
 import { updateConfig } from "../config/slice";
 import { TProvider } from "./type";
+
+/** Provider record as the API returns it, before snake_case → camelCase mapping. */
+type TProviderResponse = Omit<
+  TProvider,
+  | "accessToken"
+  | "accessTokenExpiresAt"
+  | "installationAccessToken"
+  | "tokenType"
+  | "refreshToken"
+  | "refreshTokenExpiresAt"
+  | "lastRefreshedAt"
+> & {
+  access_token: string;
+  access_token_expires_at?: number | Date | string;
+  installation_access_token: string;
+  token_type: string;
+  refresh_token: string;
+  refresh_token_expires_at?: number | Date | string;
+  last_refreshed_at?: number | Date | string;
+};
 
 export const providerApi = api.injectEndpoints({
   endpoints: (builder) => ({
@@ -22,7 +43,7 @@ export const providerApi = api.injectEndpoints({
           method: "GET",
         };
       },
-      transformResponse: (response: any[]) =>
+      transformResponse: (response: TProviderResponse[]): TProvider[] =>
         response.map((provider) => ({
           ...provider,
           accessToken: provider.access_token,
@@ -35,7 +56,7 @@ export const providerApi = api.injectEndpoints({
         })),
       async onQueryStarted(arg, { dispatch, queryFulfilled, getState }) {
         const { data: providers } = await queryFulfilled;
-        const state = getState() as any;
+        const state = getState() as RootState;
         const preferredProvider =
           typeof arg === "object" ? arg.preferredProvider : undefined;
         const targetProvider = preferredProvider || state.config.provider;
@@ -83,8 +104,8 @@ export const providerApi = api.injectEndpoints({
         if (useGitlab) {
           dispatch(
             updateConfig({
-              currentLoginUserToken: loginUserGitlabProvider?.accessToken!,
-              token: selectedGitlabProvider?.accessToken!,
+              currentLoginUserToken: loginUserGitlabProvider?.accessToken ?? "",
+              token: selectedGitlabProvider?.accessToken ?? "",
               provider: "Gitlab",
               refreshToken: selectedGitlabProvider?.refreshToken || "",
               accessTokenExpiresAt:
@@ -97,8 +118,8 @@ export const providerApi = api.injectEndpoints({
         } else if (githubProviders.length > 0) {
           dispatch(
             updateConfig({
-              currentLoginUserToken: loginUserGithubProvider?.accessToken!,
-              token: selectedGithubProvider?.accessToken!,
+              currentLoginUserToken: loginUserGithubProvider?.accessToken ?? "",
+              token: selectedGithubProvider?.accessToken ?? "",
               provider: "Github",
               refreshToken: selectedGithubProvider?.refreshToken || "",
               accessTokenExpiresAt:

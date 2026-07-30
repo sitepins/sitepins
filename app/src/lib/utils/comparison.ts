@@ -1,7 +1,7 @@
 /**
  * Deep equality comparison for objects
  */
-export const deepEqual = (obj1: any, obj2: any): boolean => {
+export const deepEqual = (obj1: unknown, obj2: unknown): boolean => {
   if (obj1 === obj2) return true;
   if (obj1 == null || obj2 == null) return false;
   if (typeof obj1 !== typeof obj2) return false;
@@ -12,14 +12,16 @@ export const deepEqual = (obj1: any, obj2: any): boolean => {
 
   if (typeof obj1 !== "object") return obj1 === obj2;
 
-  const keys1 = Object.keys(obj1);
-  const keys2 = Object.keys(obj2);
+  const rec1 = obj1 as Record<string, unknown>;
+  const rec2 = obj2 as Record<string, unknown>;
+  const keys1 = Object.keys(rec1);
+  const keys2 = Object.keys(rec2);
 
   if (keys1.length !== keys2.length) return false;
 
   for (const key of keys1) {
     if (!keys2.includes(key)) return false;
-    if (!deepEqual(obj1[key], obj2[key])) return false;
+    if (!deepEqual(rec1[key], rec2[key])) return false;
   }
 
   return true;
@@ -78,14 +80,14 @@ export const quickStringCompare = (str1: string, str2: string): boolean => {
 /**
  * Strip ephemeral fields that differ between parses
  */
-export const stripEphemeral = (obj: any): any => {
+export const stripEphemeral = (obj: unknown): unknown => {
   if (obj == null || typeof obj !== "object") return obj;
   if (obj instanceof Date) return obj;
   if (Array.isArray(obj)) return obj.map((v) => stripEphemeral(v));
-  const res: any = {};
-  for (const k of Object.keys(obj)) {
+  const res: Record<string, unknown> = {};
+  for (const [k, v] of Object.entries(obj)) {
     if (k === "id" || k === "key" || k === "__meta") continue;
-    res[k] = stripEphemeral(obj[k]);
+    res[k] = stripEphemeral(v);
   }
   return res;
 };
@@ -93,7 +95,7 @@ export const stripEphemeral = (obj: any): any => {
 /**
  * Deep equality comparison for arrays, optionally ignoring specific fields
  */
-export const deepEqualArray = <T extends Record<string, any>>(
+export const deepEqualArray = <T extends Record<string, unknown>>(
   arr1: T[],
   arr2: T[],
   ignoreFields: string[] = [],

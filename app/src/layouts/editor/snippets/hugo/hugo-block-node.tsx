@@ -3,6 +3,7 @@
 import { useEditorRef, withRef } from "platejs/react";
 import { BaseSnippetBlock, SnippetTheme } from "../common/base-block-node";
 import { EditableTagLine } from "../common/editable-tag-line";
+import type { ShortcodeSlateElement } from "./hugo-serialization";
 
 // Hugo-specific theme colors
 const getHugoShortcodeTheme = (): SnippetTheme => {
@@ -18,10 +19,11 @@ const getHugoShortcodeTheme = (): SnippetTheme => {
 
 export const HugoBlockElement = withRef<typeof BaseSnippetBlock>(
   ({ className, theme: _theme, ...props }, ref) => {
-    const { children, element } = props as any;
+    const { children } = props;
+    const element = props.element as ShortcodeSlateElement;
     const editor = useEditorRef();
-    const opening = element?.opening as string | undefined;
-    const closing = element?.closing as string | undefined;
+    const opening = element?.opening;
+    const closing = element?.closing;
     const theme = getHugoShortcodeTheme();
 
     const updateNode = (updates: Partial<typeof element>) => {

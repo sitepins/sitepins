@@ -6,12 +6,12 @@ import { HugoBlockElement } from "../hugo/hugo-block-node";
 import { HugoInlineElement } from "../hugo/hugo-inline-node";
 import { DEFAULT_SNIPPET_THEME } from "./base-block-node";
 
-export const KEY_SHORTCODE = "shortcode";
-export const KEY_SHORTCODE_INLINE = "shortcode_inline";
+export { KEY_SHORTCODE, KEY_SHORTCODE_INLINE } from "../snippet-keys";
+import { KEY_SHORTCODE, KEY_SHORTCODE_INLINE } from "../snippet-keys";
 
 // Wrapper component that routes to block or inline based on isBlock property
 const SnippetElement = (props: ComponentProps<typeof PlateElement>) => {
-  const { element } = props as any;
+  const { element } = props;
   const isBlock = Boolean(
     element?.isBlock && (element?.opening || element?.closing),
   );
@@ -42,7 +42,7 @@ export const ShortcodeKit = createPlatePlugin({
           return false;
         }
 
-        const [parentNode, parentPath] = parentEntry as any;
+        const [parentNode, parentPath] = parentEntry;
 
         // Check if we're in a shortcode
         if (

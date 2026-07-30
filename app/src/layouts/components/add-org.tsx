@@ -55,7 +55,7 @@ export default function AddOrg({
     resolver: zodResolver(orgSchema),
     defaultValues: {
       org_name: "",
-      email: user?.email!,
+      email: user?.email ?? "",
     },
   });
 

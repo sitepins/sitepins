@@ -49,7 +49,9 @@ export function isSerializedError(error: unknown): error is SerializedError {
 }
 
 // Type guard to check if the error is from Axios
-export function isAxiosError<T = any>(error: unknown): error is AxiosError<T> {
+export function isAxiosError<T = unknown>(
+  error: unknown,
+): error is AxiosError<T> {
   return axios.isAxiosError(error);
 }
 
@@ -101,7 +103,10 @@ const axiosBaseQuery =
       }
       return { data: result.data };
     } catch (axiosError) {
-      if (isAxiosError(axiosError) && axiosError.response) {
+      if (
+        isAxiosError<{ message?: string }>(axiosError) &&
+        axiosError.response
+      ) {
         return {
           error: {
             status: axiosError.response.status,
@@ -113,7 +118,7 @@ const axiosBaseQuery =
       }
       return {
         error: {
-          status: (axiosError as any)?.code || 500,
+          status: (isAxiosError(axiosError) && axiosError.code) || 500,
           data: {
             message:
               "Server is unreachable. Please check your internet connection or try again later.",

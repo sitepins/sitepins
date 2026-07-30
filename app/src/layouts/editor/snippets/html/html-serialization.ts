@@ -1,12 +1,13 @@
-import { KEY_HTML_BLOCK, KEY_HTML_INLINE } from "./html-plugin";
+import type { MdHtml } from "@platejs/markdown";
+import { KEY_HTML_BLOCK, KEY_HTML_INLINE } from "../snippet-keys";
 
 /**
  * Deserializes HTML mdast nodes to Slate nodes
  * Determines if HTML should be inline or block based on mdast context
  */
-export const deserializeHtml = (mdastNode: any) => {
+export const deserializeHtml = (mdastNode: MdHtml) => {
   const value = mdastNode.value || "";
-  const data = (mdastNode.data || {}) as { isInlineHtml?: boolean };
+  const data = mdastNode.data ?? {};
   const isInline = Boolean(data.isInlineHtml);
   const children = value ? [{ text: value }] : [{ text: "" }];
 

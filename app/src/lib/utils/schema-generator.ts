@@ -2,19 +2,29 @@ import matter from "gray-matter";
 import { checkMedia } from "./check-media-file";
 import { verifyColor } from "./common";
 
+/**
+ * Field kinds the generator emits. The `typeof` members are here because the
+ * kind is derived straight from the frontmatter value in several branches.
+ */
 type Type =
   | "media"
+  | "gallery"
   | "object"
   | "list"
+  | "Array"
+  | "Date"
+  | "color"
+  | "textarea"
   | "string"
   | "number"
   | "boolean"
-  | "textarea"
   | "bigint"
-  | any;
+  | "symbol"
+  | "undefined"
+  | "function";
 
 interface Frontmatter {
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export interface FieldSchema {
@@ -23,8 +33,8 @@ export interface FieldSchema {
   label: string;
   description?: string;
   fields?: FieldSchema[];
-  value?: any;
-  defaultValue?: any;
+  value?: unknown;
+  defaultValue?: unknown;
 }
 
 export type IJsonSchema =
@@ -34,6 +44,15 @@ export type IJsonSchema =
       content: FieldSchema;
     }
   | undefined;
+
+const asRecord = (value: unknown): Record<string, unknown> | undefined =>
+  typeof value === "object" && value !== null
+    ? (value as Record<string, unknown>)
+    : undefined;
+
+/** First string among the candidates, for label fallbacks. */
+const firstString = (...candidates: unknown[]): string | undefined =>
+  candidates.find((c): c is string => typeof c === "string" && c.length > 0);
 
 const convertToCamelCase = (input: string = ""): string => {
   if (typeof input !== "string") {
@@ -104,11 +123,15 @@ export function generateSchema(
         type: Array.isArray(value) ? "list" : "object",
         name: path,
         label: convertToCamelCase(
-          value?.title || value?.name || value?.label || key,
+          firstString(
+            asRecord(value)?.title,
+            asRecord(value)?.name,
+            asRecord(value)?.label,
+          ) || key,
         ),
         description,
         defaultValue: "",
-        fields: generateSchema(value, path, comments),
+        fields: generateSchema(value as Frontmatter, path, comments),
       };
     } else if (typeof value === "string") {
       return {
@@ -179,7 +202,7 @@ export function generateSchemaName(
   return cleanPath.replace(/^\/+|\/+$/g, "");
 }
 
-function typeofValue(value: any) {
+function typeofValue(value: unknown): Type {
   return typeof value === "object"
     ? Array.isArray(value)
       ? "Array"
@@ -190,7 +213,7 @@ function typeofValue(value: any) {
 }
 
 export function convertSchema(
-  docs: Record<string, any>,
+  docs: Record<string, unknown>,
   comments?: Record<string, string>,
   parentPath: string = "",
 ): FieldSchema[] {
@@ -210,16 +233,16 @@ function generateFieldSchema({
   docs: _docs,
 }: {
   label: string;
-  value: any;
+  value: unknown;
   comments?: Record<string, string>;
   path?: string;
-  docs?: Record<string, any>;
+  docs?: Record<string, unknown>;
 }): FieldSchema {
   const type = typeofValue(value);
   const description = comments?.[path];
   const isoFormat = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{3})?Z$/;
   if (type === "Array" && value) {
-    const val = value[0];
+    const val = Array.isArray(value) ? value[0] : undefined;
     const next = typeof val === "object";
     const isMediaList = checkMedia(val);
     if (isMediaList) {
@@ -259,9 +282,15 @@ function generateFieldSchema({
       type: !value ? "string" : type,
       description,
       defaultValue: "",
-      ...(hasNext && { fields: convertSchema(value, comments, path) }),
+      ...(hasNext && {
+        fields: convertSchema(value as Record<string, unknown>, comments, path),
+      }),
     };
-  } else if (verifyColor(value) && isNaN(value)) {
+  } else if (
+    typeof value === "string" &&
+    verifyColor(value) &&
+    Number.isNaN(Number(value))
+  ) {
     return {
       label: convertToCamelCase(label),
       name: label,
@@ -270,7 +299,7 @@ function generateFieldSchema({
       value: "",
       defaultValue: "",
     };
-  } else if (isoFormat.test(value)) {
+  } else if (typeof value === "string" && isoFormat.test(value)) {
     return {
       label: convertToCamelCase(label),
       name: label,
@@ -283,7 +312,12 @@ function generateFieldSchema({
     return {
       label: convertToCamelCase(label),
       name: label,
-      type: checkMedia(value) ? "media" : type === "object" ? "string" : type,
+      type:
+        typeof value === "string" && checkMedia(value)
+          ? "media"
+          : type === "object"
+            ? "string"
+            : type,
       description,
       value: type === "number" ? 0 : type === "boolean" ? false : "",
       defaultValue: type === "number" ? 0 : type === "boolean" ? false : "",

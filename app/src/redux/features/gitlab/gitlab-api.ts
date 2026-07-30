@@ -5,7 +5,12 @@ import { RootState } from "@/redux/store";
 import { BaseQueryFn } from "@reduxjs/toolkit/query";
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { updateConfig } from "../config/slice";
-import { TGitLabBranch, TGitLabBranchParams } from "./gitlab-type";
+import {
+  TGitLabBranch,
+  TGitLabBranchParams,
+  TGitLabProject,
+  TGitLabTreeItem,
+} from "./gitlab-type";
 
 /**
  * GitLab API Base Query
@@ -33,6 +38,11 @@ export type TGitLabQueryError = {
   status: number;
   message: string;
   error?: string;
+};
+
+/** Response headers the base query surfaces; pagination reads `x-next-page`. */
+export type TGitLabQueryMeta = {
+  headers?: Record<string, string>;
 };
 
 const GITLAB_API_BASE_URL = `https://gitlab.com/api/${GITLAB_API_VERSION}`;
@@ -65,12 +75,15 @@ function buildUrl(
   return url.toString();
 }
 
-let refreshPromise: Promise<any> | null = null;
+let refreshPromise: Promise<string | null> | null = null;
 
 const gitlabBaseQuery: BaseQueryFn<
   TGitLabQueryArgs,
   unknown,
-  TGitLabQueryError
+  TGitLabQueryError,
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+  {},
+  TGitLabQueryMeta
 > = async (
   {
     endpoint,
@@ -276,7 +289,7 @@ export const gitlabApi = createApi({
   ],
   endpoints: (builder) => ({
     getGitLabRepos: builder.query<
-      any[],
+      TGitLabProject[],
       {
         token?: string;
         search?: string;
@@ -316,7 +329,7 @@ export const gitlabApi = createApi({
     }),
 
     getGitLabSingleRepo: builder.query<
-      any,
+      TGitLabProject,
       { projectId: string | number; token?: string }
     >({
       query: ({ projectId, token }) => ({
@@ -327,7 +340,7 @@ export const gitlabApi = createApi({
     }),
 
     getGitLabRepoTree: builder.query<
-      any,
+      TGitLabTreeItem[],
       {
         projectId: string | number;
         path?: string;

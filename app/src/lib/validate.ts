@@ -243,10 +243,11 @@ export const saveProfilePictureSchema = z.object({
   image: z.custom<FileList>(
     (fileList) => {
       if (typeof FileList !== "undefined" && fileList instanceof FileList) {
+        const file = fileList.item(0);
         return (
-          fileList.length > 0 &&
-          fileList.item(0)?.size! <= MAX_FILE_SIZE &&
-          ACCEPTED_IMAGE_TYPES.includes(fileList.item(0)?.type!)
+          file !== null &&
+          file.size <= MAX_FILE_SIZE &&
+          ACCEPTED_IMAGE_TYPES.includes(file.type)
         );
       }
       return false;

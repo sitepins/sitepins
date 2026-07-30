@@ -5,12 +5,13 @@ import { useOwnerPlan } from "@/hooks/use-owner-plan";
 import { useSnippets } from "@/hooks/use-snippets";
 import { MarkdownPlugin } from "@platejs/markdown";
 import { Plus, Trash } from "lucide-react";
+import type { TElement } from "platejs";
 import { useEditorRef } from "platejs/react";
 import { useMemo, useState } from "react";
 import { SnippetSaveDialog } from "./snippet-save-dialog";
 
 interface SnippetControlsProps {
-  element: any;
+  element: TElement & { code?: string };
   onDelete?: () => void;
   isBlock?: boolean;
   className?: string;
@@ -34,7 +35,7 @@ export function SnippetControls({
   // Determine the content/code of the current element
   const code = useMemo(() => {
     if (codeProp !== undefined) return codeProp;
-    if (element.code) return element.code;
+    if (typeof element.code === "string" && element.code) return element.code;
 
     try {
       const api = editor.getApi(MarkdownPlugin);
@@ -43,7 +44,8 @@ export function SnippetControls({
       return serialized;
     } catch (e) {
       logger.error("Failed to serialize snippet node:", e);
-      return element.value || element.content || "";
+      const fallback = element.value ?? element.content;
+      return typeof fallback === "string" ? fallback : "";
     }
   }, [codeProp, element, editor]);
 

@@ -58,19 +58,50 @@ export const KEYWORD_KEYS = [
   "search-tags",
 ];
 
+/** One row of an SEO report: `valid: undefined` means "could be better". */
+export type TSeoCheck = {
+  valid?: boolean;
+  value?: unknown;
+  length?: number;
+  percentage?: number;
+  tip?: string;
+  count?: number;
+  /** Per-keyword occurrence rate, keyed by keyword. */
+  density?: Record<string, number>;
+  [key: string]: unknown;
+};
+
+export type TSeoResults = Record<string, TSeoCheck>;
+
+/** Frontmatter, whose values may be raw or wrapped as `{ value }`. */
+export type TSeoEntry = Record<string, unknown>;
+
+export type TSeoTranslate = (
+  key: string,
+  args?: Record<string, string | number | Date>,
+) => string;
+
+/** Frontmatter values arrive either raw or nested under `value`. */
+function unwrap(val: unknown): any {
+  if (val && typeof val === "object" && "value" in val) {
+    return unwrap((val as { value: unknown }).value);
+  }
+  return val;
+}
+
 export function validateSEO(
-  entry: Record<string, any>,
+  entry: TSeoEntry,
   markdownContent: string,
   baseUrl?: string,
-  t?: (key: string, args?: any) => string,
+  t?: TSeoTranslate,
 ) {
-  const results: Record<string, any> = {};
+  const results: TSeoResults = {};
   let good = 0;
   let bad = 0;
   let improvement = 0;
 
   // Helper: evaluate a check
-  function trackResult(key: string, obj: any) {
+  function trackResult(key: string, obj: TSeoCheck) {
     results[key] = obj;
 
     if (obj.valid === true) {
@@ -80,13 +111,6 @@ export function validateSEO(
     } else {
       improvement++;
     }
-  }
-
-  function unwrap(val: any): any {
-    if (val && typeof val === "object" && "value" in val) {
-      return unwrap(val.value);
-    }
-    return val;
   }
 
   // --- Meta Title ---
@@ -685,31 +709,24 @@ function getParagraphs(markdownContent: string): string[] {
 }
 
 export function validateSeoInsights(
-  entry: Record<string, any>,
+  entry: TSeoEntry,
   markdownContent: string,
-  t?: (key: string, args?: any) => string,
+  t?: TSeoTranslate,
   // Explicit target keyphrase from the SEO panel. When set it overrides the
   // frontmatter-derived keywords (tags etc.), which are a loose proxy at best.
   // Accepts a comma-separated list.
   focusKeyword?: string,
 ) {
-  const results: Record<string, any> = {};
+  const results: TSeoResults = {};
   let good = 0;
   let bad = 0;
   let improvement = 0;
 
-  function trackResult(key: string, obj: any) {
+  function trackResult(key: string, obj: TSeoCheck) {
     results[key] = obj;
     if (obj.valid === true) good++;
     else if (obj.valid === false) bad++;
     else improvement++;
-  }
-
-  function unwrap(val: any): any {
-    if (val && typeof val === "object" && "value" in val) {
-      return unwrap(val.value);
-    }
-    return val;
   }
 
   const plainText = stripMarkdownSyntax(markdownContent);

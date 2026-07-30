@@ -1,25 +1,34 @@
-import { logger } from "@/lib/logger";
 import { MdxSnippet } from "@/editor/utils/plate-types";
 import { GITHUB_API_VERSION, IS_DEMO, SNIPPET_FOLDER } from "@/lib/constant";
+import { logger } from "@/lib/logger";
 import { checkMedia } from "@/lib/utils/check-media-file";
 import {
   getManifestFile,
   isOldConfigFormat,
   migrateConfig,
+  type TLegacyConfig,
 } from "@/lib/utils/config-migration";
 import { parseContentJson } from "@/lib/utils/content-serializer";
 import { Framework } from "@/lib/utils/framework-detector";
 import { fmDetector } from "@/lib/utils/frontmatter-detector";
 import { parseSnippetFile } from "@/lib/utils/git-utils";
 import { pathToDir } from "@/lib/utils/path-to-dir";
-import { store } from "@/redux/store";
+import { RootState, store } from "@/redux/store";
 import { TConfig, TFiles, TTree } from "@/types";
 import path from "path";
 import { TFileMetaCacheEntry, upsertFileMetadata } from "../config/meta-slice";
 import { updateConfig } from "../config/slice";
 import { githubApi } from "./github-api";
 import { githubCommitApi } from "./github-commit-api";
-import { TGitHubOption, TGitHubPromise } from "./github-type";
+import {
+  TGitHubContentEntry,
+  TGitHubOption,
+  TGitHubPromise,
+} from "./github-type";
+
+/** Demo mode serves pre-parsed content that carries `fmType`. */
+const demoFmType = (value: unknown): string | undefined =>
+  (value as { fmType?: string })?.fmType;
 
 export const githubContentApi = githubApi.injectEndpoints({
   overrideExisting: true,
@@ -146,7 +155,7 @@ export const githubContentApi = githubApi.injectEndpoints({
         { type: "GitHubContent" }, // Add general tag for easier invalidation
       ],
       async transformResponse(
-        baseQueryReturnValue: Record<string, any>,
+        baseQueryReturnValue: TGitHubContentEntry | TGitHubContentEntry[],
         _meta,
         arg: TGitHubOption<"GET /repos/{owner}/{repo}/contents/{path}"> & {
           config: TConfig;
@@ -271,7 +280,7 @@ export const githubContentApi = githubApi.injectEndpoints({
             data: decodedContent,
             sha: baseQueryReturnValue.sha,
           };
-        } else if (IS_DEMO && baseQueryReturnValue.fmType) {
+        } else if (IS_DEMO && demoFmType(baseQueryReturnValue)) {
           return baseQueryReturnValue;
         } else if (
           IS_DEMO &&
@@ -284,13 +293,13 @@ export const githubContentApi = githubApi.injectEndpoints({
         }
 
         const decodedContent = Buffer.from(
-          baseQueryReturnValue.content,
+          baseQueryReturnValue.content ?? "",
           "base64",
         ).toString("utf-8");
 
         return {
           data: decodedContent,
-          sha: (baseQueryReturnValue as any)?.sha,
+          sha: baseQueryReturnValue.sha,
         };
       },
     }),
@@ -311,7 +320,7 @@ export const githubContentApi = githubApi.injectEndpoints({
         { type: "GitHubContent" }, // Add general tag for easier invalidation
       ],
       async transformResponse(
-        baseQueryReturnValue: Record<string, any> | Record<string, any>[],
+        baseQueryReturnValue: TGitHubContentEntry | TGitHubContentEntry[],
         _meta,
         arg,
       ): Promise<MdxSnippet[]> {
@@ -330,11 +339,11 @@ export const githubContentApi = githubApi.injectEndpoints({
         }
 
         const snippetFiles = baseQueryReturnValue.filter(
-          (file: Record<string, any>) => file.type === "file",
-        ) as Array<Record<string, any>>;
+          (file) => file.type === "file",
+        );
 
         const snippetResults = await Promise.all<MdxSnippet | null>(
-          snippetFiles.map(async (file: Record<string, any>) => {
+          snippetFiles.map(async (file) => {
             try {
               const hasToken = Boolean(config.currentLoginUserToken);
               const baseUrl = hasToken ? file.url : file.download_url;
@@ -413,10 +422,10 @@ export const githubContentApi = githubApi.injectEndpoints({
         try {
           const { data } = await queryFulfilled;
           if (!Array.isArray(data) && isOldConfigFormat(data)) {
-            const state = getState() as any;
+            const state = getState() as RootState;
             const framework = arg.framework || state.config.framework;
 
-            const config = data as any;
+            const config = data as TLegacyConfig;
             const migrated = migrateConfig(config, framework);
             dispatch(updateConfig(migrated));
 
@@ -437,7 +446,7 @@ export const githubContentApi = githubApi.injectEndpoints({
               }),
             );
           } else if (!Array.isArray(data)) {
-            dispatch(updateConfig(data as any));
+            dispatch(updateConfig(data as Partial<TConfig>));
           }
         } catch {
           dispatch(
@@ -453,7 +462,7 @@ export const githubContentApi = githubApi.injectEndpoints({
       },
 
       transformResponse(
-        baseQueryReturnValue: Record<string, any>,
+        baseQueryReturnValue: TGitHubContentEntry | TGitHubContentEntry[],
         _meta,
         _arg: TGitHubOption<"GET /repos/{owner}/{repo}/contents/{path}">,
       ) {
@@ -461,8 +470,7 @@ export const githubContentApi = githubApi.injectEndpoints({
           return baseQueryReturnValue;
         }
         const decodedContent = Buffer.from(
-          //@ts-ignore
-          baseQueryReturnValue.content,
+          baseQueryReturnValue.content ?? "",
           "base64",
         ).toString("utf-8");
         return JSON.parse(decodedContent);

@@ -6,17 +6,19 @@ import {
   getManifestFile,
   isOldConfigFormat,
   migrateConfig,
+  type TLegacyConfig,
 } from "@/lib/utils/config-migration";
 import { parseContentJson } from "@/lib/utils/content-serializer";
 import { fmDetector } from "@/lib/utils/frontmatter-detector";
 import { pathToDir } from "@/lib/utils/path-to-dir";
-import { store } from "@/redux/store";
+import { RootState, store } from "@/redux/store";
 import { TConfig, TFiles, TTree } from "@/types";
 import path from "path";
 import { TFileMetaCacheEntry, upsertFileMetadata } from "../config/meta-slice";
 import { updateConfig } from "../config/slice";
 import { encodeProjectPath, gitlabApi } from "./gitlab-api";
 import { gitlabCommitApi } from "./gitlab-commit-api";
+import type { TGitLabCommit } from "./gitlab-type";
 import {
   TGitLabBranch,
   TGitLabFile,
@@ -55,7 +57,7 @@ function convertGitLabTreeToTTree(items: TGitLabTreeItem[]): TTree[] {
     type: item.type === "tree" ? ("tree" as const) : ("blob" as const),
     mode: (item.mode === "040000" ? "040000" : "100644") as
       "100644" | "100755" | "040000" | "160000" | "120000",
-    size: (item as any).size,
+    size: item.size,
   }));
 }
 
@@ -143,16 +145,13 @@ export const gitlabContentApi = gitlabApi.injectEndpoints({
           });
 
           if (result.error) {
-            return { error: result.error as any };
+            return { error: result.error };
           }
 
           const data = result.data as TGitLabTreeItem[];
           allItems = [...allItems, ...data];
 
-          const headers = (result.meta as any)?.headers as Record<
-            string,
-            string
-          >;
+          const headers = result.meta?.headers;
           const nextPage = headers?.["x-next-page"];
 
           if (nextPage) {
@@ -169,7 +168,7 @@ export const gitlabContentApi = gitlabApi.injectEndpoints({
           const trees = convertGitLabTreeToTTree(response);
           return {
             data: {
-              trees: pathToDir(trees as any, arg.config),
+              trees: pathToDir(trees, arg.config),
               files: trees,
             },
           };
@@ -206,7 +205,7 @@ export const gitlabContentApi = gitlabApi.injectEndpoints({
             }
 
             try {
-              const commitsPromise: Promise<any[]> = dispatch(
+              const commitsPromise: Promise<TGitLabCommit[]> = dispatch(
                 gitlabCommitApi.endpoints.getGitLabCommits.initiate({
                   id: arg.id,
                   ref: arg.ref,
@@ -218,9 +217,7 @@ export const gitlabContentApi = gitlabApi.injectEndpoints({
               let sizePromise: Promise<number | null> | undefined;
               if (!cachedMeta?.size) {
                 sizePromise = dispatch(
-                  (
-                    gitlabContentApi as any
-                  ).endpoints.getGitLabFileMetadata.initiate({
+                  gitlabContentApi.endpoints.getGitLabFileMetadata.initiate({
                     id: arg.id,
                     ref: arg.ref,
                     file_path: file.path,
@@ -228,12 +225,14 @@ export const gitlabContentApi = gitlabApi.injectEndpoints({
                 ).unwrap();
               }
 
-              const [commits, fetchedSize]: [any[], number | null | undefined] =
-                await Promise.all([commitsPromise, sizePromise]);
+              const [commits, fetchedSize]: [
+                TGitLabCommit[],
+                number | null | undefined,
+              ] = await Promise.all([commitsPromise, sizePromise]);
 
               const size: number | undefined = fetchedSize ?? cachedMeta?.size;
 
-              const latestCommit: any = commits?.[0];
+              const latestCommit = commits?.[0];
               if (latestCommit || size !== undefined) {
                 pendingUpdates[cacheKey] = {
                   sha: file.id,
@@ -267,7 +266,7 @@ export const gitlabContentApi = gitlabApi.injectEndpoints({
 
         return {
           data: {
-            trees: pathToDir(enrichedFiles as any, arg.config),
+            trees: pathToDir(enrichedFiles, arg.config),
             files: enrichedFiles,
           },
         };
@@ -406,7 +405,7 @@ export const gitlabContentApi = gitlabApi.injectEndpoints({
         params: { ref },
       }),
       transformResponse: (_, meta) => {
-        const headers = (meta as any)?.headers as Record<string, string>;
+        const headers = meta?.headers;
         const sizeHeader = headers?.["x-gitlab-size"];
         if (sizeHeader) {
           return parseInt(sizeHeader, 10);
@@ -520,10 +519,10 @@ export const gitlabContentApi = gitlabApi.injectEndpoints({
           const { data } = await queryFulfilled;
 
           if (!Array.isArray(data) && isOldConfigFormat(data)) {
-            const state = getState() as any;
+            const state = getState() as RootState;
             const framework = arg.framework || state.config.framework;
 
-            const config = data as any;
+            const config = data as TLegacyConfig;
             const migrated = migrateConfig(config, framework);
             dispatch(updateConfig(migrated));
 
@@ -543,7 +542,7 @@ export const gitlabContentApi = gitlabApi.injectEndpoints({
               }),
             );
           } else if (!Array.isArray(data)) {
-            dispatch(updateConfig(data as any));
+            dispatch(updateConfig(data as Partial<TConfig>));
           }
         } catch {
           dispatch(

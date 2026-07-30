@@ -35,7 +35,7 @@ Connect your GitHub or GitLab repo and start editing. Sitepins reads your conten
 
 ## Why Sitepins
 
-Static sites are fast, secure, and cheap to host. But but managing their content is a pain for non-technical people. 
+Static sites are fast, secure, and cheap to host. But managing their content is a pain for non-technical people. 
 
 Nobody on your marketing team should need Git, Markdown, or a code editor to fix a heading or swap an image. Neither should the client you shipped a site to last year. So they message you instead. You become the bottleneck for every small change, on every site you touch.
 

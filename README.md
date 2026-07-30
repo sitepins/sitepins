@@ -91,12 +91,12 @@ Tell the AI tool to structure content that way before it writes the site. Retrof
 - Rich content blocks: Mermaid diagrams, embedded iframes, charts, and external image URLs.
 - Shortcodes and custom content blocks for consistent content.
 - AI assistant with your own API key from OpenAI, Anthropic, Google, or xAI. Pick the exact model.
+- Edit as code when you need to work at that level.
 
 **Git control**
 - Every change is a commit. Full history, full attribution.
 - Undo and restore previous versions from inside the CMS. No repo digging.
 - Create branches, open pull requests, and merge without leaving Sitepins.
-- Edit as code when you need to work at that level.
 
 **Teams and clients**
 - Email invites. No GitHub or GitLab account needed for invited editors.
@@ -135,7 +135,7 @@ Skip the setup. Connect a repo and start editing in minutes.
 
 Run the whole thing yourself. The self-hosted build has no plans, billing, or usage limits. Every feature is unlocked.
 
-**Requirements:** Node.js 22+, pnpm 11+, and a MongoDB instance (local or [Atlas](https://www.mongodb.com/atlas) free tier).
+**Requirements:** Node.js 22+, pnpm 11+, and a MongoDB instance.
 
 ```bash
 pnpm install

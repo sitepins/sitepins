@@ -6,7 +6,7 @@
 
 Connect your GitHub or GitLab repo and start editing. Sitepins reads your content structure and builds the editor for you. No schema to define. No config file to write. Every save is a real Git commit.
 
-[**Live Demo**](https://demo.sitepins.com) · [**Documentation**](https://docs.sitepins.com) · [**Website**](https://sitepins.com) · [**Start for Free**](https://sitepins.com/pricing?ref=github)
+[**Live Demo**](https://demo.sitepins.com) · [**Developer Docs**](https://developer.sitepins.com/) · [**Try Cloud Version for Free**](https://sitepins.com/pricing?ref=github)
 
 ![License](https://img.shields.io/badge/license-AGPL%20v3-2b7489)
 ![Stars](https://img.shields.io/github/stars/sitepins/sitepins?style=social)

@@ -1,5 +1,6 @@
 "use client";
 
+import { logger } from "@/lib/logger";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -36,7 +37,7 @@ import { toast } from "sonner";
 
 export default function MediaRename({
   filePath,
-  children,
+  children: _children,
   open,
   setOpen,
 }: {
@@ -263,7 +264,7 @@ export default function MediaRename({
       toast.success(tMedia("rename_successful", { name: newName }));
       setOpen(false);
     } catch (error) {
-      console.error("Rename error:", error);
+      logger.error("Rename error:", error);
       toast.error(tMedia("error_renaming"));
     }
   };

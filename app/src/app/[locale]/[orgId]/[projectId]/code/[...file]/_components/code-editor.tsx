@@ -1,5 +1,6 @@
 "use client";
 
+import { logger } from "@/lib/logger";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -170,7 +171,7 @@ export default function CodeEditor({
       toast.success(tEditor("code.update_success", { fileName }));
       triggerCommitSync();
     } catch (error) {
-      console.error("Save error:", error);
+      logger.error("Save error:", error);
       toast.error(tEditor("code.save_error"));
     }
   };

@@ -1,7 +1,6 @@
 "use client";
 
 import { UpgradeCta } from "@/components/upgrade-cta";
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -12,7 +11,7 @@ import {
 import { useOwnerPlan } from "@/hooks/use-owner-plan";
 import { BookOpen, Lightbulb, Shuffle, Star } from "lucide-react";
 import { useTranslations } from "next-intl";
-import Link from "next/link";
+import _Link from "next/link";
 import { useState } from "react";
 import Arrangements from "./_components/arrange-site";
 import ArrangeSiteSkeleton from "./_components/arrange-site-skeleton";
@@ -99,7 +98,7 @@ function ArrangementHeaderSection({ isModified }: { isModified: boolean }) {
 export default function ArrangementPage() {
   const { canAccessProFeatures, isLoading } = useOwnerPlan();
   const [isModified, setIsModified] = useState(false);
-  const tProjectSettingsArrangement = useTranslations(
+  const _tProjectSettingsArrangement = useTranslations(
     "project-settings.arrangement",
   );
   return (

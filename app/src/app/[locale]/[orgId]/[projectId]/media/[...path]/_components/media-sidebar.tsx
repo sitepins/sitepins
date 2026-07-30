@@ -14,6 +14,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import VideoThumbnail from "@/components/video-thumbnail";
+import { useGitProvider } from "@/hooks/use-git-provider";
 import { isVideo } from "@/lib/utils/check-media-file";
 import { cn } from "@/lib/utils/cn";
 import {
@@ -21,14 +22,6 @@ import {
   isGitLabProvider,
 } from "@/lib/utils/provider-checker";
 import { selectConfig } from "@/redux/features/config/slice";
-import {
-  useGetGitHubCommitsQuery,
-  useGetGitHubImageQuery,
-} from "@/redux/features/github";
-import {
-  useGetGitLabCommitsQuery,
-  useGetGitLabImageQuery,
-} from "@/redux/features/gitlab";
 import { TFiles } from "@/types";
 import { format } from "date-fns";
 import {
@@ -58,7 +51,7 @@ export default function MediaSidebar({
   const tMedia = useTranslations("media");
   const tCommon = useTranslations("common");
   const tMenu = useTranslations("navigation.menu");
-  const { branch, owner, repoName, provider } = useSelector(selectConfig);
+  const { provider } = useSelector(selectConfig);
   const [selectedId, setSelectedImage] = useState<string | null>(null);
   const [dimensions, setDimensions] = useState<{
     width: number;
@@ -69,61 +62,19 @@ export default function MediaSidebar({
   const [moveOpen, setMoveOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
 
-  const { data: ghCommit } = useGetGitHubCommitsQuery(
-    {
-      path: filepath.replace("media/", ""),
-      sha: branch,
-      owner,
-      repo: repoName,
-    },
-    {
-      skip: !selectedId || !isGitHubProvider(provider),
-    },
-  );
+  const { useGitCommits, useGitImage, adapter } = useGitProvider();
+  const mediaPath = filepath.replace("media/", "");
 
-  const { data: glCommit } = useGetGitLabCommitsQuery(
-    {
-      id: `${owner}/${repoName}`,
-      ref: branch,
-      path: filepath.replace("media/", ""),
-    },
-    {
-      skip: !selectedId || !isGitLabProvider(provider),
-    },
-  );
+  const { data: commit } = useGitCommits({
+    path: mediaPath,
+    skip: !selectedId,
+  });
+  const { data } = useGitImage(mediaPath, { skip: !selectedId });
 
-  const { data: ghData } = useGetGitHubImageQuery(
-    {
-      owner,
-      repo: repoName,
-      path: filepath.replace("media/", ""),
-      ref: branch,
-    },
-    {
-      skip: !selectedId || !isGitHubProvider(provider),
-    },
-  );
-
-  const { data: glData } = useGetGitLabImageQuery(
-    {
-      id: `${owner}/${repoName}`,
-      file_path: filepath.replace("media/", ""),
-      ref: branch,
-    },
-    {
-      skip: !selectedId || !isGitLabProvider(provider),
-    },
-  );
-
-  const commit = isGitLabProvider(provider) ? glCommit : ghCommit;
-  const data = isGitLabProvider(provider) ? glData : ghData;
-
-  const date = isGitLabProvider(provider)
-    ? (commit?.[0] as any)?.committed_date
-    : (commit?.[0] as any)?.commit?.author?.date;
+  const date = adapter.commitDate(commit?.[0]);
 
   const downloadUrl = (() => {
-    if (isGitHubProvider(provider) && ghData?.content) {
+    if (isGitHubProvider(provider) && data?.content) {
       const ext = path.extname(filepath).toLowerCase();
       let mimeType = ext.slice(1);
       if (ext === ".svg") {
@@ -132,14 +83,14 @@ export default function MediaSidebar({
         mimeType = "jpeg";
       }
       const type = isVideo(filepath) ? "video" : "image";
-      return `data:${type}/${mimeType};base64,${ghData.content}`;
+      return `data:${type}/${mimeType};base64,${data.content}`;
     }
 
     if (isGitHubProvider(provider)) {
-      return ghData?.download_url;
+      return data?.download_url;
     }
 
-    if (isGitLabProvider(provider) && glData?.content) {
+    if (isGitLabProvider(provider) && data?.content) {
       const ext = path.extname(filepath).toLowerCase();
       let mimeType = ext.slice(1);
       if (ext === ".svg") {
@@ -148,7 +99,7 @@ export default function MediaSidebar({
         mimeType = "jpeg";
       }
       const type = isVideo(filepath) ? "video" : "image";
-      return `data:${type}/${mimeType};base64,${glData.content}`;
+      return `data:${type}/${mimeType};base64,${data.content}`;
     }
     return null;
   })();
@@ -224,6 +175,7 @@ export default function MediaSidebar({
                   }
 
                   return (
+                    // eslint-disable-next-line @next/next/no-img-element
                     <img
                       ref={ref}
                       src={src}

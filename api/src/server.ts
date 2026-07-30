@@ -1,3 +1,4 @@
+import { getSessionUserId } from "@/lib/sessionUser";
 import app from "@/app";
 import { allowedOrigins } from "@/config/cors-options";
 import config from "@/config/variables";
@@ -5,12 +6,13 @@ import { initPresenceGateway } from "@/modules/common/presence.gateway";
 import { Hocuspocus } from "@hocuspocus/server";
 import http from "http";
 import { Server as IOServer } from "socket.io";
-import { WebSocketServer } from "ws";
+import { RawData, WebSocketServer } from "ws";
 import { auth } from "./auth";
 import { dbConnect } from "./lib/dbConnect";
 import { isOrgMember } from "./lib/orgAccess";
 import { authenticateSocket } from "./lib/socketAuth";
 import { initEditorGateway } from "./modules/common/editor.gateway";
+import { logger } from "@/lib/logger";
 
 // Collaborative document names are the editor pathname:
 // "/org-<orgId>/<projectId>/…". (localePrefix is "never", so there is no
@@ -29,7 +31,7 @@ const hocuspocus = new Hocuspocus({
     const session = await auth.api.getSession({
       headers: requestHeaders,
     });
-    const userId = (session as any)?.user?.user_id;
+    const userId = getSessionUserId(session);
     if (!userId) throw new Error("Unauthorized");
 
     // Document-level access control: the user must belong to the org that
@@ -64,7 +66,7 @@ export async function startServer() {
     // production those calls silently fall back to session auth and break, so
     // surface the misconfiguration loudly at boot rather than at request time.
     if (config.env === "production" && !config.internal_secret) {
-      console.warn(
+      logger.warn(
         "[!] INTERNAL_API_SECRET is not set — internal server-to-server calls (project preview) will fail. Set it to the same value in both api/.env and app/.env.",
       );
     }
@@ -109,7 +111,7 @@ export async function startServer() {
       const clientConnection = hocuspocus.handleConnection(ws, webRequest);
       if (!clientConnection) return;
 
-      ws.on("message", (data: any) => {
+      ws.on("message", (data: RawData) => {
         let uint8Array: Uint8Array;
         if (Buffer.isBuffer(data)) {
           uint8Array = new Uint8Array(data);
@@ -142,20 +144,20 @@ export async function startServer() {
     });
 
     httpServer.listen(config.port, () => {
-      console.log(
+      logger.info(
         `[+] Server (${process.env.NODE_ENV}) running on port ${config.port}`,
       );
-      console.log(
+      logger.info(
         `[+] Hocuspocus at ws://localhost:${config.port}/api/v1/editor/collab`,
       );
     });
 
     const onCloseSignal = () => {
-      console.log("[-] sigint received, shutting down");
+      logger.info("[-] sigint received, shutting down");
       io.close();
       hocuspocusWss.close();
       httpServer.close(() => {
-        console.log("[-] server closed");
+        logger.info("[-] server closed");
         process.exit();
       });
       setTimeout(() => process.exit(1), 10000).unref();
@@ -164,7 +166,7 @@ export async function startServer() {
     process.on("SIGINT", onCloseSignal);
     process.on("SIGTERM", onCloseSignal);
   } catch (error) {
-    console.log("[-] Error starting server:", error);
+    logger.error("[-] Error starting server", error);
     process.exit(1);
   }
 }

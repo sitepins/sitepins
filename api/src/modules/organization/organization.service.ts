@@ -11,9 +11,16 @@ import { ProjectPreview } from "../project-preview/project-preview.model";
 import { Project } from "../project/project.model";
 import { User } from "../user/user.model";
 import { Organization } from "./organization.model";
-import { Member, OrganizationType } from "./organization.type";
+import {
+  Member,
+  OrganizationType,
+  SandboxIntegration,
+} from "./organization.type";
+import { logger } from "@/lib/logger";
 
-function decryptOrgSandboxToken(org: any): any {
+function decryptOrgSandboxToken<
+  T extends { sandbox?: SandboxIntegration | null },
+>(org: T): T {
   if (org?.sandbox?.token) {
     try {
       org.sandbox = { ...org.sandbox, token: decrypt(org.sandbox.token) };
@@ -301,7 +308,7 @@ const addTeamMemberService = async ({
 
   assertAssignableRole(teamMember.role);
 
-  let userId =
+  const userId =
     "@user_" +
     teamMember.user_id?.replace(/[@.!#$%&'*+-/=?^_`{|}~]/g, "_").toLowerCase();
 
@@ -331,6 +338,10 @@ const addTeamMemberService = async ({
     },
   );
 
+  if (!member) {
+    throw Error("Organization not found.");
+  }
+
   const recipientUser = await User.findOne({ user_id: userId });
 
   // send mail to the invited member
@@ -341,7 +352,7 @@ const addTeamMemberService = async ({
       to: recipientEmail,
       kind: "org_member_added",
       params: {
-        org_name: member?.org_name!,
+        org_name: member.org_name,
         role: teamMember.role,
       },
     });
@@ -490,10 +501,9 @@ const removeTeamMemberService = async ({
       },
     });
   } else {
-    console.warn(
-      "Skipping org removal email: recipient has no email, userId=",
+    logger.warn("Skipping org removal email: recipient has no email", {
       userId,
-    );
+    });
   }
 
   return {
@@ -511,7 +521,7 @@ const updateOrganizationService = async ({
   org_id: string;
 }) => {
   // Build a $set payload with only the defined fields
-  const setFields: Record<string, any> = {};
+  const setFields: Record<string, unknown> = {};
   if (organization.org_name !== undefined)
     setFields.org_name = organization.org_name;
   if (organization.org_image !== undefined) {
@@ -522,9 +532,9 @@ const updateOrganizationService = async ({
       !existingOrg.org_image.startsWith("http")
     ) {
       await deleteFile(existingOrg.org_image).catch((err) => {
-        console.error(
-          `Failed to delete old org image (${existingOrg.org_image}):`,
-          err.message,
+        logger.error(
+          `Failed to delete old org image (${existingOrg.org_image})`,
+          err,
         );
       });
     }

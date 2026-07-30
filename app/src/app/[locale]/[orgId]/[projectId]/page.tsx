@@ -221,7 +221,7 @@ export default function Project(
           visibilityUpdatedRef.current = false;
         });
       }
-    } catch (e) {
+    } catch {
       // ignore errors here
     }
   }, [project, repoInfo, updateProjectVisibility, orgIdSafe]);

@@ -1,8 +1,14 @@
-import { isGitLabProvider } from "@/lib/utils/provider-checker";
 import { selectConfig } from "@/redux/features/config/slice";
+import {
+  CommitsQueryOptions,
+  getGitProviderAdapter,
+  gitProviderAdapters,
+  TreeQueryOptions,
+} from "@/redux/features/git/provider-adapter";
 import {
   useCreateNewGitHubBranchRefMutation,
   useGetGitHubBranchesQuery,
+  useGetGitHubCommitsQuery,
   useGetGitHubContentQuery,
   useGetGitHubImageQuery,
   useGetGitHubSiteConfigQuery,
@@ -12,6 +18,7 @@ import {
 import {
   useCreateGitLabBranchMutation,
   useGetGitLabBranchesQuery,
+  useGetGitLabCommitsQuery,
   useGetGitLabContentQuery,
   useGetGitLabImageQuery,
   useGetGitLabSiteConfigQuery,
@@ -20,6 +27,10 @@ import {
 } from "@/redux/features/gitlab";
 import { useAppSelector } from "@/redux/store";
 import { useCallback } from "react";
+
+const SITE_CONFIG_PATH = ".sitepins/config.json";
+
+const { github: gh, gitlab: gl } = gitProviderAdapters;
 
 interface GitFile {
   path: string;
@@ -33,8 +44,50 @@ interface UpdateFilesOptions {
   description?: string;
 }
 
+interface QueryOptions {
+  skip?: boolean;
+}
+
+interface ContentOptions extends QueryOptions {
+  parser?: boolean;
+}
+
+interface TreeOptions extends QueryOptions, TreeQueryOptions {}
+
+interface CommitsOptions extends QueryOptions, CommitsQueryOptions {}
+
+interface SiteConfigOptions extends QueryOptions {
+  framework?: string;
+  refetchOnMountOrArgChange?: boolean;
+}
+
+interface CreateBranchOptions {
+  /** Name of the new branch. */
+  name: string;
+  /**
+   * Branches already fetched by the caller. GitHub needs the base branch's
+   * commit sha; the two providers return different branch shapes, so this
+   * stays untyped and is narrowed on read.
+   */
+  branches?: readonly unknown[];
+}
+
+const baseShaOf = (
+  branches: readonly unknown[] | undefined,
+  branchName: string,
+): string | undefined => {
+  const match = branches?.find(
+    (branch) => (branch as { name?: unknown })?.name === branchName,
+  ) as { commit?: { sha?: unknown } } | undefined;
+  const sha = match?.commit?.sha;
+  return typeof sha === "string" ? sha : undefined;
+};
+
 export function useGitProvider() {
   const config = useAppSelector(selectConfig);
+  const adapter = getGitProviderAdapter(config.provider);
+  const isGitLab = adapter.id === "gitlab";
+
   const [updateGitHubFiles, { isLoading: isGitHubPending }] =
     useUpdateGitHubFilesMutation();
   const [updateGitLabFiles, { isLoading: isGitLabPending }] =
@@ -45,47 +98,35 @@ export function useGitProvider() {
   const [createGlBranch, { isLoading: isGlBranchCreating }] =
     useCreateGitLabBranchMutation();
 
-  const isPending = isGitLabProvider(config.provider)
-    ? isGitLabPending
-    : isGitHubPending;
-
-  const isBranchCreating = isGitLabProvider(config.provider)
-    ? isGlBranchCreating
-    : isGhBranchCreating;
+  const isPending = isGitLab ? isGitLabPending : isGitHubPending;
+  const isBranchCreating = isGitLab ? isGlBranchCreating : isGhBranchCreating;
 
   const updateFiles = useCallback(
     async (options: UpdateFilesOptions) => {
-      if (isGitLabProvider(config.provider)) {
+      if (isGitLab) {
         return updateGitLabFiles({
-          id: config.repoName
-            ? `${config.owner}/${config.repoName}`
-            : config.owner,
+          id: gl.repoId(config),
           branch: config.branch,
           files: options.files,
           message: options.message,
           description: options.description,
         });
-      } else {
-        return updateGitHubFiles({
-          owner: config.owner,
-          repo: config.repoName,
-          tree: config.branch,
-          files: options.files,
-          message: options.message,
-          description: options.description,
-        });
       }
+      return updateGitHubFiles({
+        owner: config.owner,
+        repo: config.repoName,
+        tree: config.branch,
+        files: options.files,
+        message: options.message,
+        description: options.description,
+      });
     },
-    [config, updateGitHubFiles, updateGitLabFiles],
+    [config, isGitLab, updateGitHubFiles, updateGitLabFiles],
   );
 
   const deleteFile = useCallback(
-    async (path: string, message: string) => {
-      return updateFiles({
-        files: [{ path, delete: true }],
-        message,
-      });
-    },
+    async (path: string, message: string) =>
+      updateFiles({ files: [{ path, delete: true }], message }),
     [updateFiles],
   );
 
@@ -95,162 +136,151 @@ export function useGitProvider() {
       newPath: string,
       content: string,
       message: string,
-    ) => {
-      return updateFiles({
+    ) =>
+      updateFiles({
         files: [
           { path: oldPath, delete: true },
           { path: newPath, content },
         ],
         message,
-      });
-    },
+      }),
     [updateFiles],
   );
 
-  const useGitTrees = (path: string, options?: any) => {
-    const isGitLab = isGitLabProvider(config.provider);
+  /**
+   * GitLab branches off a ref by name; GitHub needs the base branch's commit
+   * sha, which the caller already has from `useGitBranches`.
+   */
+  const createBranch = useCallback(
+    async ({ name, branches }: CreateBranchOptions) => {
+      if (isGitLab) {
+        return createGlBranch({
+          id: gl.repoId(config),
+          branch: name,
+          ref: config.branch,
+        }).unwrap();
+      }
+
+      const baseSha = baseShaOf(branches, config.branch);
+      if (!baseSha) {
+        throw new Error("MISSING_BASE_SHA");
+      }
+
+      return createGhBranch({
+        owner: config.owner,
+        repo: config.repoName,
+        ref: `refs/heads/${name}`,
+        sha: baseSha,
+      }).unwrap();
+    },
+    [config, createGhBranch, createGlBranch, isGitLab],
+  );
+
+  // Both provider hooks always run — hooks cannot be called conditionally —
+  // but only the active provider's query is unskipped. Arguments come from the
+  // matching adapter so request shapes stay in one place.
+  const isDisabled = !config.repoName;
+
+  const useGitTrees = (path: string, options?: TreeOptions) => {
     const ghQuery = useGetGitHubTreesQuery(
-      {
-        owner: config.owner,
-        repo: config.repoName,
-        tree_sha: config.branch, // GitHub Trees API uses branch/SHA
-        recursive: options?.recursive ? "1" : undefined,
-        config: config,
-      },
-      { skip: isGitLab || !config.repoName || options?.skip },
+      gh.treesArgs(config, path, options) as never,
+      { skip: isGitLab || isDisabled || options?.skip },
     );
-
     const glQuery = useGetGitLabTreesQuery(
-      {
-        id: config.repoName
-          ? `${config.owner}/${config.repoName}`
-          : config.owner,
-        path: path,
-        ref: config.branch,
-        recursive: options?.recursive ?? false,
-        config: config,
-      },
-      { skip: !isGitLab || !config.repoName || options?.skip },
+      gl.treesArgs(config, path, options) as never,
+      { skip: !isGitLab || isDisabled || options?.skip },
     );
-
     return isGitLab ? glQuery : ghQuery;
   };
 
-  const useGitContent = (path: string, options?: any) => {
-    const isGitLab = isGitLabProvider(config.provider);
+  const useGitContent = (path: string, options?: ContentOptions) => {
+    const contentOptions = { parser: options?.parser ?? false };
     const ghQuery = useGetGitHubContentQuery(
-      {
-        owner: config.owner,
-        repo: config.repoName,
-        path: path,
-        ref: config.branch,
-        parser: options?.parser ?? false,
-      },
-      { skip: isGitLab || !config.repoName || options?.skip },
+      gh.contentArgs(config, path, contentOptions) as never,
+      { skip: isGitLab || isDisabled || options?.skip },
     );
-
     const glQuery = useGetGitLabContentQuery(
-      {
-        id: config.repoName
-          ? `${config.owner}/${config.repoName}`
-          : config.owner,
-        file_path: path,
-        ref: config.branch,
-        parser: options?.parser ?? false,
-      },
-      { skip: !isGitLab || !config.repoName || options?.skip },
+      gl.contentArgs(config, path, contentOptions) as never,
+      { skip: !isGitLab || isDisabled || options?.skip },
     );
-
     return isGitLab ? glQuery : ghQuery;
   };
 
-  const useGitSiteConfig = (options?: any) => {
-    const isGitLab = isGitLabProvider(config.provider);
+  const useGitSiteConfig = (options?: SiteConfigOptions) => {
     const ghQuery = useGetGitHubSiteConfigQuery(
+      gh.siteConfigArgs(config, SITE_CONFIG_PATH, options?.framework) as never,
       {
-        owner: config.owner,
-        repo: config.repoName,
-        path: ".sitepins/config.json", // Standard path
-        ref: config.branch,
+        skip: isGitLab || isDisabled || options?.skip,
+        refetchOnMountOrArgChange: options?.refetchOnMountOrArgChange,
       },
-      { skip: isGitLab || !config.repoName || options?.skip },
     );
-
     const glQuery = useGetGitLabSiteConfigQuery(
+      gl.siteConfigArgs(config, SITE_CONFIG_PATH, options?.framework) as never,
       {
-        id: config.repoName
-          ? `${config.owner}/${config.repoName}`
-          : config.owner,
-        file_path: ".sitepins/config.json",
-        ref: config.branch,
+        skip: !isGitLab || isDisabled || options?.skip,
+        refetchOnMountOrArgChange: options?.refetchOnMountOrArgChange,
       },
-      { skip: !isGitLab || !config.repoName || options?.skip },
     );
-
     return isGitLab ? glQuery : ghQuery;
   };
 
-  const useGitImage = (path: string, options?: any) => {
-    const isGitLab = isGitLabProvider(config.provider);
+  const useGitImage = (path: string, options?: QueryOptions) => {
     const ghQuery = useGetGitHubImageQuery(
+      gh.imageArgs(config, path) as never,
       {
-        owner: config.owner,
-        repo: config.repoName,
-        path: path,
-        ref: config.branch,
+        skip: isGitLab || isDisabled || options?.skip,
       },
-      { skip: isGitLab || !config.repoName || options?.skip },
     );
-
     const glQuery = useGetGitLabImageQuery(
+      gl.imageArgs(config, path) as never,
       {
-        id: config.repoName
-          ? `${config.owner}/${config.repoName}`
-          : config.owner,
-        file_path: path,
-        ref: config.branch,
+        skip: !isGitLab || isDisabled || options?.skip,
       },
-      { skip: !isGitLab || !config.repoName || options?.skip },
     );
-
     return isGitLab ? glQuery : ghQuery;
   };
 
-  const useGitBranches = (options?: any) => {
-    const isGitLab = isGitLabProvider(config.provider);
+  const useGitCommits = (options?: CommitsOptions) => {
+    const ghQuery = useGetGitHubCommitsQuery(
+      gh.commitsArgs(config, options) as never,
+      { skip: isGitLab || isDisabled || options?.skip },
+    );
+    const glQuery = useGetGitLabCommitsQuery(
+      gl.commitsArgs(config, options) as never,
+      { skip: !isGitLab || isDisabled || options?.skip },
+    );
+    return isGitLab ? glQuery : ghQuery;
+  };
 
+  const useGitBranches = (options?: QueryOptions) => {
     const ghQuery = useGetGitHubBranchesQuery(
+      gh.branchesArgs(config) as never,
       {
-        owner: config.owner,
-        repo: config.repoName,
+        skip: isGitLab || isDisabled || options?.skip,
       },
-      { skip: isGitLab || !config.repoName || options?.skip },
     );
-
     const glQuery = useGetGitLabBranchesQuery(
+      gl.branchesArgs(config) as never,
       {
-        id: config.repoName
-          ? `${config.owner}/${config.repoName}`
-          : config.owner,
+        skip: !isGitLab || isDisabled || options?.skip,
       },
-      { skip: !isGitLab || !config.repoName || options?.skip },
     );
-
     return isGitLab ? glQuery : ghQuery;
   };
 
   return {
     provider: config.provider,
+    adapter,
     updateFiles,
     deleteFile,
     renameFile,
+    createBranch,
     useGitTrees,
     useGitContent,
     useGitSiteConfig,
     useGitImage,
     useGitBranches,
-    createGhBranch,
-    createGlBranch,
+    useGitCommits,
     isPending,
     isBranchCreating,
   };

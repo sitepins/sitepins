@@ -1,4 +1,5 @@
 "use server";
+import { logger } from "@/lib/logger";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -96,7 +97,7 @@ function extractImageUrl(html: string, baseUrl: URL): string | null {
   for (const pattern of PATTERNS) {
     const match = html.match(pattern);
     if (match?.[1]) {
-      let imageUrl = match[1]
+      const imageUrl = match[1]
         .replace(/&amp;/g, "&") // decode HTML entities
         .replace(/&#x2F;/gi, "/") // decode forward-slash entity
         .trim();
@@ -169,7 +170,7 @@ export async function fetchOgImageAction(
       return { success: false, error: "Request timed out after 5 seconds" };
     }
 
-    console.error("[fetchOgImageAction]", error);
+    logger.error("[fetchOgImageAction]", error);
     return {
       success: false,
       error:

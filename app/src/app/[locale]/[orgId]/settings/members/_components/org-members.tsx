@@ -1,5 +1,6 @@
 "use client";
 
+import { errorMessageOr } from "@/lib/utils/error";
 import { UpgradeCta } from "@/components/upgrade-cta";
 import { useOwnerPlan } from "@/hooks/use-owner-plan";
 import Avatar from "@/components/avatar";
@@ -48,18 +49,17 @@ import {
   useUpdateMemberRoleMutation,
 } from "@/redux/features/orgs/org-api";
 import { TMember, TOrg } from "@/redux/features/orgs/type";
-import { useAppSelector } from "@/redux/store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
-import Link from "next/link";
+import _Link from "next/link";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 import MemberActions from "./org-member-actions";
 
 export default function OrgMembers(org: TOrg) {
-  const { members, org_id, owner, ownerData } = org;
+  const { members, org_id, owner, ownerData: _ownerData } = org;
 
   const { canAccessProFeatures } = useOwnerPlan();
   const { isOwner } = useOrgMember();
@@ -225,8 +225,8 @@ function AddMemberDialog({
       }).unwrap();
       onOpenChange(false);
       form.reset();
-    } catch (error: any) {
-      toast.error(error.data?.message || tAdd("error"));
+    } catch (error) {
+      toast.error(errorMessageOr(error, tAdd("error")));
     }
   };
 

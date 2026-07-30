@@ -1,5 +1,6 @@
 import config from "@/config/variables";
 import axios from "axios";
+import { logger } from "@/lib/logger";
 
 interface EmailVerificationResponse {
   email: string;
@@ -106,10 +107,9 @@ export const verifyEmailWithReoon = async (
     if (axios.isAxiosError(error)) {
       // If Reoon is down, fail open: log and allow registration rather than
       // taking signup down with the third-party service.
-      console.error(
-        "Email verification API error:",
-        error.response?.data || error.message,
-      );
+      logger.error("Email verification API error", error, {
+        response: error.response?.data,
+      });
 
       return { isValid: true, email };
     }

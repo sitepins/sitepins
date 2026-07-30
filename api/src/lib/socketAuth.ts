@@ -1,3 +1,4 @@
+import { getSessionUserId, getSessionUserRole } from "@/lib/sessionUser";
 import { auth } from "@/auth";
 import { authDemo } from "@/auth-demo";
 import { fromNodeHeaders } from "better-auth/node";
@@ -34,21 +35,21 @@ export async function authenticateSocket(
     // socket handshake doesn't tell us which, so try both issuers and accept
     // whichever produces a valid session.
     let session = await auth.api.getSession({ headers: nodeHeaders });
-    if (!(session as any)?.user?.user_id) {
+    if (!getSessionUserId(session)) {
       session = await authDemo.api.getSession({ headers: nodeHeaders });
     }
 
-    const user = (session as any)?.user;
-    if (!user?.user_id) {
+    const userId = getSessionUserId(session);
+    if (!userId || !session) {
       return next(new Error("Unauthorized"));
     }
 
     socket.data.user = {
-      user_id: user.user_id,
-      full_name: user.full_name,
-      email: user.email,
-      image: user.image,
-      role: user.role,
+      user_id: userId,
+      full_name: session.user.name,
+      email: session.user.email,
+      image: session.user.image,
+      role: getSessionUserRole(session),
     };
     next();
   } catch {

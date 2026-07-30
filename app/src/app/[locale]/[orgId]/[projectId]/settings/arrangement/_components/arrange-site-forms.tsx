@@ -84,7 +84,7 @@ export function FileForm(props: {
     [trees, contentRoot],
   );
 
-  const targetFile = fileForm.watch("file");
+  const _targetFile = fileForm.watch("file");
   const groupName = fileForm.watch("groupName");
 
   useEffect(() => {
@@ -227,7 +227,7 @@ export function FolderForm(props: {
     },
   });
 
-  const targetFolder = folderForm.watch("targetPath");
+  const _targetFolder = folderForm.watch("targetPath");
   const groupName = folderForm.watch("groupName");
 
   const contentRoot = config.content;

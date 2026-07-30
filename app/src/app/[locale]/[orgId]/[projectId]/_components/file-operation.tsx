@@ -1,5 +1,6 @@
 "use client";
 
+import { useAddLog } from "@/hooks/use-add-log";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -21,12 +22,10 @@ import { Input } from "@/components/ui/input";
 import { useDialog } from "@/hooks/use-dialog";
 import { useGitCacheUpdates } from "@/hooks/use-git-cache-updates";
 import { useGitProvider } from "@/hooks/use-git-provider";
-import { authClient } from "@/lib/auth/auth-client";
 import { getLogType } from "@/lib/utils/project-log-type-detector";
 import { isGitLabProvider } from "@/lib/utils/provider-checker";
 import { createFileSchema } from "@/lib/validate";
 import { selectConfig } from "@/redux/features/config/slice";
-import { useAddProjectLogMutation } from "@/redux/features/project-log/project-log-api";
 import { EAction } from "@/redux/features/project-log/type";
 import { TFiles } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -63,7 +62,6 @@ export function FileOperation({
   const tDirectoryViewActions = useTranslations("directory-view.actions");
   const tCommon = useTranslations("common");
   const params = useParams();
-  const { data: auth } = authClient.useSession();
 
   const actionLabels: Record<string, string> = {
     delete: tCommon("actions.delete"),
@@ -76,7 +74,7 @@ export function FileOperation({
   const { name: fileName } = path.parse(filepath);
   const { isOpen: internalIsOpen, onOpenChange: internalOnOpenChange } =
     useDialog();
-  const [addLog] = useAddProjectLogMutation();
+  const [addLog] = useAddLog();
   const { updateFiles, isPending, provider, useGitTrees, useGitContent } =
     useGitProvider();
 
@@ -152,7 +150,6 @@ export function FileOperation({
           action: EAction.RENAME,
           file: `${dir}/${data.name}${ext}`,
           file_type: getLogType(`${dir}/${data.name}${ext}`, config),
-          user_id: auth?.user.user_id!,
         });
         toast.success(tDirectoryViewActions("file_renamed"));
 
@@ -267,7 +264,6 @@ export function FileOperation({
           action: EAction.DELETE,
           file: filepath,
           file_type: getLogType(filepath, config),
-          user_id: auth?.user.user_id!,
         });
         toast.success(tDirectoryViewActions("file_deleted"));
         updateCacheOnDelete(filepath);
@@ -325,7 +321,6 @@ export function FileOperation({
           action: EAction.DUPLICATE,
           file: newPath,
           file_type: getLogType(newPath, config),
-          user_id: auth?.user.user_id!,
         });
         toast.success(tDirectoryViewActions("file_duplicated"));
         updateCacheOnDuplicate({
@@ -413,7 +408,11 @@ export function FileOperation({
           <Button
             onClick={async (e) => {
               e.preventDefault();
-              operation === "delete" ? onDelete() : onDuplicate();
+              if (operation === "delete") {
+                onDelete();
+              } else {
+                onDuplicate();
+              }
             }}
             {...(operation === "delete" && {
               variant: "destructive",

@@ -57,7 +57,7 @@ export default function SidebarProfileSetting() {
   const { data: auth } = authClient.useSession();
 
   // theme handling via next-themes
-  const { theme, setTheme } = useTheme();
+  const { theme: _theme, setTheme: _setTheme } = useTheme();
 
   return (
     <>

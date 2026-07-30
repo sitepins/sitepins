@@ -10,7 +10,7 @@ export const ExpandToolbarButton = withRef<
   {
     clear?: string | string[];
   }
->(({ clear, ...rest }, ref) => {
+>(({ clear: _clear, ...rest }, _ref) => {
   const dispatch = useAppDispatch();
   const { fullscreen } = useSelector(selectConfig);
 

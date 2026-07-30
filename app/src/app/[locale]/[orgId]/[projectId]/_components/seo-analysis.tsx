@@ -5,7 +5,6 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { UpgradeDialog } from "@/components/upgrade-dialog";
 import { TField } from "@/types";

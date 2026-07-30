@@ -1,5 +1,9 @@
 "use client";
 
+import { useGitProvider } from "@/hooks/use-git-provider";
+import { useAddLog } from "@/hooks/use-add-log";
+import { treeItemsOf } from "@/lib/utils/tree-items";
+import { firstFormErrorMessage } from "@/lib/utils/form-errors";
 import Loading from "@/components/loading";
 import { Button, ButtonProps } from "@/components/ui/button";
 import {
@@ -26,13 +30,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useDialog } from "@/hooks/use-dialog";
-import { authClient } from "@/lib/auth/auth-client";
 import { IS_DEMO, SCHEMA_FOLDER } from "@/lib/constant";
 import { getLogType } from "@/lib/utils/project-log-type-detector";
-import {
-  isGitHubProvider,
-  isGitLabProvider,
-} from "@/lib/utils/provider-checker";
+import { isGitLabProvider } from "@/lib/utils/provider-checker";
 import {
   convertSchema,
   extractFolderName,
@@ -47,15 +47,12 @@ import { createSchema } from "@/lib/validate";
 import { selectConfig } from "@/redux/features/config/slice";
 import {
   githubContentApi,
-  useGetGitHubContentQuery,
   useUpdateGitHubFilesMutation,
 } from "@/redux/features/github";
 import {
   gitlabApi,
-  useGetGitLabContentQuery,
   useUpdateGitLabFilesMutation,
 } from "@/redux/features/gitlab";
-import { useAddProjectLogMutation } from "@/redux/features/project-log/project-log-api";
 import { EAction } from "@/redux/features/project-log/type";
 import { useAppDispatch } from "@/redux/store";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -95,7 +92,6 @@ export default function CreateSchema({
   ...buttonProps
 }: Props) {
   const params = useParams();
-  const { data: auth } = authClient.useSession();
   const tDirectoryViewActions = useTranslations("directory-view.actions");
   const tCommon = useTranslations("common");
   const tGit = useTranslations("project.git");
@@ -106,54 +102,17 @@ export default function CreateSchema({
 
   const pathname = usePathname();
   const config = useSelector(selectConfig);
-  const [addLog] = useAddProjectLogMutation();
+  const [addLog] = useAddLog();
+  const { useGitContent } = useGitProvider();
   const {
-    data: ghSchemaData,
-    isFetching: isGhSchemaFetching,
-    refetch: ghRefetch,
-    error: ghSchemaError,
-  } = useGetGitHubContentQuery(
-    {
-      owner: config.owner,
-      repo: config.repoName,
-      ref: config.branch,
-      path: schemaDir,
-      parser: true,
-    },
-    {
-      skip:
-        !config.owner || !config.repoName || !isGitHubProvider(config.provider),
-    },
-  );
-
-  const {
-    data: glSchemaData,
-    isFetching: isGlSchemaFetching,
-    refetch: glRefetch,
-    error: glSchemaError,
-  } = useGetGitLabContentQuery(
-    {
-      id: config.repoName ? `${config.owner}/${config.repoName}` : config.owner,
-      file_path: schemaDir,
-      ref: config.branch,
-      parser: true,
-    },
-    {
-      skip:
-        !config.owner || !config.branch || !isGitLabProvider(config.provider),
-    },
-  );
-
-  const schemaData = isGitLabProvider(config.provider)
-    ? glSchemaData
-    : ghSchemaData;
-  const isSchemaFetching = isGitLabProvider(config.provider)
-    ? isGlSchemaFetching
-    : isGhSchemaFetching;
-  const schemaError = isGitLabProvider(config.provider)
-    ? glSchemaError
-    : ghSchemaError;
-  const refetch = isGitLabProvider(config.provider) ? glRefetch : ghRefetch;
+    data: schemaData,
+    isFetching: isSchemaFetching,
+    refetch,
+    error: schemaError,
+  } = useGitContent(schemaDir, {
+    parser: true,
+    skip: !config.owner || !config.branch,
+  });
 
   // Determine if there's an existing schema for the current file/group
   const primarySchema =
@@ -230,14 +189,9 @@ export default function CreateSchema({
                 ),
               ).unwrap();
 
-          const treeItems =
-            (treeResult &&
-              ((treeResult as any).files || (treeResult as any).tree)) ||
-            [];
+          const treeItems = treeItemsOf(treeResult);
           for (const candidate of candidates) {
-            const exists = treeItems.find(
-              (t: any) => t && t.path === candidate,
-            );
+            const exists = treeItems.find((t) => t?.path === candidate);
             if (exists) {
               try {
                 // fetch the actual content once
@@ -276,12 +230,12 @@ export default function CreateSchema({
                   setInheritedSchema(res as Record<string, any>);
                   return;
                 }
-              } catch (e) {
+              } catch {
                 // ignore and fall back to parallel lookup
               }
             }
           }
-        } catch (e) {
+        } catch {
           // getTrees failed, continue to parallel content fetch as fallback
         }
 
@@ -330,7 +284,7 @@ export default function CreateSchema({
             break;
           }
         }
-      } catch (e) {
+      } catch {
         // ignore
       } finally {
         if (!cancelled) setIsSearchingInherited(false);
@@ -405,7 +359,7 @@ export default function CreateSchema({
             "name",
             group || extractFolderName(filePath),
           );
-        } catch (e) {
+        } catch {
           // ignore
         }
       }
@@ -433,43 +387,10 @@ export default function CreateSchema({
     ? isGlDeletingSchema
     : isGhDeletingSchema;
 
-  const { data: ghResponse, isSuccess: isGhSuccess } = useGetGitHubContentQuery(
-    {
-      owner: config.owner,
-      repo: config.repoName,
-      ref: config.branch,
-      path: selectedFile,
-      parser: true,
-    },
-    {
-      refetchOnMountOrArgChange: true,
-      skip:
-        !selectedFile ||
-        schema?.template ||
-        !isGitHubProvider(config.provider) ||
-        !config.owner ||
-        !config.repoName,
-    },
-  );
-
-  const { data: glResponse, isSuccess: isGlSuccess } = useGetGitLabContentQuery(
-    {
-      id: config.repoName ? `${config.owner}/${config.repoName}` : config.owner,
-      file_path: selectedFile,
-      ref: config.branch,
-      parser: true,
-    },
-    {
-      refetchOnMountOrArgChange: true,
-      skip:
-        !selectedFile || schema?.template || !isGitLabProvider(config.provider),
-    },
-  );
-
-  const response = isGitLabProvider(config.provider) ? glResponse : ghResponse;
-  const isSuccess = isGitLabProvider(config.provider)
-    ? isGlSuccess
-    : isGhSuccess;
+  const { data: response, isSuccess } = useGitContent(selectedFile, {
+    parser: true,
+    skip: !selectedFile || schema?.template || !config.owner,
+  });
   const isLoading = false;
   const isFetching = false;
 
@@ -540,12 +461,11 @@ export default function CreateSchema({
           action: EAction.DELETE,
           file: schemaDir || "",
           file_type: getLogType(schemaDir || "", config),
-          user_id: auth?.user.user_id!,
         });
 
         handleOpenChange(false);
       }
-    } catch (error) {
+    } catch {
       toast.error(tDirectoryViewActions("error_deleting_schema"));
     }
   };
@@ -683,7 +603,6 @@ export default function CreateSchema({
                     action: schemaData ? EAction.UPDATE : EAction.CREATE,
                     file: schemaDir || "",
                     file_type: getLogType(schemaDir || "", config),
-                    user_id: auth?.user.user_id!,
                   });
 
                   handleOpenChange(false);
@@ -691,32 +610,7 @@ export default function CreateSchema({
               });
             },
             (err) => {
-              let message: string | undefined;
-
-              const values = Object.values(err || ({} as any));
-              for (const v of values) {
-                if (!v) continue;
-                if (v.message) {
-                  message = String(v.message);
-                  break;
-                }
-                if (typeof v === "object") {
-                  const nested = Object.values(v as any).find(
-                    (n) => n && (typeof n === "string" || (n as any).message),
-                  );
-                  if (nested) {
-                    if (typeof nested === "string") {
-                      message = nested as string;
-                    } else if (
-                      nested &&
-                      typeof (nested as any).message === "string"
-                    ) {
-                      message = (nested as any).message;
-                    }
-                    if (message) break;
-                  }
-                }
-              }
+              let message = firstFormErrorMessage(err);
 
               if (!message) {
                 message = tDirectoryViewActions("please_fix_highlighted");
@@ -728,7 +622,7 @@ export default function CreateSchema({
               if (firstKey) {
                 try {
                   createSchemaForm.setFocus(firstKey as any);
-                } catch (e) {
+                } catch {
                   // ignore focus errors
                 }
               }

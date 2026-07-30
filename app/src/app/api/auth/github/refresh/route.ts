@@ -1,3 +1,5 @@
+import { errorMessageOr } from "@/lib/utils/error";
+import { logger } from "@/lib/logger";
 import { rotateProviderTokens } from "@/actions/provider";
 import { NextRequest, NextResponse } from "next/server";
 import { App } from "octokit";
@@ -51,7 +53,7 @@ export async function POST(request: NextRequest) {
       });
     } catch (persistError) {
       // Still return the fresh token so the current session keeps working.
-      console.error("Failed to persist rotated GitHub tokens:", persistError);
+      logger.error("Failed to persist rotated GitHub tokens:", persistError);
     }
 
     return NextResponse.json({
@@ -63,11 +65,11 @@ export async function POST(request: NextRequest) {
       refresh_token_expires_at: refreshTokenExpiresAt,
       last_refreshed_at: Date.now(),
     });
-  } catch (error: any) {
-    console.error("Error in GitHub refresh handler:", error);
+  } catch (error) {
+    logger.error("Error in GitHub refresh handler:", error);
     return NextResponse.json(
       {
-        error: error.message || "An unexpected error occurred",
+        error: errorMessageOr(error, "An unexpected error occurred"),
       },
       { status: 500 },
     );

@@ -4,7 +4,6 @@ import { useOrgMember, usePermission } from "@/hooks/use-permission";
 import { useOwnerPlan } from "@/hooks/use-owner-plan";
 import { ENUM_PERMISSIONS } from "@/lib/roles";
 import { useGetOrgQuery } from "@/redux/features/orgs/org-api";
-import { useAppSelector } from "@/redux/store";
 import { use } from "react";
 import VercelConnectForm from "./_components/vercel-connect-form";
 import { SandboxSettingsSkeleton } from "./_components/sandbox-skeleton";

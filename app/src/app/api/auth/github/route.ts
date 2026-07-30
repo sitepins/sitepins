@@ -1,3 +1,5 @@
+import { errorMessageOr } from "@/lib/utils/error";
+import { logger } from "@/lib/logger";
 import { createProvider } from "@/actions/provider";
 import { GITHUB_API_VERSION } from "@/lib/constant";
 import { createAppAuth } from "@octokit/auth-app";
@@ -107,11 +109,11 @@ async function handler(request: NextRequest) {
       success: true,
       message: "GitHub authentication successful",
     });
-  } catch (error: any) {
-    console.error("Error in GitHub authentication handler:", error);
+  } catch (error) {
+    logger.error("Error in GitHub authentication handler:", error);
     return NextResponse.json(
       {
-        error: error.message || "An unexpected error occurred",
+        error: errorMessageOr(error, "An unexpected error occurred"),
       },
       { status: 500 },
     );

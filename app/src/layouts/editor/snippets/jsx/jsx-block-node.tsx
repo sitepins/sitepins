@@ -59,7 +59,7 @@ export const JsxBlockElement = ({
             { at: path },
           );
         }
-      } catch (e) {
+      } catch {
         // Element might not be in the editor tree yet
         toast.warning("Could not update JSX element attributes:");
       }

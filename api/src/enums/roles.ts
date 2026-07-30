@@ -19,7 +19,12 @@ export const ENUM_PERMISSIONS = {
   VIEW_PROJECTS: "view_projects",
 } as const;
 
-export const ROLE_PERMISSIONS = {
+export type TPermission =
+  (typeof ENUM_PERMISSIONS)[keyof typeof ENUM_PERMISSIONS];
+
+export type TOrgRole = (typeof ENUM_ROLE_ORG)[keyof typeof ENUM_ROLE_ORG];
+
+export const ROLE_PERMISSIONS: Record<TOrgRole, readonly TPermission[]> = {
   [ENUM_ROLE_ORG.OWNER]: Object.values(ENUM_PERMISSIONS),
   [ENUM_ROLE_ORG.ADMIN]: [
     ENUM_PERMISSIONS.MANAGE_ORG,

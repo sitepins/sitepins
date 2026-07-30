@@ -1,5 +1,6 @@
 "use client";
 
+import { errorMessage } from "@/lib/utils/error";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -103,13 +104,13 @@ export default function DeleteProject({
                           window.location.assign("/");
                         }
                       }, 500);
-                    } catch (navErr) {
+                    } catch {
                       if (typeof window !== "undefined")
                         window.location.assign("/");
                     }
-                  } catch (error: any) {
+                  } catch (error) {
                     toast.error(
-                      error?.data?.message ||
+                      errorMessage(error) ||
                         tProjectSettingsGeneralDelete("error_generic"),
                     );
                   }

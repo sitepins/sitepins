@@ -1,5 +1,6 @@
 "use client";
 
+import { logger } from "@/lib/logger";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -45,7 +46,7 @@ export default function EditOrg(org: TOrg & { canUpdate?: boolean }) {
 
   const onSubmit = (data: z.infer<typeof updateOrgSchema>) => {
     startTransition(async () => {
-      let imageUrl = data.org_image;
+      const imageUrl = data.org_image;
 
       if (IS_DEMO) {
         toast.error(tOrgGeneralForm("demo_error"));
@@ -72,7 +73,7 @@ export default function EditOrg(org: TOrg & { canUpdate?: boolean }) {
           id="org-form"
           className="space-y-4"
           onSubmit={orgForm.handleSubmit(onSubmit, (err) => {
-            console.error(err);
+            logger.error("Org form validation failed", err);
           })}
         >
           <FieldGroup>

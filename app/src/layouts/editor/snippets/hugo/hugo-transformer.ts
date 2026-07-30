@@ -60,7 +60,7 @@ function normalizeForTagMatch(value: string): string {
 }
 
 // Shared parser instance to avoid recreating it for every block
-const markdownParser = unified().use(remarkParse);
+const _markdownParser = unified().use(remarkParse);
 
 function escapeRegExp(string: string) {
   return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -207,7 +207,7 @@ function mergeBlockShortcodes(
   }
 }
 
-function stringifyNodes(nodes: Node[], markdownExtensions: any[]): string {
+function _stringifyNodes(nodes: Node[], markdownExtensions: any[]): string {
   if (!nodes.length) return "";
 
   const root: Root = {
@@ -480,9 +480,9 @@ export function remarkHugo(this: Processor, options: ShortcodeOptions = {}) {
         const startBlock = matchResult.start;
         const endBlock = matchResult.end;
 
-        let endIdx = value.indexOf(endBlock, startIdx + startBlock.length);
+        const endIdx = value.indexOf(endBlock, startIdx + startBlock.length);
         let fullContent = "";
-        let nodesToMerge: Node[] = [];
+        const nodesToMerge: Node[] = [];
         let postText = "";
         let foundEnd = false;
 

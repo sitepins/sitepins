@@ -9,13 +9,22 @@ import multerS3 from "multer-s3";
 
 const bucketRouter: express.Router = express.Router();
 
+// multer-s3 hands its callbacks the raw IncomingMessage, not an
+// express.Request, and the multipart fields arrive as untyped strings.
+type UploadBody = { permission?: string; folder?: string };
+const uploadBody = (req: unknown): UploadBody =>
+  ((req as { body?: UploadBody }).body ?? {}) as UploadBody;
+
 // public upload file to s3
 const uploadFile = multer({
   storage: multerS3({
-    s3: s3Client as any,
+    // multer-s3 pins an older @aws-sdk/client-s3 major than the one we use.
+    s3: s3Client as unknown as NonNullable<
+      Parameters<typeof multerS3>[0]
+    >["s3"],
     bucket: config.s3_bucket_name as string,
     acl: function (req, file, cb) {
-      const permission = (req as any).body.permission;
+      const permission = uploadBody(req).permission;
       if (permission === "public-read" || permission === "private") {
         cb(null, permission);
       } else {
@@ -23,7 +32,7 @@ const uploadFile = multer({
       }
     },
     key: function (req: express.Request, file, cb) {
-      const folder = (req as any).body.folder;
+      const folder = uploadBody(req).folder;
       if (!folder) {
         return cb(new Error("Folder name is required"));
       }
@@ -43,7 +52,7 @@ bucketRouter.post(
   (req, res, next) => {
     const uploadSingle = uploadFile.single("file");
 
-    uploadSingle(req, res, (err: any) => {
+    uploadSingle(req, res, (err) => {
       if (err) {
         return next(err);
       }

@@ -1,3 +1,5 @@
+import { errorMessageOr } from "@/lib/utils/error";
+import { logger } from "@/lib/logger";
 import { createProvider } from "@/actions/provider";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -34,14 +36,14 @@ export async function GET(request: NextRequest) {
 
     if (!tokenResponse.ok) {
       const errorData = await tokenResponse.json();
-      console.error("GitLab token exchange error:", errorData);
+      logger.error("GitLab token exchange error:", errorData);
       throw new Error(
         errorData.error_description || "Failed to exchange token",
       );
     }
 
     const tokenData = await tokenResponse.json();
-    console.log("GitLab token response received successfully");
+    logger.debug("GitLab token response received successfully");
 
     // Store provider data
     await createProvider({
@@ -54,17 +56,17 @@ export async function GET(request: NextRequest) {
       user_id: "", // Handled by backend from session
     });
 
-    console.log("GitLab provider stored successfully via createProvider");
+    logger.debug("GitLab provider stored successfully via createProvider");
 
     return NextResponse.json({
       success: true,
       message: "GitLab authentication successful",
     });
-  } catch (error: any) {
-    console.error("Error in GitLab authentication handler:", error);
+  } catch (error) {
+    logger.error("Error in GitLab authentication handler:", error);
     return NextResponse.json(
       {
-        error: error.message || "An unexpected error occurred",
+        error: errorMessageOr(error, "An unexpected error occurred"),
       },
       { status: 500 },
     );

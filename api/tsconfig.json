@@ -4,8 +4,10 @@
     "outDir": "./dist",
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
-    "noImplicitAny": false,
-    "target": "es6",
+    "target": "es2023",
+    "lib": [
+      "es2023"
+    ],
     "strict": true,
     "sourceMap": true,
     "resolveJsonModule": true,

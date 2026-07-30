@@ -14,7 +14,7 @@ const MediaManager = forwardRef<
     gitMeta?: any;
     trees: TFiles[];
   }
->(({ trees }, ref) => {
+>(({ trees }, _ref) => {
   const dispatch = useAppDispatch();
   const { media, view } = useSelector(selectMediaInfo);
 
@@ -36,5 +36,7 @@ const MediaManager = forwardRef<
 
   return <GridView items={media} />;
 });
+
+MediaManager.displayName = "MediaManager";
 
 export default MediaManager;

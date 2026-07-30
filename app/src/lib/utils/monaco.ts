@@ -1,3 +1,4 @@
+import { logger } from "@/lib/logger";
 import useMounted from "@/hooks/use-mounted";
 import { loader } from "@monaco-editor/react";
 import { useTheme } from "next-themes";
@@ -22,7 +23,7 @@ export const useMonacoTheme = (monaco: any) => {
       try {
         monaco.editor.setTheme(themeName);
       } catch (e) {
-        console.warn("Failed to set theme:", e);
+        logger.warn("Failed to set theme:", e);
       }
     };
 

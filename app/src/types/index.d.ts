@@ -79,7 +79,7 @@ export type TImage = Omit<TFiles, "children" | "isFile" | "isNew" | "sha"> & {
   number: number;
 };
 
-export type TNewImage<T = {}> = {
+export type TNewImage<T = Record<string, never>> = {
   variables: {
     images: TImage[];
   } & T;
@@ -156,6 +156,33 @@ type TField = {
   defaultValue?: string;
   length?: number;
   maxLength?: number;
+  /** Date fields only: stamp the commit time instead of the stored value. */
+  alwaysUseCurrentDate?: boolean;
+  subType?: string;
+  isDropdown?: boolean;
+  options?: string[];
+  referenceType?: "static" | "folder" | "file";
+  referencePath?: string;
+  referenceInclude?: string;
+  referenceExclude?: string;
+  referenceField?: string;
+};
+
+/**
+ * A repository as the picker sees it. GitHub returns this shape directly;
+ * GitLab projects are normalised into it by `useAllInstallationRepos`.
+ */
+export type TGitRepo = {
+  id?: number | string;
+  name: string;
+  full_name: string;
+  owner?: { login?: string };
+  html_url?: string;
+  homepage?: string | null;
+  visibility?: string;
+  default_branch?: string;
+  /** GitLab only, before normalisation. */
+  path_with_namespace?: string;
 };
 
 export type TState = {

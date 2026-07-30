@@ -1,5 +1,6 @@
 "use client";
 
+import { useAddLog } from "@/hooks/use-add-log";
 import { Button, ButtonProps } from "@/components/ui/button";
 import {
   Dialog,
@@ -27,7 +28,6 @@ import { useFolderOps } from "@/hooks/use-folder-ops";
 import { useGitCacheUpdates } from "@/hooks/use-git-cache-updates";
 import { useGitProvider } from "@/hooks/use-git-provider";
 import { useSchemaData } from "@/hooks/use-schema-data";
-import { authClient } from "@/lib/auth/auth-client";
 import { cn } from "@/lib/utils/cn";
 import { resolveRepoPath } from "@/lib/utils/common";
 import { getLogType } from "@/lib/utils/project-log-type-detector";
@@ -42,7 +42,6 @@ import {
   gitlabContentApi,
   useUpdateGitLabFilesMutation,
 } from "@/redux/features/gitlab";
-import { useAddProjectLogMutation } from "@/redux/features/project-log/project-log-api";
 
 import { isGitLabProvider } from "@/lib/utils/provider-checker";
 import { EAction } from "@/redux/features/project-log/type";
@@ -90,7 +89,6 @@ export default function FolderActions({
   const tDirectoryViewActions = useTranslations("directory-view.actions");
   const tCommon = useTranslations("common");
   const params = useParams();
-  const { data: auth } = authClient.useSession();
   const dispatch = useAppDispatch();
   const router = useRouter();
 
@@ -106,7 +104,7 @@ export default function FolderActions({
       pathname.split("content/")[1] || pathname.split("media/")[1] || "";
     try {
       return decodeURIComponent(folder);
-    } catch (e) {
+    } catch {
       return folder;
     }
   }, [pathname, filePath]);
@@ -125,7 +123,7 @@ export default function FolderActions({
     },
   });
 
-  const [addLog] = useAddProjectLogMutation();
+  const [addLog] = useAddLog();
 
   const [createNewFolder, { isLoading: isGhFolderPending }] =
     useUpdateGitHubFilesMutation();
@@ -187,12 +185,11 @@ export default function FolderActions({
     deleteFolder,
     renameFolder,
     duplicateFolder,
-    isLoading: isFolderOpsLoading,
+    isLoading: _isFolderOpsLoading,
   } = useFolderOps({
     config,
     repoFiles: repoFiles as TFiles[],
     projectId: params.projectId as string,
-    userId: auth?.user.user_id!,
   });
 
   const isFolderPending = isGitLabProvider(config.provider)
@@ -214,7 +211,7 @@ export default function FolderActions({
         // update cached listing for parent folder
         try {
           updateCacheOnDelete(decodedFilepath);
-        } catch (e) {}
+        } catch {}
 
         // Invalidate cache tags to trigger refetch
         try {
@@ -233,7 +230,7 @@ export default function FolderActions({
               ]),
             );
           }
-        } catch (e) {}
+        } catch {}
 
         // Refresh server components
         router.refresh();
@@ -263,7 +260,7 @@ export default function FolderActions({
               ? `${base}/${parent}`
               : base;
           router.push(newPath);
-        } catch (e) {}
+        } catch {}
       },
     });
   };
@@ -305,7 +302,7 @@ export default function FolderActions({
               ]),
             );
           }
-        } catch (e) {}
+        } catch {}
 
         // Refresh server components
         router.refresh();
@@ -329,7 +326,7 @@ export default function FolderActions({
               ? `${base}${segment}/${newFolderPath}`
               : `${base}/${newFolderPath}`;
             router.push(newPath);
-          } catch (e) {}
+          } catch {}
         }, 300);
       },
     });
@@ -385,7 +382,7 @@ export default function FolderActions({
               ),
             );
           }
-        } catch (e) {}
+        } catch {}
 
         // Force refetch trees to update sidebar and navigation
         try {
@@ -430,7 +427,7 @@ export default function FolderActions({
               ]),
             );
           }
-        } catch (e) {}
+        } catch {}
 
         // Refresh server components
         router.refresh();
@@ -454,7 +451,7 @@ export default function FolderActions({
               ? `${base}${segment}/${newFolderPath}`
               : `${base}/${newFolderPath}`;
             router.push(newPath);
-          } catch (e) {}
+          } catch {}
         }, 300);
       },
     });
@@ -864,7 +861,6 @@ export default function FolderActions({
                     action: EAction.CREATE,
                     file: newFolder,
                     file_type: getLogType(newFolder, config),
-                    user_id: auth?.user.user_id!,
                   });
 
                   const newFolderObj = {
@@ -949,7 +945,7 @@ export default function FolderActions({
                         }),
                       );
                     }
-                  } catch (e) {}
+                  } catch {}
 
                   router.refresh();
                   onFolderOpenChange();

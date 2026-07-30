@@ -179,7 +179,7 @@ const parseAttributes = (text: string): AttrToken[] => {
 
 export const HighlightedAttributes = ({
   text,
-  theme,
+  theme: _theme,
 }: {
   text: string;
   theme: EditableTagLineTheme;
@@ -219,7 +219,7 @@ const EditableTagLineContent = ({
   prefix,
   attributes,
   suffix,
-  text,
+  text: _text,
   onChange,
   theme,
 }: {

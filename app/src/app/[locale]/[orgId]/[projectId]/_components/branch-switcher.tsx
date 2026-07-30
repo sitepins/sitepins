@@ -1,5 +1,7 @@
 "use client";
 
+import { errorMessage, errorMessageOr } from "@/lib/utils/error";
+import { logger } from "@/lib/logger";
 import { Button } from "@/components/ui/button";
 import {
   Command,
@@ -50,12 +52,11 @@ interface BranchSwitcherProps {
 
 export function BranchSwitcher({ project, config }: BranchSwitcherProps) {
   const dispatch = useAppDispatch();
-  const { useGitBranches, createGhBranch, createGlBranch, isBranchCreating } =
-    useGitProvider();
+  const { useGitBranches, createBranch, isBranchCreating } = useGitProvider();
   const {
     data: branches = [],
     isLoading: isBranchesLoading,
-    refetch,
+    refetch: _refetch,
   } = useGitBranches({ skip: !project?.project_id });
 
   const [open, setOpen] = useState(false);
@@ -81,30 +82,7 @@ export function BranchSwitcher({ project, config }: BranchSwitcherProps) {
     }
 
     try {
-      if (isGitLabProvider(project?.provider)) {
-        await createGlBranch({
-          id: project?.repository || "",
-          branch: newBranchName,
-          ref: config.branch,
-        }).unwrap();
-      } else {
-        const currentBranchData = (branches as any)?.find(
-          (b: any) => b.name === config.branch,
-        );
-        const baseSha = currentBranchData?.commit?.sha;
-
-        if (!baseSha) {
-          toast.error(tProjectBranching("create.error.sha"));
-          return;
-        }
-
-        await createGhBranch({
-          owner: config.owner,
-          repo: config.repoName,
-          ref: `refs/heads/${newBranchName}`,
-          sha: baseSha,
-        }).unwrap();
-      }
+      await createBranch({ name: newBranchName, branches });
 
       toast.success(
         tProjectBranching("create.success", { name: newBranchName }),
@@ -113,12 +91,14 @@ export function BranchSwitcher({ project, config }: BranchSwitcherProps) {
       setIsBranchDialogOpen(false);
       setNewBranchName("");
       setOpen(false);
-    } catch (error: any) {
-      console.error("Branch Creation Error:", error);
+    } catch (error) {
+      if (errorMessage(error) === "MISSING_BASE_SHA") {
+        toast.error(tProjectBranching("create.error.sha"));
+        return;
+      }
+      logger.error("Branch Creation Error", error);
       toast.error(
-        error?.data?.message ||
-          error?.message ||
-          tProjectBranching("create.error.failed"),
+        errorMessageOr(error, tProjectBranching("create.error.failed")),
       );
     }
   };

@@ -60,7 +60,7 @@ export function cleanMediaPath(mediaRoot: string, filePath: string): string {
 }
 
 export function verifyColor(colorCode: string) {
-  let regColorCode = /^(#)?([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;
+  const regColorCode = /^(#)?([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;
   return regColorCode.test(colorCode);
 }
 

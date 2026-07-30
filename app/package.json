@@ -11,7 +11,9 @@
     "start": "next start",
     "lint": "eslint \"src/**/*.{js,jsx,ts,tsx}\"",
     "test": "vitest run",
-    "format": "prettier -w ./src"
+    "format": "prettier -w ./src",
+    "lint:fix": "eslint \"src/**/*.{js,jsx,ts,tsx}\" --fix",
+    "typecheck": "next typegen && tsc --noEmit"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^4.0.16",

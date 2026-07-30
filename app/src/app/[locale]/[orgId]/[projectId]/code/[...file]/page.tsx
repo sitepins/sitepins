@@ -7,8 +7,6 @@ import {
   isGitLabProvider,
 } from "@/lib/utils/provider-checker";
 import { selectConfig } from "@/redux/features/config/slice";
-import { useGetGitHubContentQuery } from "@/redux/features/github";
-import { useGetGitLabContentQuery } from "@/redux/features/gitlab";
 import { useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import path from "path";
@@ -75,7 +73,7 @@ function CodeFilePage({
   normalizedContentRoot: string;
 }) {
   const tEditorCode = useTranslations("editor.code");
-  const { useGitTrees } = useGitProvider();
+  const { useGitTrees, useGitContent } = useGitProvider();
   const { branch, provider, owner, repoName, token } = config;
   const isConfigReady =
     token && branch && provider && owner && repoName && filePath;
@@ -89,39 +87,14 @@ function CodeFilePage({
   );
 
   const {
-    data: ghResponse,
-    isLoading: isGhLoading,
-    isSuccess: isGhSuccess,
-    error: ghError,
-  } = useGetGitHubContentQuery(
-    {
-      ref: config.branch,
-      owner: config.owner,
-      repo: config.repoName,
-      path: filePath,
-      parser: false,
-    },
-    {
-      skip: !isConfigReady || !isGitHubProvider(config.provider),
-    },
-  );
-
-  const {
-    data: glResponse,
-    isLoading: isGlLoading,
-    isSuccess: isGlSuccess,
-    error: glError,
-  } = useGetGitLabContentQuery(
-    {
-      id: `${config.owner}/${config.repoName}`,
-      file_path: filePath,
-      ref: config.branch,
-      parser: false,
-    },
-    {
-      skip: !isConfigReady || !isGitLabProvider(config.provider),
-    },
-  );
+    data: response,
+    isLoading,
+    isSuccess,
+    error,
+  } = useGitContent(filePath, {
+    parser: false,
+    skip: !isConfigReady,
+  });
 
   const normalize = (p = "") => p.replace(/^\/+|\/+$/g, "");
   const normalizedQueryPath = normalize(filePath);
@@ -169,15 +142,6 @@ function CodeFilePage({
       />
     );
   }
-
-  const response = isGitLabProvider(config.provider) ? glResponse : ghResponse;
-  const isLoading = isGitLabProvider(config.provider)
-    ? isGlLoading
-    : isGhLoading;
-  const isSuccess = isGitLabProvider(config.provider)
-    ? isGlSuccess
-    : isGhSuccess;
-  const error = isGitLabProvider(config.provider) ? glError : ghError;
 
   if (isLoading || !isSuccess) {
     return <CodeSkeleton />;

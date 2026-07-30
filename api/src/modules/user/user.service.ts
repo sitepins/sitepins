@@ -4,6 +4,7 @@ import {
   updateBrevoContact,
   updateBrevoContactEmail,
 } from "@/lib/brevoConfig";
+import { requireUser } from "@/lib/requireUser";
 import { sendMail } from "@/lib/mailer";
 import { enforcePlanLimits, runUserDeletionHooks } from "@/lib/entitlements";
 import { fromNodeHeaders } from "better-auth/node";
@@ -17,6 +18,7 @@ import { ProjectPreview } from "../project-preview/project-preview.model";
 import { Project } from "../project/project.model";
 import { User } from "./user.model";
 import { UserType } from "./user.type";
+import { logger } from "@/lib/logger";
 
 // get single user data
 const getSingleUserService = async (id: string): Promise<UserType | null> => {
@@ -69,7 +71,7 @@ const updateUserCountryService = async (id: string, country: string) => {
       });
     }
   } catch (err) {
-    console.error("Failed to update Brevo contact country:", err);
+    logger.error("Failed to update Brevo contact country", err);
   }
 
   return result;
@@ -93,7 +95,7 @@ const updateUserEmailService = async (email: string, id: string) => {
     try {
       await updateBrevoContactEmail(oldEmail, email);
     } catch (err) {
-      console.error("Failed to update Brevo contact email:", err);
+      logger.error("Failed to update Brevo contact email", err);
     }
   }
 
@@ -125,7 +127,7 @@ const deleteUserService = async (reason: string, req: Request) => {
 
     if (!success) throw new Error(message);
 
-    const existingUser = req.user!;
+    const existingUser = requireUser(req);
 
     await Organization.deleteMany({ owner: existingUser.user_id }, { session });
     await Project.deleteMany({ user_id: existingUser.user_id }, { session });
@@ -150,9 +152,11 @@ const deleteUserService = async (reason: string, req: Request) => {
 
     // delete contact from Brevo
     try {
-      await deleteBrevoContact(existingUser.email);
+      if (existingUser.email) {
+        await deleteBrevoContact(existingUser.email);
+      }
     } catch (err) {
-      console.error("Failed to delete Brevo contact after user deletion:", err);
+      logger.error("Failed to delete Brevo contact after user deletion", err);
     }
 
     // send mail to user
@@ -163,13 +167,12 @@ const deleteUserService = async (reason: string, req: Request) => {
           kind: "delete_account",
         });
       } else {
-        console.warn(
-          "Skipping account deletion email: missing email for userId=",
-          existingUser.user_id,
-        );
+        logger.warn("Skipping account deletion email: missing email", {
+          userId: existingUser.user_id,
+        });
       }
     } catch (error) {
-      console.error("Failed to send account deletion email:", error);
+      logger.error("Failed to send account deletion email", error);
     }
 
     await session.commitTransaction();
@@ -179,7 +182,7 @@ const deleteUserService = async (reason: string, req: Request) => {
   } catch (error) {
     await session.abortTransaction();
     session.endSession();
-    console.error(error);
+    logger.error("User deletion failed", error);
     throw error;
   }
 };

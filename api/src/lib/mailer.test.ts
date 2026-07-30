@@ -63,7 +63,10 @@ async function freshMailer() {
   return import("./mailer.js");
 }
 
-let warnSpy: ReturnType<typeof vi.spyOn>;
+// The console provider writes through the shared logger, which lands on
+// stderr. NODE_ENV=test would otherwise mute anything below error.
+let stderrWrites: string[];
+const originalLogLevel = process.env.LOG_LEVEL;
 
 beforeEach(() => {
   resetConfig();
@@ -73,11 +76,21 @@ beforeEach(() => {
   createTransportMock.mockImplementation(() => ({
     sendMail: transportSendMailMock,
   }));
-  warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+  process.env.LOG_LEVEL = "warn";
+  stderrWrites = [];
+  vi.spyOn(process.stderr, "write").mockImplementation((chunk) => {
+    stderrWrites.push(String(chunk));
+    return true;
+  });
 });
 
 afterEach(() => {
-  warnSpy.mockRestore();
+  vi.restoreAllMocks();
+  if (originalLogLevel === undefined) {
+    delete process.env.LOG_LEVEL;
+  } else {
+    process.env.LOG_LEVEL = originalLogLevel;
+  }
 });
 
 describe("mailer provider auto-detection", () => {
@@ -87,8 +100,7 @@ describe("mailer provider auto-detection", () => {
 
     expect(sendBrevoMailMock).not.toHaveBeenCalled();
     expect(transportSendMailMock).not.toHaveBeenCalled();
-    const logged = warnSpy.mock.calls.flat().join("\n");
-    expect(logged).toContain("123456");
+    expect(stderrWrites.join("\n")).toContain("123456");
   });
 
   it("logs the reset link for password_reset on the console provider", async () => {
@@ -99,8 +111,9 @@ describe("mailer provider auto-detection", () => {
       params: { password_reset: "https://app.example.com/reset/xyz" },
     });
 
-    const logged = warnSpy.mock.calls.flat().join("\n");
-    expect(logged).toContain("https://app.example.com/reset/xyz");
+    expect(stderrWrites.join("\n")).toContain(
+      "https://app.example.com/reset/xyz",
+    );
   });
 
   it("auto-selects brevo when an API key is configured", async () => {
@@ -145,6 +158,6 @@ describe("mailer provider auto-detection", () => {
     await sendMail({ to: "a@b.com", kind: "welcome" });
 
     expect(sendBrevoMailMock).not.toHaveBeenCalled();
-    expect(warnSpy).toHaveBeenCalled();
+    expect(stderrWrites.join("\n")).toContain("[mailer]");
   });
 });

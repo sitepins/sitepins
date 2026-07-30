@@ -1,5 +1,5 @@
 import { Skeleton } from "@/components/ui/skeleton";
-import { Image } from "lucide-react";
+import { Image as ImageIcon } from "lucide-react";
 
 export default function EditorSkeleton() {
   return (
@@ -66,7 +66,7 @@ export default function EditorSkeleton() {
             <div className="space-y-2">
               <Skeleton className="h-4 w-16" />
               <div className="border-border bg-light/50 relative flex aspect-video w-full max-w-md items-center justify-center overflow-hidden rounded-lg border border-dashed">
-                <Image className="text-muted size-12 animate-pulse" />
+                <ImageIcon className="text-muted size-12 animate-pulse" />
               </div>
             </div>
           </div>

@@ -260,7 +260,7 @@ export default function EditorHeader({
   const isDraftDisabled = pending || (isDraft && !hasChanges);
   const isPublishDisabled = pending || (!isDraft && !hasChanges);
 
-  const isMainButtonDisabled =
+  const _isMainButtonDisabled =
     actionType === "save"
       ? isSaveDisabled
       : actionType === "draft"

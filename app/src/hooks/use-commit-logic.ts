@@ -1,3 +1,4 @@
+import { useAddLog } from "@/hooks/use-add-log";
 import { MdxSnippet } from "@/editor/utils/plate-types";
 import { revertToOriginal } from "@/editor/utils/plate-utils";
 import { useGitProvider } from "@/hooks/use-git-provider";
@@ -5,16 +6,13 @@ import { useImages } from "@/hooks/use-images";
 import { authClient } from "@/lib/auth/auth-client";
 import { contentFormatter, format } from "@/lib/utils/content-serializer";
 import { getLogType } from "@/lib/utils/project-log-type-detector";
-import { isGitLabProvider } from "@/lib/utils/provider-checker";
 import { selectConfig } from "@/redux/features/config/slice";
-import { githubApi, githubContentApi } from "@/redux/features/github";
-import { gitlabApi, gitlabContentApi } from "@/redux/features/gitlab";
-import { useAddProjectLogMutation } from "@/redux/features/project-log/project-log-api";
 import { EAction } from "@/redux/features/project-log/type";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { TField, TState } from "@/types";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
+import type { Socket } from "socket.io-client";
 import { RefObject, useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
@@ -30,12 +28,12 @@ interface CommitDetails {
 }
 
 interface UseCommitLogicProps {
-  socket?: any;
+  socket?: Socket | null;
   state: TState | undefined;
-  setState: React.Dispatch<React.SetStateAction<any>>;
+  setState: React.Dispatch<React.SetStateAction<TState | undefined>>;
   filePath: string;
   fmType: format;
-  schema: any[];
+  schema: TField[];
   snippets: MdxSnippet[];
   startWith?: string;
   storeRef: RefObject<TState | undefined>;
@@ -49,7 +47,7 @@ interface UseCommitLogicProps {
 
 function checkRequiredFields(
   schemaFields: TField[],
-  currentData: any,
+  currentData: TState["data"] | undefined,
   parentLabel = "",
 ): string[] {
   if (!schemaFields || !currentData) return [];
@@ -171,8 +169,8 @@ export function useCommitLogic({
   const { data: auth } = authClient.useSession();
   const params = useParams();
   const config = useAppSelector(selectConfig);
-  const [addLog] = useAddProjectLogMutation();
-  const { updateFiles, isPending, provider } = useGitProvider();
+  const [addLog] = useAddLog();
+  const { updateFiles, isPending, adapter } = useGitProvider();
 
   const draftRef = useRef(false);
   const [commitData, setCommitData] = useState<CommitData | null>(null);
@@ -182,8 +180,8 @@ export function useCommitLogic({
     const clonedState = (() => {
       if (!state) return state;
       try {
-        return JSON.parse(JSON.stringify(state));
-      } catch (e) {
+        return JSON.parse(JSON.stringify(state)) as TState;
+      } catch {
         return state;
       }
     })();
@@ -197,7 +195,7 @@ export function useCommitLogic({
     }
 
     if (setState) {
-      setState(clonedState as any);
+      setState(clonedState);
     }
 
     if (onReplaceContentRef) {
@@ -214,12 +212,12 @@ export function useCommitLogic({
   useEffect(() => {
     if (!socket) return;
 
-    const onCommitCompleted = (payload: any) => {
+    const onCommitCompleted = (payload: { user_name?: string }) => {
       toast.success(`Saved by ${payload.user_name}`);
       updateSavedBaselineRef.current();
     };
 
-    const onCommitError = (payload: any) => {
+    const onCommitError = (payload: { message?: string }) => {
       toast.error(payload.message);
     };
 
@@ -277,8 +275,7 @@ export function useCommitLogic({
           ]
         : [{ path: data.path, content: data.content }, ...images];
 
-      let res: any;
-      res = await updateFiles({
+      const res = await updateFiles({
         files: actions,
         message: finalMessage,
         description,
@@ -289,71 +286,28 @@ export function useCommitLogic({
         updateSavedBaseline();
 
         // Optimistic update
-        if (isGitLabProvider(provider)) {
-          dispatch(
-            gitlabContentApi.util.updateQueryData(
-              "getGitLabContent",
-              {
-                id: config.repoName
-                  ? `${config.owner}/${config.repoName}`
-                  : config.owner,
-                file_path: isRename ? targetPath : filePath,
-                ref: config.branch,
-                parser: true,
-              },
-              (draft: any) => {
-                draft.commitDate = new Date().toString();
-                draft.data = {
-                  ...revertToOriginal(getProcessedStateData()!),
-                  draft: isDraft,
-                };
-                draft.content = pageContent;
-                return draft;
-              },
-            ),
-          );
+        const committedPath = isRename ? targetPath : filePath;
 
-          dispatch(
-            gitlabApi.util.invalidateTags([
-              { type: "GitLabCommit", id: isRename ? targetPath : filePath },
-            ]),
-          );
-        } else {
-          dispatch(
-            githubContentApi.util.updateQueryData(
-              "getGitHubContent",
-              {
-                path: isRename ? targetPath : filePath,
-                owner: config.owner,
-                repo: config.repoName,
-                parser: true,
-                ref: config.branch,
-              },
-              (draft: any) => {
-                draft.commitDate = new Date().toString();
-                draft.data = {
-                  ...revertToOriginal(getProcessedStateData()!),
-                  draft: isDraft,
-                };
-                draft.content = pageContent;
-                return draft;
-              },
-            ),
-          );
+        adapter.updateContentCache(
+          dispatch,
+          adapter.contentArgs(config, committedPath, { parser: true }),
+          (draft) => {
+            draft.commitDate = new Date().toString();
+            draft.data = {
+              ...revertToOriginal(getProcessedStateData()!),
+              draft: isDraft,
+            };
+            draft.content = pageContent;
+          },
+        );
 
-          dispatch(
-            githubApi.util.invalidateTags([
-              { type: "GitHubCommit", id: filePath },
-            ]),
-          );
-        }
+        adapter.invalidateCommit(dispatch, committedPath);
 
         await addLog({
           project_id: params.projectId as string,
           action: isRename ? EAction.RENAME : EAction.UPDATE,
           file: targetPath,
           file_type: getLogType(targetPath, config),
-          user_id: auth?.user.user_id!,
         });
 
         clearImages();
@@ -396,7 +350,7 @@ export function useCommitLogic({
       setState,
       onReplaceContentRef,
       onRenameComplete,
-      provider,
+      adapter,
       config,
       params,
       auth,
@@ -425,7 +379,7 @@ export function useCommitLogic({
             toast.error(
               tCommon("errors.required_fields_empty", { fields: fieldsStr }),
             );
-          } catch (e) {
+          } catch {
             toast.error(`Please fill in all required fields: ${fieldsStr}`);
           }
           return;
@@ -439,39 +393,14 @@ export function useCommitLogic({
 
       let originalContent = "";
       try {
-        const promise = isGitLabProvider(config.provider)
-          ? dispatch(
-              gitlabContentApi.endpoints.getGitLabContent.initiate(
-                {
-                  id: config.repoName
-                    ? `${config.owner}/${config.repoName}`
-                    : config.owner,
-                  file_path: filePath,
-                  ref: config.branch,
-                  parser: false,
-                },
-                { forceRefetch: true },
-              ),
-            )
-          : dispatch(
-              githubContentApi.endpoints.getGitHubContent.initiate(
-                {
-                  owner: config.owner,
-                  repo: config.repoName,
-                  path: filePath,
-                  ref: config.branch, // ensure we get the file from current branch
-                  parser: false,
-                },
-                { forceRefetch: true },
-              ),
-            );
-
-        // @ts-ignore
-        const res = await promise.unwrap();
-        if (res && typeof res.data === "string") {
+        const res = await adapter.fetchContent(
+          dispatch,
+          adapter.contentArgs(config, filePath, { parser: false }),
+        );
+        if (typeof res?.data === "string") {
           originalContent = res.data;
         }
-      } catch (e) {
+      } catch {
         // failed to fetch original content, comments might be lost
       }
 

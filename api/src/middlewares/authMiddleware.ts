@@ -8,7 +8,7 @@ import { jwtHelpers } from "@/lib/jwtTokenHelper";
 import { HttpStatusCode } from "axios";
 import { fromNodeHeaders } from "better-auth/node";
 import { NextFunction, Request, Response } from "express";
-import { Secret } from "jsonwebtoken";
+import { JwtPayload, Secret } from "jsonwebtoken";
 
 // Combine them into a single union type
 type RequestedRole =
@@ -42,7 +42,7 @@ class AuthMiddleware {
           }
           const verificationToken = `${token.split(" ")[1]}`;
 
-          let verifiedToken: any;
+          let verifiedToken: JwtPayload | undefined;
 
           // Define secrets with their corresponding issuers
           const secretsWithIssuers = getJwtIssuers();
@@ -58,22 +58,29 @@ class AuthMiddleware {
               );
               tokenVerified = true;
               break;
-            } catch (error) {
+            } catch {
               // Continue to next secret/issuer combination
               continue;
             }
           }
 
-          if (!tokenVerified) {
+          if (!tokenVerified || !verifiedToken) {
             throw new ApiError("Invalid token", 401, "");
           }
 
-          req.user = verifiedToken;
+          // Bearer tokens are minted with `id`; external issuers may send an
+          // explicit `user_id`. Normalize so downstream code has one field.
+          const tokenUserId = verifiedToken.user_id ?? verifiedToken.id;
+          if (typeof tokenUserId !== "string" || !tokenUserId) {
+            throw new ApiError("Invalid token", 401, "");
+          }
+
+          req.user = { ...verifiedToken, user_id: tokenUserId };
 
           // Role-based access control
           if (
             requestedRoles.length > 0 &&
-            !requestedRoles.includes(verifiedToken?.role as RequestedRole)
+            !requestedRoles.includes(verifiedToken.role as RequestedRole)
           ) {
             throw new ApiError(
               "You do not have the required permissions to perform this action.",
@@ -84,11 +91,16 @@ class AuthMiddleware {
           next();
         } else {
           // for user
+          // `user_id` and `role` come from better-auth additionalFields, which
+          // the inferred session type does not carry.
+          const sessionUser = session.user as typeof session.user & {
+            user_id?: unknown;
+            role?: unknown;
+          };
+
           if (
             requestedRoles.length > 0 &&
-            !requestedRoles.includes(
-              (session as any).user.role as RequestedRole,
-            )
+            !requestedRoles.includes(sessionUser.role as RequestedRole)
           ) {
             throw new ApiError(
               "You do not have the required permissions to perform this action.",
@@ -97,7 +109,15 @@ class AuthMiddleware {
             );
           }
 
-          req.user = session.user;
+          if (typeof sessionUser.user_id !== "string" || !sessionUser.user_id) {
+            throw new ApiError(
+              "Session is missing user_id",
+              HttpStatusCode.Unauthorized,
+              "",
+            );
+          }
+
+          req.user = { ...session.user, user_id: sessionUser.user_id };
           next();
         }
       } catch (error) {

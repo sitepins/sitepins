@@ -1,4 +1,5 @@
 import catchAsync from "@/lib/catchAsync";
+import { requireUserId } from "@/lib/requireUser";
 import { sendResponse } from "@/lib/sendResponse";
 import { Request, Response } from "express";
 import { organizationService } from "./organization.service";
@@ -8,7 +9,7 @@ const getOrganizationsByUserController = catchAsync(
   async (req: Request, res: Response) => {
     const organization =
       await organizationService.getOrganizationsByUserService(
-        (req.params.userId as string) || req.user?.user_id!,
+        (req.params.userId as string) || requireUserId(req),
       );
 
     sendResponse(res, {
@@ -25,7 +26,10 @@ const getOrganizationByIdController = catchAsync(
   async (req: Request, res: Response) => {
     const organization = await organizationService.getOrganizationService({
       org_id: req.params.org_id as string,
-      userId: req.query.owner_id || req.user?.user_id!,
+      userId:
+        typeof req.query.owner_id === "string"
+          ? req.query.owner_id
+          : requireUserId(req),
     });
 
     sendResponse(res, {
@@ -45,7 +49,7 @@ const createOrganizationController = catchAsync(
       await organizationService.createOrganizationService({
         org_name,
         email,
-        owner: req.user?.user_id!,
+        owner: requireUserId(req),
       });
 
     sendResponse(res, {
@@ -88,7 +92,7 @@ const removeMemberController = catchAsync(
     const org_id = req.params.org_id as string;
     const memberId = req.body.member_id;
     const removeMember = await organizationService.removeTeamMemberService({
-      loggedInUserId: req.user?.user_id!,
+      loggedInUserId: requireUserId(req),
       org_id,
       userId: memberId,
     });
@@ -112,7 +116,7 @@ const updateRoleController = catchAsync(async (req: Request, res: Response) => {
       role,
       user_id: member_id,
     },
-    loggedInUserId: req.user?.user_id!,
+    loggedInUserId: requireUserId(req),
   });
 
   sendResponse(res, {
@@ -134,7 +138,7 @@ const addMemberController = catchAsync(async (req: Request, res: Response) => {
       role,
       user_id: email,
     },
-    loggedInUserId: req.user?.user_id!,
+    loggedInUserId: requireUserId(req),
   });
 
   sendResponse(res, {
@@ -172,7 +176,7 @@ const deleteOrganizationController = catchAsync(
     const deleteOrganization =
       await organizationService.deleteOrganizationService({
         org_id,
-        userId: req.user?.user_id!,
+        userId: requireUserId(req),
       });
 
     sendResponse(res, {

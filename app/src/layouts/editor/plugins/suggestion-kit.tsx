@@ -23,7 +23,7 @@ export type SuggestionConfig = ExtendConfig<
 
 export const suggestionPlugin = toTPlatePlugin<SuggestionConfig>(
   BaseSuggestionPlugin,
-  ({ editor }) => ({
+  ({ editor: _editor }) => ({
     options: {
       activeId: null,
       // currentUserId: editor.getOption(discussionPlugin, 'currentUserId'),

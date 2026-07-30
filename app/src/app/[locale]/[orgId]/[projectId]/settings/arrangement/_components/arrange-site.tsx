@@ -19,22 +19,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { authClient } from "@/lib/auth/auth-client";
+import { useAddLog } from "@/hooks/use-add-log";
+import { useGitProvider } from "@/hooks/use-git-provider";
 import { deepEqualArray } from "@/lib/utils/comparison";
-import {
-  isGitHubProvider,
-  isGitLabProvider,
-} from "@/lib/utils/provider-checker";
+import { isGitLabProvider } from "@/lib/utils/provider-checker";
 import { selectConfig, updateConfig } from "@/redux/features/config/slice";
-import {
-  useGetGitHubTreesQuery,
-  useUpdateGitHubFilesMutation,
-} from "@/redux/features/github";
-import {
-  useGetGitLabTreesQuery,
-  useUpdateGitLabFilesMutation,
-} from "@/redux/features/gitlab";
-import { useAddProjectLogMutation } from "@/redux/features/project-log/project-log-api";
+import { useUpdateGitHubFilesMutation } from "@/redux/features/github";
+import { useUpdateGitLabFilesMutation } from "@/redux/features/gitlab";
 import { EAction, EProjectLogType } from "@/redux/features/project-log/type";
 import { useAppDispatch } from "@/redux/store";
 import { TArrangement } from "@/types";
@@ -42,14 +33,7 @@ import { Folder } from "lucide-react";
 import { Reorder } from "motion/react";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
-import {
-  Dispatch,
-  SetStateAction,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { toast } from "sonner";
 import { FileForm, FolderForm, HeadingForm } from "./arrange-site-forms";
@@ -68,7 +52,6 @@ export default function Arrangement({
   setIsModified: Dispatch<SetStateAction<boolean>>;
 }) {
   const params = useParams();
-  const { data: auth } = authClient.useSession();
   const dispatch = useAppDispatch();
   const tProjectSettingsArrangement = useTranslations(
     "project-settings.arrangement",
@@ -76,57 +59,18 @@ export default function Arrangement({
   const tCommon = useTranslations("common");
 
   const config = useSelector(selectConfig);
-  const { data: ghTreesData, isLoading: isGhTreesLoading } =
-    useGetGitHubTreesQuery(
-      {
-        owner: config.owner,
-        repo: config.repoName,
-        tree_sha: config.branch,
-        recursive: "1",
-        config: config,
-      },
-      {
-        skip:
-          !config.token ||
-          !config.repoName ||
-          !config.owner ||
-          !config.branch ||
-          !isGitHubProvider(config.provider),
-      },
-    );
-
-  const { data: glTreesData, isLoading: isGlTreesLoading } =
-    useGetGitLabTreesQuery(
-      {
-        id: config.repoName
-          ? `${config.owner}/${config.repoName}`
-          : config.owner,
-        ref: config.branch,
-        recursive: true,
-        config: config,
-      },
-      {
-        skip:
-          !config.token ||
-          !config.repoName ||
-          !config.branch ||
-          !isGitLabProvider(config.provider),
-      },
-    );
-
-  const treesData = isGitLabProvider(config.provider)
-    ? glTreesData
-    : ghTreesData;
-  const isTreesLoading = isGitLabProvider(config.provider)
-    ? isGlTreesLoading
-    : isGhTreesLoading;
+  const { useGitTrees } = useGitProvider();
+  const { data: treesData, isLoading: isTreesLoading } = useGitTrees("", {
+    recursive: true,
+    skip: !config.token || !config.owner || !config.branch,
+  });
 
   const trees = treesData?.files || [];
   const [updateFile, { isLoading: isGhPending }] =
     useUpdateGitHubFilesMutation();
   const [updateGitLabFiles, { isLoading: isGlPending }] =
     useUpdateGitLabFilesMutation();
-  const [addLog] = useAddProjectLogMutation();
+  const [addLog] = useAddLog();
 
   const isPending = isGitLabProvider(config.provider)
     ? isGlPending
@@ -139,11 +83,12 @@ export default function Arrangement({
     }));
   }, [config.arrangement]);
 
-  const storeArrangement = useRef<TArrangement[]>(
+  const [baseline, setBaseline] = useState<TArrangement[]>(() =>
     JSON.parse(JSON.stringify(memoArrangement)),
   );
   const [arrangements, setArrangement] =
     useState<TArrangement[]>(memoArrangement);
+  const [syncedArrangement, setSyncedArrangement] = useState(memoArrangement);
   const [isChanged, setIsChanged] = useState(false);
   const [type, setType] = useState<"folder" | "file" | "heading">();
   const Form = type ? formComponent[type] : null;
@@ -152,9 +97,14 @@ export default function Arrangement({
     TArrangement | undefined
   >(undefined);
 
-  useEffect(() => {
+  // Reset to the stored arrangement whenever config reloads. Adjusting during
+  // render rather than in an effect avoids a second commit, and resets the
+  // change baseline too so a reload does not read as unsaved edits.
+  if (syncedArrangement !== memoArrangement) {
+    setSyncedArrangement(memoArrangement);
     setArrangement(memoArrangement);
-  }, [memoArrangement]);
+    setBaseline(JSON.parse(JSON.stringify(memoArrangement)));
+  }
 
   const handleArrangement = ({
     newArrangement,
@@ -192,9 +142,7 @@ export default function Arrangement({
   };
 
   useEffect(() => {
-    setIsChanged(
-      !deepEqualArray(storeArrangement.current, arrangements, ["id"]),
-    );
+    setIsChanged(!deepEqualArray(baseline, arrangements, ["id"]));
   }, [arrangements]);
 
   const isConfigLoaded =
@@ -326,7 +274,7 @@ export default function Arrangement({
             const updatedArrangements = arrangements.reduce<
               Omit<TArrangement, "id">[]
             >((acc, curr) => {
-              const { id, ...rest } = curr;
+              const { id: _id, ...rest } = curr;
               return [...acc, { ...rest }];
             }, []);
 
@@ -388,15 +336,12 @@ export default function Arrangement({
                   action: EAction.UPDATE,
                   file: ".sitepins/config.json",
                   file_type: EProjectLogType.CONFIG,
-                  user_id: auth?.user.user_id!,
                 });
                 toast.success(tProjectSettingsArrangement("success_update"));
                 dispatch(
                   updateConfig({ ...config, arrangement: arrangements }),
                 );
-                storeArrangement.current = JSON.parse(
-                  JSON.stringify(arrangements),
-                );
+                setBaseline(JSON.parse(JSON.stringify(arrangements)));
                 setIsChanged(false);
               }
             });

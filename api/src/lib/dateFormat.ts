@@ -16,7 +16,10 @@ export const isGreaterThanMinutes = (
   return diffInMinutes > minutes;
 };
 
-export function getExpiryDate(currentDate: any, timeStr: any) {
+export function getExpiryDate(
+  currentDate: Date | string | number,
+  timeStr: string,
+) {
   const days = parseInt(timeStr, 10);
   const now = new Date(currentDate);
   now.setDate(now.getDate() + days);

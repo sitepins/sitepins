@@ -2,6 +2,10 @@ import nextVitals from "eslint-config-next/core-web-vitals";
 import nextTs from "eslint-config-next/typescript";
 import { defineConfig, globalIgnores } from "eslint/config";
 
+// Rules are "error" where the codebase is already clean — those can never
+// regress. Rules with an existing backlog are "warn" with the current count
+// noted, so the debt stays visible instead of switched off. Drive a count to
+// zero, then promote the rule to "error".
 const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
@@ -17,52 +21,58 @@ const eslintConfig = defineConfig([
       // TypeScript Rules
       // ==========================================
       "@typescript-eslint/ban-ts-comment": "off",
-      "@typescript-eslint/no-empty-object-type": "off",
-      "@typescript-eslint/no-explicit-any": "off",
-      "@typescript-eslint/no-non-null-asserted-optional-chain": "off",
-      "@typescript-eslint/no-unused-expressions": "off",
-      "@typescript-eslint/no-unused-vars": "off",
-      "@typescript-eslint/no-wrapper-object-types": "off",
+      "@typescript-eslint/no-empty-object-type": "error",
+      "@typescript-eslint/no-explicit-any": "warn",
+      "@typescript-eslint/no-non-null-asserted-optional-chain": "warn",
+      "@typescript-eslint/no-unused-expressions": "error",
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
+      ],
+      "@typescript-eslint/no-wrapper-object-types": "error",
 
       // ==========================================
       // JavaScript/General Rules
       // ==========================================
-      "no-empty-object-type": "off",
-      "no-explicit-any": "off",
-      "prefer-const": "off",
+      eqeqeq: ["error", "smart"],
+      "no-console": "error",
+      "no-var": "error",
+      "prefer-const": "error",
 
       // ==========================================
       // Next.js Specific Rules
       // ==========================================
-      "@next/next/no-img-element": "off",
+      "@next/next/no-img-element": "warn",
 
       // ==========================================
       // React Rules
       // ==========================================
-      "react/display-name": "off",
-      "react/jsx-no-undef": "off",
-      "react/no-unescaped-entities": "off",
+      "react/display-name": "warn",
+      "react/jsx-no-undef": "error",
+      "react/no-unescaped-entities": "error",
 
       // ==========================================
       // React Hooks Rules
       // ==========================================
-      "react-hooks/immutability": "off",
+      // React Compiler diagnostics. The first four are real defects; the last
+      // two only report that the compiler skipped optimizing a component.
+      "react-hooks/immutability": "warn",
+      "react-hooks/refs": "warn",
+      "react-hooks/set-state-in-effect": "warn",
+      "react-hooks/static-components": "warn",
+      "react-hooks/use-memo": "warn",
       "react-hooks/incompatible-library": "off",
       "react-hooks/preserve-manual-memoization": "off",
-      "react-hooks/refs": "off",
-      "react-hooks/set-state-in-effect": "off",
-      "react-hooks/static-components": "off",
-      "react-hooks/use-memo": "off",
 
       // ==========================================
       // Import Rules
       // ==========================================
-      "import/no-anonymous-default-export": "off",
+      "import/no-anonymous-default-export": "error",
 
       // ==========================================
       // Accessibility (a11y) Rules
       // ==========================================
-      "jsx-a11y/alt-text": "off",
+      "jsx-a11y/alt-text": "error",
     },
   },
   // Override default ignores of eslint-config-next

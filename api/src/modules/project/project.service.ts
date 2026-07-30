@@ -4,6 +4,7 @@ import { escapeRegex } from "@/lib/regexEscape";
 import { deleteFile } from "@/lib/s3-utils";
 import { IPagination } from "@/types";
 import { PipelineStage } from "mongoose";
+import type { QueryFilter, UpdateQuery } from "mongoose";
 import { Organization } from "../organization/organization.model";
 import { ProjectLog } from "../project-log/project-log.model";
 import { ProjectPreview } from "../project-preview/project-preview.model";
@@ -23,7 +24,7 @@ const getAllProjectService = async (
   const { search } = filterOptions;
 
   // Create a text search stage for multiple fields
-  let matchStage: any = {
+  const matchStage: PipelineStage.Match = {
     $match: {},
   };
 
@@ -37,7 +38,7 @@ const getAllProjectService = async (
     matchStage.$match.$or = searchConditions;
   }
 
-  let pipeline: PipelineStage[] = [matchStage];
+  const pipeline: PipelineStage[] = [matchStage];
 
   pipeline.push({
     $sort: {
@@ -233,7 +234,9 @@ const getProjectByUserIdService = async ({ user_id }: { user_id: string }) => {
 
 // create project
 const createProjectService = async (project: ProjectType & { id: string }) => {
-  const query: any = { project_name: project.project_name };
+  const query: QueryFilter<ProjectType> = {
+    project_name: project.project_name,
+  };
   if (project.org_id) {
     query.org_id = project.org_id;
   } else {
@@ -423,7 +426,7 @@ const updateGitConnectionService = async ({
     throw new Error("Project not found");
   }
 
-  const updateFields: any = {};
+  const updateFields: UpdateQuery<ProjectType> = {};
   if (repository !== undefined) updateFields.repository = repository;
   if (branch !== undefined) updateFields.branch = branch;
   if (provider !== undefined) updateFields.provider = provider;

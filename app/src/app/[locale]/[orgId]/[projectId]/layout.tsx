@@ -1,5 +1,7 @@
 "use client";
 
+import { normalizeGitProvider } from "@/lib/utils/provider-checker";
+import { useGitProvider } from "@/hooks/use-git-provider";
 import { SidebarSkeleton } from "@/components/sidebar-skeleton";
 import {
   Accordion,
@@ -14,21 +16,9 @@ import { useProjectBranch } from "@/hooks/use-project-branch";
 import { useSafeLocale } from "@/hooks/use-safe-locale";
 import { getProjectDashboardMenu, getProjectSettingsMenu } from "@/lib/menu";
 import { cn } from "@/lib/utils/cn";
-import {
-  isGitHubProvider,
-  isGitLabProvider,
-} from "@/lib/utils/provider-checker";
 import { slugify } from "@/lib/utils/text-converter";
 import { SidebarPageLayout } from "@/partials/sidebar-layout";
 import { resetConfig, selectConfig } from "@/redux/features/config/slice";
-import {
-  useGetGitHubSiteConfigQuery,
-  useGetGitHubTreesQuery,
-} from "@/redux/features/github";
-import {
-  useGetGitLabSiteConfigQuery,
-  useGetGitLabTreesQuery,
-} from "@/redux/features/gitlab";
 import { useGetOrgsQuery } from "@/redux/features/orgs/org-api";
 import { useGetProjectQuery } from "@/redux/features/project/project-api";
 import { useGetProvidersQuery } from "@/redux/features/provider/provider-api";
@@ -95,108 +85,37 @@ export default function Layout(
       },
     );
 
-  const { isLoading: isGhSiteSettingLoading, isFetching: isGhFetching } =
-    useGetGitHubSiteConfigQuery(
-      {
-        owner: config.owner,
-        repo: config.repoName,
-        ref: config.branch,
-        path: ".sitepins/config.json",
-        framework: (project?.generator as any) || undefined,
-      },
-      {
-        skip:
-          isProjectFetching ||
-          !config.token ||
-          !config.repoName ||
-          !isGitHubProvider(config.provider) ||
-          !isGitHubProvider(project?.provider),
-        refetchOnMountOrArgChange: true,
-      },
-    );
+  const { useGitSiteConfig, useGitTrees } = useGitProvider();
 
-  const { isLoading: isGlSiteSettingLoading, isFetching: isGlFetching } =
-    useGetGitLabSiteConfigQuery(
-      {
-        id: project?.repository || "",
-        file_path: ".sitepins/config.json",
-        ref: config.branch,
-        framework: (project?.generator as any) || undefined,
-      },
-      {
-        skip:
-          isProviderFetching ||
-          isProjectFetching ||
-          !config.token ||
-          !project?.repository ||
-          !isGitLabProvider(config.provider) ||
-          !isGitLabProvider(project?.provider),
-        refetchOnMountOrArgChange: true,
-      },
-    );
+  // The project record and the active config can disagree mid-switch; querying
+  // then would address the wrong provider.
+  const providerMismatch =
+    normalizeGitProvider(config.provider) !==
+    normalizeGitProvider(project?.provider);
 
-  const isSiteSettingLoading = isGitLabProvider(project?.provider)
-    ? isGlSiteSettingLoading
-    : isGhSiteSettingLoading;
-  const isFetching = isGitLabProvider(project?.provider)
-    ? isGlFetching
-    : isGhFetching;
+  const { isLoading: isSiteSettingLoading, isFetching } = useGitSiteConfig({
+    framework: project?.generator || undefined,
+    refetchOnMountOrArgChange: true,
+    skip:
+      isProjectFetching ||
+      isProviderFetching ||
+      !config.token ||
+      providerMismatch,
+  });
 
   const {
-    data: ghData,
-    isLoading: isGhTreesLoading,
-    isSuccess: isGhTreesLoaded,
-  } = useGetGitHubTreesQuery(
-    {
-      owner: config.owner,
-      repo: config.repoName,
-      tree_sha: config.branch,
-      recursive: "1",
-      config: config,
-    },
-    {
-      skip:
-        !config.token ||
-        !config.repoName ||
-        !config.branch ||
-        isFetching ||
-        isProviderFetching ||
-        !isGitHubProvider(config.provider) ||
-        !isGitHubProvider(project?.provider),
-    },
-  );
-
-  const {
-    data: glData,
-    isLoading: isGlTreesLoading,
-    isSuccess: isGlTreesLoaded,
-  } = useGetGitLabTreesQuery(
-    {
-      id: project?.repository || "",
-      ref: config.branch,
-      recursive: true,
-      config: config,
-    },
-    {
-      refetchOnMountOrArgChange: true,
-      skip:
-        !config.token ||
-        !project?.repository ||
-        !config.branch ||
-        isFetching ||
-        isProviderFetching ||
-        !isGitLabProvider(config.provider) ||
-        !isGitLabProvider(project?.provider),
-    },
-  );
-
-  const data = isGitLabProvider(project?.provider) ? glData : ghData;
-  const isTreesLoading = isGitLabProvider(project?.provider)
-    ? isGlTreesLoading
-    : isGhTreesLoading;
-  const isTreesLoaded = isGitLabProvider(project?.provider)
-    ? isGlTreesLoaded
-    : isGhTreesLoaded;
+    data,
+    isLoading: isTreesLoading,
+    isSuccess: isTreesLoaded,
+  } = useGitTrees("", {
+    recursive: true,
+    skip:
+      !config.token ||
+      !config.branch ||
+      isFetching ||
+      isProviderFetching ||
+      providerMismatch,
+  });
 
   const { trees = [] } = data || {};
 
@@ -216,7 +135,7 @@ export default function Layout(
     isSiteSettingLoading ||
     !config.token;
 
-  let arrangements = config.arrangement;
+  const arrangements = config.arrangement;
   const folderList = (files: TFiles[]): TFiles[] => {
     // Guard clause for when files is null/undefined
     if (!files) {
@@ -237,7 +156,7 @@ export default function Layout(
       if (curr.type === "file" || curr.type === "heading") {
         const name = curr.groupName;
         const type = curr.type;
-        const { base, dir } = path.parse(curr.targetPath);
+        const { base: _base, dir: _dir } = path.parse(curr.targetPath);
         return [
           ...acc,
           {
@@ -372,7 +291,7 @@ export default function Layout(
                                 <Suspense
                                   fallback={Array.from(
                                     { length: 6 },
-                                    (_, i) => (i = 1),
+                                    () => 1,
                                   ).map((item) => {
                                     return (
                                       <li key={item} className="mb-3 last:mb-0">
@@ -441,7 +360,7 @@ export default function Layout(
                                 <Suspense
                                   fallback={Array.from(
                                     { length: 6 },
-                                    (_, i) => (i = 1),
+                                    () => 1,
                                   ).map((item) => {
                                     return (
                                       <li key={item} className="mb-3 last:mb-0">

@@ -107,5 +107,3 @@ export const getLanguageFromExtension = (filePath: string): string => {
   const ext = path.extname(filePath).toLowerCase();
   return languageMap[ext] || "plaintext";
 };
-
-export default {};

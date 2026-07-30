@@ -1,4 +1,5 @@
 import crypto from "crypto";
+import { logger } from "@/lib/logger";
 
 const ALGORITHM = "aes-256-gcm";
 const KEY_ENV = "SANDBOX_ENCRYPTION_KEY";
@@ -14,7 +15,7 @@ function getKey(): Buffer | null {
 export function encrypt(plaintext: string): string {
   const key = getKey();
   if (!key) {
-    console.warn(
+    logger.warn(
       `[encrypt] ${KEY_ENV} not set — storing token unencrypted. Set the env var to enable encryption.`,
     );
     return plaintext;

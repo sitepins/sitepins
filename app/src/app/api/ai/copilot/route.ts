@@ -1,3 +1,4 @@
+import { logger } from "@/lib/logger";
 import { AnthropicProvider, createAnthropic } from "@ai-sdk/anthropic";
 import { createGoogle, GoogleProvider } from "@ai-sdk/google";
 import { createOpenAI, OpenAIProvider } from "@ai-sdk/openai";
@@ -59,7 +60,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ ...result, text: result.text });
   } catch (error) {
-    console.log({ error });
+    logger.debug("Copilot request failed", { error });
     if (error instanceof Error && error.name === "AbortError") {
       return NextResponse.json(null, { status: 408 });
     }

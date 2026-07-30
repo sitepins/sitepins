@@ -108,7 +108,7 @@ function syncYaml(doc: any, data: any) {
 }
 
 function flatten(obj: any, prefix: string[] = []): Record<string, any> {
-  let result: Record<string, any> = {};
+  const result: Record<string, any> = {};
   if (obj === null || obj === undefined) return result;
 
   if (Array.isArray(obj)) {
@@ -126,7 +126,7 @@ function flatten(obj: any, prefix: string[] = []): Record<string, any> {
 }
 
 function patchToml(originalContent: string, data: any): string {
-  let lines = originalContent.split("\n");
+  const lines = originalContent.split("\n");
   let currentPath: string[] = [];
   const pathMap = new Map<string, number>(); // path string -> line index
   const arrayCounts = new Map<string, number>(); // path -> occurrences
@@ -160,7 +160,7 @@ function patchToml(originalContent: string, data: any): string {
   }
 
   const flatData = flatten(data);
-  let updatedLines = [...lines];
+  const updatedLines = [...lines];
 
   // Update existing
   for (const [path, value] of Object.entries(flatData)) {
@@ -250,7 +250,7 @@ export function contentFormatter({
           return `+++\n${tomlString}\n+++\n${page_content ?? body}`;
         }
         return `${tomlString}\n${page_content ?? ""}`;
-      } catch (e) {
+      } catch {
         // fall through
       }
     }
@@ -295,7 +295,7 @@ export function contentFormatter({
           }
           return `${yamlString}\n${page_content ?? ""}`;
         }
-      } catch (e) {
+      } catch {
         // fallback
       }
     }
@@ -568,7 +568,7 @@ export const parseContentJson = (content: string, format: format) => {
     const cleanContent = stripJsonComments(content);
     try {
       return { data: JSON.parse(cleanContent), content: null, comments };
-    } catch (e) {
+    } catch {
       return { data: JSON.parse(content), content: null, comments };
     }
   } else if (format === "toml") {
@@ -610,7 +610,7 @@ export const parseContentJson = (content: string, format: format) => {
       try {
         const data = YAML.parse(content) as any;
         return { data: data || {}, content: null, comments };
-      } catch (err) {
+      } catch {
         const { data, content: page_content } = matter(content);
         return { data, content: page_content, comments };
       }

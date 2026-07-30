@@ -38,7 +38,7 @@ export default function ThemePreference({ userId }: ThemePreferenceProps) {
     try {
       await updateTheme({ userId, theme: newTheme }).unwrap();
       toast.success(tDashboardPreferenceTheme("updated_success"));
-    } catch (error) {
+    } catch {
       toast.error(tDashboardPreferenceTheme("updated_failed"));
     }
   };

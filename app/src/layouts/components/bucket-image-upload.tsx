@@ -55,7 +55,7 @@ export function BucketImageUpload({
   defaultImage,
   defaultLabel,
   onUploadSuccess,
-  onUploadError,
+  onUploadError: _onUploadError,
   altText = "Preview",
   size = "lg",
   isDisabled = false,
@@ -70,7 +70,7 @@ export function BucketImageUpload({
   const [isDeleting, setIsDeleting] = useState(false);
   const {
     previewSrc,
-    file,
+    file: _file,
     fileRejections,
     handleFileSelect,
     handleFileReject,

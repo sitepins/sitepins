@@ -1,5 +1,6 @@
 "use client";
 
+import { errorMessageOr } from "@/lib/utils/error";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -134,9 +135,8 @@ export function RevertConfirmDialog({
       }
 
       onClose();
-    } catch (err: any) {
-      const msg =
-        err?.data?.message || err?.message || tGit("feedback.revert_failed");
+    } catch (err) {
+      const msg = errorMessageOr(err, tGit("feedback.revert_failed"));
       toast.error(msg);
     }
   };

@@ -1,3 +1,4 @@
+import { logger } from "@/lib/logger";
 import { useDebouncedCallback } from "@/hooks/use-debounce-callback";
 import useMounted from "@/hooks/use-mounted";
 import { authClient } from "@/lib/auth/auth-client";
@@ -100,7 +101,7 @@ export const RichEditor = ({
                 type: "p",
               },
             ];
-      } catch (error) {
+      } catch {
         toast.error(tEditorRich("error_parsing"));
         dispatch(setRawMode(true));
         return [
@@ -272,16 +273,13 @@ export const RichEditor = ({
             }
           }, 50);
         } catch (selectErr) {
-          console.error(
-            "Failed to restore selection in Rich Editor",
-            selectErr,
-          );
+          logger.error("Failed to restore selection in Rich Editor", selectErr);
         }
 
         isRemoteUpdate.current = false;
       }, 50);
     } catch (e) {
-      console.error("Failed to sync cursor to Rich Editor", e);
+      logger.error("Failed to sync cursor to Rich Editor", e);
       isRemoteUpdate.current = false;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -383,7 +381,7 @@ export const RichEditor = ({
         }
       }
     } catch (e) {
-      console.error("Failed to sync cursor", e);
+      logger.error("Failed to sync cursor", e);
     }
   }, 300);
 

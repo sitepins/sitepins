@@ -45,7 +45,7 @@ export default function AddOrg({
   const { data: auth } = authClient.useSession();
   const tOrgCreate = useTranslations("org.create");
   const user = auth?.user;
-  const router = useRouter();
+  const _router = useRouter();
 
   const isControlled = typeof open !== "undefined";
   const showDialog = isControlled ? open : isOpen;

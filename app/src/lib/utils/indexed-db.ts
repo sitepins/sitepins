@@ -1,3 +1,4 @@
+import { logger } from "@/lib/logger";
 const DB_NAME = "sitepins-cache";
 const STORE_NAME = "screenshots";
 const DB_VERSION = 1;
@@ -44,7 +45,7 @@ export async function getCachedScreenshot(key: string): Promise<string | null> {
       request.onerror = () => reject(request.error);
     });
   } catch (e) {
-    console.warn("Failed to get screenshot from IndexedDB", e);
+    logger.warn("Failed to get screenshot from IndexedDB", e);
     return null;
   }
 }
@@ -66,7 +67,7 @@ export async function setCachedScreenshot(
       request.onerror = () => reject(request.error);
     });
   } catch (e) {
-    console.warn("Failed to set screenshot in IndexedDB", e);
+    logger.warn("Failed to set screenshot in IndexedDB", e);
   }
 }
 
@@ -90,11 +91,11 @@ export function clearOldLocalStoragePreviews(): void {
     keysToRemove.forEach((key) => {
       try {
         localStorage.removeItem(key);
-      } catch (e) {
+      } catch {
         // Ignore
       }
     });
   } catch (e) {
-    console.warn("Failed to clear old localStorage previews", e);
+    logger.warn("Failed to clear old localStorage previews", e);
   }
 }

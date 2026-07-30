@@ -1,5 +1,6 @@
 "use client";
 
+import { logger } from "@/lib/logger";
 import { CopilotPlugin } from "@platejs/ai/react";
 import { serializeMd, stripMarkdown } from "@platejs/markdown";
 import type { TElement } from "platejs";
@@ -50,7 +51,7 @@ export const CopilotKit = [
             provider: aiCredential?.provider,
           },
           onError: (error) => {
-            console.error("Invalid Copilot Response", error);
+            logger.error("Invalid Copilot Response", error);
           },
           onFinish: (_, completion) => {
             if (completion === "0") return;

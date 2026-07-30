@@ -1,10 +1,11 @@
 "use client";
 
+import { useAddLog } from "@/hooks/use-add-log";
+import { logger } from "@/lib/logger";
 import { Button, ButtonProps } from "@/components/ui/button";
 import VideoThumbnail from "@/components/video-thumbnail";
 import { useDebounce } from "@/hooks/use-debounce";
 import { useGitProvider } from "@/hooks/use-git-provider";
-import { authClient } from "@/lib/auth/auth-client";
 import { AcceptImages, MAX_FILES, MAX_SIZE } from "@/lib/constant";
 import { checkMedia, isVideo } from "@/lib/utils/check-media-file";
 import { cn } from "@/lib/utils/cn";
@@ -20,7 +21,6 @@ import {
   selectMediaInfo,
   setPopupBreadcrumbs,
 } from "@/redux/features/media/slice";
-import { useAddProjectLogMutation } from "@/redux/features/project-log/project-log-api";
 import { EAction, EProjectLogType } from "@/redux/features/project-log/type";
 import { useAppDispatch } from "@/redux/store";
 import { TFiles, TImage } from "@/types";
@@ -84,7 +84,7 @@ const RenderFolderOrFiles = ({
   name,
   onChangeHandler,
   onClose,
-  path,
+  path: _path,
   onNavigate,
 }: {
   files: TFiles[];
@@ -210,7 +210,6 @@ const MediaPopupList = ({
   ...props
 }: Props) => {
   const params = useParams();
-  const { data: auth } = authClient.useSession();
   const { updateFiles, isPending: isUploading, useGitTrees } = useGitProvider();
 
   const [isLoading, setLoading] = useState(false);
@@ -225,7 +224,7 @@ const MediaPopupList = ({
   });
 
   const [files, setFiles] = useState<TFiles[]>([]);
-  const [addLog] = useAddProjectLogMutation();
+  const [addLog] = useAddLog();
   const [images, setImage] = useState<TImage[]>([]);
   const [previews, setPreviews] = useState<string[]>([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -275,7 +274,7 @@ const MediaPopupList = ({
       );
       setImage(newImages);
     } catch (err) {
-      console.error(err);
+      logger.error("Failed to process media selection", err);
       toast.error(tCommon("feedback.error_processing"));
     }
   };
@@ -319,7 +318,6 @@ const MediaPopupList = ({
             action: EAction.CREATE,
             file: `media/${images[0].path}`,
             file_type: EProjectLogType.MEDIA,
-            user_id: auth?.user.user_id!,
           });
 
           toast.success(tCommon("feedback.uploaded_success"));
@@ -331,7 +329,7 @@ const MediaPopupList = ({
         })
         .catch((err) => {
           toast.error(tCommon("feedback.upload_failed"));
-          console.error(err);
+          logger.error(err);
           setImage([]);
         });
     }

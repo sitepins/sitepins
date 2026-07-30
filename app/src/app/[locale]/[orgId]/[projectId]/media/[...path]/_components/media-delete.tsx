@@ -1,5 +1,6 @@
 "use client";
 
+import { useAddLog } from "@/hooks/use-add-log";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -12,7 +13,6 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button, ButtonProps } from "@/components/ui/button";
 import { useDialog } from "@/hooks/use-dialog";
-import { authClient } from "@/lib/auth/auth-client";
 import { isGitLabProvider } from "@/lib/utils/provider-checker";
 import { selectConfig } from "@/redux/features/config/slice";
 import {
@@ -24,7 +24,6 @@ import {
   useUpdateGitLabFilesMutation,
 } from "@/redux/features/gitlab";
 import { excludeMedia } from "@/redux/features/media/slice";
-import { useAddProjectLogMutation } from "@/redux/features/project-log/project-log-api";
 import { EAction, EProjectLogType } from "@/redux/features/project-log/type";
 import { useAppDispatch } from "@/redux/store";
 import { TFiles } from "@/types";
@@ -47,11 +46,10 @@ export default function MediaDelete({
   const onOpenChange = setControlledOpen || setInternalOpen;
   const tCommon = useTranslations("common");
   const params = useParams();
-  const { data: auth } = authClient.useSession();
   const config = useSelector(selectConfig);
   const dispatch = useAppDispatch();
 
-  const [addLog] = useAddProjectLogMutation();
+  const [addLog] = useAddLog();
   const [deleteGhFiles, { isLoading: isGhLoading }] =
     useUpdateGitHubFilesMutation();
   const [deleteGlFiles, { isLoading: isGlLoading }] =
@@ -106,7 +104,6 @@ export default function MediaDelete({
                       action: EAction.DELETE,
                       file: `media/${dir}`,
                       file_type: EProjectLogType.MEDIA,
-                      user_id: auth?.user.user_id!,
                     });
                     toast.success(tCommon("feedback.image_deleted"));
                     onOpenChange(false);

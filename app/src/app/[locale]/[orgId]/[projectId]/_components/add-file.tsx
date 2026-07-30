@@ -1,5 +1,7 @@
 "use client";
 
+import { useAddLog } from "@/hooks/use-add-log";
+import { logger } from "@/lib/logger";
 import { Button, ButtonProps } from "@/components/ui/button";
 import {
   Dialog,
@@ -29,7 +31,6 @@ import { createFileSchema } from "@/lib/validate";
 import { selectConfig } from "@/redux/features/config/slice";
 import { useUpdateGitHubFilesMutation } from "@/redux/features/github";
 import { useUpdateGitLabFilesMutation } from "@/redux/features/gitlab";
-import { useAddProjectLogMutation } from "@/redux/features/project-log/project-log-api";
 import { EAction } from "@/redux/features/project-log/type";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus } from "lucide-react";
@@ -69,7 +70,7 @@ export default function AddFile({
   const pathname = usePathname();
   const config = useSelector(selectConfig);
   const [isOpen, setIsOpen] = useState(false);
-  const [addLog] = useAddProjectLogMutation();
+  const [addLog] = useAddLog();
   const { data: auth } = authClient.useSession();
 
   const { updateCacheOnCreate } = useGitCacheUpdates();
@@ -201,7 +202,6 @@ export default function AddFile({
                       action: EAction.CREATE,
                       file: fileDataToCreate.path,
                       file_type: getLogType(fileDataToCreate.path, config),
-                      user_id: auth.user.id,
                     });
                   }
 
@@ -230,7 +230,7 @@ export default function AddFile({
                 }
               } catch (e) {
                 toast.error(tDirectoryView("error_creating_file"));
-                console.error(e);
+                logger.error("Failed to create file", e);
               }
             })}
             className="space-y-4"

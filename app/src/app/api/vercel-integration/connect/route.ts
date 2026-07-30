@@ -1,3 +1,5 @@
+import { errorMessage } from "@/lib/utils/error";
+import { logger } from "@/lib/logger";
 import { getAuth } from "@/lib/auth/auth-server";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -61,10 +63,10 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json({ username, teams });
-  } catch (error: any) {
-    console.error("[vercel-integration/connect]", error);
+  } catch (error) {
+    logger.error("[vercel-integration/connect]", error);
     return NextResponse.json(
-      { error: error?.message ?? "Failed to connect Vercel" },
+      { error: errorMessage(error) ?? "Failed to connect Vercel" },
       { status: 400 },
     );
   }

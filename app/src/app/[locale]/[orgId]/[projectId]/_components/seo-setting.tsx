@@ -157,7 +157,7 @@ export default function SeoSetting({
             pendingSlugUpdateRef.current = newSlugVal;
 
             // Remove slug from the data to be saved to state
-            const { slug, ...restData } = next.data;
+            const { _slug, ...restData } = next.data;
             return { ...next, data: restData };
           }
 

@@ -401,7 +401,8 @@ export default function FixedToolbarButtons() {
     };
 
     // Pass 1 — optimistic (no overflow assumed).
-    let { count, willOverflow } = computeFit(false);
+    const { count: initialCount, willOverflow } = computeFit(false);
+    let count = initialCount;
     let hasOverflow = willOverflow;
     let isRawNarrow = false;
 

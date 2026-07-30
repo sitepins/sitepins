@@ -63,7 +63,7 @@ export default function LoginWithPassword({
         onResponse: () => {
           setIsPending(false);
         },
-        onSuccess: (ctx) => {
+        onSuccess: (_ctx) => {
           const storedRedirect =
             typeof window !== "undefined"
               ? sessionStorage.getItem(POST_LOGIN_REDIRECT_KEY)

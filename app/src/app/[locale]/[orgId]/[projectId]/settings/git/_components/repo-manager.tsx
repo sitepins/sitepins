@@ -1,5 +1,7 @@
 "use client";
 
+import { errorMessageOr } from "@/lib/utils/error";
+import { logger } from "@/lib/logger";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -81,12 +83,18 @@ export default function RepoManager({ canUpdate }: { canUpdate?: boolean }) {
   const { owner, repoName, provider, token } = config;
   const isConnected = Boolean(repoName);
 
-  // Local state for provider selection (defaults to config provider or Github)
-  const [selectedProvider, setSelectedProvider] = useState<string>(
-    provider || "Github",
-  );
+  // Provider/branch are derived rather than mirrored into state: writing them
+  // from an effect made every config change cost an extra render pass.
+  const [providerChoice, setProviderChoice] = useState<string | null>(null);
   const [selectedRepo, setSelectedRepo] = useState("");
-  const [selectedBranch, setSelectedBranch] = useState("");
+  const [branchChoice, setBranchChoice] = useState("");
+
+  // While connected the picker is hidden and config is authoritative; the
+  // local choice only drives the disconnected setup form.
+  const selectedProvider =
+    isConnected && provider
+      ? provider
+      : (providerChoice ?? provider ?? "Github");
   const [repoOpen, setRepoOpen] = useState(false);
   const [isSelecting, setIsSelecting] = useState(false);
 
@@ -114,7 +122,7 @@ export default function RepoManager({ canUpdate }: { canUpdate?: boolean }) {
   });
 
   const repoItems = useMemo(() => {
-    return allRepos?.map((repo: any) => repo.full_name) || [];
+    return allRepos?.map((repo) => repo.full_name) || [];
   }, [allRepos]);
 
   // Fetch Branches for the selected repository
@@ -132,7 +140,7 @@ export default function RepoManager({ canUpdate }: { canUpdate?: boolean }) {
     );
 
   const selectedRepoDataForBranches = allRepos?.find(
-    (r: any) =>
+    (r) =>
       r.full_name === selectedRepo || r.path_with_namespace === selectedRepo,
   );
 
@@ -153,26 +161,19 @@ export default function RepoManager({ canUpdate }: { canUpdate?: boolean }) {
     ? isGlBranchLoading
     : isGhBranchLoading;
 
-  // Set default selected branch when repo changes or branches load
-  useEffect(() => {
-    if (selectedRepo && branches?.length) {
-      const repoData = allRepos?.find(
-        (r: any) =>
-          r.full_name === selectedRepo ||
-          r.path_with_namespace === selectedRepo,
-      );
-      setSelectedBranch(repoData?.default_branch || branches[0]?.name || "");
-    } else {
-      setSelectedBranch("");
-    }
+  // Default branch for the chosen repo, falling back to the first branch.
+  const defaultBranch = useMemo(() => {
+    if (!selectedRepo || !branches?.length) return "";
+    const repoData = allRepos?.find(
+      (r) =>
+        r.full_name === selectedRepo || r.path_with_namespace === selectedRepo,
+    );
+    return repoData?.default_branch || branches[0]?.name || "";
   }, [selectedRepo, branches, allRepos]);
 
-  // Sync local provider state with config provider when it changes (only if connected)
-  useEffect(() => {
-    if (provider && isConnected) {
-      setSelectedProvider(provider);
-    }
-  }, [provider, isConnected]);
+  // `branchChoice` is cleared whenever the repo changes, so a branch picked
+  // for a previous repo can never be submitted.
+  const selectedBranch = branchChoice || defaultBranch;
 
   const [disconnectGitRepo, { isLoading: isDisconnecting }] =
     useDisconnectGitRepoMutation();
@@ -227,12 +228,10 @@ export default function RepoManager({ canUpdate }: { canUpdate?: boolean }) {
       }).unwrap();
       toast.success(tProjectSettingsGitRepo("success_disconnect"));
       setIsSelecting(true);
-    } catch (error: any) {
-      console.error("Disconnect error:", error);
+    } catch (error) {
+      logger.error("Disconnect error:", error);
       toast.error(
-        error?.data?.message ||
-          error?.message ||
-          tProjectSettingsGitRepo("error_disconnect"),
+        errorMessageOr(error, tProjectSettingsGitRepo("error_disconnect")),
       );
     }
   };
@@ -264,12 +263,11 @@ export default function RepoManager({ canUpdate }: { canUpdate?: boolean }) {
       toast.success(tProjectSettingsGitRepo("success_connect"));
       setIsSelecting(false);
       setSelectedRepo("");
-    } catch (error: any) {
-      console.error("Connect error:", error);
+      setBranchChoice("");
+    } catch (error) {
+      logger.error("Connect error:", error);
       toast.error(
-        error?.data?.message ||
-          error?.message ||
-          tProjectSettingsGitRepo("error_connect"),
+        errorMessageOr(error, tProjectSettingsGitRepo("error_connect")),
       );
     }
   };
@@ -278,7 +276,7 @@ export default function RepoManager({ canUpdate }: { canUpdate?: boolean }) {
 
   /* Removed old loading variable */
 
-  const currentRepoData = isGitHubProvider(provider)
+  const _currentRepoData = isGitHubProvider(provider)
     ? ghRepoData
     : glProjectData;
   const createdAt = isGitHubProvider(provider)
@@ -327,8 +325,10 @@ export default function RepoManager({ canUpdate }: { canUpdate?: boolean }) {
               <Select
                 value={selectedProvider}
                 onValueChange={(val) => {
-                  setSelectedProvider(val);
-                  setSelectedRepo(""); // Clear repo selection when provider changes
+                  setProviderChoice(val);
+                  // Clear repo/branch selection when provider changes
+                  setSelectedRepo("");
+                  setBranchChoice("");
                 }}
               >
                 <SelectTrigger id="provider">
@@ -356,6 +356,7 @@ export default function RepoManager({ canUpdate }: { canUpdate?: boolean }) {
                 items={repoItems}
                 onValueChange={(currentValue: string | null) => {
                   setSelectedRepo(currentValue ?? "");
+                  setBranchChoice("");
                   setRepoOpen(false);
                 }}
               >
@@ -386,7 +387,7 @@ export default function RepoManager({ canUpdate }: { canUpdate?: boolean }) {
                   <ComboboxList>
                     {(fullName: string) => {
                       const repo = allRepos?.find(
-                        (r: any) => r.full_name === fullName,
+                        (r) => r.full_name === fullName,
                       );
                       if (!repo) return null;
                       return (
@@ -397,21 +398,23 @@ export default function RepoManager({ canUpdate }: { canUpdate?: boolean }) {
                         >
                           <div className="group flex max-w-full items-center gap-1">
                             <span className="text-nowrap opacity-50">
-                              {repo.owner.login}/
+                              {repo.owner?.login}/
                             </span>
                             <span className="truncate">{repo.name}</span>
 
-                            <Link
-                              href={repo.html_url}
-                              target="_blank"
-                              prefetch={false}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                              }}
-                              className="hidden group-hover:block"
-                            >
-                              <ExternalLink className="size-4 shrink-0 opacity-50" />
-                            </Link>
+                            {repo.html_url && (
+                              <Link
+                                href={repo.html_url}
+                                target="_blank"
+                                prefetch={false}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                }}
+                                className="hidden group-hover:block"
+                              >
+                                <ExternalLink className="size-4 shrink-0 opacity-50" />
+                              </Link>
+                            )}
                           </div>
                         </ComboboxItem>
                       );
@@ -444,7 +447,7 @@ export default function RepoManager({ canUpdate }: { canUpdate?: boolean }) {
                 </FieldLabel>
                 <Select
                   value={selectedBranch}
-                  onValueChange={setSelectedBranch}
+                  onValueChange={setBranchChoice}
                   disabled={
                     !canUpdateSettings || isBranchLoading || !selectedRepo
                   }
@@ -466,7 +469,7 @@ export default function RepoManager({ canUpdate }: { canUpdate?: boolean }) {
                     />
                   </SelectTrigger>
                   <SelectContent>
-                    {branches?.map((branch: any) => (
+                    {branches?.map((branch) => (
                       <SelectItem
                         key={branch.name}
                         value={branch.name}

@@ -1,5 +1,6 @@
 "use client";
 
+import { logger } from "@/lib/logger";
 import { frameworkSpec } from "@/lib/sandbox/frameworks";
 import { selectConfig } from "@/redux/features/config/slice";
 import { useAppSelector } from "@/redux/store";
@@ -125,7 +126,7 @@ export function useSandboxPreview({
         if (url) reopenIfClosed(url, repo, config.branch);
       })
       .catch((err) => {
-        console.error("[sandbox] commit-path sync failed:", err);
+        logger.error("[sandbox] commit-path sync failed:", err);
       });
   }, [
     config,

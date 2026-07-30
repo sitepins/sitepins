@@ -1,5 +1,10 @@
 import variables from "@/config/variables";
-import jwt, { JwtPayload, Secret, SignOptions } from "jsonwebtoken";
+import jwt, {
+  JwtPayload,
+  Secret,
+  SignOptions,
+  VerifyOptions,
+} from "jsonwebtoken";
 
 // create token
 const createToken = (
@@ -35,7 +40,7 @@ const verifyToken = (
   issuer?: string,
 ): JwtPayload => {
   try {
-    const options: any = {};
+    const options: VerifyOptions = {};
     if (issuer) {
       options.issuer = issuer;
     }

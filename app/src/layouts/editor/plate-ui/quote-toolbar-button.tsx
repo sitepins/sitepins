@@ -6,7 +6,7 @@ import { getBlockType, setBlockType } from "../utils/transforms";
 import { ToolbarButton } from "./toolbar";
 
 export function QuoteToolbarButton({
-  nodeType,
+  nodeType: _nodeType,
   ...props
 }: React.ComponentProps<typeof ToolbarButton> & {
   nodeType: string;

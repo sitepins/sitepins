@@ -36,7 +36,7 @@ export default function CoAuthorPreference({
     try {
       await updateCoAuthor({ userId, impersonate: enabled }).unwrap();
       toast.success(tDashboardPreferenceCoauthor("updated"));
-    } catch (error) {
+    } catch {
       toast.error(tDashboardPreferenceCoauthor("error"));
     }
   };

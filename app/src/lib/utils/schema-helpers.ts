@@ -2,7 +2,7 @@ export type Template = {
   label: string;
   name: string;
   type: string;
-  value: string | boolean | number | any[];
+  value: string | boolean | number | unknown[];
   description?: string;
   isIgnored?: boolean;
   isRequired?: boolean;
@@ -13,6 +13,28 @@ export type Template = {
   isDropdown?: boolean;
   options?: string[];
   referenceType?: "static" | "folder" | "file";
+  referencePath?: string;
+  referenceInclude?: string;
+  referenceExclude?: string;
+  referenceField?: string;
+};
+
+/** What the schema editor persists: a Template with editor-only keys dropped. */
+export type SavedField = {
+  name: string;
+  label: string;
+  type: string;
+  value: Template["value"];
+  description?: string;
+  isIgnored?: boolean;
+  isRequired?: boolean;
+  defaultValue?: string;
+  alwaysUseCurrentDate?: boolean;
+  fields?: SavedField[];
+  subType?: string;
+  isDropdown?: boolean;
+  options?: string[];
+  referenceType?: Template["referenceType"];
   referencePath?: string;
   referenceInclude?: string;
   referenceExclude?: string;
@@ -49,106 +71,98 @@ export const createNewField = (type: string, name: string): Template => {
   };
 };
 
-export const processTemplateForSave = (tpl?: Template[]): any[] | undefined => {
+export const processTemplateForSave = (
+  tpl?: Template[],
+): SavedField[] | undefined => {
   return tpl?.map((item) => {
-    let value: any = (item as any).value;
+    let value: Template["value"] = item.value;
 
-    if ((item as any).type === "Date") {
-      if ((item as any).alwaysUseCurrentDate === true) {
+    if (item.type === "Date") {
+      if (item.alwaysUseCurrentDate === true) {
         value = new Date().toISOString().split("T")[0];
-      } else if (
-        (item as any).defaultValue &&
-        (item as any).defaultValue !== ""
-      ) {
-        value = (item as any).defaultValue;
+      } else if (item.defaultValue && item.defaultValue !== "") {
+        value = item.defaultValue;
       } else {
         value = "";
       }
     }
 
-    if ((item as any).type === "boolean") {
-      if (
-        (item as any).defaultValue !== undefined &&
-        (item as any).defaultValue !== ""
-      ) {
-        value = (item as any).defaultValue === "true";
+    if (item.type === "boolean") {
+      if (item.defaultValue !== undefined && item.defaultValue !== "") {
+        value = item.defaultValue === "true";
       } else {
         value = false;
       }
     }
 
-    if ((item as any).type === "Array") {
+    if (item.type === "Array") {
       value = [];
     }
 
     if (
-      (item as any).type === "string" &&
-      (item as any).defaultValue &&
-      (item as any).defaultValue !== ""
+      item.type === "string" &&
+      item.defaultValue &&
+      item.defaultValue !== ""
     ) {
-      value = (item as any).defaultValue;
+      value = item.defaultValue;
     }
 
     if (
-      (item as any).type === "number" &&
-      (item as any).defaultValue &&
-      (item as any).defaultValue !== ""
+      item.type === "number" &&
+      item.defaultValue &&
+      item.defaultValue !== ""
     ) {
-      value = parseFloat((item as any).defaultValue) || 0;
+      value = parseFloat(item.defaultValue) || 0;
     }
 
-    const out: any = {
-      name: (item as any).name,
-      label: (item as any).label,
-      type: (item as any).type,
+    const out: SavedField = {
+      name: item.name,
+      label: item.label,
+      type: item.type,
       value,
-      description: (item as any).description,
-      isIgnored: (item as any).isIgnored,
-      isRequired: (item as any).isRequired,
-      defaultValue: (item as any).defaultValue,
+      description: item.description,
+      isIgnored: item.isIgnored,
+      isRequired: item.isRequired,
+      defaultValue: item.defaultValue,
     };
 
-    if ((item as any).type === "Date") {
-      out.alwaysUseCurrentDate = (item as any).alwaysUseCurrentDate;
+    if (item.type === "Date") {
+      out.alwaysUseCurrentDate = item.alwaysUseCurrentDate;
     }
 
-    if (
-      (item as any).fields &&
-      Array.isArray((item as any).fields) &&
-      (item as any).fields.length > 0
-    ) {
-      out.fields = processTemplateForSave((item as any).fields as Template[]);
+    if (item.fields && Array.isArray(item.fields) && item.fields.length > 0) {
+      out.fields = processTemplateForSave(item.fields);
     }
 
-    if ((item as any).subType) {
-      out.subType = (item as any).subType;
+    if (item.subType) {
+      out.subType = item.subType;
     }
 
-    if ((item as any).isDropdown) {
-      out.isDropdown = (item as any).isDropdown;
-      if ((item as any).referenceType) {
-        out.referenceType = (item as any).referenceType;
+    if (item.isDropdown) {
+      out.isDropdown = item.isDropdown;
+      if (item.referenceType) {
+        out.referenceType = item.referenceType;
       }
-      if ((item as any).referencePath) {
-        out.referencePath = (item as any).referencePath;
+      if (item.referencePath) {
+        out.referencePath = item.referencePath;
       }
-      if ((item as any).referenceInclude) {
-        out.referenceInclude = (item as any).referenceInclude;
+      if (item.referenceInclude) {
+        out.referenceInclude = item.referenceInclude;
       }
-      if ((item as any).referenceExclude) {
-        out.referenceExclude = (item as any).referenceExclude;
+      if (item.referenceExclude) {
+        out.referenceExclude = item.referenceExclude;
       }
-      if ((item as any).referenceField) {
-        out.referenceField = (item as any).referenceField;
+      if (item.referenceField) {
+        out.referenceField = item.referenceField;
       }
     }
 
     if (
-      (item as any).options &&
-      Array.isArray((item as any).options) &&
-      (item as any).options.length > 0
+      item.options &&
+      Array.isArray(item.options) &&
+      item.options.length > 0
     ) {
-      out.options = (item as any).options;
+      out.options = item.options;
     }
 
     return out;
@@ -156,59 +170,55 @@ export const processTemplateForSave = (tpl?: Template[]): any[] | undefined => {
 };
 
 export const cleanTemplateData = (templateData: Template[]) => {
-  const cleanItem = (item: Template): any => {
-    const base: any = {
-      name: (item as any).name,
-      label: (item as any).label,
-      type: (item as any).type,
-      value: (item as any).value,
-      description: (item as any).description,
-      isRequired: (item as any).isRequired,
-      defaultValue: (item as any).defaultValue,
-      isIgnored: (item as any).isIgnored || false,
+  const cleanItem = (item: Template): SavedField => {
+    const base: SavedField = {
+      name: item.name,
+      label: item.label,
+      type: item.type,
+      value: item.value,
+      description: item.description,
+      isRequired: item.isRequired,
+      defaultValue: item.defaultValue,
+      isIgnored: item.isIgnored || false,
     };
 
-    if ((item as any).type === "Date") {
-      base.alwaysUseCurrentDate = (item as any).alwaysUseCurrentDate || false;
+    if (item.type === "Date") {
+      base.alwaysUseCurrentDate = item.alwaysUseCurrentDate || false;
     }
 
-    if (
-      (item as any).fields &&
-      Array.isArray((item as any).fields) &&
-      (item as any).fields.length > 0
-    ) {
-      base.fields = (item as any).fields.map(cleanItem);
+    if (item.fields && Array.isArray(item.fields) && item.fields.length > 0) {
+      base.fields = item.fields.map(cleanItem);
     }
 
-    if ((item as any).subType) {
-      base.subType = (item as any).subType;
+    if (item.subType) {
+      base.subType = item.subType;
     }
 
-    if ((item as any).isDropdown) {
-      base.isDropdown = (item as any).isDropdown;
-      if ((item as any).referenceType) {
-        base.referenceType = (item as any).referenceType;
+    if (item.isDropdown) {
+      base.isDropdown = item.isDropdown;
+      if (item.referenceType) {
+        base.referenceType = item.referenceType;
       }
-      if ((item as any).referencePath) {
-        base.referencePath = (item as any).referencePath;
+      if (item.referencePath) {
+        base.referencePath = item.referencePath;
       }
-      if ((item as any).referenceInclude) {
-        base.referenceInclude = (item as any).referenceInclude;
+      if (item.referenceInclude) {
+        base.referenceInclude = item.referenceInclude;
       }
-      if ((item as any).referenceExclude) {
-        base.referenceExclude = (item as any).referenceExclude;
+      if (item.referenceExclude) {
+        base.referenceExclude = item.referenceExclude;
       }
-      if ((item as any).referenceField) {
-        base.referenceField = (item as any).referenceField;
+      if (item.referenceField) {
+        base.referenceField = item.referenceField;
       }
     }
 
     if (
-      (item as any).options &&
-      Array.isArray((item as any).options) &&
-      (item as any).options.length > 0
+      item.options &&
+      Array.isArray(item.options) &&
+      item.options.length > 0
     ) {
-      base.options = (item as any).options;
+      base.options = item.options;
     }
 
     return base;

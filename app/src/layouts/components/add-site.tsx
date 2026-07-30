@@ -1,5 +1,6 @@
 "use client";
 
+import { errorMessage } from "@/lib/utils/error";
 import { Button, ButtonProps } from "@/components/ui/button";
 import {
   Combobox,
@@ -486,9 +487,9 @@ export default function AddSite({
                   }).unwrap();
                   toast.success(tAddSite("project_created_success"));
                   router.push(`/org-${org_id}/${project_id}`);
-                } catch (error: any) {
+                } catch (error) {
                   toast.error(
-                    error?.data?.message || tAddSite("something_went_wrong"),
+                    errorMessage(error) || tAddSite("something_went_wrong"),
                   );
                 }
               })}
@@ -645,23 +646,25 @@ export default function AddSite({
                                 >
                                   <div className="group flex w-full items-center">
                                     <span className="text-nowrap opacity-50">
-                                      {repo.owner.login}/
+                                      {repo.owner?.login}/
                                     </span>
                                     <span className="w-full text-left">
                                       {repo.name}
                                     </span>
 
-                                    <Link
-                                      href={repo.html_url}
-                                      target="_blank"
-                                      prefetch={false}
-                                      onClick={(e: React.MouseEvent) => {
-                                        e.stopPropagation();
-                                      }}
-                                      className="hidden group-hover:block"
-                                    >
-                                      <ExternalLink className="ml-auto size-4 shrink-0 opacity-50" />
-                                    </Link>
+                                    {repo.html_url && (
+                                      <Link
+                                        href={repo.html_url}
+                                        target="_blank"
+                                        prefetch={false}
+                                        onClick={(e: React.MouseEvent) => {
+                                          e.stopPropagation();
+                                        }}
+                                        className="hidden group-hover:block"
+                                      >
+                                        <ExternalLink className="ml-auto size-4 shrink-0 opacity-50" />
+                                      </Link>
+                                    )}
                                   </div>
                                 </ComboboxItem>
                               );

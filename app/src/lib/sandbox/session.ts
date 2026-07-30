@@ -1,3 +1,4 @@
+import { logger } from "@/lib/logger";
 import { Session } from "@vercel/sandbox";
 
 export const SERVER_READY_TIMEOUT_MS = 180_000;
@@ -112,7 +113,7 @@ export async function installDeps(
     signal,
   });
   if (result.exitCode !== 0) {
-    console.warn(`[sandbox] ${active} install failed, falling back to npm`);
+    logger.warn(`[sandbox] ${active} install failed, falling back to npm`);
     active = "npm";
     const fallback = await session.runCommand({
       cmd: "npm",

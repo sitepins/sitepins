@@ -1,5 +1,6 @@
 "use client";
 
+import { logger } from "@/lib/logger";
 import FormError from "@/components/form-error";
 import { Button } from "@/components/ui/button";
 import {
@@ -73,7 +74,7 @@ export default function ProjectForm(
                 return;
               }
 
-              let imageUrl = data.project_image;
+              const imageUrl = data.project_image;
 
               await updateProject({
                 ...project,
@@ -88,7 +89,7 @@ export default function ProjectForm(
               toast.success(tProjectSettingsGeneralForm("success"));
             },
             (err) => {
-              console.error(err);
+              logger.error("Project form validation failed", err);
             },
           )}
         >

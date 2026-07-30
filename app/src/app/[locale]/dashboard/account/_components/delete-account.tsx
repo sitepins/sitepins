@@ -1,5 +1,6 @@
 "use client";
 
+import { errorMessageOr } from "@/lib/utils/error";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -90,8 +91,10 @@ export default function DeleteAccount({ auth }: { auth: Session }) {
           },
         },
       });
-    } catch (error: any) {
-      toast.error(error?.message || tDashboardAccountDelete("feedback.error"));
+    } catch (error) {
+      toast.error(
+        errorMessageOr(error, tDashboardAccountDelete("feedback.error")),
+      );
     }
   };
 

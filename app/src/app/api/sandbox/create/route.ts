@@ -1,3 +1,5 @@
+import { errorMessage } from "@/lib/utils/error";
+import { logger } from "@/lib/logger";
 import { getAuth } from "@/lib/auth/auth-server";
 import { ensureReloadBridge } from "@/lib/sandbox/bridges";
 import {
@@ -393,6 +395,13 @@ async function* streamCreate(
 
 // ── Route handler ─────────────────────────────────────────────────────────────
 
+// The Vercel SDK's APIError puts the response body on `.json`; `error` is
+// either a structured object or a bare string depending on the endpoint.
+type VercelApiErrorBody = {
+  error?: { message?: string; code?: string } | string;
+  code?: string;
+};
+
 export async function POST(req: NextRequest) {
   const session = await getAuth(req);
   if (!session)
@@ -439,24 +448,27 @@ export async function POST(req: NextRequest) {
         for await (const msg of streamCreate(body, cookieHeader, req.signal)) {
           controller.enqueue(enc.encode(`data: ${JSON.stringify(msg)}\n\n`));
         }
-      } catch (e: any) {
+      } catch (e) {
         // Surface the real Vercel API error body — the SDK wraps the response
         // payload in `.json` / `.text` on its APIError. Without this, all
         // failures collapse to a generic "Status code 403 is not ok".
-        const apiJson = e?.json;
+        const apiError = e as { json?: VercelApiErrorBody; text?: string };
+        const apiJson = apiError.json;
+        const apiJsonError =
+          typeof apiJson?.error === "object" ? apiJson.error : undefined;
         const detail =
-          apiJson?.error?.message ||
+          apiJsonError?.message ||
           (typeof apiJson?.error === "string" ? apiJson.error : null) ||
-          apiJson?.message ||
-          e?.text ||
-          e?.message ||
+          errorMessage(apiJson) ||
+          apiError.text ||
+          errorMessage(e) ||
           "Unknown error";
-        const code = apiJson?.error?.code || apiJson?.code;
-        console.error("[sandbox/create] error:", {
-          message: e?.message,
+        const code = apiJsonError?.code || apiJson?.code;
+        logger.error("[sandbox/create] error:", {
+          message: errorMessage(e),
           code,
           json: apiJson,
-          text: e?.text,
+          text: apiError.text,
         });
         controller.enqueue(
           enc.encode(`data: ${JSON.stringify({ error: detail, code })}\n\n`),

@@ -1,9 +1,11 @@
+import { useAddLog } from "@/hooks/use-add-log";
+import { errorMessageOr } from "@/lib/utils/error";
+import { logger } from "@/lib/logger";
 import { GITHUB_API_VERSION, GITLAB_API_VERSION } from "@/lib/constant";
 import { checkMedia } from "@/lib/utils/check-media-file";
 import { isGitLabProvider } from "@/lib/utils/provider-checker";
 import { useUpdateGitHubFilesMutation } from "@/redux/features/github";
 import { useUpdateGitLabFilesMutation } from "@/redux/features/gitlab";
-import { useAddProjectLogMutation } from "@/redux/features/project-log/project-log-api";
 import { EAction, EProjectLogType } from "@/redux/features/project-log/type";
 import { TFiles } from "@/types";
 import { useTranslations } from "next-intl";
@@ -22,20 +24,18 @@ interface UseFolderOpsProps {
   config: Config;
   repoFiles: TFiles[];
   projectId: string;
-  userId: string;
 }
 
 export function useFolderOps({
   config,
   repoFiles,
   projectId,
-  userId,
 }: UseFolderOpsProps) {
   const [updateGitHubFiles, { isLoading: isGhLoading }] =
     useUpdateGitHubFilesMutation();
   const [updateGitLabFiles, { isLoading: isGlLoading }] =
     useUpdateGitLabFilesMutation();
-  const [addLog] = useAddProjectLogMutation();
+  const [addLog] = useAddLog();
   const tFeedback = useTranslations("common.feedback");
 
   const isLoading = isGitLabProvider(config.provider)
@@ -116,7 +116,7 @@ export function useFolderOps({
               // browser btoa
               // @ts-ignore
               if (typeof btoa === "function") return btoa(binary);
-            } catch (e) {}
+            } catch {}
             // node fallback
             return Buffer.from(binary, "binary").toString("base64");
           };
@@ -154,7 +154,7 @@ export function useFolderOps({
         }
       }
     } catch (error) {
-      console.error(`Error fetching ${file.oldPath}:`, error);
+      logger.error(`Error fetching ${file.oldPath}:`, error);
       return null;
     }
   };
@@ -251,17 +251,12 @@ export function useFolderOps({
           ? `${options.logPathPrefix}${folderPath}`
           : folderPath,
         file_type: options?.logType || EProjectLogType.MEDIA,
-        user_id: userId,
       });
 
       toast.success(tFeedback("folder_delete_success"));
       options?.onSuccess?.();
-    } catch (error: any) {
-      toast.error(
-        error?.data?.message ||
-          error?.message ||
-          tFeedback("folder_delete_failed"),
-      );
+    } catch (error) {
+      toast.error(errorMessageOr(error, tFeedback("folder_delete_failed")));
     }
   };
 
@@ -345,17 +340,12 @@ export function useFolderOps({
           : newFolderPath,
 
         file_type: options?.logType || EProjectLogType.MEDIA,
-        user_id: userId,
       });
 
       toast.success(tFeedback("folder_rename_success"));
       options?.onSuccess?.();
-    } catch (error: any) {
-      toast.error(
-        error?.data?.message ||
-          error?.message ||
-          tFeedback("folder_rename_failed"),
-      );
+    } catch (error) {
+      toast.error(errorMessageOr(error, tFeedback("folder_rename_failed")));
     }
   };
 
@@ -431,17 +421,12 @@ export function useFolderOps({
           : newFolderPath,
 
         file_type: options?.logType || EProjectLogType.MEDIA,
-        user_id: userId,
       });
 
       toast.success(tFeedback("folder_duplicate_success"));
       options?.onSuccess?.();
-    } catch (error: any) {
-      toast.error(
-        error?.data?.message ||
-          error?.message ||
-          tFeedback("folder_duplicate_failed"),
-      );
+    } catch (error) {
+      toast.error(errorMessageOr(error, tFeedback("folder_duplicate_failed")));
     }
   };
 

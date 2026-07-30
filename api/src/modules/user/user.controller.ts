@@ -1,4 +1,5 @@
 import catchAsync from "@/lib/catchAsync";
+import { requireUserId } from "@/lib/requireUser";
 import { sendResponse } from "@/lib/sendResponse";
 import { Request, Response } from "express";
 import { userService } from "./user.service";
@@ -82,7 +83,7 @@ const setPasswordController = catchAsync(
 // check limits
 const checkLimitsController = catchAsync(
   async (req: Request, res: Response) => {
-    const result = await userService.checkLimitsService(req.user?.user_id!);
+    const result = await userService.checkLimitsService(requireUserId(req));
     sendResponse(res, {
       success: true,
       statusCode: 200,

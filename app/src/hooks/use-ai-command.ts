@@ -27,7 +27,7 @@ export type MessageDataPart = {
 
 export type Chat = UseChatHelpers<ChatMessage>;
 
-export type ChatMessage = UIMessage<{}, MessageDataPart>;
+export type ChatMessage = UIMessage<Record<string, never>, MessageDataPart>;
 
 export const useAiCommand = () => {
   const editor = useEditorRef();

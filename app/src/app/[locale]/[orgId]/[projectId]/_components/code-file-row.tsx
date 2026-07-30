@@ -1,59 +1,28 @@
 "use client";
 
+import { useGitProvider } from "@/hooks/use-git-provider";
 import dateFormat from "@/lib/utils/date-format";
 import { normalizePath } from "@/lib/utils/normalize-path";
-import {
-  isGitHubProvider,
-  isGitLabProvider,
-} from "@/lib/utils/provider-checker";
-import { selectConfig } from "@/redux/features/config/slice";
-import { useGetGitHubCommitsQuery } from "@/redux/features/github";
-import { useGetGitLabCommitsQuery } from "@/redux/features/gitlab";
 import { TFiles } from "@/types";
 import { PenLine } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import path from "path";
-import { useSelector } from "react-redux";
 import { getFileIcon } from "../code/[...file]/_components/file-icons";
 import FileAction from "./file-actions";
 
 export default function CodeFileRow({ file }: { file: TFiles }) {
   const tDirectoryView = useTranslations("directory-view");
-  const config = useSelector(selectConfig);
   const params = useParams() as { orgId: string; projectId: string };
   const fileName = file.path.replace("content/", "");
 
-  const { data: ghCommit } = useGetGitHubCommitsQuery(
-    {
-      owner: config.owner,
-      repo: config.repoName,
-      path: fileName,
-      sha: config.branch,
-    },
-    {
-      skip: !isGitHubProvider(config.provider),
-    },
-  );
-
-  const { data: glCommit } = useGetGitLabCommitsQuery(
-    {
-      id: `${config.owner}/${config.repoName}`,
-      ref: config.branch,
-      path: fileName,
-    },
-    {
-      skip: !isGitLabProvider(config.provider),
-    },
-  );
+  const { useGitCommits, adapter } = useGitProvider();
+  const { data: commit } = useGitCommits({ path: fileName });
 
   const baseName = path.basename(fileName);
-  const commit = isGitLabProvider(config.provider) ? glCommit : ghCommit;
   const lastCommit = commit?.[0];
-  const commitDate = isGitLabProvider(config.provider)
-    ? (lastCommit as any)?.committed_date
-    : (lastCommit as any)?.commit?.author?.date;
+  const commitDate = adapter.commitDate(lastCommit);
   const fileIcon = getFileIcon(fileName);
 
   return (

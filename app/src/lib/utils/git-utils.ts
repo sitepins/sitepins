@@ -1,3 +1,4 @@
+import { logger } from "@/lib/logger";
 import { MdxSnippet } from "@/editor/utils/plate-types";
 import { GIT_COMMIT_EMAIL_DOMAIN } from "@/lib/brand";
 import { isGitLabProvider } from "@/lib/utils/provider-checker";
@@ -124,7 +125,7 @@ export async function retry<T>(
   for (let attempt = 0; attempt <= retries; attempt++) {
     try {
       return await fn();
-    } catch (e: any) {
+    } catch (e) {
       lastErr = e;
       if (!isRetriable(e) || attempt === retries) break;
       await new Promise((r) => setTimeout(r, baseDelayMs * (attempt + 1)));
@@ -216,11 +217,7 @@ export function parseSnippetFile(
     const payload = JSON.parse(content);
     return normalizeSnippetPayload(payload, filePath);
   } catch (error) {
-    console.warn(
-      "Unable to parse snippet file",
-      filePath,
-      error instanceof Error ? error.message : error,
-    );
+    logger.warn("Unable to parse snippet file", error, { filePath });
     return null;
   }
 }

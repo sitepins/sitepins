@@ -5,7 +5,7 @@ import { ToolbarButton } from "./toolbar";
 
 const useRawMarkdownToolbarButton = () => {
   const dispatch = useAppDispatch();
-  const onMouseDown = (e: React.MouseEvent) => {
+  const onMouseDown = (_e: React.MouseEvent) => {
     dispatch(setRawMode(true));
   };
 

@@ -27,12 +27,12 @@ export default function GitHubInstalled() {
         try {
           await new Promise((resolve) => setTimeout(resolve, 1400));
           await fetch(`/api/auth/github?${params.toString()}`);
-        } catch (e) {
+        } catch {
           // ignore errors during background auth call
         } finally {
           try {
             window.close();
-          } catch (e) {
+          } catch {
             /* window may not be closable in some contexts */
           }
         }

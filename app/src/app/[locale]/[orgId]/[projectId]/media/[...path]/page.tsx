@@ -5,14 +5,8 @@ import { useGitProvider } from "@/hooks/use-git-provider";
 import config from "@/lib/config";
 import { checkMedia } from "@/lib/utils/check-media-file";
 import { findFileByPath } from "@/lib/utils/common";
-import {
-  isGitHubProvider,
-  isGitLabProvider,
-} from "@/lib/utils/provider-checker";
 import { selectFileMetadata } from "@/redux/features/config/meta-slice";
 import { selectConfig } from "@/redux/features/config/slice";
-import { useGetGitHubTreesQuery } from "@/redux/features/github";
-import { useGetGitLabTreesQuery } from "@/redux/features/gitlab";
 import { redirect, useSearchParams } from "next/navigation";
 import { use, useMemo } from "react";
 import { useSelector } from "react-redux";
@@ -37,49 +31,21 @@ export default function MainPage(
     config.owner &&
     config.repoName;
 
-  const { data: ghData, isLoading: isGhTreesLoading } = useGetGitHubTreesQuery(
-    {
-      owner: config.owner,
-      repo: config.repoName,
-      tree_sha: config.branch,
-      recursive: "1",
-      config: config,
-    },
-    {
-      skip: !isConfigReady || !isGitHubProvider(config.provider),
-    },
-  );
+  const { useGitContent, useGitTrees } = useGitProvider();
 
-  const { data: glData, isLoading: isGlTreesLoading } = useGetGitLabTreesQuery(
-    {
-      id: config.repoName ? `${config.owner}/${config.repoName}` : config.owner,
-      ref: config.branch,
-      recursive: true,
-      config: config,
-    },
-    {
-      skip: !isConfigReady || !isGitLabProvider(config.provider),
-    },
-  );
-
-  const { useGitContent, provider } = useGitProvider();
+  const { data, isLoading: isTreesFetching } = useGitTrees("", {
+    recursive: true,
+    skip: !isConfigReady,
+  });
 
   // Fetch folder content when sorting by date to enrich metadata cache
   const isDateSort =
     sortValue.includes("created") || sortValue.includes("updated");
 
   const folderPath = params.path.join("/");
-  useGitContent(folderPath, {
-    skip: !isDateSort,
-    config: config,
-  });
+  useGitContent(folderPath, { skip: !isDateSort });
 
-  const data = isGitLabProvider(provider) ? glData : ghData;
-  const isTreesLoading = isConfigReady
-    ? isGitLabProvider(config.provider)
-      ? isGlTreesLoading
-      : isGhTreesLoading
-    : true;
+  const isTreesLoading = isConfigReady ? isTreesFetching : true;
 
   const query = searchParams.get("q") || "";
   const page = searchParams.get("page") || "1";

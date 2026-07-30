@@ -1,5 +1,7 @@
 "use client";
 
+import { useGitProvider } from "@/hooks/use-git-provider";
+import { useAddLog } from "@/hooks/use-add-log";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Card,
@@ -38,27 +40,20 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import manifest from "@/config/manifest.json";
-import { authClient } from "@/lib/auth/auth-client";
 import { cn } from "@/lib/utils/cn";
 import detectFramework from "@/lib/utils/framework-detector";
 import isConfigFile from "@/lib/utils/is-config-file";
-import {
-  isGitHubProvider,
-  isGitLabProvider,
-} from "@/lib/utils/provider-checker";
+import { isGitLabProvider } from "@/lib/utils/provider-checker";
 import { configFormSchema } from "@/lib/validate";
 import { selectConfig, updateConfig } from "@/redux/features/config/slice";
 import {
   githubContentApi,
-  useGetGitHubTreesQuery,
   useUpdateGitHubFilesMutation,
 } from "@/redux/features/github";
 import {
   gitlabContentApi,
-  useGetGitLabTreesQuery,
   useUpdateGitLabFilesMutation,
 } from "@/redux/features/gitlab";
-import { useAddProjectLogMutation } from "@/redux/features/project-log/project-log-api";
 import { EAction, EProjectLogType } from "@/redux/features/project-log/type";
 import { SUPPORT_URL } from "@/lib/brand";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
@@ -179,8 +174,6 @@ export const ConfigForm = ({
   onSaved?: () => void;
 }) => {
   const params = useParams();
-
-  const { data: auth } = authClient.useSession();
   const config = useAppSelector(selectConfig);
   const dispatch = useAppDispatch();
   const tProjectSettingsConfigureProject = useTranslations(
@@ -188,7 +181,7 @@ export const ConfigForm = ({
   );
   const tCommon = useTranslations("common");
 
-  const [addLog] = useAddProjectLogMutation();
+  const [addLog] = useAddLog();
   const [updateFile, { isLoading: isGhPending }] =
     useUpdateGitHubFilesMutation();
   const [updateGitLabFiles, { isLoading: isGlPending }] =
@@ -196,42 +189,11 @@ export const ConfigForm = ({
 
   const anchor = useComboboxAnchor();
 
-  const { data: ghData } = useGetGitHubTreesQuery(
-    {
-      owner: config.owner,
-      repo: config.repoName,
-      tree_sha: config.branch,
-      recursive: "1",
-      config: config,
-    },
-    {
-      skip:
-        !config.token ||
-        !config.repoName ||
-        !config.owner ||
-        !config.branch ||
-        !isGitHubProvider(config.provider),
-    },
-  );
-
-  const { data: glData } = useGetGitLabTreesQuery(
-    {
-      id: config.repoName ? `${config.owner}/${config.repoName}` : config.owner,
-      ref: config.branch,
-      recursive: true,
-      config: config,
-    },
-    {
-      skip:
-        !config.token ||
-        !config.repoName ||
-        !config.owner ||
-        !config.branch ||
-        !isGitLabProvider(config.provider),
-    },
-  );
-
-  const data = isGitLabProvider(config.provider) ? glData : ghData;
+  const { useGitTrees } = useGitProvider();
+  const { data } = useGitTrees("", {
+    recursive: true,
+    skip: !config.token || !config.owner || !config.branch,
+  });
   const isPending = isGitLabProvider(config.provider)
     ? isGlPending
     : isGhPending;
@@ -403,7 +365,6 @@ export const ConfigForm = ({
           action: config.content ? EAction.UPDATE : EAction.CREATE,
           file: ".sitepins/config.json",
           file_type: EProjectLogType.CONFIG,
-          user_id: auth?.user.user_id!,
         });
 
         toast.success(
@@ -802,7 +763,11 @@ export const ConfigForm = ({
   );
 };
 
-export default function SiteConfig({ className }: { className?: string }) {
+export default function SiteConfig({
+  className: _className,
+}: {
+  className?: string;
+}) {
   const config = useAppSelector(selectConfig);
   const [modalOpen, setModalOpen] = useState(false);
   const tProjectSettingsConfigureProject = useTranslations(

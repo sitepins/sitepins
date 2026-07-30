@@ -12,21 +12,9 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import VideoThumbnail from "@/components/video-thumbnail";
+import { useGitProvider } from "@/hooks/use-git-provider";
 import { isVideo } from "@/lib/utils/check-media-file";
 import { cn } from "@/lib/utils/cn";
-import {
-  isGitHubProvider,
-  isGitLabProvider,
-} from "@/lib/utils/provider-checker";
-import { selectConfig } from "@/redux/features/config/slice";
-import {
-  useGetGitHubCommitsQuery,
-  useGetGitHubContentQuery,
-} from "@/redux/features/github";
-import {
-  useGetGitLabCommitsQuery,
-  useGetGitLabContentQuery,
-} from "@/redux/features/gitlab";
 import { selectMediaInfo } from "@/redux/features/media/slice";
 import { TFiles } from "@/types";
 import { FolderClosedIcon } from "lucide-react";
@@ -37,67 +25,23 @@ import { useSelector } from "react-redux";
 import ImageSidebar from "./media-sidebar";
 
 const ListRow = ({ file }: { file: TFiles }) => {
-  const config = useSelector(selectConfig);
-  const { branch, owner, repoName, provider } = config;
   const { view } = useSelector(selectMediaInfo);
   const tMedia = useTranslations("media");
   const { isFile, path: filepath, isNew, isReplace } = file;
 
-  const { data: ghData } = useGetGitHubContentQuery(
-    {
-      owner,
-      repo: repoName,
-      path: `${filepath.replace("media/", "")}`,
-      ref: branch,
-    },
-    {
-      skip: view !== "list" || !isGitHubProvider(provider) || !isFile,
-    },
-  );
+  const { useGitContent, useGitCommits, adapter } = useGitProvider();
+  const mediaPath = filepath.replace("media/", "");
 
-  const { data: glData } = useGetGitLabContentQuery(
-    {
-      id: `${owner}/${repoName}`,
-      file_path: filepath.replace("media/", ""),
-      ref: branch,
-    },
-    {
-      skip: view !== "list" || !isGitLabProvider(provider) || !isFile,
-    },
-  );
+  const { data } = useGitContent(mediaPath, {
+    skip: view !== "list" || !isFile,
+  });
 
-  const data = isGitLabProvider(provider) ? glData : ghData;
+  const { data: commit } = useGitCommits({
+    path: mediaPath,
+    skip: view !== "list",
+  });
 
-  const { data: ghCommit } = useGetGitHubCommitsQuery(
-    {
-      owner,
-      repo: repoName,
-      path: filepath.replace("media/", ""),
-      sha: branch,
-    },
-    {
-      skip: view !== "list" || !isGitHubProvider(provider),
-    },
-  );
-
-  const { data: glCommit } = useGetGitLabCommitsQuery(
-    {
-      id: `${owner}/${repoName}`,
-      ref: branch,
-      path: filepath.replace("media/", ""),
-    },
-    {
-      skip: view !== "list" || !isGitLabProvider(provider),
-    },
-  );
-
-  const commit = isGitLabProvider(provider) ? glCommit : ghCommit;
-
-  const commitDate = isGitLabProvider(provider)
-    ? // @ts-ignore
-      commit?.[0]?.committed_date
-    : // @ts-ignore
-      commit?.[0]?.commit.author?.date;
+  const commitDate = adapter.commitDate(commit?.[0]);
 
   const date = commitDate
     ? new Date(commitDate).toLocaleDateString(undefined, {

@@ -1,5 +1,6 @@
 "use client";
 
+import { logger } from "@/lib/logger";
 import SnippetForm from "@/app/[locale]/[orgId]/[projectId]/settings/snippets/_components/snippet-form";
 import {
   Dialog,
@@ -98,7 +99,7 @@ export function SnippetSaveDialog({
           const filePromises = schemaFiles.map(async (file: any) => {
             try {
               // @ts-ignore
-              const content = isGitLabProvider(config.provider)
+              const _content = isGitLabProvider(config.provider)
                 ? await dispatch(
                     // @ts-ignore
                     gitlabApi.endpoints.getGitLabContent.initiate(
@@ -132,7 +133,7 @@ export function SnippetSaveDialog({
                 name: fileName,
                 path: file.path,
               };
-            } catch (e) {
+            } catch {
               return null;
             }
           });
@@ -143,7 +144,7 @@ export function SnippetSaveDialog({
           );
           setSchemas(filtered);
         } catch (error) {
-          console.error("Error loading schemas:", error);
+          logger.error("Error loading schemas:", error);
         }
       };
 

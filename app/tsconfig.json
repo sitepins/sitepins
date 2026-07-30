@@ -1,8 +1,12 @@
 {
   "compilerOptions": {
     "target": "es6",
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "allowJs": true,
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": false,
     "skipLibCheck": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
@@ -21,11 +25,21 @@
       }
     ],
     "paths": {
-      "@/components/*": ["./src/layouts/components/*"],
-      "@/partials/*": ["./src/layouts/partials/*"],
-      "@/helpers/*": ["./src/layouts/helpers/*"],
-      "@/editor/*": ["./src/layouts/editor/*"],
-      "@/*": ["./src/*"],
+      "@/components/*": [
+        "./src/layouts/components/*"
+      ],
+      "@/partials/*": [
+        "./src/layouts/partials/*"
+      ],
+      "@/helpers/*": [
+        "./src/layouts/helpers/*"
+      ],
+      "@/editor/*": [
+        "./src/layouts/editor/*"
+      ],
+      "@/*": [
+        "./src/*"
+      ]
     }
   },
   "include": [
@@ -35,5 +49,7 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules"
+  ]
 }

@@ -1,6 +1,8 @@
+import { TAuthUser } from "@/types";
 import { PlanLimits, UNLIMITED } from "@/config/limits";
 import { PackageId } from "@/config/plans";
 import type { ClientSession } from "mongoose";
+import { logger } from "@/lib/logger";
 
 export type { PlanLimits };
 
@@ -43,7 +45,7 @@ export const enforcePlanLimits = (userId: string) => planEnforcer(userId);
 export type UserDeletionContext = {
   userId: string;
   // the user document/session-user being deleted, as known at deletion time
-  user: any;
+  user: TAuthUser;
   reason?: string;
   session: ClientSession;
 };
@@ -81,7 +83,7 @@ export const emitAuthEvent = async (event: AuthEvent) => {
     try {
       await handler(event);
     } catch (error) {
-      console.error(`auth event handler failed (${event.type}):`, error);
+      logger.error(`auth event handler failed (${event.type})`, error);
     }
   }
 };

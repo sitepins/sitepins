@@ -1,5 +1,7 @@
 "use client";
 
+import { useGitProvider } from "@/hooks/use-git-provider";
+import { useAddLog } from "@/hooks/use-add-log";
 import MediaConflictHandler from "@/components/media-conflict-handler";
 import { MediaUploadPreview } from "@/components/media-upload-preview";
 import {
@@ -13,7 +15,6 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Button, ButtonProps } from "@/components/ui/button";
-import { authClient } from "@/lib/auth/auth-client";
 import {
   AcceptMedia,
   MAX_FILES,
@@ -29,15 +30,12 @@ import {
 import { selectConfig } from "@/redux/features/config/slice";
 import {
   githubContentApi,
-  useGetGitHubTreesQuery,
   useUpdateGitHubFilesMutation,
 } from "@/redux/features/github";
 import {
   gitlabContentApi,
-  useGetGitLabTreesQuery,
   useUpdateGitLabFilesMutation,
 } from "@/redux/features/gitlab";
-import { useAddProjectLogMutation } from "@/redux/features/project-log/project-log-api";
 import { EAction, EProjectLogType } from "@/redux/features/project-log/type";
 import { TImage } from "@/types";
 import { Images, Upload, UploadIcon } from "lucide-react";
@@ -56,7 +54,7 @@ export default function MediaUpload({
   onPreviewOpenChange,
   shouldReplace,
   replaceImageUrl,
-  children,
+  children: _children,
   ...props
 }: ButtonProps & {
   dropZone?: boolean;
@@ -73,10 +71,9 @@ export default function MediaUpload({
   const tCommon = useTranslations("common");
 
   let pathname = usePathname();
-  const { data: auth } = authClient.useSession();
   const config = useSelector(selectConfig);
   pathname = decodeURIComponent(pathname);
-  const [addLog] = useAddProjectLogMutation();
+  const [addLog] = useAddLog();
   const [previews, setPreviews] = useState<string[]>([]);
   const [previewTypes, setPreviewTypes] = useState<string[]>([]);
   const [showExtensionAlert, setShowExtensionAlert] = useState(false);
@@ -105,41 +102,11 @@ export default function MediaUpload({
     }
   }, [previewDialog, onPreviewOpenChange]);
 
-  const { data: ghData } = useGetGitHubTreesQuery(
-    {
-      owner: config.owner,
-      repo: config.repoName,
-      tree_sha: config.branch,
-      recursive: "1",
-      config: config,
-    },
-    {
-      skip:
-        !config.owner ||
-        !config.repoName ||
-        !config.branch ||
-        !config.token ||
-        !isGitHubProvider(config.provider),
-    },
-  );
-
-  const { data: glData } = useGetGitLabTreesQuery(
-    {
-      id: config.repoName ? `${config.owner}/${config.repoName}` : config.owner,
-      ref: config.branch,
-      recursive: true,
-      config: config,
-    },
-    {
-      skip:
-        !config.repoName ||
-        !config.branch ||
-        !config.token ||
-        !isGitLabProvider(config.provider),
-    },
-  );
-
-  const data = isGitLabProvider(config.provider) ? glData : ghData;
+  const { useGitTrees } = useGitProvider();
+  const { data } = useGitTrees("", {
+    recursive: true,
+    skip: !config.owner || !config.branch || !config.token,
+  });
 
   const [uploadImage, { isLoading: isGhPending }] =
     useUpdateGitHubFilesMutation();
@@ -331,7 +298,6 @@ export default function MediaUpload({
             action: EAction.CREATE,
             file: images.map((image) => `media/${image.path}`).join(","),
             file_type: EProjectLogType.MEDIA,
-            user_id: auth?.user.user_id!,
           });
           if (afterUpload) {
             afterUpload();

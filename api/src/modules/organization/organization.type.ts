@@ -12,6 +12,14 @@ export type SandboxIntegration = {
   username?: string;
 };
 
+export type OrgOwnerData = {
+  user_id: string;
+  email?: string;
+  image?: string;
+  full_name?: string;
+  active_package?: unknown;
+};
+
 export type OrganizationType = {
   org_name: string;
   org_id: string;
@@ -20,7 +28,7 @@ export type OrganizationType = {
   members: Member[];
   default: boolean;
   status: "active" | "archived";
-  ownerData?: any[];
+  ownerData?: OrgOwnerData[];
   sandbox?: SandboxIntegration | null;
 };
 

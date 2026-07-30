@@ -18,16 +18,17 @@ type Props = ImageProps & {
 
 export default function Avatar(props: Props) {
   if (props.src || props.site_url) {
-    const { src, preview, site_url, ...rest } = props;
+    const { src, preview, site_url, alt, ...rest } = props;
     const source = src?.startsWith("http") ? src : `${BUCKET_URL}/${src}`;
     return (
       <img
         src={preview ? src : !src ? getFaviconUrl(site_url) : source}
+        alt={alt ?? ""}
         {...rest}
       />
     );
   } else if (props.email) {
-    const { email, ...rest } = props;
+    const { email: _email, ...rest } = props;
     return (
       <Gravatar
         email={props.email}

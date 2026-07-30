@@ -1,4 +1,5 @@
 import catchAsync from "@/lib/catchAsync";
+import { requireUserId } from "@/lib/requireUser";
 import { sendResponse } from "@/lib/sendResponse";
 import { Organization } from "@/modules/organization/organization.model";
 import { Project } from "@/modules/project/project.model";
@@ -25,12 +26,12 @@ const createProviderController = catchAsync(
 // get all provider
 const getProviderController = catchAsync(
   async (req: Request, res: Response) => {
-    const requesterId = req.user?.user_id;
+    const requesterId = requireUserId(req);
     const targetParam = req.params.userId;
     const targetId = Array.isArray(targetParam) ? targetParam[0] : targetParam;
 
     let effectiveUserId = requesterId;
-    if (requesterId && targetId && targetId !== requesterId) {
+    if (targetId && targetId !== requesterId) {
       const myOrgs = await Organization.find({
         $or: [{ owner: requesterId }, { "members.user_id": requesterId }],
       })

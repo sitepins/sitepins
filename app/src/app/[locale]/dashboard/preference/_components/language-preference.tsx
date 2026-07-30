@@ -49,7 +49,7 @@ export default function LanguagePreference({ userId }: { userId: string }) {
         toast.success(
           tCommon("feedback.language_updated") || "Language updated",
         );
-      } catch (error) {
+      } catch {
         toast.error(
           tCommon("feedback.language_update_failed") ||
             "Failed to update language",

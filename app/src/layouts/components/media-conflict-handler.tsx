@@ -56,9 +56,9 @@ const MediaConflictHandler = ({
     setImages((images) => {
       return images.map((image) => {
         if (image.name === name) {
-          let [fileName, extension] = getFileNameAndExtension(name);
-          fileName =
-            fileName + "_copy(" + (image.number + 1) + ")." + extension;
+          const [baseName, extension] = getFileNameAndExtension(name);
+          const fileName =
+            baseName + "_copy(" + (image.number + 1) + ")." + extension;
           return {
             ...image,
             name: fileName,

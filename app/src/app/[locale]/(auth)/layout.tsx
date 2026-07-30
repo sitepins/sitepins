@@ -1,5 +1,6 @@
 "use client";
 
+import { logger } from "@/lib/logger";
 import Loading from "@/components/loading";
 import Logo from "@/components/logo";
 import { Card } from "@/components/ui/card";
@@ -28,11 +29,11 @@ export default function RootLayout({
             rememberMe: true,
           },
           {
-            onSuccess: (ctx) => {
+            onSuccess: (_ctx) => {
               router.replace("/");
             },
             onError: (error) => {
-              console.error(error);
+              logger.error("Sign-in failed", error);
             },
           },
         );

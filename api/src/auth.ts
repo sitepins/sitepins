@@ -8,6 +8,7 @@ import mongoose from "mongoose";
 import { allowedOrigins } from "./config/cors-options";
 import { customEndpoints } from "./lib/autoSignupUser";
 import { createBrevoContact, updateBrevoContact } from "./lib/brevoConfig";
+import { logger } from "./lib/logger";
 import { sendMail } from "./lib/mailer";
 import { verifyEmailWithReoon } from "./lib/emailVerifier";
 import splitName from "./lib/nameSplitter";
@@ -27,12 +28,12 @@ const MAX_ALLOWED_ATTEMPTS = 3; // max wrong attempts before invalidating the ot
 const authConnection = mongoose.createConnection(process.env.MONGO_URI!);
 
 authConnection.on("error", (err) => {
-  console.error("Failed to connect Mongoose client for auth:", err);
+  logger.error("Failed to connect Mongoose client for auth", err);
   process.exit(1);
 });
 
 authConnection.once("open", () => {
-  console.log("[+] Mongoose connection established for auth adapter");
+  logger.info("[+] Mongoose connection established for auth adapter");
 });
 
 export const client = authConnection.getClient();
@@ -75,7 +76,7 @@ const getS3Key = (imageValue: string): string | null => {
     const key = urlObj.pathname.substring(1);
     return key || null;
   } catch (error) {
-    console.error("Failed to parse image URL:", error);
+    logger.error("Failed to parse image URL", error);
     return null;
   }
 };
@@ -86,7 +87,7 @@ if (!config.better_auth_secret) {
   if (process.env.NODE_ENV === "production") {
     throw new Error(secretWarning);
   } else {
-    console.warn(secretWarning);
+    logger.warn(secretWarning);
   }
 }
 
@@ -117,7 +118,7 @@ export const auth = betterAuth({
   databaseHooks: {
     user: {
       create: {
-        before: async (user, ctx) => {
+        before: async (user) => {
           return {
             data: {
               ...user,
@@ -126,7 +127,7 @@ export const auth = betterAuth({
             },
           };
         },
-        after: async (user, ctx) => {
+        after: async (user) => {
           if (
             (user.provider === "Google" || user.provider === "Github") &&
             user.emailVerified
@@ -143,7 +144,7 @@ export const auth = betterAuth({
                 default: true,
               });
             } catch (error) {
-              console.error("Failed to create default organization", error);
+              logger.error("Failed to create default organization", error);
             }
 
             // Subscribe new user to Brevo audience
@@ -158,10 +159,7 @@ export const auth = betterAuth({
                 subscribed: true,
               });
             } catch (error) {
-              console.error(
-                "Failed to subscribe user to Brevo audience:",
-                error,
-              );
+              logger.error("Failed to subscribe user to Brevo audience", error);
             }
 
             // Send welcome email to new user
@@ -171,7 +169,7 @@ export const auth = betterAuth({
                 kind: "welcome",
               });
             } catch (error) {
-              console.error("Failed to send welcome email to new user", error);
+              logger.error("Failed to send welcome email to new user", error);
             }
           }
         },
@@ -182,7 +180,9 @@ export const auth = betterAuth({
           if (user.image !== undefined) {
             try {
               // Get the authenticated user ID from the session context
-              const identifier = (ctx as any)?.context?.session?.user?.id;
+              const identifier = (
+                ctx as { context?: { session?: { user?: { id?: unknown } } } }
+              )?.context?.session?.user?.id;
 
               if (!identifier) {
                 return { data: user };
@@ -203,23 +203,22 @@ export const auth = betterAuth({
 
                   if (key) {
                     await deleteFile(key).catch((err) => {
-                      console.error(
-                        `Failed to delete old image (${key}):`,
-                        err.message,
-                      );
+                      logger.error(`Failed to delete old image (${key})`, err);
                     });
                   }
                 }
               }
             } catch (error) {
-              console.error("Error in image cleanup before update:", error);
+              logger.error("Error in image cleanup before update", error);
             }
           }
 
           return { data: user };
         },
         after: async (user, ctx) => {
-          const initDefaultOrg = (ctx?.body as any)?.initDefaultOrg || false;
+          const initDefaultOrg =
+            (ctx?.body as { initDefaultOrg?: boolean } | undefined)
+              ?.initDefaultOrg || false;
           if (
             (ctx?.path === "/email-otp/verify-email" && user.emailVerified) ||
             initDefaultOrg
@@ -237,7 +236,7 @@ export const auth = betterAuth({
                 default: true,
               });
             } catch (error) {
-              console.error("Failed to create default organization", error);
+              logger.error("Failed to create default organization", error);
             }
             // Subscribe new user to Brevo audience
             try {
@@ -248,13 +247,10 @@ export const auth = betterAuth({
                 email: user.email,
                 first_name,
                 last_name,
-                subscribed: !!(user as any).subscribed,
+                subscribed: !!(user as { subscribed?: unknown }).subscribed,
               });
             } catch (error) {
-              console.error(
-                "Failed to subscribe user to Brevo audience:",
-                error,
-              );
+              logger.error("Failed to subscribe user to Brevo audience", error);
             }
             // Send welcome email to new user
             try {
@@ -263,7 +259,7 @@ export const auth = betterAuth({
                 kind: "welcome",
               });
             } catch (error) {
-              console.error("Failed to send welcome email to new user", error);
+              logger.error("Failed to send welcome email to new user", error);
             }
           }
         },
@@ -272,7 +268,7 @@ export const auth = betterAuth({
     session: {
       create: {
         // called after every successfully login
-        after: async (session, ctx) => {
+        after: async (session) => {
           const user = await User.findById(session.userId);
 
           if (!user) return;
@@ -284,7 +280,7 @@ export const auth = betterAuth({
               last_login_date: session.createdAt.toISOString(),
             });
           } catch (err) {
-            console.error("Failed to update Brevo contact on login:", err);
+            logger.error("Failed to update Brevo contact on login", err);
           }
 
           try {
@@ -295,7 +291,7 @@ export const auth = betterAuth({
               date: session.createdAt.toISOString(),
             });
           } catch (err) {
-            console.error("Failed to update user Log contact on login:", err);
+            logger.error("Failed to update user Log contact on login", err);
           }
         },
       },
@@ -338,9 +334,6 @@ export const auth = betterAuth({
           });
         }
       }
-    }),
-    after: createAuthMiddleware(async (ctx) => {
-      // console.log({ debugCTX: ctx });
     }),
   },
 
@@ -460,7 +453,7 @@ export const auth = betterAuth({
         });
       }
     },
-    onPasswordReset: async ({ user }, request) => {
+    onPasswordReset: async ({ user }) => {
       try {
         const userId = generateUserId(user.email);
         await emitAuthEvent({
@@ -469,7 +462,7 @@ export const auth = betterAuth({
           date: new Date().toISOString(),
         });
       } catch (error) {
-        console.error("User log updated failed", error);
+        logger.error("User log updated failed", error);
       }
     },
   },

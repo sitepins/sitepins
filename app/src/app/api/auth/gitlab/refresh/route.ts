@@ -1,3 +1,5 @@
+import { errorMessageOr } from "@/lib/utils/error";
+import { logger } from "@/lib/logger";
 import { rotateProviderTokens } from "@/actions/provider";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -33,7 +35,7 @@ export async function POST(request: NextRequest) {
 
     if (!tokenResponse.ok) {
       const errorData = await tokenResponse.json();
-      console.error("GitLab token refresh error:", errorData);
+      logger.error("GitLab token refresh error:", errorData);
       throw new Error(errorData.error_description || "Failed to refresh token");
     }
 
@@ -54,7 +56,7 @@ export async function POST(request: NextRequest) {
       });
     } catch (persistError) {
       // Still return the fresh token so the current session keeps working.
-      console.error("Failed to persist rotated GitLab tokens:", persistError);
+      logger.error("Failed to persist rotated GitLab tokens:", persistError);
     }
 
     return NextResponse.json({
@@ -64,11 +66,11 @@ export async function POST(request: NextRequest) {
       access_token_expires_at: accessTokenExpiresAt,
       last_refreshed_at: Date.now(), // Return current time for frontend tracking
     });
-  } catch (error: any) {
-    console.error("Error in GitLab refresh handler:", error);
+  } catch (error) {
+    logger.error("Error in GitLab refresh handler:", error);
     return NextResponse.json(
       {
-        error: error.message || "An unexpected error occurred",
+        error: errorMessageOr(error, "An unexpected error occurred"),
       },
       { status: 500 },
     );

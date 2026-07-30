@@ -17,7 +17,7 @@ import { toast } from "sonner";
 import { useTranslations } from "next-intl";
 
 export default function UserAvatar({ auth }: { auth: Session }) {
-  const [error, setError] = useState<
+  const [error, _setError] = useState<
     (BetterFetchError & Record<string, any>) | null
   >(null);
 

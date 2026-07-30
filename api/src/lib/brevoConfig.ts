@@ -1,5 +1,7 @@
+import { errorStatusCode } from "@/lib/errorMessage";
 import config from "@/config/variables";
 import { Brevo, BrevoClient } from "@getbrevo/brevo";
+import { logger } from "@/lib/logger";
 
 // --- CONFIGURATION ---
 const BREVO_SENDER = config.mail_from_email
@@ -53,7 +55,7 @@ const sendBrevoMail = async ({
     });
     return data;
   } catch (error) {
-    console.error("Error sending Brevo email: ", error);
+    logger.error("Error sending Brevo email", error);
   }
 };
 
@@ -64,9 +66,9 @@ const getBrevoContact = async (
   try {
     const data = await brevo.contacts.getContactInfo({ identifier: email });
     return data;
-  } catch (error: any) {
-    if (error?.response?.statusCode !== 404 && error?.statusCode !== 404) {
-      console.error("Error getting contact: ", error);
+  } catch (error) {
+    if (errorStatusCode(error) !== 404) {
+      logger.error("Error getting Brevo contact", error);
     }
     return null;
   }
@@ -97,8 +99,30 @@ const createBrevoContact = async ({
     });
     return data;
   } catch (error) {
-    console.error("Error creating contact: ", error);
+    logger.error("Error creating Brevo contact", error);
   }
+};
+
+// Brevo accepts only scalars as contact attribute values.
+type BrevoAttributes = Record<string, string | number | boolean | undefined>;
+
+// Brevo reports "no such contact" through several unrelated shapes depending
+// on the endpoint, so all of them are checked before falling back to upsert.
+const isContactMissingError = (error: unknown): boolean => {
+  const err = error as
+    | {
+        status?: unknown;
+        name?: unknown;
+        response?: { body?: { code?: unknown } };
+      }
+    | null
+    | undefined;
+  return (
+    errorStatusCode(error) === 404 ||
+    err?.status === 404 ||
+    err?.response?.body?.code === "document_not_found" ||
+    err?.name === "NotFoundError"
+  );
 };
 
 // update brevo contact
@@ -157,12 +181,12 @@ const updateBrevoContact = async ({
     if (!dateStr) return undefined;
     try {
       return new Date(dateStr).toISOString().split("T")[0];
-    } catch (e) {
+    } catch {
       return undefined;
     }
   };
 
-  let attributes: Record<string, any> = {};
+  let attributes: BrevoAttributes = {};
 
   if (updateType === "login") {
     attributes = { LAST_LOGIN_DATE: last_login_date };
@@ -204,43 +228,36 @@ const updateBrevoContact = async ({
   }
 
   // Remove undefined attributes to avoid errors
-  Object.keys(attributes).forEach((key) => {
-    if (attributes[key] === undefined) {
-      delete attributes[key];
-    }
-  });
+  const definedAttributes = Object.fromEntries(
+    Object.entries(attributes).filter(([, value]) => value !== undefined),
+  ) as Record<string, string | number | boolean>;
 
   try {
     const data = await brevo.contacts.updateContact({
       identifier: email,
-      attributes,
+      attributes: definedAttributes,
     });
     return { success: true, data };
-  } catch (error: any) {
+  } catch (error) {
     // If contact doesn't exist, try creating it with updateEnabled: true (upsert)
-    if (
-      error?.statusCode === 404 ||
-      error?.status === 404 ||
-      error?.response?.body?.code === "document_not_found" ||
-      error?.name === "NotFoundError"
-    ) {
+    if (isContactMissingError(error)) {
       try {
         const data = await brevo.contacts.createContact({
           email,
-          attributes,
+          attributes: definedAttributes,
           listIds: [2], // Default to list 2
           updateEnabled: true,
         });
         return { success: true, upserted: true, data };
       } catch (createError) {
-        console.error(
-          "Error creating contact after update failed: ",
+        logger.error(
+          "Error creating Brevo contact after update failed",
           createError,
         );
         return { success: false, error: createError };
       }
     }
-    console.error("Error updating contact: ", error);
+    logger.error("Error updating Brevo contact", error);
     return { success: false, error };
   }
 };
@@ -256,7 +273,7 @@ const updateBrevoContactEmail = async (oldEmail: string, newEmail: string) => {
     });
     return data;
   } catch (error) {
-    console.error("Error updating contact email: ", error);
+    logger.error("Error updating Brevo contact email", error);
     return null;
   }
 };
@@ -268,7 +285,7 @@ const deleteBrevoContact = async (email: string) => {
       identifier: email,
     });
   } catch (error) {
-    console.error("Error deleting contact: ", error);
+    logger.error("Error deleting Brevo contact", error);
   }
 };
 

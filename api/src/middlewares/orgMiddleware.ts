@@ -1,14 +1,13 @@
-import { ENUM_PERMISSIONS } from "@/enums/roles";
+import { TPermission } from "@/enums/roles";
 import ApiError from "@/errors/ApiError";
 import { hasPermission } from "@/lib/permissionChecker";
 import { Organization } from "@/modules/organization/organization.model";
 import { NextFunction, Request, Response } from "express";
 
-type Permission = (typeof ENUM_PERMISSIONS)[keyof typeof ENUM_PERMISSIONS];
 type OrgIdentifierInput = { org_id?: string; orgId?: string };
 
 const orgMiddleware =
-  (requiredPermission: Permission) =>
+  (requiredPermission: TPermission) =>
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       // Accept multiple possible param/query names because different routes

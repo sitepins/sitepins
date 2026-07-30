@@ -1,5 +1,6 @@
 "use client";
 
+import { logger } from "@/lib/logger";
 import { useOwnerPlan } from "@/hooks/use-owner-plan";
 import { useSnippets } from "@/hooks/use-snippets";
 import { MarkdownPlugin } from "@platejs/markdown";
@@ -41,7 +42,7 @@ export function SnippetControls({
       const serialized = api.markdown.serialize({ value: [element] });
       return serialized;
     } catch (e) {
-      console.error("Failed to serialize snippet node:", e);
+      logger.error("Failed to serialize snippet node:", e);
       return element.value || element.content || "";
     }
   }, [codeProp, element, editor]);

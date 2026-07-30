@@ -1,3 +1,4 @@
+import { logger } from "@/lib/logger";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -197,7 +198,7 @@ export default function ConfigActions({
         toast.error(res.error.message || tCommon("feedback.duplicate_failed"));
       }
     } catch (err) {
-      console.error(err);
+      logger.error("Failed to duplicate config", err);
       toast.error(tCommon("feedback.duplicate_failed"));
     }
 

@@ -207,7 +207,7 @@ function generateFieldSchema({
   value,
   comments,
   path = "",
-  docs,
+  docs: _docs,
 }: {
   label: string;
   value: any;

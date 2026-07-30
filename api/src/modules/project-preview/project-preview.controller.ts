@@ -28,7 +28,7 @@ const upsertController = catchAsync(async (req: Request, res: Response) => {
     });
   }
 
-  const updateData: Record<string, any> = {};
+  const updateData: Record<string, unknown> = {};
   if (req.body.sandbox_name !== undefined) {
     updateData.sandbox_name = req.body.sandbox_name;
   }

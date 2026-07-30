@@ -1,5 +1,7 @@
 "use client";
 
+import { errorMessageOr } from "@/lib/utils/error";
+import { logger } from "@/lib/logger";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -77,7 +79,7 @@ export default function BranchManager({ canUpdate }: { canUpdate?: boolean }) {
 
     if (!projectId || !projectOrgId) {
       toast.error(tProjectSettingsGitBranch("error_missing_info"));
-      console.error("Missing params:", { projectId, orgId: projectOrgId });
+      logger.error("Missing params:", { projectId, orgId: projectOrgId });
       return;
     }
 
@@ -106,12 +108,10 @@ export default function BranchManager({ canUpdate }: { canUpdate?: boolean }) {
 
       toast.success(tProjectSettingsGitBranch("success_message"));
       setIsEditing(false);
-    } catch (error: any) {
-      console.error("Branch update error:", error);
+    } catch (error) {
+      logger.error("Branch update error:", error);
       toast.error(
-        error?.data?.message ||
-          error?.message ||
-          tProjectSettingsGitBranch("error_generic"),
+        errorMessageOr(error, tProjectSettingsGitBranch("error_generic")),
       );
       // Reset to current branch on error
       setSelectedBranch(branch || "");

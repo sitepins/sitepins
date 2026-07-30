@@ -1,3 +1,4 @@
+import { logger } from "@/lib/logger";
 import { MdxSnippet } from "@/editor/utils/plate-types";
 import { GITLAB_API_VERSION, SNIPPET_FOLDER } from "@/lib/constant";
 import { checkMedia } from "@/lib/utils/check-media-file";
@@ -252,7 +253,7 @@ export const gitlabContentApi = gitlabApi.injectEndpoints({
                   size: size,
                 };
               }
-            } catch (e) {
+            } catch {
               // Ignore fetch errors and return file without metadata
             }
 
@@ -470,22 +471,19 @@ export const gitlabContentApi = gitlabApi.injectEndpoints({
               const fetchResponse = await fetch(fetchUrl, { headers });
 
               if (!fetchResponse.ok) {
-                console.warn(
-                  "Failed to fetch snippet",
-                  file.path,
-                  fetchResponse.status,
-                );
+                logger.warn("Failed to fetch snippet", undefined, {
+                  filePath: file.path,
+                  status: fetchResponse.status,
+                });
                 return null;
               }
 
               const decoded = await fetchResponse.text();
               return parseSnippetFile(decoded, file.path);
             } catch (error) {
-              console.warn(
-                "Failed to load snippet",
-                file.path,
-                error instanceof Error ? error.message : error,
-              );
+              logger.warn("Failed to load snippet", error, {
+                filePath: file.path,
+              });
               return null;
             }
           }),
@@ -547,7 +545,7 @@ export const gitlabContentApi = gitlabApi.injectEndpoints({
           } else if (!Array.isArray(data)) {
             dispatch(updateConfig(data as any));
           }
-        } catch (_error) {
+        } catch {
           dispatch(
             updateConfig({
               arrangement: [],

@@ -1,5 +1,6 @@
 "use client";
 
+import { logger } from "@/lib/logger";
 import { authClient } from "@/lib/auth/auth-client";
 import { API_URL } from "@/lib/constant";
 import { useEffect, useMemo, useState } from "react";
@@ -74,7 +75,7 @@ export function usePresence(
     });
 
     socket.on("connect_error", (err) => {
-      console.error("[Presence] Socket connection error:", err.message);
+      logger.error("[Presence] Socket connection error:", err.message);
     });
 
     socket.on(

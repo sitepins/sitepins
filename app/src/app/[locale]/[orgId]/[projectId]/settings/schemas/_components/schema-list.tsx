@@ -1,5 +1,8 @@
 "use client";
 
+import { useAddLog } from "@/hooks/use-add-log";
+import { treeItemsOf } from "@/lib/utils/tree-items";
+import { logger } from "@/lib/logger";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -23,7 +26,6 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { authClient } from "@/lib/auth/auth-client";
 import { IS_DEMO, SCHEMA_FOLDER } from "@/lib/constant";
 import { getLogType } from "@/lib/utils/project-log-type-detector";
 import {
@@ -45,7 +47,6 @@ import {
   gitlabApi,
   useUpdateGitLabFilesMutation,
 } from "@/redux/features/gitlab";
-import { useAddProjectLogMutation } from "@/redux/features/project-log/project-log-api";
 import { EAction } from "@/redux/features/project-log/type";
 import { useAppDispatch } from "@/redux/store";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -127,10 +128,7 @@ const SchemaList = () => {
 
         if (cancelled) return;
 
-        const treeItems =
-          (treeResult &&
-            ((treeResult as any).files || (treeResult as any).tree)) ||
-          [];
+        const treeItems = treeItemsOf(treeResult);
         const schemaFiles = treeItems.filter(
           (item: any) =>
             item.type === "blob" &&
@@ -184,7 +182,7 @@ const SchemaList = () => {
               data: content?.data || content,
             };
           } catch (e) {
-            console.error(`Failed to load schema ${file.path}:`, e);
+            logger.error(`Failed to load schema ${file.path}:`, e);
             return null;
           }
         });
@@ -195,7 +193,7 @@ const SchemaList = () => {
           setIsLoadingSchemas(false);
         }
       } catch (error) {
-        console.error("Error fetching schemas:", error);
+        logger.error("Error fetching schemas:", error);
         if (!cancelled) {
           setSchemas([]);
           setIsLoadingSchemas(false);
@@ -333,11 +331,7 @@ const SchemaList = () => {
                         ),
                       ).unwrap();
 
-                  const treeItems =
-                    (treeResult &&
-                      ((treeResult as any).files ||
-                        (treeResult as any).tree)) ||
-                    [];
+                  const treeItems = treeItemsOf(treeResult);
                   const schemaFiles = treeItems.filter(
                     (item: any) =>
                       item.type === "blob" &&
@@ -383,7 +377,7 @@ const SchemaList = () => {
                         path: file.path,
                         data: content?.data || content,
                       };
-                    } catch (e) {
+                    } catch {
                       return null;
                     }
                   });
@@ -392,7 +386,7 @@ const SchemaList = () => {
                   setSchemas(results.filter(Boolean) as SchemaFile[]);
                   setIsLoadingSchemas(false);
                 } catch (error) {
-                  console.error("Error refreshing schemas:", error);
+                  logger.error("Error refreshing schemas:", error);
                   setIsLoadingSchemas(false);
                 }
               };
@@ -423,7 +417,6 @@ function SchemaEditDialog({
   const config = useSelector(selectConfig);
   const dispatch = useAppDispatch();
   const params = useParams();
-  const { data: auth } = authClient.useSession();
 
   const [template, setTemplate] = useState<Template[]>([]);
   const [initialTemplate, setInitialTemplate] = useState<string | null>(null);
@@ -445,7 +438,7 @@ function SchemaEditDialog({
   const isDeletingSchema = isGitLabProvider(config.provider)
     ? isGlDeletingSchema
     : isGhDeletingSchema;
-  const [addLog] = useAddProjectLogMutation();
+  const [addLog] = useAddLog();
   const tProjectSettingsSchemas = useTranslations("project-settings.schemas");
   const tCommon = useTranslations("common");
 
@@ -541,13 +534,12 @@ function SchemaEditDialog({
           action: EAction.UPDATE,
           file: schema.path,
           file_type: getLogType(schema.path, config),
-          user_id: auth?.user.user_id!,
         });
 
         onSuccess();
       }
     } catch (error) {
-      console.error("Error updating schema:", error);
+      logger.error("Error updating schema:", error);
       toast.error(tProjectSettingsSchemas("error_update"));
     }
   };
@@ -601,13 +593,12 @@ function SchemaEditDialog({
           action: EAction.DELETE,
           file: schema.path,
           file_type: getLogType(schema.path, config),
-          user_id: auth?.user.user_id!,
         });
 
         onOpenChange(false);
       }
     } catch (error) {
-      console.error("Error deleting schema:", error);
+      logger.error("Error deleting schema:", error);
       toast.error(tProjectSettingsSchemas("error_delete"));
     }
   };
@@ -656,7 +647,7 @@ function SchemaEditDialog({
               if (firstKey) {
                 try {
                   schemaForm.setFocus(firstKey as any);
-                } catch (e) {
+                } catch {
                   // ignore focus errors
                 }
               }

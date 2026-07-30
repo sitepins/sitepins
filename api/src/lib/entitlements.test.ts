@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { UNLIMITED } from "@/config/limits";
 import type { ClientSession } from "mongoose";
 
@@ -65,7 +65,7 @@ describe("user deletion hooks", () => {
 
     await runUserDeletionHooks({
       userId: "u1",
-      user: { email: "a@b.c" },
+      user: { user_id: "u1", email: "a@b.c" },
       reason: "gdpr",
       session: {} as ClientSession,
     });
@@ -82,7 +82,7 @@ describe("user deletion hooks", () => {
     await expect(
       runUserDeletionHooks({
         userId: "u1",
-        user: {},
+        user: { user_id: "u1" },
         session: {} as ClientSession,
       }),
     ).rejects.toThrow("cleanup failed");

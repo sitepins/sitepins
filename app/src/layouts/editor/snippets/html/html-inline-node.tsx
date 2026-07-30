@@ -119,7 +119,7 @@ export const HtmlInlineElement = withRef<typeof PlateElement>(
           text={openingTag}
           propName={isClosingTag ? "closing" : "inline"}
           theme={theme}
-          onChange={(val) => updateInlineText(content)}
+          onChange={(_val) => updateInlineText(content)}
         />
 
         {/* Content between tags - editable */}

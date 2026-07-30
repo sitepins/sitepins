@@ -1,5 +1,6 @@
 "use client";
 
+import { useGitProvider } from "@/hooks/use-git-provider";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -17,14 +18,8 @@ import {
   isGitLabProvider,
 } from "@/lib/utils/provider-checker";
 import { selectConfig } from "@/redux/features/config/slice";
-import {
-  useGetGitHubCommitsQuery,
-  useGetGitHubCommitStatusQuery,
-} from "@/redux/features/github";
-import {
-  useGetGitLabCommitsQuery,
-  useGetGitLabCommitStatusQuery,
-} from "@/redux/features/gitlab";
+import { useGetGitHubCommitStatusQuery } from "@/redux/features/github";
+import { useGetGitLabCommitStatusQuery } from "@/redux/features/gitlab";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
@@ -45,32 +40,16 @@ export default function GitActivity() {
   const isGitHub = isGitHubProvider(provider);
   const isGitLab = isGitLabProvider(provider);
 
+  const { useGitCommits } = useGitProvider();
   const {
-    data: ghCommits,
-    isLoading: ghLoading,
-    refetch: ghRefetch,
-  } = useGetGitHubCommitsQuery(
-    { owner, repo: repoName, page, per_page: 4, sha: branch },
-    {
-      skip: !isGitHub || !owner || !repoName || !branch || !token,
-      refetchOnMountOrArgChange: true,
-    },
-  );
-
-  const {
-    data: glCommits,
-    isLoading: glLoading,
-    refetch: glRefetch,
-  } = useGetGitLabCommitsQuery(
-    { id: `${owner}/${repoName}`, ref: branch, page, per_page: 4 },
-    {
-      skip: !isGitLab || !repoName || !branch || !token,
-      refetchOnMountOrArgChange: true,
-    },
-  );
-
-  const commits = isGitLab ? glCommits : ghCommits;
-  const isLoading = isGitLab ? glLoading : ghLoading;
+    data: commits,
+    isLoading,
+    refetch,
+  } = useGitCommits({
+    page,
+    perPage: 4,
+    skip: !owner || !repoName || !branch || !token,
+  });
 
   const handleLoadMore = () => {
     setPage((prev) => prev + 1);
@@ -84,8 +63,7 @@ export default function GitActivity() {
     setLastCommitNumber(null);
     // Give the Git provider a moment to update their internal indices
     setTimeout(() => {
-      if (isGitHub) ghRefetch();
-      if (isGitLab) glRefetch();
+      refetch();
     }, 500);
   };
 

@@ -12,12 +12,14 @@ import { useState } from "react";
 import { toast } from "sonner";
 import {
   CreateSchemaAddField,
-  FieldItem,
   SortableFieldItem,
+} from "./create-schema-helper";
+import { FieldItem } from "./schema-field-item";
+import {
   appendFieldToTemplate,
   removeFieldFromTemplate,
   updateFieldInTemplate,
-} from "./create-schema-helper";
+} from "./schema-template-ops";
 
 type SchemaBuilderProps = {
   value: Template[];

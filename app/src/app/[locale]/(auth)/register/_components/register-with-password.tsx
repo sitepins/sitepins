@@ -81,9 +81,9 @@ export default function RegisterWithPassword({
         country: "",
       },
       {
-        onRequest: (ctx) => setIsPending(true),
-        onResponse: (ctx) => setIsPending(false),
-        onSuccess: async (ctx) => {
+        onRequest: (_ctx) => setIsPending(true),
+        onResponse: (_ctx) => setIsPending(false),
+        onSuccess: async (_ctx) => {
           toast.success(tAuth("success_toast"));
           onSetShowVerify(true);
           onSetLoginInfo({ email: data.email, password: data.password });

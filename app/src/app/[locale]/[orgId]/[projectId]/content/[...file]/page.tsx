@@ -39,7 +39,7 @@ export default function Page(props: Props) {
   try {
     // decode any URL-encoded segments (spaces -> %20, etc.)
     file = decodeURIComponent(file);
-  } catch (e) {
+  } catch {
     // ignore decode errors and keep original
   }
   const params = use(props.params);
@@ -51,7 +51,7 @@ export default function Page(props: Props) {
 
   const config = useSelector(selectConfig);
 
-  let queryPath = resolveRepoPath(file, config);
+  const queryPath = resolveRepoPath(file, config);
 
   const normalize = (p = "") => p.replace(/^\/+|\/+$/g, "");
   const normalizedQueryPath = normalize(queryPath);

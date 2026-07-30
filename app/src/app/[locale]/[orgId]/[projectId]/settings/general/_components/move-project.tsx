@@ -1,5 +1,6 @@
 "use client";
 
+import { errorMessageOr } from "@/lib/utils/error";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -172,8 +173,10 @@ export default function MoveProject({
                     setConfirmOpen(false);
                   } catch (error) {
                     toast.error(
-                      (error as any)?.data?.message ||
+                      errorMessageOr(
+                        error,
                         tProjectSettingsGeneralMove("error"),
+                      ),
                     );
                   }
                 }}

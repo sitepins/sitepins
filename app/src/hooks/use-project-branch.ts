@@ -1,3 +1,4 @@
+import { logger } from "@/lib/logger";
 import { updateConfig } from "@/redux/features/config/slice";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { useEffect, useState } from "react";
@@ -59,10 +60,7 @@ export function useProjectBranch(project: any) {
           config.branch,
         );
       } catch (e) {
-        console.warn(
-          "Failed to persist last working branch in localStorage",
-          e,
-        );
+        logger.warn("Failed to persist last working branch in localStorage", e);
       }
     }
   }, [project?.project_id, config.branch, restoredProjectId]);

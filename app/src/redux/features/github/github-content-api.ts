@@ -1,3 +1,4 @@
+import { logger } from "@/lib/logger";
 import { MdxSnippet } from "@/editor/utils/plate-types";
 import { GITHUB_API_VERSION, IS_DEMO, SNIPPET_FOLDER } from "@/lib/constant";
 import { checkMedia } from "@/lib/utils/check-media-file";
@@ -352,7 +353,7 @@ export const githubContentApi = githubApi.injectEndpoints({
                     url.searchParams.set("ref", refValue);
                   }
                   requestUrl = url.toString();
-                } catch (_err) {
+                } catch {
                   const refValue = arg.ref ?? config.branch;
                   if (refValue) {
                     const separator = baseUrl.includes("?") ? "&" : "?";
@@ -368,11 +369,10 @@ export const githubContentApi = githubApi.injectEndpoints({
               });
 
               if (!response.ok) {
-                console.warn(
-                  "Failed to fetch snippet",
-                  file.path,
-                  response.status,
-                );
+                logger.warn("Failed to fetch snippet", undefined, {
+                  filePath: file.path,
+                  status: response.status,
+                });
                 return null;
               }
 
@@ -380,11 +380,9 @@ export const githubContentApi = githubApi.injectEndpoints({
 
               return parseSnippetFile(decoded, file.path);
             } catch (error) {
-              console.warn(
-                "Failed to load snippet",
-                file.path,
-                error instanceof Error ? error.message : error,
-              );
+              logger.warn("Failed to load snippet", error, {
+                filePath: file.path,
+              });
               return null;
             }
           }),
@@ -441,7 +439,7 @@ export const githubContentApi = githubApi.injectEndpoints({
           } else if (!Array.isArray(data)) {
             dispatch(updateConfig(data as any));
           }
-        } catch (error) {
+        } catch {
           dispatch(
             updateConfig({
               arrangement: [],

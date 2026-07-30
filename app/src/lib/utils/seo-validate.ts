@@ -90,7 +90,7 @@ export function validateSEO(
   }
 
   // --- Meta Title ---
-  let metaTitleKeyUsed = META_TITLE_KEYS.find((k) => entry[k] !== undefined);
+  const metaTitleKeyUsed = META_TITLE_KEYS.find((k) => entry[k] !== undefined);
   const metaTitle = unwrap(
     metaTitleKeyUsed ? entry[metaTitleKeyUsed] : undefined,
   );
@@ -112,7 +112,7 @@ export function validateSEO(
   });
 
   // --- Meta Description ---
-  let metaDescKeyUsed = META_DESC_KEYS.find((k) => entry[k] !== undefined);
+  const metaDescKeyUsed = META_DESC_KEYS.find((k) => entry[k] !== undefined);
   const metaDescription = unwrap(
     metaDescKeyUsed ? entry[metaDescKeyUsed] : undefined,
   );
@@ -136,7 +136,7 @@ export function validateSEO(
   // --- Word Count ---
   // Body first, frontmatter keys as fallback.
   const contentKeys = ["content", "body", "text"];
-  let contentKeyUsed = contentKeys.find((k) => entry[k] !== undefined);
+  const contentKeyUsed = contentKeys.find((k) => entry[k] !== undefined);
   const entryContent = unwrap(
     contentKeyUsed ? entry[contentKeyUsed] : undefined,
   );
@@ -158,9 +158,9 @@ export function validateSEO(
   });
 
   // --- Keyword Density ---
-  let keywordKeyUsed = KEYWORD_KEYS.find((k) => entry[k] !== undefined);
+  const keywordKeyUsed = KEYWORD_KEYS.find((k) => entry[k] !== undefined);
   const keywords = unwrap(keywordKeyUsed ? entry[keywordKeyUsed] : undefined);
-  let keywordDensity: Record<string, number> = {};
+  const keywordDensity: Record<string, number> = {};
   if (Array.isArray(keywords) && keywords.length && text) {
     keywords.forEach((kw: string) => {
       const re = new RegExp(`\\b${kw}\\b`, "gi");
@@ -340,7 +340,7 @@ export function validateSEO(
     "openGraphProps",
     "openGraphProperties",
   ];
-  let openGraphKeyUsed = openGraphKeys.find((k) => entry[k] !== undefined);
+  const openGraphKeyUsed = openGraphKeys.find((k) => entry[k] !== undefined);
   const openGraph = unwrap(
     openGraphKeyUsed ? entry[openGraphKeyUsed] : undefined,
   );
@@ -372,7 +372,7 @@ export function validateSEO(
     "canonical_href",
     "canonical-href",
   ];
-  let canonicalKeyUsed = canonicalKeys.find((k) => entry[k] !== undefined);
+  const canonicalKeyUsed = canonicalKeys.find((k) => entry[k] !== undefined);
   const canonicalUrl = unwrap(
     canonicalKeyUsed ? entry[canonicalKeyUsed] : undefined,
   );
@@ -408,7 +408,7 @@ export function validateSEO(
     "serp_schema",
     "serp-schema",
   ];
-  let structuredKeyUsed = structuredKeys.find((k) => entry[k] !== undefined);
+  const structuredKeyUsed = structuredKeys.find((k) => entry[k] !== undefined);
   const structuredData = unwrap(
     structuredKeyUsed ? entry[structuredKeyUsed] : undefined,
   );
@@ -440,7 +440,7 @@ export function validateSEO(
     "robots_directive",
     "robots-directive",
   ];
-  let robotsKeyUsed = robotsKeys.find((k) => entry[k] !== undefined);
+  const robotsKeyUsed = robotsKeys.find((k) => entry[k] !== undefined);
   const robots = unwrap(robotsKeyUsed ? entry[robotsKeyUsed] : undefined);
   const robotsArr = Array.isArray(robots) ? robots : robots ? [robots] : [];
   if (robotsKeyUsed) {
@@ -475,7 +475,9 @@ export function validateSEO(
     "date-updated",
     "date",
   ];
-  let lastUpdatedKeyUsed = lastUpdatedKeys.find((k) => entry[k] !== undefined);
+  const lastUpdatedKeyUsed = lastUpdatedKeys.find(
+    (k) => entry[k] !== undefined,
+  );
   const lastUpdated = unwrap(
     lastUpdatedKeyUsed ? entry[lastUpdatedKeyUsed] : undefined,
   );

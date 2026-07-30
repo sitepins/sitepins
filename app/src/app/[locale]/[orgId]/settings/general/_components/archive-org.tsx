@@ -1,5 +1,6 @@
 "use client";
 
+import { errorMessageOr } from "@/lib/utils/error";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -103,10 +104,9 @@ export default function ArchiveOrg({
                         : tOrgGeneralArchive("success_archive"),
                     );
                     setConfirmOpen(false);
-                  } catch (error: any) {
+                  } catch (error) {
                     toast.error(
-                      (error as any)?.data?.message ||
-                        tOrgGeneralArchive("error"),
+                      errorMessageOr(error, tOrgGeneralArchive("error")),
                     );
                   }
                 }}

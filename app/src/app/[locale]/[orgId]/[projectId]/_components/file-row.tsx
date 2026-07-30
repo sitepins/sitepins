@@ -1,22 +1,12 @@
 "use client";
 
+import { useGitProvider } from "@/hooks/use-git-provider";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import dateFormat from "@/lib/utils/date-format";
-import {
-  isGitHubProvider,
-  isGitLabProvider,
-} from "@/lib/utils/provider-checker";
+import { isGitLabProvider } from "@/lib/utils/provider-checker";
 import { slugify } from "@/lib/utils/text-converter";
 import { selectConfig } from "@/redux/features/config/slice";
-import {
-  useGetGitHubCommitsQuery,
-  useGetGitHubContentQuery,
-} from "@/redux/features/github";
-import {
-  useGetGitLabCommitsQuery,
-  useGetGitLabContentQuery,
-} from "@/redux/features/gitlab";
 import { TFiles } from "@/types";
 import { EllipsisVertical, PenLine } from "lucide-react";
 import { useInView } from "motion/react";
@@ -41,71 +31,17 @@ export default function FileRow({ file }: { file: TFiles }) {
   );
   const groupName = arrangement?.groupName;
   const isInView = useInView(container, { once: true });
+  const { useGitContent, useGitCommits } = useGitProvider();
   const {
-    data: ghResponse,
-    isLoading: isGhLoading,
-    isSuccess: isGhSuccess,
-  } = useGetGitHubContentQuery(
-    {
-      owner: config.owner,
-      repo: config.repoName,
-      path: fileName,
-      ref: config.branch,
-      parser: true,
-    },
-    {
-      skip: !isInView || !isGitHubProvider(config.provider) || !file.isFile,
-    },
-  );
+    data: response,
+    isLoading,
+    isSuccess,
+  } = useGitContent(fileName, {
+    parser: true,
+    skip: !isInView || !file.isFile,
+  });
 
-  const {
-    data: glResponse,
-    isLoading: isGlLoading,
-    isSuccess: isGlSuccess,
-  } = useGetGitLabContentQuery(
-    {
-      id: config.repoName ? `${config.owner}/${config.repoName}` : config.owner,
-      file_path: fileName,
-      ref: config.branch,
-      parser: true,
-    },
-    {
-      skip: !isInView || !isGitLabProvider(config.provider) || !file.isFile,
-    },
-  );
-
-  const response = isGitLabProvider(config.provider) ? glResponse : ghResponse;
-  const isLoading = isGitLabProvider(config.provider)
-    ? isGlLoading
-    : isGhLoading;
-  const isSuccess = isGitLabProvider(config.provider)
-    ? isGlSuccess
-    : isGhSuccess;
-
-  const { data: ghCommit } = useGetGitHubCommitsQuery(
-    {
-      owner: config.owner,
-      repo: config.repoName,
-      path: fileName,
-      sha: config.branch,
-    },
-    {
-      skip: !isGitHubProvider(config.provider),
-    },
-  );
-
-  const { data: glCommit } = useGetGitLabCommitsQuery(
-    {
-      id: config.repoName ? `${config.owner}/${config.repoName}` : config.owner,
-      ref: config.branch,
-      path: fileName,
-    },
-    {
-      skip: !isGitLabProvider(config.provider),
-    },
-  );
-
-  const commit = isGitLabProvider(config.provider) ? glCommit : ghCommit;
+  const { data: commit } = useGitCommits({ path: fileName });
 
   if (!isSuccess || isLoading) {
     return (

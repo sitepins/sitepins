@@ -1,5 +1,7 @@
 "use client";
 
+import { errorMessageOr } from "@/lib/utils/error";
+import { logger } from "@/lib/logger";
 import { revertToOriginal } from "@/editor/utils/plate-utils";
 import { useCommitLogic } from "@/hooks/use-commit-logic";
 import { useIsChanged } from "@/hooks/use-is-changed";
@@ -179,7 +181,7 @@ const EditorWrapper: React.FC<EditorWrapperProps> = memo(
           file: filePath,
         })
           .unwrap()
-          .catch((err) => console.error("Failed to delete draft:", err));
+          .catch((err) => logger.error("Failed to delete draft:", err));
       },
     });
 
@@ -290,10 +292,8 @@ const EditorWrapper: React.FC<EditorWrapperProps> = memo(
         setHasSavedDraftState(false);
         toast.success(tFeedback("draft_discard_success"));
       } catch (err) {
-        console.error("Failed to discard saved draft:", err);
-        toast.error(
-          (err as any)?.data?.message || tFeedback("draft_discard_error"),
-        );
+        logger.error("Failed to discard saved draft:", err);
+        toast.error(errorMessageOr(err, tFeedback("draft_discard_error")));
       } finally {
         setIsDiscardingSavedDraft(false);
       }

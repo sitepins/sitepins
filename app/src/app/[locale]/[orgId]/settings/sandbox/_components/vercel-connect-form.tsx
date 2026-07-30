@@ -1,5 +1,6 @@
 "use client";
 
+import { errorMessage } from "@/lib/utils/error";
 import { UpgradeCta } from "@/components/upgrade-cta";
 import {
   AlertDialog,
@@ -34,7 +35,7 @@ import {
   Unlink,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import Link from "next/link";
+import _Link from "next/link";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -122,8 +123,10 @@ export default function VercelConnectForm({
         // Personal only — proceed immediately
         await handleFinalize(tokenValue.trim(), username, "");
       }
-    } catch (err: any) {
-      toast(tOrgSandbox("toast_connect_error"), { description: err?.message });
+    } catch (err) {
+      toast(tOrgSandbox("toast_connect_error"), {
+        description: errorMessage(err),
+      });
     } finally {
       setIsValidating(false);
     }
@@ -174,8 +177,10 @@ export default function VercelConnectForm({
       toast(tOrgSandbox("toast_connect_success"), {
         description: tOrgSandbox("toast_connect_success_desc", { username }),
       });
-    } catch (err: any) {
-      toast(tOrgSandbox("toast_connect_error"), { description: err?.message });
+    } catch (err) {
+      toast(tOrgSandbox("toast_connect_error"), {
+        description: errorMessage(err),
+      });
       setPhase(pendingConnect ? "team_select" : "token");
     } finally {
       setIsConnecting(false);

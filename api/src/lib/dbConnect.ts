@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { logger } from "@/lib/logger";
 
 export async function dbConnect() {
   const MONGO_URI = process.env.MONGO_URI!;
@@ -11,9 +12,9 @@ export async function dbConnect() {
 
   try {
     await mongoose.connect(MONGO_URI);
-    console.log("[+] Database is connected successfully");
+    logger.info("[+] Database is connected successfully");
   } catch (error) {
-    console.log("[-] Database is failed to connect");
+    logger.error("[-] Database is failed to connect", error);
     throw error;
   }
 }

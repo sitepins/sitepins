@@ -1,5 +1,7 @@
 "use client";
 
+import { errorMessageOr, errorStatus } from "@/lib/utils/error";
+import { logger } from "@/lib/logger";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -62,7 +64,7 @@ const ProjectBranching = ({
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [prLink, setPrLink] = useState<string | null>(null);
-  const dispatch = useAppDispatch();
+  const _dispatch = useAppDispatch();
 
   const defaultBranch = repoInfo?.default_branch || "main";
   const currentBranch = config.branch;
@@ -71,7 +73,7 @@ const ProjectBranching = ({
   // GitHub Compare
   const {
     data: ghCompare,
-    isLoading: isGhLoading,
+    isLoading: _isGhLoading,
     isFetching: isGhFetching,
     refetch: refetchGhCompare,
     error: ghCompareError,
@@ -94,7 +96,7 @@ const ProjectBranching = ({
   // GitLab Compare
   const {
     data: glCompare,
-    isLoading: isGlLoading,
+    isLoading: _isGlLoading,
     isFetching: isGlFetching,
     refetch: refetchGlCompare,
   } = useCompareGitLabBranchQuery(
@@ -258,10 +260,10 @@ const ProjectBranching = ({
 
   const isPermissionError = (error: any) => {
     if (!error) return false;
-    const message = error?.data?.message || error?.message || "";
+    const message = errorMessageOr(error, "");
     return (
       message.includes("Resource not accessible by integration") ||
-      error?.status === 403 ||
+      errorStatus(error) === 403 ||
       error?.data?.status === 403 ||
       error?.data?.status === "403"
     );
@@ -329,16 +331,17 @@ const ProjectBranching = ({
         );
       }
       setIsOpen(false);
-    } catch (error: any) {
-      console.error("PR Creation Error:", error);
+    } catch (error) {
+      logger.error("PR Creation Error:", error);
 
       if (isPermissionError(error)) {
         showPermissionToast();
       } else {
         toast.error(
-          error?.data?.message ||
-            error?.message ||
+          errorMessageOr(
+            error,
             tProjectBranching("error_create", { type: "Pull Request" }),
+          ),
         );
       }
     }
@@ -380,15 +383,11 @@ const ProjectBranching = ({
           refetchGhPulls();
         }
       }
-    } catch (error: any) {
+    } catch (error) {
       if (isPermissionError(error)) {
         showPermissionToast();
       } else {
-        toast.error(
-          error?.data?.message ||
-            error?.message ||
-            tProjectBranching("error_merge"),
-        );
+        toast.error(errorMessageOr(error, tProjectBranching("error_merge")));
       }
     }
   };

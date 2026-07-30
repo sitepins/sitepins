@@ -1,5 +1,6 @@
 "use client";
 
+import { logger } from "@/lib/logger";
 import { Button } from "@/components/ui/button";
 import { CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -34,12 +35,12 @@ export function SocialAuth({
             router.refresh();
           },
           onError: (error) => {
-            console.error("Google sign-in error:", error);
+            logger.error("Google sign-in error:", error);
           },
         },
       );
     } catch (error) {
-      console.error("Google sign-in failed:", error);
+      logger.error("Google sign-in failed:", error);
     }
   };
 
@@ -60,12 +61,12 @@ export function SocialAuth({
             router.refresh();
           },
           onError: (error) => {
-            console.error("GitHub sign-in error:", error);
+            logger.error("GitHub sign-in error:", error);
           },
         },
       );
     } catch (error) {
-      console.error("GitHub sign-in failed:", error);
+      logger.error("GitHub sign-in failed:", error);
     }
   };
 

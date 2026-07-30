@@ -1,14 +1,26 @@
 import { authClient } from "@/lib/auth/auth-client";
 import { IS_DEMO, SCHEMA_FOLDER } from "@/lib/constant";
+import { logger } from "@/lib/logger";
 import { checkMedia } from "@/lib/utils/check-media-file";
 import { parseContentJson } from "@/lib/utils/content-serializer";
+import { errorMessageOr, errorStatus } from "@/lib/utils/error";
 import { fmDetector } from "@/lib/utils/frontmatter-detector";
-import { dedupeFiles, filterUploadableFiles } from "@/lib/utils/git-utils";
+import {
+  createGitCommitMessage,
+  getGitAuthDetails,
+} from "@/lib/utils/git-utils";
 import { pathToDir } from "@/lib/utils/path-to-dir";
 import { RootState } from "@/redux/store";
 import path from "path";
 import { toast } from "sonner";
 import { updateConfig } from "../config/slice";
+import {
+  coAuthorOf,
+  createCommitTokenSession,
+  prepareCommit,
+  resolveCommitAuthor,
+  resolveImpersonatePreference,
+} from "../git/commit-session";
 import { userPreferenceApi } from "../user-preference/user-preference-api";
 import { encodeProjectPath, gitlabApi } from "./gitlab-api";
 import { gitlabContentApi } from "./gitlab-content-api";
@@ -18,16 +30,6 @@ import {
   TGitLabCreateCommitResponse,
   TGitLabPipeline,
 } from "./gitlab-type";
-
-// ============================================================================
-// HELPER FUNCTIONS
-// ============================================================================
-
-import {
-  createGitCommitMessage,
-  getGitAuthDetails,
-  normalizeDeleteCommitMessage,
-} from "@/lib/utils/git-utils";
 
 /**
  * Convert file operations to GitLab commit actions
@@ -138,127 +140,54 @@ export const gitlabCommitApi = gitlabApi.injectEndpoints({
         _extraOptions,
         fetchWithBQ,
       ) {
-        const filteredFiles = filterUploadableFiles(dedupeFiles(files));
-        const effectiveMessage = normalizeDeleteCommitMessage(
-          message,
-          filteredFiles,
-        );
-
-        if (filteredFiles.length === 0) {
+        const prepared = prepareCommit(files, message);
+        if (!prepared) {
           return { data: null };
         }
+        const { files: filteredFiles, message: effectiveMessage } = prepared;
 
         const { config: storeConfig } = getState() as RootState;
 
-        // Helper to track whether to use user token (may switch to false on permission errors)
-        let useUserToken = Boolean(storeConfig.currentLoginUserToken);
-        const getToken = () =>
-          useUserToken ? storeConfig.currentLoginUserToken : storeConfig.token;
+        const session = createCommitTokenSession(
+          storeConfig.currentLoginUserToken,
+          storeConfig.token,
+        );
 
-        // Fetch user preference for co-authoring
-        let impersonate = false;
-        try {
-          const resolvedSession = await authClient.getSession();
-          const userId = resolvedSession?.data?.user?.user_id;
-          if (userId) {
-            // @ts-ignore - initiate is allowed here
-            const prefResult = await dispatch(
-              userPreferenceApi.endpoints.getUserPreference.initiate(userId),
-            );
-            impersonate = prefResult.data?.impersonate ?? false;
-          }
-        } catch (e) {
-          console.warn("Failed to fetch user preferences", e);
-        }
-
-        // Helper to check if error is permission-related
-        const isPermissionError = (error: any) => {
-          const status = error?.status || error?.response?.status;
-          const statusNum = Number(status);
-          return statusNum === 401 || statusNum === 403;
-        };
+        const impersonate = await resolveImpersonatePreference(dispatch);
 
         try {
           if (IS_DEMO) {
             return { data: null };
           }
 
-          const resolvedSession = await authClient.getSession();
-          const sessionUser = resolvedSession?.data?.user;
-
-          let userResult = useUserToken
-            ? await fetchWithBQ({
-                endpoint: "/user",
-                token: storeConfig.currentLoginUserToken,
-              })
-            : {
-                data: {
-                  username: sessionUser?.full_name
-                    ?.replaceAll(" ", "")
-                    .toLowerCase(),
-                  email: sessionUser?.email,
-                  name: sessionUser?.full_name,
-                },
+          const author = await resolveCommitAuthor({
+            session,
+            fetchUser: (token) => fetchWithBQ({ endpoint: "/user", token }),
+            mapUser: (data) => {
+              const user = data as {
+                name?: string;
+                username?: string;
+                email?: string;
               };
-
-          // Retry with session if user token fails with permission error
-          if (
-            userResult.error &&
-            isPermissionError(userResult.error) &&
-            useUserToken
-          ) {
-            useUserToken = false;
-            userResult = {
-              data: {
-                username: sessionUser?.full_name
-                  ?.replaceAll(" ", "")
-                  .toLowerCase(),
-                email: sessionUser?.email,
-                name: sessionUser?.full_name,
-              },
-            };
-          }
-
-          if (!userResult.data) {
-            throw new Error("Failed to fetch user details.");
-          }
-
-          const userData = userResult.data as {
-            username?: string;
-            email?: string;
-            name?: string;
-          };
+              return { name: user.name || user.username, email: user.email };
+            },
+          });
 
           const auth_details = getGitAuthDetails("Gitlab");
 
           let existingFiles = new Set<string>();
           try {
-            let treeResult = await fetchWithBQ({
-              endpoint: `/projects/${encodeProjectPath(String(id))}/repository/tree`,
-              params: {
-                ref: branch,
-                recursive: true,
-                per_page: 1000,
-                ...(getToken() && { token: getToken() }),
-              },
-            });
-
-            // Retry with bot identity if permission error
-            if (
-              treeResult.error &&
-              isPermissionError(treeResult.error) &&
-              useUserToken
-            ) {
-              useUserToken = false;
-              treeResult = await fetchWithBQ({
+            const treeResult = await session.run((token) =>
+              fetchWithBQ({
                 endpoint: `/projects/${encodeProjectPath(String(id))}/repository/tree`,
                 params: {
                   ref: branch,
                   recursive: true,
                   per_page: 1000,
+                  ...(token && { token }),
                 },
-              });
-            }
+              }),
+            );
 
             if (treeResult.data && Array.isArray(treeResult.data)) {
               existingFiles = new Set(
@@ -267,77 +196,48 @@ export const gitlabCommitApi = gitlabApi.injectEndpoints({
                   .map((item) => item.path),
               );
             }
-          } catch (_e) {
+          } catch {
             // If tree fetch fails, assume all files are new
           }
 
           const actions = convertToGitLabActions(filteredFiles, existingFiles);
 
-          const commitMessage = createGitCommitMessage(
-            `${effectiveMessage} by Sitepins`,
-            description,
-            !impersonate && useUserToken
-              ? userData.name || userData.username
-              : undefined,
-            !impersonate && useUserToken ? userData.email : undefined,
-            "Gitlab",
-          );
-
-          let commitResult = await fetchWithBQ({
-            endpoint: `/projects/${encodeProjectPath(String(id))}/repository/commits`,
-            method: "POST",
-            body: {
-              branch,
-              commit_message: commitMessage,
-              author_email: auth_details.email,
-              author_name: auth_details.name,
-              actions,
-              ...(getToken() && { token: getToken() }),
-            },
-          });
-
-          // Retry with bot identity if permission error
-          if (
-            commitResult.error &&
-            isPermissionError(commitResult.error) &&
-            useUserToken
-          ) {
-            useUserToken = false;
-            // Re-generate commit message without co-author on fallback
-            const fallbackCommitMessage = createGitCommitMessage(
-              `${effectiveMessage} by Sitepins`,
-              description,
-              undefined,
-              undefined,
-              "Gitlab",
-            );
-
-            commitResult = await fetchWithBQ({
+          // The message is rebuilt per attempt: once the retry drops to the
+          // app identity, `coAuthorOf` stops emitting the co-author trailer.
+          const commitResult = await session.run((token) => {
+            const coAuthor = coAuthorOf(author, { impersonate, session });
+            return fetchWithBQ({
               endpoint: `/projects/${encodeProjectPath(String(id))}/repository/commits`,
               method: "POST",
               body: {
                 branch,
-                commit_message: fallbackCommitMessage,
+                commit_message: createGitCommitMessage(
+                  `${effectiveMessage} by Sitepins`,
+                  description,
+                  coAuthor.name,
+                  coAuthor.email,
+                  "Gitlab",
+                ),
                 author_email: auth_details.email,
                 author_name: auth_details.name,
                 actions,
-                ...(getToken() && { token: getToken() }),
+                ...(token && { token }),
               },
             });
-          }
+          });
 
           if (!commitResult.data) {
             const error = commitResult.error as
               { message?: string } | undefined;
             throw new Error(
-              error?.message || "Failed to create commit in GitLab.",
+              errorMessageOr(error, "Failed to create commit in GitLab."),
             );
           }
 
           return { data: commitResult.data as TGitLabCreateCommitResponse };
         } catch (error: unknown) {
           const err = error as Error;
-          console.error("GitLab commit error:", err.message || err);
+          logger.error("GitLab commit error:", err.message || err);
           return {
             error: {
               status: 500,
@@ -378,7 +278,7 @@ export const gitlabCommitApi = gitlabApi.injectEndpoints({
                     () => undefined as unknown as Record<string, unknown>,
                   ),
                 );
-              } catch (_e) {
+              } catch {
                 // Ignore cache update errors
               }
             } else if (file.path === ".sitepins/config.json" && file.content) {
@@ -403,7 +303,7 @@ export const gitlabCommitApi = gitlabApi.injectEndpoints({
                     },
                   ),
                 );
-              } catch (_e) {
+              } catch {
                 // Ignore parse errors
               }
             } else if (file.path.startsWith(storeConfig.content) && IS_DEMO) {
@@ -527,12 +427,12 @@ export const gitlabCommitApi = gitlabApi.injectEndpoints({
             impersonate = prefResult.data?.impersonate ?? false;
           }
         } catch (e) {
-          console.warn("Failed to fetch user preferences", e);
+          logger.warn("Failed to fetch user preferences", e);
         }
 
         // Helper to check if error is permission-related
         const isPermissionError = (error: any) => {
-          const status = error?.status || error?.response?.status;
+          const status = errorStatus(error) || error?.response?.status;
           const statusNum = Number(status);
           return statusNum === 401 || statusNum === 403;
         };
@@ -629,7 +529,7 @@ export const gitlabCommitApi = gitlabApi.injectEndpoints({
             previous_path: file.path,
           }));
 
-          const hasUserToken = Boolean(storeConfig.currentLoginUserToken);
+          const _hasUserToken = Boolean(storeConfig.currentLoginUserToken);
           const commitMessage = createGitCommitMessage(
             `${message} by Sitepins`,
             description,
@@ -769,7 +669,7 @@ export const gitlabCommitApi = gitlabApi.injectEndpoints({
         fetchWithBQ,
       ) {
         try {
-          console.log(
+          logger.debug(
             `[GitLab Revert RTK] Starting reset operation for ${branch}`,
           );
 
@@ -811,7 +711,7 @@ export const gitlabCommitApi = gitlabApi.injectEndpoints({
 
           // Use safe, diff-based reset for all branches (default and non-default)
           // This creates a new commit to restore project state, preserving history and avoiding branch deletion risk.
-          console.log(
+          logger.debug(
             `[GitLab Revert RTK] Using safe diff-based reset for branch: ${branch}`,
           );
 
@@ -881,7 +781,7 @@ export const gitlabCommitApi = gitlabApi.injectEndpoints({
                 if (!isMedia && fileData.encoding === "base64") {
                   try {
                     content = Buffer.from(content, "base64").toString("utf-8");
-                  } catch (_e) {}
+                  } catch {}
                 }
 
                 actions.push({
@@ -914,7 +814,7 @@ export const gitlabCommitApi = gitlabApi.injectEndpoints({
                 if (!isMedia && fileData.encoding === "base64") {
                   try {
                     content = Buffer.from(content, "base64").toString("utf-8");
-                  } catch (_e) {}
+                  } catch {}
                 }
 
                 actions.push({
@@ -941,7 +841,7 @@ export const gitlabCommitApi = gitlabApi.injectEndpoints({
                 if (!isMedia && fileData.encoding === "base64") {
                   try {
                     content = Buffer.from(content, "base64").toString("utf-8");
-                  } catch (_e) {}
+                  } catch {}
                 }
 
                 actions.push({
@@ -994,11 +894,11 @@ export const gitlabCommitApi = gitlabApi.injectEndpoints({
               message: commit.message,
             },
           };
-        } catch (error: any) {
+        } catch (error) {
           return {
             error: {
-              status: error?.status || 500,
-              message: error?.message || "Failed to revert commit",
+              status: errorStatus(error) || 500,
+              message: errorMessageOr(error, "Failed to revert commit"),
             },
           };
         }
@@ -1015,7 +915,7 @@ export const gitlabCommitApi = gitlabApi.injectEndpoints({
               "GitLabBranches",
             ]),
           );
-        } catch (e) {
+        } catch {
           // Error handled by component
         }
       },

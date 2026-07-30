@@ -67,7 +67,7 @@ export const JsxInlineKit = createPlatePlugin({
 
           return true; // Prevent default behavior
         }
-      } catch (e) {
+      } catch {
         return false;
       }
 

@@ -1,3 +1,4 @@
+import { logger } from "@/lib/logger";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -8,7 +9,6 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Badge } from "@/components/ui/badge";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -18,53 +18,24 @@ import {
 } from "@/components/ui/breadcrumb";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { ColorPicker } from "@/components/ui/color-picker";
-import {
-  Combobox,
-  ComboboxChip,
-  ComboboxChips,
-  ComboboxChipsInput,
-  ComboboxContent,
-  ComboboxEmpty,
-  ComboboxItem,
-  ComboboxList,
-  useComboboxAnchor,
-} from "@/components/ui/combobox";
+import {} from "@/components/ui/combobox";
 import { DateTimePicker } from "@/components/ui/date-time-picker";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import {} from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { deepClone } from "@/editor/utils/plate-utils";
 import { cn } from "@/lib/utils/cn";
-import { parseContentJson } from "@/lib/utils/content-serializer";
 import { ISODate } from "@/lib/utils/date-format";
-import { fmDetector } from "@/lib/utils/frontmatter-detector";
-import {
-  isGitHubProvider,
-  isGitLabProvider,
-} from "@/lib/utils/provider-checker";
+import {} from "@/lib/utils/provider-checker";
 import { Template } from "@/lib/utils/schema-helpers";
 import { plainify } from "@/lib/utils/text-converter";
-import { selectConfig } from "@/redux/features/config/slice";
-import {
-  useGetGitHubContentQuery,
-  useGetGitHubTreesQuery,
-  useLazyGetGitHubContentQuery,
-} from "@/redux/features/github";
-import {
-  useGetGitLabContentQuery,
-  useGetGitLabTreesQuery,
-  useLazyGetGitLabContentQuery,
-} from "@/redux/features/gitlab";
-import { useAppSelector } from "@/redux/store";
 import { TField, TState } from "@/types";
+import { Description, PreviewLabel } from "./frontmatter-field-label";
+import {
+  ReferenceDropdown,
+  ReferenceMultiSelect,
+} from "./frontmatter-reference-field";
 import { Copy, PenLine, Plus, Trash2, Undo2 } from "lucide-react";
 import { AnimatePresence, Reorder, Variants, motion } from "motion/react";
 import { useTranslations } from "next-intl";
@@ -73,8 +44,6 @@ import {
   Fragment,
   KeyboardEvent,
   SetStateAction,
-  useEffect,
-  useMemo,
   useRef,
   useState,
 } from "react";
@@ -172,422 +141,52 @@ const createNewItem = (fields: TField[]) => {
     return "";
   }
 
-  return fields.reduce((acc, field) => {
-    switch (field.type) {
-      case "string":
-        acc[field.name] = { value: "", id: crypto.randomUUID() }; // Initialize as an object with a default `value`
-        break;
-      case "number":
-        acc[field.name] = {
-          value: 0, // Default to 0
-          id: crypto.randomUUID(),
-        };
-        break;
-      case "Date":
-        acc[field.name] = {
-          value: new ISODate(new Date()),
-          id: crypto.randomUUID(),
-        };
-        break;
-      case "media":
-        acc[field.name] = {
-          value: "",
-          id: crypto.randomUUID(),
-        }; // Default to empty string
-        break;
-      case "gallery":
-        break;
-      case "Array":
-        acc[field.name] = field.fields ? [createNewItem(field.fields)] : [];
-        break;
-      case "object":
-        // If the field is an object with nested fields, call createNewItem recursively
-        acc[field.name] = field.fields ? createNewItem(field.fields) : {};
-        break;
-    }
-    return acc;
-  }, {} as any);
+  return fields.reduce(
+    (acc, field) => {
+      switch (field.type) {
+        case "string":
+          acc[field.name] = { value: "", id: crypto.randomUUID() }; // Initialize as an object with a default `value`
+          break;
+        case "number":
+          acc[field.name] = {
+            value: 0, // Default to 0
+            id: crypto.randomUUID(),
+          };
+          break;
+        case "Date":
+          acc[field.name] = {
+            value: new ISODate(new Date()),
+            id: crypto.randomUUID(),
+          };
+          break;
+        case "media":
+          acc[field.name] = {
+            value: "",
+            id: crypto.randomUUID(),
+          }; // Default to empty string
+          break;
+        case "gallery":
+          break;
+        case "Array":
+          acc[field.name] = field.fields ? [createNewItem(field.fields)] : [];
+          break;
+        case "object":
+          // If the field is an object with nested fields, call createNewItem recursively
+          acc[field.name] = field.fields ? createNewItem(field.fields) : {};
+          break;
+      }
+      return acc;
+    },
+    {} as Record<string, unknown>,
+  );
 };
 
-function matchPattern(str: string, pattern: string) {
-  if (!pattern) return true;
-  const regexPattern = pattern
-    .replace(/\./g, "\\.")
-    .replace(/\*/g, ".*")
-    .replace(/\?/g, ".");
-  return new RegExp(`^${regexPattern}$`).test(str);
-}
-
-function useReferenceOptions(item: Template) {
-  const config = useAppSelector(selectConfig);
-
-  // Tree queries for folders
-  const { data: ghTreeData, isFetching: ghTreeFetching } =
-    useGetGitHubTreesQuery(
-      {
-        owner: config.owner,
-        repo: config.repoName,
-        tree_sha: config.branch,
-        recursive: "1",
-        config: config,
-      },
-      {
-        skip:
-          item.referenceType !== "folder" ||
-          !config.token ||
-          !isGitHubProvider(config.provider),
-      },
-    );
-
-  const { data: glTreeData, isFetching: glTreeFetching } =
-    useGetGitLabTreesQuery(
-      {
-        id: config.repoName
-          ? `${config.owner}/${config.repoName}`
-          : config.owner,
-        ref: config.branch,
-        recursive: true,
-        config: config,
-      },
-      {
-        skip:
-          item.referenceType !== "folder" ||
-          !config.token ||
-          !isGitLabProvider(config.provider),
-      },
-    );
-
-  // Content queries for single files
-  const { data: ghContentData, isFetching: ghContentFetching } =
-    useGetGitHubContentQuery(
-      {
-        owner: config.owner,
-        repo: config.repoName,
-        path: item.referencePath || "",
-        ref: config.branch,
-        config: config,
-      },
-      {
-        skip:
-          item.referenceType !== "file" ||
-          !item.referencePath ||
-          !config.token ||
-          !isGitHubProvider(config.provider),
-      },
-    );
-
-  const { data: glContentData, isFetching: glContentFetching } =
-    useGetGitLabContentQuery(
-      {
-        id: config.repoName
-          ? `${config.owner}/${config.repoName}`
-          : config.owner,
-        file_path: item.referencePath || "",
-        ref: config.branch,
-      },
-      {
-        skip:
-          item.referenceType !== "file" ||
-          !item.referencePath ||
-          !config.token ||
-          !isGitLabProvider(config.provider),
-      },
-    );
-
-  const [lazyGetGhContent] = useLazyGetGitHubContentQuery();
-  const [lazyGetGlContent] = useLazyGetGitLabContentQuery();
-  const [folderFieldOptions, setFolderFieldOptions] = useState<
-    Record<string, string>
-  >({});
-
-  const trees = useMemo(() => {
-    return (
-      (isGitLabProvider(config.provider)
-        ? glTreeData?.files
-        : ghTreeData?.files) || []
-    );
-  }, [config.provider, glTreeData, ghTreeData]);
-
-  const folderFiles = useMemo(() => {
-    if (item.referenceType !== "folder") return [];
-    return trees
-      .filter(
-        (t) =>
-          t.type === "blob" && t.path?.startsWith(item.referencePath + "/"),
-      )
-      .filter((t) => {
-        const pathStr = t.path || "";
-        const name = pathStr.replace(item.referencePath + "/", "") || "";
-        if (!name) return false;
-        if (item.referenceExclude && matchPattern(name, item.referenceExclude))
-          return false;
-        if (item.referenceInclude && !matchPattern(name, item.referenceInclude))
-          return false;
-        return true;
-      });
-  }, [
-    item.referenceType,
-    item.referencePath,
-    item.referenceExclude,
-    item.referenceInclude,
-    trees,
-  ]);
-
-  useEffect(() => {
-    if (
-      item.referenceType === "folder" &&
-      item.referenceField &&
-      folderFiles.length > 0
-    ) {
-      const fetchFields = async () => {
-        const newOptions: Record<string, string> = {};
-        const limitedFiles = folderFiles.slice(0, 20); // Limit to 20 files for safety
-
-        await Promise.all(
-          limitedFiles.map(async (file) => {
-            try {
-              let contentStr = "";
-              if (isGitHubProvider(config.provider)) {
-                const res = await lazyGetGhContent({
-                  owner: config.owner,
-                  repo: config.repoName,
-                  path: file.path!,
-                  ref: config.branch,
-                  config: config,
-                }).unwrap();
-                if (typeof res?.data === "string") {
-                  contentStr = res.data;
-                } else if (res?.content) {
-                  contentStr = decodeURIComponent(
-                    escape(atob(res.content.replace(/\n/g, ""))),
-                  );
-                }
-              } else if (isGitLabProvider(config.provider)) {
-                const res = await lazyGetGlContent({
-                  id: config.repoName
-                    ? `${config.owner}/${config.repoName}`
-                    : config.owner,
-                  file_path: file.path!,
-                  ref: config.branch,
-                }).unwrap();
-                if (typeof res?.data === "string") {
-                  contentStr = res.data;
-                } else if (res?.content) {
-                  contentStr = decodeURIComponent(
-                    escape(atob((res.content as string).replace(/\n/g, ""))),
-                  );
-                }
-              }
-
-              if (contentStr) {
-                const format = fmDetector(
-                  contentStr,
-                  file.path?.split(".").pop(),
-                );
-                const parsed = parseContentJson(contentStr, format);
-                const fieldToFetch =
-                  item.referenceField === "___slug___"
-                    ? "slug"
-                    : item.referenceField;
-                if (parsed?.data && parsed.data[fieldToFetch!]) {
-                  newOptions[file.path!] = String(parsed.data[fieldToFetch!]);
-                }
-              }
-            } catch (e) {
-              console.error("Failed to fetch folder field", e);
-            }
-          }),
-        );
-        setFolderFieldOptions(newOptions);
-      };
-      fetchFields();
-    }
-  }, [
-    item.referenceField,
-    item.referenceType,
-    folderFiles,
-    config,
-    lazyGetGhContent,
-    lazyGetGlContent,
-  ]);
-
-  let options: { label: string; value: string }[] = [];
-  const isFetching =
-    ghTreeFetching || glTreeFetching || ghContentFetching || glContentFetching;
-
-  if (item.referenceType === "static" || !item.referenceType) {
-    options = (item.options || []).map((opt) => ({ label: opt, value: opt }));
-  } else if (item.referenceType === "folder") {
-    options = folderFiles.map((t) => {
-      const pathStr = t.path || "";
-      const filename = pathStr.replace(item.referencePath + "/", "") || "";
-      let label = "";
-      if (item.referenceField === "___slug___") {
-        const generatedSlug = filename.replace(/\.[^/.]+$/, "");
-        label = folderFieldOptions[pathStr] || generatedSlug;
-      } else {
-        label = folderFieldOptions[pathStr] || filename;
-      }
-      return { label, value: label };
-    });
-  } else if (item.referenceType === "file") {
-    try {
-      let rawContent = "";
-      if (
-        isGitHubProvider(config.provider) &&
-        typeof ghContentData?.data === "string"
-      ) {
-        rawContent = ghContentData.data;
-      } else if (isGitHubProvider(config.provider) && ghContentData?.content) {
-        rawContent = decodeURIComponent(
-          escape(atob((ghContentData.content as string).replace(/\n/g, ""))),
-        );
-      } else if (
-        isGitLabProvider(config.provider) &&
-        typeof glContentData?.data === "string"
-      ) {
-        rawContent = glContentData.data;
-      } else if (isGitLabProvider(config.provider) && glContentData?.content) {
-        rawContent = decodeURIComponent(
-          escape(atob((glContentData.content as string).replace(/\n/g, ""))),
-        );
-      }
-
-      if (rawContent) {
-        const format = fmDetector(
-          rawContent,
-          item.referencePath?.split(".").pop(),
-        );
-        const parsedResult = parseContentJson(rawContent, format);
-        const data = parsedResult?.data;
-
-        if (Array.isArray(data)) {
-          if (data.every((v) => typeof v === "string")) {
-            options = data.map((s) => ({ label: s, value: s }));
-          }
-        } else if (data && typeof data === "object") {
-          if (item.referenceField && data[item.referenceField]) {
-            const fieldData = data[item.referenceField];
-            if (
-              Array.isArray(fieldData) &&
-              fieldData.every((v) => typeof v === "string")
-            ) {
-              options = fieldData.map((s: string) => ({ label: s, value: s }));
-            }
-          } else {
-            const stringArrayEntry = Object.entries(data).find(
-              ([, v]) =>
-                Array.isArray(v) &&
-                (v as any[]).every((i) => typeof i === "string"),
-            );
-            if (stringArrayEntry) {
-              options = (stringArrayEntry[1] as string[]).map((s) => ({
-                label: s,
-                value: s,
-              }));
-            }
-          }
-        }
-      }
-    } catch (e) {
-      console.error("Failed to parse reference file", e);
-    }
-  }
-
-  return { options, isFetching };
-}
-
-function ReferenceDropdown({
-  item,
-  value,
-  onChange,
-}: {
-  item: Template;
-  value: string;
-  onChange: (value: string) => void;
-}) {
-  const { options, isFetching } = useReferenceOptions(item);
-  const tEditor = useTranslations("editor");
-
-  return (
-    <Select value={value || ""} onValueChange={onChange}>
-      <SelectTrigger disabled={isFetching}>
-        <SelectValue
-          placeholder={
-            isFetching
-              ? tEditor("renderer.loading_options")
-              : tEditor("renderer.select_an_option")
-          }
-        />
-      </SelectTrigger>
-      <SelectContent>
-        {options.map((opt, index) => (
-          <SelectItem key={index} value={opt.value}>
-            {opt.label}
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
-  );
-}
-
-function ReferenceMultiSelect({
-  item,
-  value,
-  onChange,
-}: {
-  item: Template;
-  value: { id: string; value: string }[];
-  onChange: (value: { id: string; value: string }[]) => void;
-}) {
-  const { options, isFetching } = useReferenceOptions(item);
-  const tEditor = useTranslations("editor");
-  const selectedValues = (value || []).map((v) => v.value);
-  const anchor = useComboboxAnchor();
-
-  return (
-    <Combobox
-      multiple
-      value={selectedValues}
-      onValueChange={(newValues: string[]) => {
-        const updated = newValues.map((val) => {
-          const existing = (value || []).find((v) => v.value === val);
-          return existing || { id: crypto.randomUUID(), value: val };
-        });
-        onChange(updated);
-      }}
-      items={options.map((o) => o.value)}
-    >
-      <ComboboxChips ref={anchor} className="min-h-10">
-        {selectedValues.map((val) => (
-          <ComboboxChip key={val}>
-            {options.find((o) => o.value === val)?.label || val}
-          </ComboboxChip>
-        ))}
-        <ComboboxChipsInput
-          placeholder={
-            isFetching
-              ? tEditor("renderer.loading")
-              : tEditor("renderer.select_options")
-          }
-        />
-      </ComboboxChips>
-      <ComboboxContent anchor={anchor}>
-        <ComboboxEmpty>{tEditor("renderer.no_items_found")}</ComboboxEmpty>
-        <ComboboxList>
-          {(v: string) => {
-            const opt = options.find((o) => o.value === v);
-            return (
-              <ComboboxItem key={v} value={v}>
-                {opt?.label || v}
-              </ComboboxItem>
-            );
-          }}
-        </ComboboxList>
-      </ComboboxContent>
-    </Combobox>
-  );
-}
+/**
+ * A node inside the `{ id, value }`-wrapped frontmatter blob. The element type
+ * bottoms out at `TState["data"]`'s index signature, so tightening this means
+ * typing the form-state model rather than these traversal helpers.
+ */
+type FormNode = TState["data"][string];
 
 export default function FrontmatterRenderer({
   schema,
@@ -620,7 +219,7 @@ export default function FrontmatterRenderer({
   const [duplicateInput, setDuplicateInput] = useState("");
   const [duplicateError, setDuplicateError] = useState<string | null>(null);
 
-  function handleUpdateData(name: string, newValue: any) {
+  function handleUpdateData(name: string, newValue: unknown) {
     // Create a deep copy of the data to avoid modifying the original
     const result = deepClone(data);
 
@@ -628,7 +227,7 @@ export default function FrontmatterRenderer({
     const segments = name.split(/[\.\[\]]+/).filter(Boolean);
 
     if (segments.length === 0) {
-      console.error("Invalid path: empty segments");
+      logger.error("Invalid path: empty segments");
       return;
     }
 
@@ -662,8 +261,8 @@ export default function FrontmatterRenderer({
     // Helper function to find field definition in schema recursively
     const findFieldInSchema = (
       fieldName: string,
-      currentSchema: any[],
-    ): any => {
+      currentSchema: TField[],
+    ): TField | null => {
       for (const field of currentSchema) {
         if (field.name === fieldName) {
           return field;
@@ -691,7 +290,7 @@ export default function FrontmatterRenderer({
         const index = Number(segment);
 
         if (!Array.isArray(current)) {
-          console.error(
+          logger.error(
             `Expected array but got ${typeof current} at segment ${segment}`,
           );
           return;
@@ -817,7 +416,8 @@ export default function FrontmatterRenderer({
   }
 
   // Helper function to access nested data based on breadcrumb
-  const getNestedValue = (breadcrumb: Breadcrumb[], data: any): any => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- see FormNode
+  const getNestedValue = (breadcrumb: Breadcrumb[], data: FormNode): any => {
     return breadcrumb.slice(1).reduce((acc, curr) => {
       if (!acc) return undefined;
 
@@ -904,7 +504,7 @@ export default function FrontmatterRenderer({
     // Handle Array type differently by adding an index to the breadcrumb
     if (parent && (index ?? -1) > -1) {
       if (!isNested) {
-        setBreadcrumb((prevBreadcrumb) => [
+        setBreadcrumb((_prevBreadcrumb) => [
           { name: "Root", label: tEditor("renderer.root") },
           { name: item.name, label: parent.label },
           {
@@ -921,12 +521,11 @@ export default function FrontmatterRenderer({
           { name: index?.toString() ?? "", label: label!, index: true },
         ]);
       }
-      show: false;
     } else if (!isNested) {
       // Non-nested navigation (
       // resetting to root + selected item)
 
-      setBreadcrumb((prevBreadcrumb) => [
+      setBreadcrumb((_prevBreadcrumb) => [
         { name: "Root", label: tEditor("renderer.root") },
         { name: item.name, label: label ?? item.label },
       ]);
@@ -947,7 +546,7 @@ export default function FrontmatterRenderer({
         : deepClone(data);
 
     // Helper to unwrap {id, value} objects
-    const unwrap = (obj: any): any => {
+    const unwrap = (obj: FormNode): FormNode => {
       if (
         obj &&
         typeof obj === "object" &&
@@ -1014,7 +613,7 @@ export default function FrontmatterRenderer({
     let current = result;
 
     // Helper function to unwrap {id, value} objects
-    const unwrap = (obj: any): any => {
+    const unwrap = (obj: FormNode): FormNode => {
       if (obj && typeof obj === "object" && "id" in obj && "value" in obj) {
         return obj.value;
       }
@@ -1051,7 +650,7 @@ export default function FrontmatterRenderer({
     });
   }
 
-  function regenerateIds(obj: any) {
+  function regenerateIds(obj: FormNode) {
     if (!obj || typeof obj !== "object") return;
     if (Array.isArray(obj)) {
       for (const item of obj) regenerateIds(item);
@@ -1148,7 +747,7 @@ export default function FrontmatterRenderer({
     // If we're rendering root level, also include any keys present in `data` that
     // are not described in `schema` (dynamic TOML table keys). We infer a simple
     // field shape so they can be duplicated and navigated into immediately.
-    const inferFieldsFromObject = (obj: any): TField[] => {
+    const inferFieldsFromObject = (obj: FormNode): TField[] => {
       if (!obj || typeof obj !== "object") return [];
 
       // If this object is a wrapper like { id: string, value: { ... } },
@@ -1177,11 +776,11 @@ export default function FrontmatterRenderer({
         return Object.keys(obj).map((childKey) => {
           const childVal = obj[childKey];
           const inner = childVal?.value;
-          let type: TField["type"] = "string" as any;
-          if (typeof inner === "number") type = "number" as any;
-          else if (typeof inner === "boolean") type = "boolean" as any;
-          else if (Array.isArray(inner)) type = "Array" as any;
-          else if (inner && typeof inner === "object") type = "object" as any;
+          let type: TField["type"] = "string";
+          if (typeof inner === "number") type = "number";
+          else if (typeof inner === "boolean") type = "boolean";
+          else if (Array.isArray(inner)) type = "Array";
+          else if (inner && typeof inner === "object") type = "object";
 
           return {
             name: childKey,
@@ -1194,11 +793,11 @@ export default function FrontmatterRenderer({
       // Fallback: infer at top level based on raw value types
       return Object.keys(obj).map((k) => {
         const val = obj[k];
-        let type: TField["type"] = "string" as any;
-        if (typeof val === "number") type = "number" as any;
-        else if (typeof val === "boolean") type = "boolean" as any;
-        else if (Array.isArray(val)) type = "Array" as any;
-        else if (val && typeof val === "object") type = "object" as any;
+        let type: TField["type"] = "string";
+        if (typeof val === "number") type = "number";
+        else if (typeof val === "boolean") type = "boolean";
+        else if (Array.isArray(val)) type = "Array";
+        else if (val && typeof val === "object") type = "object";
         return {
           name: k,
           label: k,
@@ -1209,7 +808,7 @@ export default function FrontmatterRenderer({
 
     const virtualItems: TField[] = [];
     if (!isNested && !strictMode) {
-      const rootData = (data as any) || {};
+      const rootData = data ?? {};
       Object.keys(rootData).forEach((key) => {
         if (!schema.some((s) => s.name === key)) {
           virtualItems.push({
@@ -1401,7 +1000,7 @@ export default function FrontmatterRenderer({
                 );
               }
 
-              const isDropdown = (item as any).isDropdown;
+              const isDropdown = item.isDropdown;
 
               if (isDropdown) {
                 // Render as dropdown
@@ -1558,7 +1157,7 @@ export default function FrontmatterRenderer({
                       variant={"outline"}
                       type="button"
                       size={"icon"}
-                      onClick={(e) => {
+                      onClick={(_e) => {
                         addItemToArray(
                           item,
                           generateName({
@@ -1632,8 +1231,8 @@ export default function FrontmatterRenderer({
               );
             } else if (item.type === "Array") {
               const values = currentData?.[item.name] ?? [];
-              const isDropdown = (item as any).isDropdown;
-              const subType = (item as any).subType;
+              const isDropdown = item.isDropdown;
+              const subType = item.subType;
 
               if (isDropdown && subType === "string") {
                 return (
@@ -1670,7 +1269,7 @@ export default function FrontmatterRenderer({
                         variant={"outline"}
                         type="button"
                         size={"icon"}
-                        onClick={(e) => {
+                        onClick={(_e) => {
                           addItemToArray(
                             item,
                             generateName({
@@ -1705,7 +1304,7 @@ export default function FrontmatterRenderer({
                           }}
                           values={values || []}
                         >
-                          {values?.map((v: any, index: number) => {
+                          {values?.map((v: FormNode, index: number) => {
                             const key = v.id;
                             const currentVal = v;
                             v = item.fields ? v.value : v;
@@ -1843,7 +1442,7 @@ export default function FrontmatterRenderer({
                             // Prepare and open dialog
                             const rootKey = item.name;
                             // suggest a non-colliding default
-                            const existing = (data as any) || {};
+                            const existing = data ?? {};
                             let suggested = `${rootKey}_copy`;
                             let counter = 1;
                             while (suggested in existing) {
@@ -1945,91 +1544,5 @@ export default function FrontmatterRenderer({
         </AlertDialogContent>
       </AlertDialog>
     </div>
-  );
-}
-
-function Description({ description }: { description?: string }) {
-  if (!description) {
-    return null;
-  }
-
-  return <p className={cn("text-muted-foreground text-sm")}>{description}</p>;
-}
-
-interface PreviewLabelProps extends React.LabelHTMLAttributes<HTMLLabelElement> {
-  isRequired?: boolean;
-  className?: string;
-  children?: React.ReactNode;
-  length?: number;
-  maxLength?: number;
-  isIgnored?: boolean;
-  type?: string;
-  name?: string;
-  value?: any;
-  fields?: any[];
-  description?: string;
-  defaultValue?: any;
-  alwaysUseCurrentDate?: boolean;
-  isDropdown?: boolean;
-  options?: string[];
-  referenceType?: string;
-  referencePath?: string;
-  referenceInclude?: string;
-  referenceExclude?: string;
-  referenceField?: string;
-  subType?: string;
-  label?: string;
-}
-
-function PreviewLabel({
-  isRequired,
-  children,
-  className,
-  length,
-  maxLength,
-  // Field specific props to avoid spreading to DOM
-  isIgnored,
-  type,
-  name,
-  value,
-  fields,
-  description,
-  defaultValue,
-  alwaysUseCurrentDate,
-  isDropdown,
-  options,
-  referenceType,
-  referencePath,
-  referenceInclude,
-  referenceExclude,
-  referenceField,
-  subType,
-  label,
-  ...props
-}: PreviewLabelProps) {
-  // `length` on the schema field is a snapshot, so count the live value instead.
-  const currentLength = typeof value === "string" ? value.length : length;
-
-  const getBadgeVariant = () => {
-    if (currentLength === undefined || maxLength === undefined) return "default";
-
-    const percentage = (currentLength / maxLength) * 100;
-
-    if (currentLength > maxLength) return "destructive"; // Over limit
-    if (percentage >= 80) return "warning"; // Warning - close to limit
-    if (percentage >= 50) return "success"; // Good range
-    return "outline"; // Too short
-  };
-
-  return (
-    <Label className={cn("mb-2 flex capitalize", className)} {...props}>
-      {children}
-      {isRequired && <span className="text-destructive">*</span>}
-      {currentLength !== undefined && maxLength !== undefined && (
-        <Badge variant={getBadgeVariant()} className="ml-auto">
-          {currentLength}/{maxLength}
-        </Badge>
-      )}
-    </Label>
   );
 }

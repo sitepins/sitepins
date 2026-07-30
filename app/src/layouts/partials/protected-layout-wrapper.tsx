@@ -11,7 +11,7 @@ export default function ProtectedLayoutWrapper({
 }: {
   children: React.ReactNode;
 }) {
-  const { data: auth, isPending, error } = authClient.useSession();
+  const { data: auth, isPending, error: _error } = authClient.useSession();
   const isAuthenticated = !!auth;
   const router = useRouter();
   const [hasHydrated, setHasHydrated] = useState(false);

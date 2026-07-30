@@ -101,7 +101,7 @@ export function useSchemaData(relativePath: string, schemaDir?: string) {
             setInheritedSchema(res as Record<string, any>);
             return;
           }
-        } catch (e) {
+        } catch {
           // nearest not found
         }
 
@@ -152,7 +152,7 @@ export function useSchemaData(relativePath: string, schemaDir?: string) {
             break;
           }
         }
-      } catch (e) {
+      } catch {
         // ignore
       }
     })();

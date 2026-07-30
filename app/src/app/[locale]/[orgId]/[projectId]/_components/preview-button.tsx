@@ -1,5 +1,7 @@
 "use client";
 
+import { errorMessage } from "@/lib/utils/error";
+import { logger } from "@/lib/logger";
 import { Button } from "@/components/ui/button";
 import {
   ButtonGroup,
@@ -98,7 +100,7 @@ export default function PreviewButton({
   const persistSession = useCallback(
     (url: string, sbId: string, sha: string) => {
       if (!url || !sbId) {
-        console.warn("[preview] persistSession called with empty url/sbId", {
+        logger.warn("[preview] persistSession called with empty url/sbId", {
           url,
           sbId,
         });
@@ -423,8 +425,8 @@ export default function PreviewButton({
                 handleOpen(payload.previewUrl);
                 break outer;
               }
-            } catch (parseErr: any) {
-              if (parseErr?.message) throw parseErr;
+            } catch (parseErr) {
+              if (errorMessage(parseErr)) throw parseErr;
             }
           }
         }
@@ -439,10 +441,10 @@ export default function PreviewButton({
           handleOpen(data.previewUrl);
         }
       }
-    } catch (err: any) {
+    } catch (err) {
       setSandboxStatus(previewUrl ? "running" : "stopped");
       toast.error("Preview failed", {
-        description: err?.message ?? "An unexpected error occurred.",
+        description: errorMessage(err) ?? "An unexpected error occurred.",
         duration: 6000,
       });
     } finally {

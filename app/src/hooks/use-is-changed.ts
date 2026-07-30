@@ -19,7 +19,7 @@ export const useIsChanged = ({
       const dataEqual = dataStr === storeDataStr || deepEqual(data, storeData);
       // Changed if content or data differ from baseline
       return !dataEqual;
-    } catch (e) {
+    } catch {
       // On any error, conservatively report changed so user can save
       return true;
     }

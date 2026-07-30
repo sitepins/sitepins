@@ -33,7 +33,7 @@ export const JsxInlineElement = withRef<typeof PlateElement>(
     const focused = useFocused();
     const theme = getJsxTheme();
 
-    const { name, isSelfClosing, attributes } = element as any;
+    const { name, isSelfClosing, _attributes } = element as any;
     const content = element.content || `<${name}>`;
 
     // For non-self-closing, we need to show: <Tag> content </Tag>
@@ -42,7 +42,7 @@ export const JsxInlineElement = withRef<typeof PlateElement>(
     const closingTag = isSelfClosing ? "" : `</${name}>`;
 
     // Get inner content from children (if not self-closing)
-    const innerContent =
+    const _innerContent =
       !isSelfClosing && element.children?.length > 0
         ? element.children
             .map((c: any) => c.text || "")
@@ -68,7 +68,7 @@ export const JsxInlineElement = withRef<typeof PlateElement>(
       );
     };
 
-    const updateInnerContent = (newContent: string) => {
+    const _updateInnerContent = (newContent: string) => {
       const path = editor.api.findPath(element);
       if (!path) return;
 

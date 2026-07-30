@@ -1,16 +1,11 @@
 "use client";
 
+import { useGitProvider } from "@/hooks/use-git-provider";
 import { Card, CardContent } from "@/components/ui/card";
 import { ImageProvider } from "@/contexts/image-context";
 import { assignUniqueId } from "@/editor/utils/plate-utils";
-import {
-  isGitHubProvider,
-  isGitLabProvider,
-} from "@/lib/utils/provider-checker";
 import { convertSchema } from "@/lib/utils/schema-generator";
 import { selectConfig } from "@/redux/features/config/slice";
-import { useGetGitHubContentQuery } from "@/redux/features/github";
-import { useGetGitLabContentQuery } from "@/redux/features/gitlab";
 import { Folder } from "lucide-react";
 import { use } from "react";
 import { useSelector } from "react-redux";
@@ -30,44 +25,16 @@ export default function Configuration(
 
   const isConfigReady = token && branch && provider && owner && repoName;
 
-  const {
-    data: ghResponse,
-    isLoading: isGhLoading,
-    isSuccess: isGhSuccess,
-    error: ghError,
-  } = useGetGitHubContentQuery(
-    {
-      ref: branch,
-      owner,
-      repo: repoName,
-      path: filepath,
-      parser: true,
-    },
-    {
-      skip: !isConfigReady || !isGitHubProvider(provider),
-    },
-  );
+  const { useGitContent } = useGitProvider();
 
   const {
-    data: glResponse,
-    isLoading: isGlLoading,
-    isSuccess: isGlSuccess,
-    error: glError,
-  } = useGetGitLabContentQuery(
-    {
-      id: `${owner}/${repoName}`,
-      file_path: filepath,
-      ref: branch,
-      parser: true,
-    },
-    {
-      skip: !isConfigReady || !isGitLabProvider(provider),
-    },
-  );
-
-  const response = isGitLabProvider(provider) ? glResponse : ghResponse;
-  const isLoading = isGitLabProvider(provider) ? isGlLoading : isGhLoading;
-  const isSuccess = isGitLabProvider(provider) ? isGlSuccess : isGhSuccess;
+    data: response,
+    isLoading,
+    isSuccess,
+  } = useGitContent(filepath, {
+    parser: true,
+    skip: !isConfigReady,
+  });
 
   if (isLoading || !isSuccess) {
     return <ConfigsSkeleton />;

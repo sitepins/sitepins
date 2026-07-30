@@ -1,3 +1,5 @@
+import { useGitProvider } from "@/hooks/use-git-provider";
+import { logger } from "@/lib/logger";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -18,16 +20,10 @@ import {
 } from "@/lib/utils/content-serializer";
 import { fmDetector } from "@/lib/utils/frontmatter-detector";
 import {
-  isGitHubProvider,
-  isGitLabProvider,
-} from "@/lib/utils/provider-checker";
-import {
   convertSchema,
   generateSchemaName,
 } from "@/lib/utils/schema-generator";
 import { selectConfig } from "@/redux/features/config/slice";
-import { useGetGitHubContentQuery } from "@/redux/features/github";
-import { useGetGitLabContentQuery } from "@/redux/features/gitlab";
 import {
   useDeleteProjectContentMutation,
   useGetProjectContentQuery,
@@ -101,42 +97,15 @@ export default function FileEditor() {
   const isConfigReady =
     token && branch && provider && owner && repoName && filepath;
 
+  const { useGitContent } = useGitProvider();
   const {
-    data: ghResponse,
-    isFetching: isGhFetching,
-    isSuccess: isGhSuccess,
-  } = useGetGitHubContentQuery(
-    {
-      ref: branch,
-      owner: config.owner,
-      repo: config.repoName,
-      path: filepath,
-      parser: true,
-    },
-    {
-      skip: !isConfigReady || !isGitHubProvider(provider),
-    },
-  );
-
-  const {
-    data: glResponse,
-    isFetching: isGlFetching,
-    isSuccess: isGlSuccess,
-  } = useGetGitLabContentQuery(
-    {
-      id: `${config.owner}/${config.repoName}`,
-      file_path: filepath,
-      ref: branch,
-      parser: true,
-    },
-    {
-      skip: !isConfigReady || !isGitLabProvider(provider),
-    },
-  );
-
-  const response = isGitLabProvider(provider) ? glResponse : ghResponse;
-  const isFetching = isGitLabProvider(provider) ? isGlFetching : isGhFetching;
-  const isSuccess = isGitLabProvider(provider) ? isGlSuccess : isGhSuccess;
+    data: response,
+    isFetching,
+    isSuccess,
+  } = useGitContent(filepath, {
+    parser: true,
+    skip: !isConfigReady,
+  });
 
   const { data, content, fmType, startWith, comments } =
     (response as any) || {};
@@ -154,97 +123,19 @@ export default function FileEditor() {
     rootCollection && rootCollection !== generatedSchemaNameStr;
 
   const {
-    data: ghPrimarySchema,
-    isFetching: isGhPrimarySchemaFetching,
-    isError: isGhPrimarySchemaError,
-  } = useGetGitHubContentQuery(
-    {
-      ref: branch,
-      owner: config.owner,
-      repo: config.repoName,
-      path: primarySchemaPath,
-      parser: true,
-    },
-    {
-      skip: !isGitHubProvider(config.provider),
-    },
-  );
+    data: primarySchema,
+    isFetching: isPrimarySchemaFetching,
+    isError: isPrimarySchemaError,
+  } = useGitContent(primarySchemaPath, { parser: true });
 
   const {
-    data: glPrimarySchema,
-    isFetching: isGlPrimarySchemaFetching,
-    isError: isGlPrimarySchemaError,
-  } = useGetGitLabContentQuery(
-    {
-      id: `${config.owner}/${config.repoName}`,
-      file_path: primarySchemaPath,
-      ref: branch,
-      parser: true,
-    },
-    {
-      skip: !isGitLabProvider(config.provider),
-    },
-  );
-
-  const primarySchema = isGitLabProvider(config.provider)
-    ? glPrimarySchema
-    : ghPrimarySchema;
-  const isPrimarySchemaFetching = isGitLabProvider(config.provider)
-    ? isGlPrimarySchemaFetching
-    : isGhPrimarySchemaFetching;
-  const isPrimarySchemaError = isGitLabProvider(config.provider)
-    ? isGlPrimarySchemaError
-    : isGhPrimarySchemaError;
-
-  const {
-    data: ghSecondarySchema,
-    isFetching: isGhSecondarySchemaFetching,
-    isError: isGhSecondarySchemaError,
-  } = useGetGitHubContentQuery(
-    {
-      ref: branch,
-      owner: config.owner,
-      repo: config.repoName,
-      path: secondarySchemaPath,
-      parser: true,
-    },
-    {
-      skip:
-        !isGitHubProvider(config.provider) ||
-        !hasSecondary ||
-        (!!primarySchema && !isPrimarySchemaError),
-    },
-  );
-
-  const {
-    data: glSecondarySchema,
-    isFetching: isGlSecondarySchemaFetching,
-    isError: isGlSecondarySchemaError,
-  } = useGetGitLabContentQuery(
-    {
-      id: `${config.owner}/${config.repoName}`,
-      file_path: secondarySchemaPath,
-      ref: branch,
-      parser: true,
-    },
-    {
-      skip:
-        !isGitLabProvider(config.provider) ||
-        !hasSecondary ||
-        (!!primarySchema && !isPrimarySchemaError),
-    },
-  );
-
-  const secondarySchema = isGitLabProvider(config.provider)
-    ? glSecondarySchema
-    : ghSecondarySchema;
-  const isSecondarySchemaFetching = isGitLabProvider(config.provider)
-    ? isGlSecondarySchemaFetching
-    : isGhSecondarySchemaFetching;
-  const isSecondarySchemaError = isGitLabProvider(config.provider)
-    ? isGlSecondarySchemaError
-    : isGhSecondarySchemaError;
-
+    data: secondarySchema,
+    isFetching: isSecondarySchemaFetching,
+    isError: isSecondarySchemaError,
+  } = useGitContent(secondarySchemaPath, {
+    parser: true,
+    skip: !hasSecondary || (!!primarySchema && !isPrimarySchemaError),
+  });
   const hasContent = Boolean(response);
   const fetchingContent = isFetching && !hasContent;
 
@@ -328,7 +219,7 @@ export default function FileEditor() {
         startWith,
       };
     } catch (err) {
-      console.error("Failed to parse draft content:", err);
+      logger.error("Failed to parse draft content:", err);
       return null;
     }
   }, [activeSource, draftRecord?.content, filepath]);
@@ -406,7 +297,7 @@ export default function FileEditor() {
                   file: filepath,
                 }).unwrap();
               } catch (err) {
-                console.error("Failed to delete draft:", err);
+                logger.error("Failed to delete draft:", err);
               }
             }
           }}

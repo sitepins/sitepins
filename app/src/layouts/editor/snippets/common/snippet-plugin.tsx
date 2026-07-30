@@ -88,7 +88,7 @@ export const ShortcodeKit = createPlatePlugin({
             return true; // Prevent default behavior
           }
         }
-      } catch (e) {
+      } catch {
         return false;
       }
 

@@ -1,5 +1,6 @@
 "use client";
 
+import { errorMessageOr } from "@/lib/utils/error";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -110,10 +111,12 @@ export default function ArchiveProject({
                         : tProjectSettingsGeneralArchive("archive_success"),
                     );
                     setConfirmOpen(false);
-                  } catch (error: any) {
+                  } catch (error) {
                     toast.error(
-                      (error as any)?.data?.message ||
+                      errorMessageOr(
+                        error,
                         tProjectSettingsGeneralArchive("error"),
+                      ),
                     );
                   }
                 }}

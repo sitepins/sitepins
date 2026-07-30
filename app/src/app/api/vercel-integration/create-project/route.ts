@@ -1,3 +1,5 @@
+import { errorMessage, errorStatus } from "@/lib/utils/error";
+import { logger } from "@/lib/logger";
 import { getAuth } from "@/lib/auth/auth-server";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -53,11 +55,11 @@ export async function POST(req: NextRequest) {
         body: JSON.stringify({ name: projectName, framework: null }),
       });
       return NextResponse.json({ id: created.id, name: created.name });
-    } catch (createErr: any) {
+    } catch (createErr) {
       // Name conflict — find and reuse existing project
       if (
-        createErr.code === "project_already_exists" ||
-        createErr.status === 409
+        (createErr as { code?: string })?.code === "project_already_exists" ||
+        errorStatus(createErr) === 409
       ) {
         const listRes = await vercelFetch(`/v9/projects${listQuery}`, token);
         const existing = (listRes?.projects ?? []).find(
@@ -69,10 +71,10 @@ export async function POST(req: NextRequest) {
       }
       throw createErr;
     }
-  } catch (error: any) {
-    console.error("[vercel-integration/create-project]", error);
+  } catch (error) {
+    logger.error("[vercel-integration/create-project]", error);
     return NextResponse.json(
-      { error: error?.message ?? "Failed to create project" },
+      { error: errorMessage(error) ?? "Failed to create project" },
       { status: 400 },
     );
   }

@@ -1,10 +1,14 @@
-import { ENUM_ROLE_ORG, ROLE_PERMISSIONS } from "@/enums/roles";
+import { ROLE_PERMISSIONS, TOrgRole, TPermission } from "@/enums/roles";
+
+// Own-property check only: `role` is caller-supplied, so `in` would match
+// inherited members like "toString" and yield a non-array.
+const isOrgRole = (role: string): role is TOrgRole =>
+  Object.hasOwn(ROLE_PERMISSIONS, role);
 
 export const hasPermission = (
   role: string,
   requiredPermission: string,
 ): boolean => {
-  const permissions =
-    ROLE_PERMISSIONS[role as keyof typeof ENUM_ROLE_ORG] || [];
-  return permissions.includes(requiredPermission as any);
+  if (!isOrgRole(role)) return false;
+  return ROLE_PERMISSIONS[role].includes(requiredPermission as TPermission);
 };

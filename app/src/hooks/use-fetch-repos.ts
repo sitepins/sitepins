@@ -1,3 +1,4 @@
+import { logger } from "@/lib/logger";
 import {
   isGitHubProvider,
   isGitLabProvider,
@@ -10,6 +11,7 @@ import {
 } from "@/redux/features/github";
 import { useLazyGetGitLabReposQuery } from "@/redux/features/gitlab/gitlab-api";
 import { useAppSelector } from "@/redux/store";
+import { TGitRepo } from "@/types";
 import { useEffect, useState } from "react";
 
 export const useAllInstallationRepos = (override?: {
@@ -17,10 +19,10 @@ export const useAllInstallationRepos = (override?: {
   token?: string;
   search?: string;
 }): {
-  repositories: any[];
+  repositories: TGitRepo[];
   isLoading: boolean;
   error: unknown;
-  refetch: (search?: string) => Promise<any[]>;
+  refetch: (search?: string) => Promise<TGitRepo[]>;
 } => {
   const globalConfig = useAppSelector(selectConfig);
   const config = {
@@ -55,7 +57,7 @@ export const useAllInstallationRepos = (override?: {
   const [searchGitHubRepositories] = useLazySearchGitHubReposQuery();
   const [getGitLabProjects] = useLazyGetGitLabReposQuery();
 
-  const [repositories, setRepositories] = useState<any[]>([]);
+  const [repositories, setRepositories] = useState<TGitRepo[]>([]);
   const [isFetchingRepos, setIsFetchingRepos] = useState(false);
   const [fetchError, setFetchError] = useState<unknown>(null);
 
@@ -86,7 +88,7 @@ export const useAllInstallationRepos = (override?: {
         if (!active.current) return [];
 
         // Normalize GitLab projects
-        const normalized = result.map((proj: any) => ({
+        const normalized: TGitRepo[] = result.map((proj) => ({
           name: proj.name,
           owner: { login: proj.namespace?.path || "Gitlab" },
           html_url: proj.web_url,
@@ -110,7 +112,7 @@ export const useAllInstallationRepos = (override?: {
         return [];
       }
 
-      const allRepos: any[] = [];
+      const allRepos: TGitRepo[] = [];
 
       // If searching, we use the Search API
       if (searchQuery) {
@@ -141,7 +143,7 @@ export const useAllInstallationRepos = (override?: {
               allRepos.push(...result.items);
             }
           } catch (err) {
-            console.error(
+            logger.error(
               `Failed to search repos for ${installation.account?.id}`,
               err,
             );
@@ -164,7 +166,7 @@ export const useAllInstallationRepos = (override?: {
             const reposPage = result.repositories ?? [];
             allRepos.push(...reposPage);
           } catch (err) {
-            console.error(
+            logger.error(
               `Failed to fetch repos for installation ${installation.id}`,
               err,
             );

@@ -16,6 +16,8 @@
     "format": "pnpm -r format",
     "test": "pnpm -r test",
     "test:api": "pnpm --filter sitepins-backend test",
-    "test:app": "pnpm --filter sitepins test"
+    "test:app": "pnpm --filter sitepins test",
+    "lint": "pnpm -r lint",
+    "typecheck": "pnpm -r typecheck"
   }
 }

@@ -1,3 +1,4 @@
+import { logger } from "@/lib/logger";
 import { BaseEditorKit } from "@/editor/plugins/editor-base-kit";
 import { ChatMessage } from "@/hooks/use-ai-command";
 import { markdownJoinerTransform } from "@/lib/utils/markdown-joiner-transform";
@@ -67,7 +68,7 @@ export async function POST(req: NextRequest) {
   try {
     const stream = createUIMessageStream<ChatMessage>({
       execute: async ({ writer }) => {
-        let toolName = toolNameParam || "generate";
+        const toolName = toolNameParam || "generate";
 
         const stream = streamText({
           experimental_transform: markdownJoinerTransform(),
@@ -133,7 +134,7 @@ export async function POST(req: NextRequest) {
 
     return createUIMessageStreamResponse({ stream });
   } catch (error) {
-    console.error(error);
+    logger.error("AI command request failed", error);
     return NextResponse.json(
       { error: "Failed to process AI request" },
       { status: 500 },

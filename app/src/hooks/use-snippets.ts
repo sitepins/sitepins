@@ -105,7 +105,7 @@ export const useSnippets = (): UseSnippetsResult => {
         .replaceAll("%5D", "]");
       // groupName is the folder that contains the file (same logic as Single)
       return path.basename(path.dirname(filePathString));
-    } catch (e) {
+    } catch {
       return undefined;
     }
   }, [params?.file, params?.path]);

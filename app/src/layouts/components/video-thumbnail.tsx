@@ -51,7 +51,7 @@ const VideoThumbnail = forwardRef<HTMLImageElement, Props>(
               video.addEventListener("seeked", onSeeked, { once: true });
               video.addEventListener("error", onError, { once: true });
             });
-          } catch (e) {
+          } catch {
             // If seeking fails, continue — we'll try to capture whatever is available
           }
 
@@ -72,11 +72,11 @@ const VideoThumbnail = forwardRef<HTMLImageElement, Props>(
               // toDataURL can throw for tainted canvas (CORS). Catch and fallback.
               const dataUrl = canvas.toDataURL("image/png");
               if (!cancelled) setThumb(dataUrl);
-            } catch (err) {
+            } catch {
               if (!cancelled) setError(true);
             }
           }
-        } catch (err) {
+        } catch {
           if (!cancelled) setError(true);
         } finally {
           // cleanup
@@ -130,5 +130,7 @@ const VideoThumbnail = forwardRef<HTMLImageElement, Props>(
     );
   },
 );
+
+VideoThumbnail.displayName = "VideoThumbnail";
 
 export default VideoThumbnail;

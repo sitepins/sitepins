@@ -1,5 +1,6 @@
 "use client";
 
+import { logger } from "@/lib/logger";
 import {
   generatePath,
   generateUniqueFileName,
@@ -92,7 +93,7 @@ export const PlaceholderElement = withHOC(
 
                 return;
               } catch (error) {
-                console.error("Error handling pasted image:", error);
+                logger.error("Error handling pasted image:", error);
               }
             });
           };

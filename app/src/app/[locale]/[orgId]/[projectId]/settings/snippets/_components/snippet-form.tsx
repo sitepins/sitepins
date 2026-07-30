@@ -1,5 +1,7 @@
 "use client";
 
+import { useAddLog } from "@/hooks/use-add-log";
+import { logger } from "@/lib/logger";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -32,7 +34,6 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { authClient } from "@/lib/auth/auth-client";
 import { SNIPPET_FOLDER } from "@/lib/constant";
 import { isGitLabProvider } from "@/lib/utils/provider-checker";
 import { slugify } from "@/lib/utils/text-converter";
@@ -46,7 +47,6 @@ import {
   gitlabContentApi,
   useUpdateGitLabFilesMutation,
 } from "@/redux/features/gitlab";
-import { useAddProjectLogMutation } from "@/redux/features/project-log/project-log-api";
 import { EAction, EProjectLogType } from "@/redux/features/project-log/type";
 import { useAppDispatch } from "@/redux/store";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -94,9 +94,8 @@ export default function SnippetForm({
 }: Props) {
   const config = useSelector(selectConfig);
   const params = useParams();
-  const { data: auth } = authClient.useSession();
 
-  const [addLog] = useAddProjectLogMutation();
+  const [addLog] = useAddLog();
   const [updateGhFile, { isLoading: isGhUpdating }] =
     useUpdateGitHubFilesMutation();
   const [deleteGhFile, { isLoading: isGhDeleting }] =
@@ -225,7 +224,6 @@ export default function SnippetForm({
           action: isCreate ? EAction.CREATE : EAction.UPDATE,
           file: filePath,
           file_type: EProjectLogType.SNIPPET,
-          user_id: auth?.user.user_id!,
         });
 
         onSuccess();
@@ -235,7 +233,7 @@ export default function SnippetForm({
         );
       }
     } catch (error) {
-      console.error("Error saving snippet:", error);
+      logger.error("Error saving snippet:", error);
       toast.error(tProjectSettingsSnippets("error_save"));
     }
   };
@@ -278,7 +276,6 @@ export default function SnippetForm({
           action: EAction.DELETE,
           file: snippet.path,
           file_type: EProjectLogType.SNIPPET,
-          user_id: auth?.user.user_id!,
         });
         if (isGitLabProvider(config.provider)) {
           // @ts-ignore
@@ -309,7 +306,7 @@ export default function SnippetForm({
         onSuccess();
       }
     } catch (error) {
-      console.error("Error deleting snippet:", error);
+      logger.error("Error deleting snippet:", error);
       toast.error(tProjectSettingsSnippets("error_delete"));
     }
   };

@@ -187,7 +187,7 @@ interface SidebarUserMenuProps {
  * User menu with settings and account options
  * Use this in the sidebar footer to show user profile and settings
  */
-export function SidebarUserMenu({ orgs = [] }: SidebarUserMenuProps) {
+export function SidebarUserMenu({ orgs: _orgs = [] }: SidebarUserMenuProps) {
   return (
     <div className="flex flex-col gap-2">
       <SidebarProfileSetting />

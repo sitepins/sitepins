@@ -1,5 +1,6 @@
 "use client";
 
+import { useAddLog } from "@/hooks/use-add-log";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -16,13 +17,11 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Switch } from "@/components/ui/switch";
-import { authClient } from "@/lib/auth/auth-client";
 import { isGitLabProvider } from "@/lib/utils/provider-checker";
 import { commitDialogSchema } from "@/lib/validate";
 import { selectConfig, updateConfig } from "@/redux/features/config/slice";
 import { useUpdateGitHubFilesMutation } from "@/redux/features/github";
 import { useUpdateGitLabFilesMutation } from "@/redux/features/gitlab";
-import { useAddProjectLogMutation } from "@/redux/features/project-log/project-log-api";
 import { EAction, EProjectLogType } from "@/redux/features/project-log/type";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -33,12 +32,11 @@ import { toast } from "sonner";
 import * as z from "zod/v4";
 
 export default function CommitDialogForm({
-  className,
+  className: _className,
 }: {
   className?: string;
 }) {
   const params = useParams();
-  const { data: auth } = authClient.useSession();
   const config = useAppSelector(selectConfig);
   const dispatch = useAppDispatch();
   const tProjectSettingsConfigureCommit = useTranslations(
@@ -46,7 +44,7 @@ export default function CommitDialogForm({
   );
   const tCommon = useTranslations("common");
 
-  const [addLog] = useAddProjectLogMutation();
+  const [addLog] = useAddLog();
   const [updateGhFile, { isLoading: isGhPending }] =
     useUpdateGitHubFilesMutation();
   const [updateGlFile, { isLoading: isGlPending }] =
@@ -118,7 +116,6 @@ export default function CommitDialogForm({
           action: EAction.UPDATE,
           file: ".sitepins/config.json",
           file_type: EProjectLogType.CONFIG,
-          user_id: auth?.user.user_id!,
         });
 
         toast.success(tProjectSettingsConfigureCommit("success_update"));

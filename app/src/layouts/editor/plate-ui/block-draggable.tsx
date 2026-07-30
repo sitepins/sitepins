@@ -275,7 +275,7 @@ const DragHandle = React.memo(function DragHandle({
               try {
                 editor.tf?.blur?.();
                 editor.tf?.collapse?.();
-              } catch (e) {
+              } catch {
                 // Ignore blur/collapse errors during DnD start
               }
             }
@@ -365,7 +365,7 @@ const DropLine = React.memo(function DropLine({
 const safeToDOMNode = (editor: PlateEditor, node: any): HTMLElement | null => {
   try {
     return editor.api.toDOMNode(node) ?? null;
-  } catch (e) {
+  } catch {
     return null;
   }
 };

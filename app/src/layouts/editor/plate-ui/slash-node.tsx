@@ -21,7 +21,6 @@ import type { PlateEditor, PlateElementProps } from "platejs/react";
 import { PlateElement } from "platejs/react";
 import { useTranslations } from "next-intl";
 import * as React from "react";
-import { useEffect } from "react";
 import {
   InlineCombobox,
   InlineComboboxContent,

@@ -16,7 +16,7 @@ export interface BaseInlineSnippetProps extends React.ComponentProps<
   rightControls?: React.ReactNode;
 }
 
-const TypeBadge = ({ theme }: { theme: SnippetTheme }) => {
+const _TypeBadge = ({ theme }: { theme: SnippetTheme }) => {
   return (
     <span
       className={cn(

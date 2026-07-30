@@ -22,7 +22,7 @@ export function LoadImage({
   const PLACEHOLDER_IMAGE = "/images/placeholder.png";
   const FALLBACK_IMAGE = "/images/fallback.png";
   const config = useSelector(selectConfig);
-  const { branch } = config;
+  const { branch: _branch } = config;
   const { useGitImage } = useGitProvider();
   const imageRef = useRef<HTMLImageElement>(null);
   const isInView = useInView(imageRef, { once: true });
@@ -36,7 +36,6 @@ export function LoadImage({
     error,
     isUninitialized,
   } = useGitImage(cleanMediaPath(config.media, image_url), {
-    ref: branch,
     skip: !isInView || isAbsoluteUrl,
   });
 

@@ -21,7 +21,7 @@ type LanguageSwitcherProps = {
 
 export default function LanguageSwitcher({
   compact = false,
-  userId,
+  userId: _userId,
 }: LanguageSwitcherProps) {
   const tCommon = useTranslations("common");
   const locale = useLocale() as Locale;

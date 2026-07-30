@@ -1,3 +1,5 @@
+import { useGitProvider } from "@/hooks/use-git-provider";
+import { logger } from "@/lib/logger";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,19 +17,10 @@ import { checkMedia } from "@/lib/utils/check-media-file";
 import { cn } from "@/lib/utils/cn";
 import { findFileByPath, searchByPath } from "@/lib/utils/common";
 import { toBase64 } from "@/lib/utils/git-utils";
-import {
-  isGitHubProvider,
-  isGitLabProvider,
-} from "@/lib/utils/provider-checker";
+import { isGitLabProvider } from "@/lib/utils/provider-checker";
 import { selectConfig } from "@/redux/features/config/slice";
-import {
-  useGetGitHubTreesQuery,
-  useUpdateGitHubFilesMutation,
-} from "@/redux/features/github";
-import {
-  useGetGitLabTreesQuery,
-  useUpdateGitLabFilesMutation,
-} from "@/redux/features/gitlab";
+import { useUpdateGitHubFilesMutation } from "@/redux/features/github";
+import { useUpdateGitLabFilesMutation } from "@/redux/features/gitlab";
 import { selectMediaInfo, setMedia } from "@/redux/features/media/slice";
 import { useAppDispatch } from "@/redux/store";
 import { TFiles } from "@/types";
@@ -77,41 +70,11 @@ export default function MediaMove({
     : isGhLoading;
   const [searchQuery, setSearchQuery] = useState("");
   const mediaRoot = config.media; // e.g., 'public/images'
-  const { data: ghData } = useGetGitHubTreesQuery(
-    {
-      owner: config.owner,
-      repo: config.repoName,
-      tree_sha: config.branch,
-      recursive: "1",
-      config: config,
-    },
-    {
-      skip:
-        !config.owner ||
-        !config.repoName ||
-        !config.branch ||
-        !config.token ||
-        !isGitHubProvider(config.provider),
-    },
-  );
-
-  const { data: glData } = useGetGitLabTreesQuery(
-    {
-      id: config.repoName ? `${config.owner}/${config.repoName}` : config.owner,
-      ref: config.branch,
-      recursive: true,
-      config: config,
-    },
-    {
-      skip:
-        !config.repoName ||
-        !config.branch ||
-        !config.token ||
-        !isGitLabProvider(config.provider),
-    },
-  );
-
-  const data = isGitLabProvider(config.provider) ? glData : ghData;
+  const { useGitTrees } = useGitProvider();
+  const { data } = useGitTrees("", {
+    recursive: true,
+    skip: !config.owner || !config.branch || !config.token,
+  });
 
   const mediaFolder = data?.trees?.find((f) => f.name === "media");
   const childrenFile = findFileByPath(
@@ -385,7 +348,7 @@ export default function MediaMove({
 
       dialogCloseButton.current?.click();
     } catch (error) {
-      console.error("Move error:", error);
+      logger.error("Move error:", error);
       toast.error(tMedia("error_moving"));
     }
   };

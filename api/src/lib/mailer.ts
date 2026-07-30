@@ -1,5 +1,6 @@
 import config from "@/config/variables";
 import { BREVO_MAIL_TEMPLATES, sendBrevoMail } from "./brevoConfig";
+import { logger } from "@/lib/logger";
 
 // ---------------------------------------------------------------------------
 // Provider-agnostic transactional mailer.
@@ -200,7 +201,7 @@ export async function sendMail({
   }
 
   // console provider — no external mail configured.
-  console.warn(
+  logger.warn(
     `[mailer] No mail provider configured (MAIL_PROVIDER/BREVO_API_KEY/SMTP_HOST unset).\n` +
       `[mailer] Would send "${kind}" to ${to} — "${subject}"` +
       (kind === "otp" ? `\n[mailer] OTP: ${String(params.otp ?? "")}` : "") +

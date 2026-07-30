@@ -12,7 +12,7 @@ const organizationRouter: express.Router = express.Router();
 organizationRouter.get(
   "/user",
   authMiddleware.verifyAuth(ENUM_ROLE.USER),
-  organizationController.getOrganizationsByUserController as any,
+  organizationController.getOrganizationsByUserController,
 );
 
 // get single organization

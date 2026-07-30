@@ -67,4 +67,3 @@ export const {
 export const selectMediaInfo = (state: RootState) => state.media;
 
 export default mediaSlice;
-mediaSlice.reducer;

@@ -1,3 +1,5 @@
+import { errorMessageOr, errorStatus } from "@/lib/utils/error";
+import { logger } from "@/lib/logger";
 import { GITHUB_API_VERSION, IS_DEMO } from "@/lib/constant";
 import { isGitHubProvider } from "@/lib/utils/provider-checker";
 import { RootState } from "@/redux/store";
@@ -70,7 +72,7 @@ const octokitBaseQuery: BaseQueryFn<
 
       if (shouldRefresh) {
         if (!refreshPromise) {
-          console.log("GitHub token expiring/expired, refreshing...");
+          logger.debug("GitHub token expiring/expired, refreshing...");
           refreshPromise = fetch("/api/auth/github/refresh", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -81,7 +83,7 @@ const octokitBaseQuery: BaseQueryFn<
               return res.json();
             })
             .then((data) => {
-              console.log("GitHub token refreshed via baseQuery");
+              logger.debug("GitHub token refreshed via baseQuery");
               dispatch(
                 updateConfig({
                   token: data.access_token,
@@ -95,7 +97,7 @@ const octokitBaseQuery: BaseQueryFn<
               return data.access_token;
             })
             .catch((err) => {
-              console.error("Token refresh failed:", err);
+              logger.error("Token refresh failed:", err);
               return null;
             })
             .finally(() => {
@@ -142,11 +144,11 @@ const octokitBaseQuery: BaseQueryFn<
     const response = await request(endpoint, restOptions);
 
     return { data: response.data };
-  } catch (error: any) {
+  } catch (error) {
     return {
       error: {
-        status: error.status || error.response?.status || 500,
-        message: error.message || "An error occurred",
+        status: errorStatus(error) ?? 500,
+        message: errorMessageOr(error, "An error occurred"),
       },
     };
   }

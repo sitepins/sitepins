@@ -11,7 +11,7 @@ const getAllProjectLogService = async (
   const { limit, skip } =
     paginationHelpers.calculatePagination(paginationOptions);
 
-  let pipeline: PipelineStage[] = [
+  const pipeline: PipelineStage[] = [
     {
       $group: {
         _id: "$project_id",
@@ -27,15 +27,13 @@ const getAllProjectLogService = async (
     },
   ];
 
-  const limitStage: any = { $limit: limit };
-  const skipStage: any = { $skip: skip };
   // skip for pagination
   if (skip) {
-    pipeline.push(skipStage);
+    pipeline.push({ $skip: skip });
   }
   // limit data for pagination
   if (limit) {
-    pipeline.push(limitStage);
+    pipeline.push({ $limit: limit });
   }
 
   const result = await ProjectLog.aggregate(pipeline);

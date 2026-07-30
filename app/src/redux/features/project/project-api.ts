@@ -46,7 +46,7 @@ export const projectApi = api.injectEndpoints({
               framework: data.generator as any,
             }),
           );
-        } catch (error) {}
+        } catch {}
       },
       providesTags: (result, error, { projectId }) =>
         result ? [{ type: "Project" as const, id: projectId }] : [],
@@ -178,7 +178,7 @@ export const projectApi = api.injectEndpoints({
               branch: "",
             }),
           );
-        } catch (error) {}
+        } catch {}
       },
       invalidatesTags: (result, error, { project_id }) =>
         error ? [] : ["Projects", { type: "Project", id: project_id }],
@@ -216,7 +216,7 @@ export const projectApi = api.injectEndpoints({
               framework: data.generator as any,
             }),
           );
-        } catch (error) {}
+        } catch {}
       },
       invalidatesTags: (result, error, { project_id }) =>
         error ? [] : ["Projects", { type: "Project", id: project_id }],

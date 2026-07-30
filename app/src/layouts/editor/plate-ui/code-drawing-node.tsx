@@ -1,5 +1,6 @@
 "use client";
 
+import { logger } from "@/lib/logger";
 import { useDebouncedCallback } from "@/hooks/use-debounce-callback";
 import { useIsMobile } from "@/hooks/use-mobile";
 import type {
@@ -66,7 +67,7 @@ function useCodeDrawingElement({ element }: { element: TCodeDrawingElement }) {
           setError(null);
         }
       } catch (err) {
-        console.log({ debug: err });
+        logger.debug("Code drawing render failed", { error: err });
         if (lastRequestRef.current === requestId) {
           setError(err instanceof Error ? err.message : "Rendering failed");
           setImage("");

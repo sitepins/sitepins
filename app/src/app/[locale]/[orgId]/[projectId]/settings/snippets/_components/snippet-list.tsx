@@ -1,5 +1,6 @@
 "use client";
 
+import { logger } from "@/lib/logger";
 import { UpgradeCta } from "@/components/upgrade-cta";
 import { Button } from "@/components/ui/button";
 import {
@@ -31,7 +32,7 @@ import { gitlabApi } from "@/redux/features/gitlab";
 import { useAppDispatch } from "@/redux/store";
 import { Code, Plus, Settings } from "lucide-react";
 import { useTranslations } from "next-intl";
-import Link from "next/link";
+import _Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import * as z from "zod/v4";
@@ -162,7 +163,7 @@ const SnippetList = () => {
               data: content?.data || content,
             };
           } catch (e) {
-            console.error(`Failed to load ${file.path}:`, e);
+            logger.error(`Failed to load ${file.path}:`, e);
             return null;
           }
         });
@@ -182,7 +183,7 @@ const SnippetList = () => {
       setSnippets(fetchedSnippets as SnippetFile[]);
       setSchemas(fetchedSchemas as SchemaFile[]);
     } catch (error) {
-      console.error("Error loading snippet data:", error);
+      logger.error("Error loading snippet data:", error);
       setSnippets([]);
       setSchemas([]);
     } finally {

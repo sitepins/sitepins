@@ -1,3 +1,4 @@
+import { logger } from "@/lib/logger";
 const BACKEND = process.env.NEXT_PUBLIC_BACKEND_URL ?? "";
 const INTERNAL_SECRET = process.env.INTERNAL_API_SECRET ?? "";
 
@@ -49,6 +50,6 @@ export async function syncSandboxPreviewState(
       body: JSON.stringify(state),
     });
   } catch (e) {
-    console.error("[sandbox] failed to sync preview state:", e);
+    logger.error("[sandbox] failed to sync preview state:", e);
   }
 }

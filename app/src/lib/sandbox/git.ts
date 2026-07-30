@@ -1,3 +1,4 @@
+import { logger } from "@/lib/logger";
 import { isGitLabProvider } from "@/lib/utils/provider-checker";
 import { Session } from "@vercel/sandbox";
 
@@ -36,7 +37,7 @@ export async function getLatestCommitSha(
       if (res.ok) return (await res.json()).sha || null;
     }
   } catch (e) {
-    console.error("[sandbox] getLatestCommitSha:", e);
+    logger.error("[sandbox] getLatestCommitSha:", e);
   }
   return null;
 }

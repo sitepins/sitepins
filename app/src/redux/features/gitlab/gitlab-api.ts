@@ -1,3 +1,4 @@
+import { logger } from "@/lib/logger";
 import { GITLAB_API_VERSION, IS_DEMO } from "@/lib/constant";
 import { isGitLabProvider } from "@/lib/utils/provider-checker";
 import { RootState } from "@/redux/store";
@@ -118,7 +119,7 @@ const gitlabBaseQuery: BaseQueryFn<
 
       if (shouldRefresh) {
         if (!refreshPromise) {
-          console.log("GitLab token expiring/expired, refreshing...");
+          logger.debug("GitLab token expiring/expired, refreshing...");
           refreshPromise = fetch("/api/auth/gitlab/refresh", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -129,7 +130,7 @@ const gitlabBaseQuery: BaseQueryFn<
               return res.json();
             })
             .then((data) => {
-              console.log("GitLab token refreshed via baseQuery");
+              logger.debug("GitLab token refreshed via baseQuery");
               // Update store
               dispatch(
                 updateConfig({
@@ -144,7 +145,7 @@ const gitlabBaseQuery: BaseQueryFn<
               return data.access_token;
             })
             .catch((err) => {
-              console.error("Token refresh failed:", err);
+              logger.error("Token refresh failed:", err);
               // If refresh fails, we might still try the request with old token
               // or just let it fail. Clearing refreshPromise is important.
               return null;

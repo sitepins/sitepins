@@ -553,8 +553,13 @@ export function remarkHugo(this: Processor, options: ShortcodeOptions = {}) {
 
         const nodes: RootContent[] = [];
 
+        // The fragments keep the split node's own type. Emitting the leftovers
+        // of an `html` node as text turns markup like `<br />` into literal
+        // characters, which the stringifier then escapes to `\<br />`.
+        const fragmentType = node.type === "html" ? "html" : "text";
+
         if (preText) {
-          nodes.push({ type: "text", value: preText });
+          nodes.push({ type: fragmentType, value: preText });
         }
 
         // Mark if this is a JSX component
@@ -579,7 +584,7 @@ export function remarkHugo(this: Processor, options: ShortcodeOptions = {}) {
         });
 
         if (postText) {
-          nodes.push({ type: "text", value: postText });
+          nodes.push({ type: fragmentType, value: postText });
         }
 
         // Replace the current node AND any merged siblings

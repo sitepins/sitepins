@@ -33,6 +33,32 @@ type ShortcodeMdastNode = {
 };
 
 /**
+ * Drops the newline that separates a block body from its closing tag.
+ *
+ * It is structure, not content. Left in the last text node, Plate's paragraph
+ * rule sees a trailing line break and rewrites it into a literal `<br />`, so
+ * every raw/rich switch grows another one.
+ */
+const trimBodyTrailingNewline = (children: Descendant[]): Descendant[] => {
+  const last = children.at(-1);
+  if (!last) return children;
+
+  if ("text" in last && typeof last.text === "string") {
+    const text = last.text.replace(/\n+$/, "");
+    if (text === last.text) return children;
+    return [...children.slice(0, -1), { ...last, text }];
+  }
+
+  const nested = (last as TElement).children;
+  if (!Array.isArray(nested)) return children;
+
+  return [
+    ...children.slice(0, -1),
+    { ...last, children: trimBodyTrailingNewline(nested as Descendant[]) },
+  ];
+};
+
+/**
  * Deserializes Hugo shortcode mdast nodes to Slate nodes
  *
  * NOTE: This also handles JSX component detection because when JSX is serialized
@@ -64,7 +90,9 @@ export const deserializeShortcode = (
   // Deserialize children for block shortcodes
   const children = isBlock
     ? mdastNode.children && mdastNode.children.length > 0
-      ? convertNodesDeserialize(mdastNode.children, deco, options)
+      ? trimBodyTrailingNewline(
+          convertNodesDeserialize(mdastNode.children, deco, options),
+        )
       : [{ text: "" }]
     : [{ text: mdastNode.content || "" }];
 
@@ -75,6 +103,39 @@ export const deserializeShortcode = (
     isBlock,
     children,
   };
+};
+
+const ZERO_WIDTH_REGEX = /[\u200B\u200C\u200D\uFEFF]/g;
+
+/**
+ * Plate marks an empty paragraph text node with a zero-width space so the
+ * paragraph survives a round trip. Left inside a shortcode body it re-parses
+ * as a text node that absorbs the newline before the closing tag; Plate then
+ * rewrites that trailing line break into a literal `<br />`, so every raw/rich
+ * switch adds another one.
+ */
+const stripZeroWidth = (nodes: MdRootContent[]): MdRootContent[] => {
+  const out: MdRootContent[] = [];
+
+  for (const node of nodes) {
+    if (node.type === "text") {
+      const value = node.value.replace(ZERO_WIDTH_REGEX, "");
+      // Drop nodes that held nothing but the marker.
+      if (!value && node.value) continue;
+      out.push({ ...node, value });
+      continue;
+    }
+
+    const children = (node as { children?: MdRootContent[] }).children;
+    if (!Array.isArray(children)) {
+      out.push(node);
+      continue;
+    }
+    // The rebuilt node keeps its own type; only the children were filtered.
+    out.push({ ...node, children: stripZeroWidth(children) } as MdRootContent);
+  }
+
+  return out;
 };
 
 /**
@@ -98,7 +159,11 @@ export const serializeShortcode = (
       ? slateNode.children
       : [{ text: "" }];
 
-  const children = isBlock ? convertNodesSerialize(slateChildren, options) : [];
+  const children = isBlock
+    ? stripZeroWidth(
+        convertNodesSerialize(slateChildren, options) as MdRootContent[],
+      )
+    : [];
 
   return {
     type: "shortcode",

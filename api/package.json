@@ -54,7 +54,7 @@
     "ts-node-dev": "^2.0.0",
     "tsc-alias": "^1.9.1",
     "tsconfig-paths": "^4.2.0",
-    "typescript": "^7.0.2",
+    "typescript": "^6.0.3",
     "typescript-eslint": "^8.65.0",
     "vitest": "^4.1.10"
   }

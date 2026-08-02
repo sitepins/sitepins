@@ -11,7 +11,7 @@ Connect your GitHub or GitLab repo and start editing. Sitepins reads your conten
 ![License](https://img.shields.io/badge/license-AGPL%20v3-2b7489)
 ![Stars](https://img.shields.io/github/stars/sitepins/sitepins?style=social)
 
-![Sitepins Git-based headless CMS dashboard](https://sitepins.com/images/sitepins-dark.png)
+<img width="2882" height="1622" alt="sitepins-editor-new" src="https://github.com/user-attachments/assets/5bf47340-4040-4411-94a7-b676b87bfb7e" />
 
 </div>
 

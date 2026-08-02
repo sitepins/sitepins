@@ -49,12 +49,12 @@
     "@types/node": "^26",
     "@types/nodemailer": "^8.0.1",
     "@types/ws": "^8.18.1",
-    "eslint": "^10.7.0",
-    "prettier": "3.9.5",
+    "eslint": "^10.8.0",
+    "prettier": "3.9.6",
     "ts-node-dev": "^2.0.0",
     "tsc-alias": "^1.9.1",
     "tsconfig-paths": "^4.2.0",
-    "typescript": "^6.0.3",
+    "typescript": "^7.0.2",
     "typescript-eslint": "^8.65.0",
     "vitest": "^4.1.10"
   }

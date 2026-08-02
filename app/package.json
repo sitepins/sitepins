@@ -63,7 +63,7 @@
     "@vercel/sandbox": "^2.8.0",
     "ai": "^7.0.32",
     "axios": "^1.18.1",
-    "better-auth": "^1.6.23",
+    "better-auth": "^1.6.25",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "1.1.1",

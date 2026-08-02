@@ -193,9 +193,11 @@ export const useAllInstallationRepos = (override?: {
   };
 
   // Clear repositories when provider changes to prevent showing stale data
-  useEffect(() => {
+  const [loadedProvider, setLoadedProvider] = useState(config.provider);
+  if (loadedProvider !== config.provider) {
+    setLoadedProvider(config.provider);
     setRepositories([]);
-  }, [config.provider]);
+  }
 
   // Refetch repos when installationsData updates or provider changes
   useEffect(() => {

@@ -9,7 +9,10 @@ import { TConfig, TFiles, TTree } from "@/types";
 
 export type GitProviderId = "github" | "gitlab";
 
-export type RepoConfig = Pick<TConfig, "owner" | "repoName" | "branch">;
+export type RepoConfig = Pick<
+  TConfig,
+  "owner" | "repoName" | "branch" | "repositoryId"
+>;
 
 export type TreeQueryOptions = { recursive?: boolean };
 
@@ -65,6 +68,16 @@ export type GitProviderArgs = {
   commitsArgs(config: RepoConfig, options?: CommitsQueryOptions): QueryArgs;
   /** Author date of a commit entry, which the two providers name differently. */
   commitDate(commit: unknown): string | undefined;
+  /** Identifier used to address a single commit: `sha` on GitHub, `id` on GitLab. */
+  commitRef(commit: unknown): string | undefined;
+  commitAuthor(commit: unknown): string | undefined;
+  /**
+   * Repository identity as the provider currently reports it, used to correct
+   * a stored path that went stale after a rename.
+   */
+  canonicalRepo(repo: unknown): { path?: string; id?: string };
+  /** Omit `commitRef` for the branch head's status. */
+  commitStatusArgs(config: RepoConfig, commitRef?: string): QueryArgs;
   imageArgs(config: RepoConfig, path: string): QueryArgs;
   branchesArgs(config: RepoConfig): QueryArgs;
 
@@ -95,6 +108,16 @@ export const toTreeEntry = (file: TFiles): TTree => ({
   commitDate: file.commitDate,
   createdDate: file.createdDate,
 });
+
+/**
+ * GitHub returns a status object, GitLab a bare string. Both collapse to the
+ * state name the deployment badge and polling hook care about.
+ */
+export const commitStatusState = (status: unknown): string | undefined => {
+  if (typeof status === "string") return status;
+  const state = (status as { state?: unknown } | undefined)?.state;
+  return typeof state === "string" ? state : undefined;
+};
 
 export const parentDir = (filePath: string): string =>
   filePath.includes("/") ? filePath.slice(0, filePath.lastIndexOf("/")) : "";
@@ -143,6 +166,19 @@ export const githubArgs: GitProviderArgs = {
   commitDate: (commit) =>
     (commit as { commit?: { author?: { date?: string } } } | undefined)?.commit
       ?.author?.date,
+  commitRef: (commit) => (commit as { sha?: string } | undefined)?.sha,
+  commitAuthor: (commit) =>
+    (commit as { commit?: { author?: { name?: string } } } | undefined)?.commit
+      ?.author?.name,
+  // GitHub has no numeric-id write endpoints, so only the path is tracked.
+  canonicalRepo: (repo) => ({
+    path: (repo as { full_name?: string } | undefined)?.full_name,
+  }),
+  commitStatusArgs: (config, commitRef) => ({
+    owner: config.owner,
+    repo: config.repoName,
+    ref: commitRef ?? config.branch,
+  }),
   imageArgs: (config, path) => ({
     owner: config.owner,
     repo: config.repoName,
@@ -167,8 +203,11 @@ export const gitlabArgs: GitProviderArgs = {
   commitTag: "GitLabCommit",
   contentPathKey: "file_path",
 
+  // GitLab keeps a redirect for a renamed project on GET but rejects every
+  // other method, so the numeric id is used whenever it is known.
   repoId: (config) =>
-    config.repoName ? `${config.owner}/${config.repoName}` : config.owner,
+    config.repositoryId ||
+    (config.repoName ? `${config.owner}/${config.repoName}` : config.owner),
 
   contentArgs: (config, path, options) => ({
     id: gitlabArgs.repoId(config),
@@ -198,6 +237,22 @@ export const gitlabArgs: GitProviderArgs = {
   }),
   commitDate: (commit) =>
     (commit as { committed_date?: string } | undefined)?.committed_date,
+  commitRef: (commit) => (commit as { id?: string } | undefined)?.id,
+  commitAuthor: (commit) =>
+    (commit as { author_name?: string } | undefined)?.author_name,
+  canonicalRepo: (repo) => {
+    const project = repo as
+      { path_with_namespace?: string; id?: number | string } | undefined;
+    return {
+      path: project?.path_with_namespace,
+      id: project?.id ? String(project.id) : undefined,
+    };
+  },
+  commitStatusArgs: (config, commitRef) => ({
+    id: gitlabArgs.repoId(config),
+    ref: config.branch,
+    ...(commitRef ? { sha: commitRef } : {}),
+  }),
   imageArgs: (config, path) => ({
     id: gitlabArgs.repoId(config),
     file_path: path,

@@ -1,5 +1,6 @@
 "use client";
 
+import { useRepositoryPathSync } from "@/hooks/use-repository-path-sync";
 import { normalizeGitProvider } from "@/lib/utils/provider-checker";
 import { useGitProvider } from "@/hooks/use-git-provider";
 import { SidebarSkeleton } from "@/components/sidebar-skeleton";
@@ -75,6 +76,8 @@ export default function Layout(
   }
 
   useProjectBranch(project);
+
+  useRepositoryPathSync(project);
 
   const { isLoading: isProviderLoading, isFetching: isProviderFetching } =
     useGetProvidersQuery(

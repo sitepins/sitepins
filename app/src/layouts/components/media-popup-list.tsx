@@ -367,15 +367,22 @@ const MediaPopupList = ({
     return searchByPath(currentFiles, debouncedSearch);
   }, [debouncedSearch, currentFiles]);
 
-  useEffect(() => {
+  // The visible list follows the cached tree; opening the dialog just makes
+  // it relevant, so there is nothing to copy into state.
+  const mediaFiles = useMemo(() => {
     const mediaFolder = data?.trees?.find((f) => f.name === "media");
-    if (isOpen && mediaFolder?.children) {
-      const mediaFiles =
-        findFileByPath(mediaFolder.children, `media/${config.media}`)
-          ?.children ?? [];
-      setFiles(mediaFiles);
-    }
+    if (!isOpen || !mediaFolder?.children) return null;
+    return (
+      findFileByPath(mediaFolder.children, `media/${config.media}`)?.children ??
+      []
+    );
   }, [isOpen, data?.trees, config.media]);
+
+  const [syncedMediaFiles, setSyncedMediaFiles] = useState(mediaFiles);
+  if (syncedMediaFiles !== mediaFiles) {
+    setSyncedMediaFiles(mediaFiles);
+    if (mediaFiles) setFiles(mediaFiles);
+  }
 
   useEffect(() => {
     if (!isOpen) {

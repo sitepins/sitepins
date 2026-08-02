@@ -13,7 +13,8 @@
     "test": "vitest run",
     "format": "prettier -w ./src",
     "lint:fix": "eslint \"src/**/*.{js,jsx,ts,tsx}\" --fix",
-    "typecheck": "next typegen && tsc --noEmit"
+    "typecheck": "next typegen && tsc --noEmit",
+    "format:check": "prettier --check ./src"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^4.0.16",

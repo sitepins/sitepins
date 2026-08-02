@@ -131,10 +131,10 @@ export function isOldConfigFormat(config: TLegacyConfig): boolean {
     (config.content &&
       typeof config.content === "object" &&
       "root" in config.content) ||
-      (config.media &&
-        typeof config.media === "object" &&
-        "root" in config.media) ||
-      "showCommitModal" in config,
+    (config.media &&
+      typeof config.media === "object" &&
+      "root" in config.media) ||
+    "showCommitModal" in config,
   );
 }
 

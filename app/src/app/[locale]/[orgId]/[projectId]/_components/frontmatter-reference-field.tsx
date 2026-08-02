@@ -1,8 +1,6 @@
 import { decodeGitContent } from "@/lib/utils/git-content";
 import { useGitProvider } from "@/hooks/use-git-provider";
 import { logger } from "@/lib/logger";
-import {} from "@/components/ui/alert-dialog";
-import {} from "@/components/ui/breadcrumb";
 import {
   Combobox,
   ComboboxChip,

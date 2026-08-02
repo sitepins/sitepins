@@ -1,7 +1,7 @@
 import { TSubmitFormState } from "@/actions/utils";
 import { BetterFetchError } from "better-auth/react";
 import { TriangleAlert, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import { Button } from "./ui/button";
 
 type TError = {
@@ -20,33 +20,36 @@ export default function FormError({
   message,
   onReset,
 }: FormErrorProps) {
-  const [errorList, setErrorList] = useState<TError[]>([]);
+  const derivedErrors = useMemo<TError[]>(() => {
+    if (Array.isArray(errors)) return errors;
 
-  useEffect(() => {
-    if (Array.isArray(errors)) {
-      setErrorList(errors);
-    } else if (errors && typeof errors === "object") {
-      // Handle BetterFetchError or single error object
+    if (errors && typeof errors === "object") {
       const err = errors as BetterFetchError;
-      setErrorList([
+      return [
         {
           path: "",
           message:
             err.message ||
             "Server Temporarily Unavailable. Please try again later.",
         },
-      ]);
-    } else if (isError) {
-      setErrorList([
-        {
-          path: "",
-          message: message || "Something went wrong",
-        },
-      ]);
-    } else {
-      setErrorList([]);
+      ];
     }
-  }, [isError, message, errors]);
+
+    if (isError) {
+      return [{ path: "", message: message || "Something went wrong" }];
+    }
+
+    return [];
+  }, [errors, isError, message]);
+
+  // Seeded from props but locally dismissable, so a fresh set of errors has to
+  // clear any dismissals — done during render rather than in an effect.
+  const [errorList, setErrorList] = useState(derivedErrors);
+  const [syncedErrors, setSyncedErrors] = useState(derivedErrors);
+  if (syncedErrors !== derivedErrors) {
+    setSyncedErrors(derivedErrors);
+    setErrorList(derivedErrors);
+  }
 
   if (errorList.length === 0) return null;
 

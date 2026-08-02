@@ -8,6 +8,7 @@ import {
 import {
   useCreateNewGitHubBranchRefMutation,
   useGetGitHubBranchesQuery,
+  useGetGitHubCommitStatusQuery,
   useGetGitHubCommitsQuery,
   useGetGitHubContentQuery,
   useGetGitHubImageQuery,
@@ -18,6 +19,7 @@ import {
 import {
   useCreateGitLabBranchMutation,
   useGetGitLabBranchesQuery,
+  useGetGitLabCommitStatusQuery,
   useGetGitLabCommitsQuery,
   useGetGitLabContentQuery,
   useGetGitLabImageQuery,
@@ -55,6 +57,11 @@ interface ContentOptions extends QueryOptions {
 interface TreeOptions extends QueryOptions, TreeQueryOptions {}
 
 interface CommitsOptions extends QueryOptions, CommitsQueryOptions {}
+
+interface CommitStatusOptions extends QueryOptions {
+  commitRef?: string;
+  pollingInterval?: number;
+}
 
 interface SiteConfigOptions extends QueryOptions {
   framework?: string;
@@ -252,6 +259,25 @@ export function useGitProvider() {
     return isGitLab ? glQuery : ghQuery;
   };
 
+  /** Omit `commitRef` to poll the branch head's status. */
+  const useGitCommitStatus = (options?: CommitStatusOptions) => {
+    const ghQuery = useGetGitHubCommitStatusQuery(
+      gh.commitStatusArgs(config, options?.commitRef) as never,
+      {
+        skip: isGitLab || isDisabled || options?.skip,
+        pollingInterval: options?.pollingInterval,
+      },
+    );
+    const glQuery = useGetGitLabCommitStatusQuery(
+      gl.commitStatusArgs(config, options?.commitRef) as never,
+      {
+        skip: !isGitLab || isDisabled || options?.skip,
+        pollingInterval: options?.pollingInterval,
+      },
+    );
+    return isGitLab ? glQuery : ghQuery;
+  };
+
   const useGitBranches = (options?: QueryOptions) => {
     const ghQuery = useGetGitHubBranchesQuery(
       gh.branchesArgs(config) as never,
@@ -281,6 +307,7 @@ export function useGitProvider() {
     useGitImage,
     useGitBranches,
     useGitCommits,
+    useGitCommitStatus,
     isPending,
     isBranchCreating,
   };

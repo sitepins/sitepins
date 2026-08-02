@@ -10,20 +10,23 @@ interface FieldSchema {
   alwaysUseCurrentDate?: boolean;
 }
 
-const mapToInitialValue = {
-  Array: [] as any[],
-  object: {} as Record<string, any>,
-  string: "" as string,
-  boolean: false as boolean,
+/** Frontmatter values, which are whatever the file's YAML/TOML held. */
+type FormValue = unknown;
+
+const mapToInitialValue: Record<string, FormValue> = {
+  Array: [],
+  object: {},
+  string: "",
+  boolean: false,
   Date: "",
   media: "",
-  gallery: [] as any[],
+  gallery: [],
 };
 
 export const convertToFormData = (
   data: FieldSchema[],
   val?: string,
-): Record<string, any> => {
+): Record<string, FormValue> => {
   return data?.reduce((obj, currentObj) => {
     // Handle nested fields (objects and arrays)
     if (currentObj.fields && currentObj.fields?.length > 0) {
@@ -121,7 +124,7 @@ export const convertToFormData = (
 
       default:
         // Fallback to type-based defaults
-        defaultValue = (mapToInitialValue as any)[currentObj.type] || "";
+        defaultValue = mapToInitialValue[currentObj.type] ?? "";
     }
 
     return {
@@ -131,7 +134,7 @@ export const convertToFormData = (
   }, {});
 };
 
-function typeofValue(value: any) {
+function typeofValue(value: FormValue) {
   return typeof value === "object"
     ? Array.isArray(value)
       ? "Array"
@@ -144,41 +147,46 @@ function generateFieldSchema({
   value,
 }: {
   label: string;
-  value: any;
+  value: FormValue;
 }): FieldSchema {
   const type = typeofValue(value);
 
-  if (type === "Array" && value) {
-    const val = value[0];
-    const next = typeof val === "object";
+  if (Array.isArray(value)) {
+    const first = value[0];
+    const isObjectItem = typeof first === "object" && first !== null;
     return {
       label,
       name: label,
       type,
       defaultValue: "",
-      ...(next && { fields: convertSchema(val) }),
-    };
-  } else if (type === "object" && value) {
-    const hasNext = Object.keys(value).length > 0;
-    return {
-      label,
-      name: label,
-      type: !value ? "string" : type,
-      defaultValue: "",
-      ...(hasNext && { fields: convertSchema(value) }),
-    };
-  } else {
-    return {
-      label,
-      name: label,
-      type: checkMedia(value) ? "media" : type,
-      defaultValue: value || "",
+      ...(isObjectItem && {
+        fields: convertSchema(first as Record<string, FormValue>),
+      }),
     };
   }
+
+  if (type === "object" && value) {
+    const nested = value as Record<string, FormValue>;
+    return {
+      label,
+      name: label,
+      type,
+      defaultValue: "",
+      ...(Object.keys(nested).length > 0 && { fields: convertSchema(nested) }),
+    };
+  }
+
+  const text = typeof value === "string" ? value : "";
+  return {
+    label,
+    name: label,
+    type: checkMedia(text) ? "media" : type,
+    defaultValue: text,
+  };
 }
 
 //generating schema
-function convertSchema(docs: Record<string, any>): FieldSchema[] {
+function convertSchema(docs: Record<string, FormValue>): FieldSchema[] {
   return Object.entries(docs).map(([key, value]) => {
     return generateFieldSchema({ label: key, value });
   });

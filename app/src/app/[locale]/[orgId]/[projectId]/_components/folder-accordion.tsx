@@ -9,7 +9,7 @@ import {
 import { cn } from "@/lib/utils/cn";
 import { normalizePath } from "@/lib/utils/normalize-path";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 // Controlled accordion that auto-opens when active, but still allows manual toggle
 export function FolderAccordion({
@@ -30,10 +30,13 @@ export function FolderAccordion({
   triggerClassName?: string;
 }) {
   const [value, setValue] = useState(isActive ? `${index}` : "");
+  const [activeKey, setActiveKey] = useState(isActive ? `${index}` : "");
 
-  useEffect(() => {
-    if (isActive) setValue(`${index}`);
-  }, [isActive, index]);
+  // Becoming active reopens the folder; the user can still collapse it after.
+  if (isActive && activeKey !== `${index}`) {
+    setActiveKey(`${index}`);
+    setValue(`${index}`);
+  }
 
   return (
     <Accordion

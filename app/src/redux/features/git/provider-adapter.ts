@@ -22,7 +22,10 @@ export type GitProviderAdapter = GitProviderArgs & {
   selectCachedTreeArgs(state: unknown): QueryArgs[];
   /** The cached tree result, found via whatever args the subscriber used. */
   selectCachedTree(state: unknown): TreeCache | undefined;
-  selectCachedContent(state: unknown, args: QueryArgs): ContentCache | undefined;
+  selectCachedContent(
+    state: unknown,
+    args: QueryArgs,
+  ): ContentCache | undefined;
   selectCachedContentArgs(state: unknown): QueryArgs[];
 
   // These dispatch rather than return an action: the thunk RTK Query builds

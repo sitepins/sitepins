@@ -29,9 +29,8 @@ export type TGitLabMergeRequestLike = {
 
 export type TPullRequestLike = TGitHubPullLike | TGitLabMergeRequestLike;
 
-const isGitLabShape = (
-  req: TPullRequestLike,
-): req is TGitLabMergeRequestLike => "web_url" in req;
+const isGitLabShape = (req: TPullRequestLike): req is TGitLabMergeRequestLike =>
+  "web_url" in req;
 
 export function toPullRequestView(req: TPullRequestLike): TPullRequestView {
   if (isGitLabShape(req)) {

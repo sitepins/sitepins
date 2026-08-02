@@ -1,5 +1,6 @@
 "use client";
 
+import { commitStatusState } from "@/redux/features/git/provider-adapter";
 import { useGitProvider } from "@/hooks/use-git-provider";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,13 +14,7 @@ import {
 import { UpgradeDialog } from "@/components/upgrade-dialog";
 import { useDeploymentStatusPollingInterval } from "@/hooks/use-deployment-status-polling";
 import { useOwnerPlan } from "@/hooks/use-owner-plan";
-import {
-  isGitHubProvider,
-  isGitLabProvider,
-} from "@/lib/utils/provider-checker";
 import { selectConfig } from "@/redux/features/config/slice";
-import { useGetGitHubCommitStatusQuery } from "@/redux/features/github";
-import { useGetGitLabCommitStatusQuery } from "@/redux/features/gitlab";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
@@ -28,8 +23,7 @@ import { GitCommitItem } from "./git-commit-item";
 export default function GitActivity() {
   const tProjectGit = useTranslations("project.git");
   const tActivity = useTranslations("project.activity");
-  const { branch, owner, repoName, token, provider } =
-    useSelector(selectConfig);
+  const { branch, owner, repoName, token } = useSelector(selectConfig);
   const ref = useRef<HTMLDivElement>(null);
   const [page, setPage] = useState(1);
   const [lastCommitNumber, setLastCommitNumber] = useState<number | null>(null);
@@ -37,10 +31,7 @@ export default function GitActivity() {
 
   const { canAccessProFeatures } = useOwnerPlan();
 
-  const isGitHub = isGitHubProvider(provider);
-  const isGitLab = isGitLabProvider(provider);
-
-  const { useGitCommits } = useGitProvider();
+  const { adapter, useGitCommits } = useGitProvider();
   const {
     data: commits,
     isLoading,
@@ -97,12 +88,12 @@ export default function GitActivity() {
         >
           {commits?.map((commit: any, index: number) => {
             const isLatest = index === 0 && page === 1;
-            const sha = isGitHub ? commit.sha : commit.id;
+            const sha = adapter.commitRef(commit);
 
             return (
               <CommitWrapper
                 key={sha}
-                provider={isGitLab ? "Gitlab" : "Github"}
+                provider={adapter.id === "gitlab" ? "Gitlab" : "Github"}
                 commit={commit}
                 setShowUpgradeDialog={setShowUpgradeDialog}
                 onSuccess={handleSuccess}
@@ -143,9 +134,6 @@ function CommitWrapper({
   onSuccess,
   isLatest,
   canAccessProFeatures,
-  owner,
-  repoName,
-  branch,
 }: {
   provider: "Github" | "Gitlab";
   commit: any;
@@ -157,55 +145,26 @@ function CommitWrapper({
   repoName: string;
   branch: string;
 }) {
-  const isGitHub = isGitHubProvider(provider);
-  const isGitLab = isGitLabProvider(provider);
-
   // State-based status tracking (not refs) so that useDeploymentStatusPollingInterval
   // receives the correct value on the same render after a tag-invalidation refetch.
-  const [ghStatusState, setGhStatusState] = useState<string | undefined>(
-    undefined,
-  );
-  const [glStatusState, setGlStatusState] = useState<string | undefined>(
-    undefined,
-  );
+  const [statusState, setStatusState] = useState<string | undefined>(undefined);
 
-  const ghPollingInterval = useDeploymentStatusPollingInterval(ghStatusState);
-  const glPollingInterval = useDeploymentStatusPollingInterval(glStatusState);
+  const { adapter, useGitCommitStatus } = useGitProvider();
+  const pollingInterval = useDeploymentStatusPollingInterval(statusState);
 
-  const { data: ghStatus } = useGetGitHubCommitStatusQuery(
-    { owner, repo: repoName, ref: commit.sha },
-    {
-      skip: !isGitHub || !canAccessProFeatures,
-      pollingInterval: ghPollingInterval,
-    },
-  );
-  const ghStatusStateFromData =
-    typeof ghStatus === "object" && ghStatus !== null
-      ? (ghStatus as any).state
-      : ghStatus;
+  const { data: rawStatus } = useGitCommitStatus({
+    commitRef: adapter.commitRef(commit),
+    skip: !canAccessProFeatures,
+    pollingInterval,
+  });
+  const statusStateFromData = commitStatusState(rawStatus);
 
-  const { data: glStatus } = useGetGitLabCommitStatusQuery(
-    { id: `${owner}/${repoName}`, sha: commit.id, ref: branch },
-    {
-      skip: !isGitLab || !canAccessProFeatures,
-      pollingInterval: glPollingInterval,
-    },
-  );
-  const glStatusStateFromData =
-    typeof glStatus === "object" && glStatus !== null
-      ? (glStatus as any).state
-      : glStatus;
-
-  // Sync RTK Query data into state so the polling hook re-evaluates on status changes.
-  useEffect(() => {
-    setGhStatusState(ghStatusStateFromData);
-  }, [ghStatusStateFromData]);
-
-  useEffect(() => {
-    setGlStatusState(glStatusStateFromData);
-  }, [glStatusStateFromData]);
-
-  const status = isGitHub ? ghStatusStateFromData : glStatusStateFromData;
+  // The polling interval feeds the status query's options, so the query result
+  // cannot be passed straight to the interval hook. Mirroring it during render
+  // breaks that cycle without the extra commit an effect would cause.
+  if (statusState !== statusStateFromData) {
+    setStatusState(statusStateFromData);
+  }
 
   return (
     <GitCommitItem
@@ -214,7 +173,7 @@ function CommitWrapper({
       setShowUpgradeDialog={setShowUpgradeDialog}
       onSuccess={onSuccess}
       isLatest={isLatest}
-      deploymentStatus={status}
+      deploymentStatus={statusStateFromData}
     />
   );
 }

@@ -68,7 +68,14 @@ export function useGitAuth({
         }
       }
     }
-  }, [isProvidersSuccess, providers, provider, isClicked, onSuccess, prevProvider]);
+  }, [
+    isProvidersSuccess,
+    providers,
+    provider,
+    isClicked,
+    onSuccess,
+    prevProvider,
+  ]);
 
   useEffect(() => {
     if (isClicked && !providersLoading) {
@@ -109,9 +116,7 @@ export function useGitAuth({
 
   return {
     isTokenChanged,
-    selectedProvider: prevProvider?.find(
-      (item) => item.provider === provider,
-    ),
+    selectedProvider: prevProvider?.find((item) => item.provider === provider),
     providersLoading: providersLoading || isClicked,
     isProvidersSuccess,
     providers: providers || [],

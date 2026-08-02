@@ -110,6 +110,7 @@ const getAllProjectService = async (
         project_name: 1,
         project_image: 1,
         repository: 1,
+        repository_id: 1,
         site_url: 1,
         createdAt: 1,
         visibility: 1,
@@ -413,11 +414,13 @@ const updateProjectGeneratorService = async ({
 const updateGitConnectionService = async ({
   project_id,
   repository,
+  repository_id,
   branch,
   provider,
 }: {
   project_id: string;
   repository?: string;
+  repository_id?: string;
   branch?: string;
   provider?: string;
 }) => {
@@ -428,6 +431,7 @@ const updateGitConnectionService = async ({
 
   const updateFields: UpdateQuery<ProjectType> = {};
   if (repository !== undefined) updateFields.repository = repository;
+  if (repository_id !== undefined) updateFields.repository_id = repository_id;
   if (branch !== undefined) updateFields.branch = branch;
   if (provider !== undefined) updateFields.provider = provider;
 

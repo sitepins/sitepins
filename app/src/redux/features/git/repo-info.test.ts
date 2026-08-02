@@ -41,9 +41,7 @@ describe("toRepoInfoView", () => {
       { private: true },
       { private: false },
     ]) {
-      expect(["public", "private"]).toContain(
-        toRepoInfoView(repo)?.visibility,
-      );
+      expect(["public", "private"]).toContain(toRepoInfoView(repo)?.visibility);
     }
   });
 });

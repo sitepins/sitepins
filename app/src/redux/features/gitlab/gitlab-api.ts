@@ -336,6 +336,20 @@ export const gitlabApi = createApi({
         endpoint: `/projects/${encodeURIComponent(projectId)}`,
         token: token,
       }),
+      // GitLab answers GET on a renamed project's old path via a redirect, so
+      // this response is the one place the canonical id reliably surfaces.
+      // Recording it lets later writes address the project by id, which a
+      // rename cannot invalidate.
+      async onQueryStarted(_arg, { queryFulfilled, dispatch }) {
+        try {
+          const { data } = await queryFulfilled;
+          if (data?.id) {
+            dispatch(updateConfig({ repositoryId: String(data.id) }));
+          }
+        } catch {
+          // A failed lookup just leaves the path-based identifier in place.
+        }
+      },
       providesTags: ["GitLabRepos"],
     }),
 

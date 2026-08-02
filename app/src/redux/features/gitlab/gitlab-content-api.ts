@@ -368,7 +368,7 @@ export const gitlabContentApi = gitlabApi.injectEndpoints({
      * Get GitLab image/file for display
      */
     getGitLabImage: builder.query<
-      { download_url: string; size: number; content?: string },
+      { download_url: string; size: number; content?: string; sha?: string },
       {
         id: string | number;
         file_path: string;
@@ -384,6 +384,7 @@ export const gitlabContentApi = gitlabApi.injectEndpoints({
           download_url: "",
           size: response.size,
           content: response.content,
+          sha: response.blob_id,
         };
       },
     }),

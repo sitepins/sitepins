@@ -260,9 +260,13 @@ describe("selectCachedContent", () => {
   it("finds a GitHub entry seeded through contentArgs", async () => {
     const args = github.contentArgs(config, path, { parser: true });
     await store.dispatch(
-      githubContentApi.util.upsertQueryData("getGitHubContent", args as never, {
-        title: "Hello",
-      } as never),
+      githubContentApi.util.upsertQueryData(
+        "getGitHubContent",
+        args as never,
+        {
+          title: "Hello",
+        } as never,
+      ),
     );
 
     expect(github.selectCachedContent(store.getState(), args)).toMatchObject({
@@ -273,9 +277,13 @@ describe("selectCachedContent", () => {
   it("finds a GitLab entry seeded through contentArgs", async () => {
     const args = gitlab.contentArgs(config, path, { parser: true });
     await store.dispatch(
-      gitlabContentApi.util.upsertQueryData("getGitLabContent", args as never, {
-        title: "Hello",
-      } as never),
+      gitlabContentApi.util.upsertQueryData(
+        "getGitLabContent",
+        args as never,
+        {
+          title: "Hello",
+        } as never,
+      ),
     );
 
     expect(gitlab.selectCachedContent(store.getState(), args)).toMatchObject({
@@ -286,9 +294,13 @@ describe("selectCachedContent", () => {
   it("misses when the GitLab id drops the owner prefix", async () => {
     const args = gitlab.contentArgs(config, path, { parser: true });
     await store.dispatch(
-      gitlabContentApi.util.upsertQueryData("getGitLabContent", args as never, {
-        title: "Hello",
-      } as never),
+      gitlabContentApi.util.upsertQueryData(
+        "getGitLabContent",
+        args as never,
+        {
+          title: "Hello",
+        } as never,
+      ),
     );
 
     const handRolled = { ...args, id: config.repoName };
@@ -310,7 +322,8 @@ describe("selectCachedContent", () => {
  * silently did nothing.
  */
 describe("updateAllTreeCaches", () => {
-  const subscriberArgs = () => gitlab.treesArgs(config, "", { recursive: true });
+  const subscriberArgs = () =>
+    gitlab.treesArgs(config, "", { recursive: true });
 
   const seed = (args: Record<string, unknown>) =>
     store.dispatch(
@@ -367,7 +380,11 @@ describe("updateAllTreeCaches", () => {
 
   it("is a no-op when nothing is cached", () => {
     expect(() =>
-      gitlab.updateAllTreeCaches(store.dispatch, store.getState(), dropOldFolder),
+      gitlab.updateAllTreeCaches(
+        store.dispatch,
+        store.getState(),
+        dropOldFolder,
+      ),
     ).not.toThrow();
   });
 });

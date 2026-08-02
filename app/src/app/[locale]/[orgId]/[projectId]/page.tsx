@@ -147,9 +147,7 @@ export default function Project(
   );
 
   // Dependencies disambiguate frameworks that share a config file.
-  const hasPackageJson = treeFiles.some(
-    (file) => file.path === "package.json",
-  );
+  const hasPackageJson = treeFiles.some((file) => file.path === "package.json");
 
   const { data: ghPackageJson, isLoading: isGhPackageJsonLoading } =
     useGetGitHubContentQuery(

@@ -165,6 +165,7 @@ const updateGitConnectionController = catchAsync(
     const project = await projectService.updateGitConnectionService({
       project_id: req.params.projectId as string,
       repository: req.body.repository,
+      repository_id: req.body.repository_id,
       branch: req.body.branch,
       provider: req.body.provider,
     });

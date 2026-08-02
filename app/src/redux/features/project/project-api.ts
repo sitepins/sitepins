@@ -42,6 +42,7 @@ export const projectApi = api.injectEndpoints({
             updateConfig({
               owner: userName,
               repoName: repoName,
+              repositoryId: data.repository_id || undefined,
               branch: data.branch,
               provider: data.provider as "Github" | "Gitlab",
               framework: asFramework(data.generator),
@@ -176,6 +177,7 @@ export const projectApi = api.injectEndpoints({
             updateConfig({
               owner: "",
               repoName: "",
+              repositoryId: undefined,
               branch: "",
             }),
           );
@@ -192,14 +194,27 @@ export const projectApi = api.injectEndpoints({
         project_id: string;
         org_id: string;
         repository?: string;
+        repository_id?: string;
         branch?: string;
         provider?: "Github" | "Gitlab";
       }
     >({
-      query: ({ project_id, org_id, repository, branch, provider }) => ({
+      query: ({
+        project_id,
+        org_id,
+        repository,
+        repository_id,
+        branch,
+        provider,
+      }) => ({
         url: `/project/git/${project_id}?orgId=${org_id}`,
         method: "PATCH",
-        data: { repository, branch, ...(provider && { provider }) },
+        data: {
+          repository,
+          branch,
+          ...(repository_id !== undefined && { repository_id }),
+          ...(provider && { provider }),
+        },
       }),
       async onQueryStarted(arg, { queryFulfilled, dispatch }) {
         try {
@@ -212,6 +227,7 @@ export const projectApi = api.injectEndpoints({
             updateConfig({
               owner: userName,
               repoName: repoName,
+              repositoryId: data.repository_id || undefined,
               branch: data.branch,
               provider: data.provider as "Github" | "Gitlab",
               framework: asFramework(data.generator),

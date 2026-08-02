@@ -1,3 +1,6 @@
+import { useGitCacheUpdates } from "@/hooks/use-git-cache-updates";
+import { decodeGitContent } from "@/lib/utils/git-content";
+import { TConfig, TTree } from "@/types";
 import { logger } from "@/lib/logger";
 import {
   AlertDialog,
@@ -19,9 +22,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { useGitProvider } from "@/hooks/use-git-provider";
 import { useOwnerPlan } from "@/hooks/use-owner-plan";
-import { isGitLabProvider } from "@/lib/utils/provider-checker";
-import { githubApi, githubContentApi } from "@/redux/features/github";
-import { gitlabApi, gitlabContentApi } from "@/redux/features/gitlab";
 import { useAppDispatch } from "@/redux/store";
 import { Code2, CopyPlus, Ellipsis } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -33,11 +33,10 @@ import { toast } from "sonner";
 
 export default function ConfigActions({
   pathname,
-  config,
   pending,
 }: {
   pathname?: string | null;
-  config: any;
+  config: TConfig;
   pending: boolean;
 }) {
   const router = useRouter();
@@ -48,8 +47,9 @@ export default function ConfigActions({
   const { canAccessProFeatures } = useOwnerPlan();
   const [showDuplicateDialog, setShowDuplicateDialog] = useState(false);
   const [duplicateName, setDuplicateName] = useState("");
-  const { updateFiles, useGitTrees, useGitContent, provider, isPending } =
+  const { updateFiles, useGitTrees, useGitContent, adapter, isPending } =
     useGitProvider();
+  const { updateCacheOnDuplicate } = useGitCacheUpdates();
 
   // Support both `/content/` and `/configs/` routes by extracting the tail after either segment
   const pathMatch = pathname?.match(/\/(?:content|configs)\/(.+)$/);
@@ -62,16 +62,14 @@ export default function ConfigActions({
 
   const treesQuery = useGitTrees(
     currentFilepath ? path.dirname(currentFilepath) : "",
-    {
-      skip: !currentFilepath,
-    } as any,
+    { skip: !currentFilepath },
   );
   const contentQuery = useGitContent(currentFilepath || "", {
     skip: !currentFilepath,
-  } as any);
+  });
 
-  const trees = (treesQuery as any)?.data || (treesQuery as any)?.trees || [];
-  const content = (contentQuery as any)?.data; // keep shape same as other components
+  const trees = treesQuery?.data;
+  const content = contentQuery?.data;
 
   const handleConfirmDuplicate = async () => {
     if (!currentFilepath) {
@@ -83,13 +81,13 @@ export default function ConfigActions({
     try {
       const { dir, name, ext } = path.parse(currentFilepath);
 
-      const treesToUse = (trees as any)?.trees || trees || [];
+      const treesToUse: TTree[] = trees?.files ?? [];
 
       const number: number = Math.max(
-        ...((treesToUse as any[]).reduce(
-          (acc: number[], curr: any) => {
+        ...(treesToUse.reduce(
+          (acc: number[], curr) => {
             const regex = /_copy_(\d+)/;
-            const fileName = path.parse(curr.path || curr.name || "").name;
+            const fileName = path.parse(curr.path ?? "").name;
             const match = fileName.match(regex);
             if (match) {
               const [, number] = match;
@@ -111,9 +109,9 @@ export default function ConfigActions({
 
       const newPath = `${dir}/${finalName}`;
 
-      const fileContent = (content as any)?.data ?? content;
+      const fileContent = decodeGitContent(content);
 
-      const res: any = await updateFiles({
+      const res = await updateFiles({
         files: [{ path: newPath, content: fileContent }],
         message: tGit("commit_messages.duplicate_file", { name: finalName }),
       });
@@ -121,69 +119,14 @@ export default function ConfigActions({
       if (!res.error?.message) {
         toast.success(tCommon("feedback.duplicate_success"));
 
-        if (isGitLabProvider(provider)) {
-          dispatch(
-            gitlabContentApi.util.updateQueryData(
-              "getGitLabTrees",
-              {
-                id: config.repoName
-                  ? `${config.owner}/${config.repoName}`
-                  : config.owner,
-                path: path.dirname(currentFilepath),
-                ref: config.branch,
-                recursive: false,
-                config: config,
-              },
-              (oldData: any) => {
-                oldData.files.push({
-                  name: finalName,
-                  path: newPath,
-                  sha: null,
-                  type: "file",
-                  commitDate: new Date().toISOString(),
-                  isFile: true,
-                });
-              },
-            ),
-          );
-
-          dispatch(
-            gitlabApi.util.invalidateTags([
-              { type: "GitLabCommit", id: currentFilepath },
-            ]),
-          );
-        } else {
-          dispatch(
-            githubContentApi.util.updateQueryData(
-              "getGitHubTrees",
-              {
-                owner: config.owner,
-                repo: config.repoName,
-                tree_sha: config.branch,
-                recursive: "1",
-                config: config,
-              },
-              (oldData: any) => {
-                const newFile = {
-                  name: finalName,
-                  path: newPath,
-                  sha: null,
-                  type: "file",
-                  commitDate: new Date().toISOString(),
-                  isFile: true,
-                };
-                oldData.trees.push(newFile);
-                oldData.files.push(newFile);
-              },
-            ),
-          );
-
-          dispatch(
-            githubApi.util.invalidateTags([
-              { type: "GitHubCommit", id: currentFilepath },
-            ]),
-          );
-        }
+        updateCacheOnDuplicate({
+          name: finalName,
+          path: newPath,
+          sha: null,
+          isFile: true,
+          commitDate: new Date().toISOString(),
+        });
+        adapter.invalidateCommit(dispatch, currentFilepath);
 
         if (currentPrefix) {
           const newUrl = pathname!.replace(

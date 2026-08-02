@@ -434,14 +434,14 @@ export function FieldForm({
     referenceExclude,
   );
 
-  // Clear nested drafts UI/state when nested fields are not applicable
-  useEffect(() => {
-    const needsNested =
-      type === "object" || (type === "Array" && subType === "object");
-    if (!needsNested) {
-      setNestedFields([]);
-    }
-  }, [type, subType]);
+  // Nested drafts only apply to object-ish types; switching away discards them.
+  const needsNested =
+    type === "object" || (type === "Array" && subType === "object");
+  const [nestedApplied, setNestedApplied] = useState(needsNested);
+  if (nestedApplied !== needsNested) {
+    setNestedApplied(needsNested);
+    if (!needsNested) setNestedFields([]);
+  }
 
   const handleAddOption = () => {
     if (!newOption.trim()) return;

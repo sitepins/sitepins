@@ -216,7 +216,11 @@ const ProjectBranching = ({
     ? (glCompare?.commits?.length || 0) > 0
     : (ghCompare?.ahead_by || 0) > 0;
 
-  useEffect(() => {
+  // Opening the dialog seeds a fresh title/description; the author edits from
+  // there until it closes again.
+  const [wasOpen, setWasOpen] = useState(isOpen);
+  if (wasOpen !== isOpen) {
+    setWasOpen(isOpen);
     if (isOpen) {
       setTitle(
         tProjectBranching("merge_into", {
@@ -226,7 +230,7 @@ const ProjectBranching = ({
       );
       setDescription("");
     }
-  }, [isOpen, currentBranch, defaultBranch, tProjectBranching]);
+  }
 
   // Focus-based refresh to capture external changes (e.g., terminal push)
   useEffect(() => {

@@ -28,16 +28,13 @@ import {
 } from "@/components/ui/breadcrumb";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { ColorPicker } from "@/components/ui/color-picker";
-import {} from "@/components/ui/combobox";
 import { DateTimePicker } from "@/components/ui/date-time-picker";
 import { Input } from "@/components/ui/input";
-import {} from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { deepClone } from "@/editor/utils/plate-utils";
 import { cn } from "@/lib/utils/cn";
 import { ISODate } from "@/lib/utils/date-format";
-import {} from "@/lib/utils/provider-checker";
 import { Template } from "@/lib/utils/schema-helpers";
 import { plainify } from "@/lib/utils/text-converter";
 import { TField, TState } from "@/types";
@@ -922,7 +919,8 @@ export default function FrontmatterRenderer({
             } else if (item.type === "boolean" && item.name === "draft") {
               return null;
             } else if (item.type === "Date") {
-              const value = stringValue(fieldValue(currentData, item.name)) ?? "";
+              const value =
+                stringValue(fieldValue(currentData, item.name)) ?? "";
               return (
                 <div key={item.name}>
                   <PreviewLabel
@@ -949,7 +947,8 @@ export default function FrontmatterRenderer({
               );
             } else if (item.type === "color") {
               // Handle color fields from schema generator
-              const value = stringValue(fieldValue(currentData, item.name)) ?? "";
+              const value =
+                stringValue(fieldValue(currentData, item.name)) ?? "";
               return (
                 <div key={item.name} className="space-y-2">
                   <PreviewLabel {...item} className="text-sm">
@@ -971,7 +970,8 @@ export default function FrontmatterRenderer({
                 </div>
               );
             } else if (item.type === "string") {
-              const value = stringValue(fieldValue(currentData, item.name)) ?? "";
+              const value =
+                stringValue(fieldValue(currentData, item.name)) ?? "";
 
               // Check if the actual value is a hex color
               const isHexColor =
@@ -1053,7 +1053,8 @@ export default function FrontmatterRenderer({
                 </AnimatedListItem>
               );
             } else if (item.type === "number") {
-              const value = stringValue(fieldValue(currentData, item.name)) ?? "";
+              const value =
+                stringValue(fieldValue(currentData, item.name)) ?? "";
 
               return (
                 <AnimatedListItem key={item.name}>
@@ -1109,7 +1110,8 @@ export default function FrontmatterRenderer({
                 </AnimatedListItem>
               );
             } else if (item.type === "media") {
-              const media = stringValue(fieldValue(currentData, item.name)) ?? "";
+              const media =
+                stringValue(fieldValue(currentData, item.name)) ?? "";
               return (
                 <AnimatedListItem key={item.name}>
                   <PreviewLabel {...item}>{item.label}</PreviewLabel>

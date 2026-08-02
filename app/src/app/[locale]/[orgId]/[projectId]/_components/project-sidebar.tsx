@@ -13,7 +13,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useTranslations } from "next-intl";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 type ProjectContext = {
   orgId: string;
@@ -41,23 +41,24 @@ export default function ProjectSidebar({
   globalSearch,
 }: Props) {
   const pathname = usePathname();
-  const [view, setView] = useState<"main" | "settings">(() => {
-    if (!projectContext) return "main";
-    const settingsPath = `/org-${projectContext.orgId}/${projectContext.projectId}/settings`;
-    return pathname.startsWith(settingsPath) ? "settings" : "main";
-  });
+  // Driven by the route, but the nav buttons switch it optimistically so the
+  // panel does not wait for the transition to land.
+  const routeView: "main" | "settings" =
+    projectContext &&
+    pathname.startsWith(
+      `/org-${projectContext.orgId}/${projectContext.projectId}/settings`,
+    )
+      ? "settings"
+      : "main";
+
+  const [view, setView] = useState<"main" | "settings">(routeView);
+  const [syncedRouteView, setSyncedRouteView] = useState(routeView);
+  if (syncedRouteView !== routeView) {
+    setSyncedRouteView(routeView);
+    setView(routeView);
+  }
   const router = useRouter();
   const tCommon = useTranslations("common");
-
-  useEffect(() => {
-    if (!projectContext) return;
-    const settingsPath = `/org-${projectContext.orgId}/${projectContext.projectId}/settings`;
-    if (pathname.startsWith(settingsPath)) {
-      setView("settings");
-    } else {
-      setView("main");
-    }
-  }, [pathname, projectContext]);
 
   const { mainItems, settingsItems } = useMemo(() => {
     if (!projectContext) return { mainItems: [], settingsItems: [] };

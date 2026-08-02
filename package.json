@@ -2,7 +2,7 @@
   "name": "sitepins-monorepo",
   "private": true,
   "description": "Sitepins — open-source git-based CMS",
-  "packageManager": "pnpm@11.15.0",
+  "packageManager": "pnpm@11.18.0",
   "engines": {
     "node": ">=22"
   },
@@ -18,6 +18,22 @@
     "test:api": "pnpm --filter sitepins-backend test",
     "test:app": "pnpm --filter sitepins test",
     "lint": "pnpm -r lint",
-    "typecheck": "pnpm -r typecheck"
+    "typecheck": "pnpm -r typecheck",
+    "prepare": "husky",
+    "format:check": "pnpm -r format:check"
+  },
+  "devDependencies": {
+    "husky": "^9.1.7",
+    "lint-staged": "^17.3.0"
+  },
+  "lint-staged": {
+    "app/src/**/*.{ts,tsx}": [
+      "bash -c 'cd app && pnpm exec prettier --write \"$@\"' --",
+      "bash -c 'cd app && pnpm exec eslint --no-warn-ignored \"$@\"' --"
+    ],
+    "api/src/**/*.ts": [
+      "bash -c 'cd api && pnpm exec prettier --write \"$@\"' --",
+      "bash -c 'cd api && pnpm exec eslint --no-warn-ignored \"$@\"' --"
+    ]
   }
 }

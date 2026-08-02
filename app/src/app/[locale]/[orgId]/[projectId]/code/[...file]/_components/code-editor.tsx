@@ -13,7 +13,6 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useDebounce } from "@/hooks/use-debounce";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { usePresence } from "@/hooks/use-presence";
 import { useSandboxPreview } from "@/hooks/use-sandbox-preview";
@@ -86,8 +85,7 @@ export default function CodeEditor({
   const isSaving = isGitLabProvider(config.provider) ? isGlSaving : isGhSaving;
 
   const [value, setValue] = useState(content);
-  const [originalContent] = useState(content);
-  const [hasChanges, setHasChanges] = useState(false);
+  const [savedContent, setSavedContent] = useState(content);
   const [showDiscardDialog, setShowDiscardDialog] = useState(false);
   const [isEditorReady, setIsEditorReady] = useState(false);
   const [shikiReady, setShikiReady] = useState(false);
@@ -99,7 +97,6 @@ export default function CodeEditor({
   const monacoEditorRef = useRef<any>(null);
   const monacoModuleRef = useRef<any>(null);
   const previewWindowRef = useRef<Window | null>(null);
-  const debouncedValue = useDebounce(value, 300);
 
   const language = getLanguageFromExtension(filePath);
   const fileName = path.basename(filePath);
@@ -112,13 +109,16 @@ export default function CodeEditor({
   // the skeleton fills the gap — no light-flash on dark-mode hard reload.
   const monacoTheme = resolvedTheme === "dark" ? "dark-plus" : "light-plus";
 
-  useEffect(() => {
-    setHasChanges(debouncedValue !== originalContent);
-  }, [debouncedValue, originalContent]);
+  const hasChanges = value !== savedContent;
 
-  useEffect(() => {
+  // Reload the editor when a different file (or a new revision) arrives,
+  // without discarding in-progress edits to the same content.
+  const [loadedContent, setLoadedContent] = useState(content);
+  if (loadedContent !== content) {
+    setLoadedContent(content);
+    setSavedContent(content);
     setValue(content);
-  }, [content]);
+  }
 
   // Keep a ref to the latest value so getUncommittedFile doesn't close over stale state.
   const valueRef = useRef(value);
@@ -167,7 +167,7 @@ export default function CodeEditor({
         }).unwrap();
       }
 
-      setHasChanges(false);
+      setSavedContent(value);
       toast.success(tEditor("code.update_success", { fileName }));
       triggerCommitSync();
     } catch (error) {
@@ -177,8 +177,7 @@ export default function CodeEditor({
   };
 
   const handleReset = () => {
-    setValue(originalContent);
-    setHasChanges(false);
+    setValue(savedContent);
   };
 
   const handleDiscardWithConfirmation = () => {

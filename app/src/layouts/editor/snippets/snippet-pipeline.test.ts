@@ -238,7 +238,9 @@ describe("nested snippets", () => {
       "<Notice>\n\n{{< inner >}}\n\nDeep\n\n{{< /inner >}}\n\n</Notice>";
     const out = stringify(src);
 
-    expect(out).toBe("<Notice>\n{{< inner >}}\nDeep\n{{< /inner >}}\n</Notice>");
+    expect(out).toBe(
+      "<Notice>\n{{< inner >}}\nDeep\n{{< /inner >}}\n</Notice>",
+    );
     expect(stringify(out)).toBe(out);
   });
 

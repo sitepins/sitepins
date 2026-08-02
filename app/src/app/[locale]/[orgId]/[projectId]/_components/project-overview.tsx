@@ -1,5 +1,7 @@
 "use client";
 
+import { useGitProvider } from "@/hooks/use-git-provider";
+import { commitStatusState } from "@/redux/features/git/provider-adapter";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { useDeploymentStatusPollingInterval } from "@/hooks/use-deployment-status-polling";
@@ -9,25 +11,14 @@ import {
   getDeploymentStatusVariant,
   isDisplayableDeploymentStatus,
 } from "@/lib/utils/deployment-status";
-import {
-  isGitHubProvider,
-  isGitLabProvider,
-} from "@/lib/utils/provider-checker";
-import {
-  useGetGitHubCommitStatusQuery,
-  useGetGitHubCommitsQuery,
-} from "@/redux/features/github";
-import {
-  useGetGitLabCommitStatusQuery,
-  useGetGitLabCommitsQuery,
-} from "@/redux/features/gitlab";
+import { isGitLabProvider } from "@/lib/utils/provider-checker";
 import { SiGithub, SiGitlab } from "@icons-pack/react-simple-icons";
 import { formatDistanceToNow } from "date-fns";
 import { ExternalLink, Loader2, PencilLine } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { BranchSwitcher } from "./branch-switcher";
 import { ProjectThumb } from "./project-thumb";
 
@@ -49,113 +40,39 @@ export default function ProjectOverview({
   const lastLog = logs.length > 0 ? logs[0] : null;
   const { canAccessProFeatures } = useOwnerPlan();
   const provider = config?.provider || project?.provider;
-  const isGitHub = isGitHubProvider(provider);
   const isGitLab = isGitLabProvider(provider);
 
-  const [ghStatusState, setGhStatusState] = useState<string | undefined>(
-    undefined,
-  );
-  const [glStatusState, setGlStatusState] = useState<string | undefined>(
-    undefined,
-  );
-  const ghPollingInterval = useDeploymentStatusPollingInterval(ghStatusState);
-  const glPollingInterval = useDeploymentStatusPollingInterval(glStatusState);
+  const [statusState, setStatusState] = useState<string | undefined>(undefined);
+  const pollingInterval = useDeploymentStatusPollingInterval(statusState);
 
-  const { data: ghCommits } = useGetGitHubCommitsQuery(
-    {
-      owner: config.owner,
-      repo: config.repoName,
-      page: 1,
-      per_page: 4,
-      sha: config.branch,
-    },
-    {
-      skip:
-        !isGitHub ||
-        !config.owner ||
-        !config.repoName ||
-        !config.branch ||
-        !config.token,
-    },
-  );
+  const { adapter, useGitCommits, useGitCommitStatus } = useGitProvider();
 
-  const { data: glCommits } = useGetGitLabCommitsQuery(
-    {
-      id: `${config.owner}/${config.repoName}`,
-      ref: config.branch,
-      page: 1,
-      per_page: 4,
-    },
-    {
-      skip: !isGitLab || !config.repoName || !config.branch || !config.token,
-    },
-  );
+  const { data: commits } = useGitCommits({
+    page: 1,
+    perPage: 4,
+    skip: !config.owner || !config.branch || !config.token,
+  });
 
-  const latestGHCommit =
-    ghCommits && ghCommits.length > 0 ? ghCommits[0] : null;
-  const latestGLCommit =
-    glCommits && glCommits.length > 0 ? glCommits[0] : null;
-  const latestGhCommitRef = latestGHCommit?.sha;
-  const latestGlCommitRef = latestGLCommit?.id;
+  const latestCommit = commits?.[0] ?? null;
+  const latestCommitRef = adapter.commitRef(latestCommit);
 
-  const { data: ghStatus, isLoading: isGhStatusLoading } =
-    useGetGitHubCommitStatusQuery(
-      {
-        owner: config.owner,
-        repo: config.repoName,
-        ref: latestGhCommitRef!,
-      },
-      {
-        skip:
-          !isGitHub ||
-          !config.owner ||
-          !config.repoName ||
-          !latestGhCommitRef ||
-          !canAccessProFeatures,
-        pollingInterval: ghPollingInterval,
-      },
-    );
-  const ghStatusStateFromData =
-    typeof ghStatus === "object" && ghStatus !== null
-      ? (ghStatus as any).state
-      : ghStatus;
+  const { data: rawStatus, isLoading: isStatusLoading } = useGitCommitStatus({
+    commitRef: latestCommitRef,
+    skip: !latestCommitRef || !canAccessProFeatures,
+    pollingInterval,
+  });
+  const statusStateFromData = commitStatusState(rawStatus);
 
-  const { data: glStatus, isLoading: isGlStatusLoading } =
-    useGetGitLabCommitStatusQuery(
-      {
-        id: project?.repository,
-        sha: latestGlCommitRef,
-      },
-      {
-        skip:
-          !isGitLab ||
-          !project?.repository ||
-          !latestGlCommitRef ||
-          !canAccessProFeatures,
-        pollingInterval: glPollingInterval,
-      },
-    );
-  const glStatusStateFromData =
-    typeof glStatus === "object" && glStatus !== null
-      ? (glStatus as any).state
-      : glStatus;
+  // The polling interval feeds the status query's options, so the query result
+  // cannot be passed straight to the interval hook. Mirroring it during render
+  // breaks that cycle without the extra commit an effect would cause.
+  if (statusState !== statusStateFromData) {
+    setStatusState(statusStateFromData);
+  }
 
-  useEffect(() => {
-    setGhStatusState(ghStatusStateFromData);
-  }, [ghStatusStateFromData]);
-  useEffect(() => {
-    setGlStatusState(glStatusStateFromData);
-  }, [glStatusStateFromData]);
-
-  const buildStatus = isGitLab ? glStatusStateFromData : ghStatusStateFromData;
-  const isStatusLoading = isGitLab ? isGlStatusLoading : isGhStatusLoading;
-  const latestCommitDate = isGitLab
-    ? latestGLCommit?.committed_date
-    : latestGHCommit?.commit?.author?.date;
-
-  const latestCommitAuthor = isGitLab
-    ? latestGLCommit?.author_name
-    : latestGHCommit?.commit?.author?.name;
+  const buildStatus = statusStateFromData;
+  const latestCommitDate = adapter.commitDate(latestCommit);
+  const latestCommitAuthor = adapter.commitAuthor(latestCommit);
 
   const lastUpdated = latestCommitDate
     ? formatDistanceToNow(new Date(latestCommitDate), { addSuffix: false })

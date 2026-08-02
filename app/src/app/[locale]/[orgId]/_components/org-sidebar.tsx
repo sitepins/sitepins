@@ -15,7 +15,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useTranslations } from "next-intl";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { GlobalSearch } from "./global-search";
 
 export default function OrgSidebar({ orgs }: { orgs: TOrg[] }) {
@@ -30,13 +30,14 @@ export default function OrgSidebar({ orgs }: { orgs: TOrg[] }) {
   const orgDashboardMenu = getOrgDashboardMenu(locale);
   const orgSettingsMenu = getOrgSettingsMenu(locale);
 
-  useEffect(() => {
-    if (pathname.includes("/settings")) {
-      setView("settings");
-    } else {
-      setView("main");
-    }
-  }, [pathname]);
+  // Driven by the route, but the nav buttons switch it optimistically so the
+  // panel does not wait for the transition to land.
+  const routeView = pathname.includes("/settings") ? "settings" : "main";
+  const [syncedRouteView, setSyncedRouteView] = useState(routeView);
+  if (syncedRouteView !== routeView) {
+    setSyncedRouteView(routeView);
+    setView(routeView);
+  }
 
   const { menuItems, settingsMenuItems } = useMemo(() => {
     const processItem = (item: TMenuItem) => {

@@ -36,7 +36,7 @@ import {
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import _Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 
 interface SandboxConnectFormProps {
@@ -82,15 +82,17 @@ export default function VercelConnectForm({
   const vi = org.sandbox;
   const isConnected = !!vi?.token && !!vi?.project_id;
 
-  // Reset form state when toggling update form
-  useEffect(() => {
+  // Closing the update form discards its draft.
+  const [formWasOpen, setFormWasOpen] = useState(showUpdateForm);
+  if (formWasOpen !== showUpdateForm) {
+    setFormWasOpen(showUpdateForm);
     if (!showUpdateForm) {
       setToken("");
       setPhase("token");
       setPendingConnect(null);
       setSelectedTeamId("");
     }
-  }, [showUpdateForm]);
+  }
 
   // Step 1: validate token + fetch teams
   const handleValidate = async (tokenValue: string) => {

@@ -35,6 +35,10 @@ const ProjectSchema = new mongoose.Schema<ProjectType>(
       type: String,
       required: true,
     },
+    repository_id: {
+      type: String,
+      required: false,
+    },
     visibility: {
       type: String,
       enum: ["public", "private"],

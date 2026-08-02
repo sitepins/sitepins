@@ -1,8 +1,9 @@
 "use client";
 
 import { TOrg } from "@/redux/features/orgs/type";
+import { useStoredValue } from "@/hooks/use-stored-value";
 import { useParams } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 
 type UseOrgIdReturn = {
   effectiveOrgId?: string;
@@ -17,12 +18,7 @@ type UseOrgIdReturn = {
  */
 export function useOrgId(orgs: TOrg[] = []): UseOrgIdReturn {
   const params = useParams();
-  const [storedOrgId, setStoredOrgId] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    setStoredOrgId(localStorage.getItem("last_working_org_id"));
-  }, []);
+  const storedOrgId = useStoredValue("last_working_org_id");
 
   const rawOrgId = useMemo(() => {
     const paramOrgId = params?.orgId;

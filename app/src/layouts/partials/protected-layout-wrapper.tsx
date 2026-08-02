@@ -1,10 +1,11 @@
 "use client";
 
 import Loading from "@/app/[locale]/loading";
+import { useHydrated } from "@/hooks/use-hydrated";
 import { authClient } from "@/lib/auth/auth-client";
 import { usePlanBootstrap } from "@/redux/features/plan/slice";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 export default function ProtectedLayoutWrapper({
   children,
@@ -14,11 +15,7 @@ export default function ProtectedLayoutWrapper({
   const { data: auth, isPending, error: _error } = authClient.useSession();
   const isAuthenticated = !!auth;
   const router = useRouter();
-  const [hasHydrated, setHasHydrated] = useState(false);
-
-  useEffect(() => {
-    setHasHydrated(true);
-  }, []);
+  const hasHydrated = useHydrated();
 
   // Redirect unauthenticated users to login
   useEffect(() => {

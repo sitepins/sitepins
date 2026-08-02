@@ -115,10 +115,11 @@ const FallbackEditableTagLine = ({
   onChange: (val: string) => void;
 }) => {
   const [value, setValue] = useState(text);
-
-  useEffect(() => {
+  const [syncedText, setSyncedText] = useState(text);
+  if (syncedText !== text) {
+    setSyncedText(text);
     setValue(text);
-  }, [text]);
+  }
 
   return (
     <div className="inline-block" contentEditable={false}>
@@ -231,10 +232,11 @@ const EditableTagLineContent = ({
   theme: EditableTagLineTheme;
 }) => {
   const [attrValue, setAttrValue] = useState(attributes);
-
-  useEffect(() => {
+  const [syncedAttributes, setSyncedAttributes] = useState(attributes);
+  if (syncedAttributes !== attributes) {
+    setSyncedAttributes(attributes);
     setAttrValue(attributes);
-  }, [attributes]);
+  }
 
   return (
     <div

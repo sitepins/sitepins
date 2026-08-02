@@ -33,10 +33,16 @@ describe("isChangedFrom", () => {
 
   it("compares nested values structurally, not by reference", () => {
     expect(
-      isChangedFrom({ seo: { tags: ["a"] } }, baseline({ seo: { tags: ["a"] } })),
+      isChangedFrom(
+        { seo: { tags: ["a"] } },
+        baseline({ seo: { tags: ["a"] } }),
+      ),
     ).toBe(false);
     expect(
-      isChangedFrom({ seo: { tags: ["b"] } }, baseline({ seo: { tags: ["a"] } })),
+      isChangedFrom(
+        { seo: { tags: ["b"] } },
+        baseline({ seo: { tags: ["a"] } }),
+      ),
     ).toBe(true);
   });
 

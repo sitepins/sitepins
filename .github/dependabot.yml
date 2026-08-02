@@ -1,0 +1,25 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      # One PR per ecosystem keeps the review surface small; these move together
+      # anyway and breaking either one breaks the whole app.
+      react:
+        patterns: ["react", "react-dom", "@types/react", "@types/react-dom", "next", "eslint-config-next"]
+      platejs:
+        patterns: ["platejs", "@platejs/*", "@slate-yjs/*"]
+      dev-tooling:
+        patterns: ["eslint*", "@typescript-eslint/*", "prettier*", "vitest", "typescript"]
+    commit-message:
+      prefix: "chore(deps)"
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: "chore(ci)"

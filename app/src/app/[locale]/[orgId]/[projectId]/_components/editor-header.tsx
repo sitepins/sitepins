@@ -1,3 +1,5 @@
+import { useGitProvider } from "@/hooks/use-git-provider";
+import { commitStatusState } from "@/redux/features/git/provider-adapter";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -35,13 +37,7 @@ import {
   getDeploymentStatusI18nKey,
   isDisplayableDeploymentStatus,
 } from "@/lib/utils/deployment-status";
-import {
-  isGitHubProvider,
-  isGitLabProvider,
-} from "@/lib/utils/provider-checker";
 import { selectConfig } from "@/redux/features/config/slice";
-import { useGetGitHubCommitStatusQuery } from "@/redux/features/github";
-import { useGetGitLabCommitStatusQuery } from "@/redux/features/gitlab";
 import { useAppSelector } from "@/redux/store";
 import {
   ArrowLeft,
@@ -112,78 +108,31 @@ export default function EditorHeader({
   const [showUpgradeDialog, setShowUpgradeDialog] = useState(false);
   const isDbDraftLoaded = Boolean(isLoadedFromDbDraft && hasSavedDraft);
   const canUseDraftSave = canAccessProFeatures;
-  const [actionType, setActionType] = useState<"save" | "draft" | "publish">(
-    isDbDraftLoaded && canUseDraftSave ? "save" : isDraft ? "draft" : "publish",
-  );
+  const defaultActionType: "save" | "draft" | "publish" =
+    isDbDraftLoaded && canUseDraftSave ? "save" : isDraft ? "draft" : "publish";
 
-  useEffect(() => {
-    if (isDbDraftLoaded && canUseDraftSave) {
-      setActionType("save");
-      return;
-    }
-
-    setActionType(isDraft ? "draft" : "publish");
-  }, [isDraft, isDbDraftLoaded, canUseDraftSave]);
+  // The dropdown lets the author override this; the default reasserts itself
+  // only when the underlying draft state actually changes.
+  const [actionType, setActionType] = useState(defaultActionType);
+  const [syncedActionType, setSyncedActionType] = useState(defaultActionType);
+  if (syncedActionType !== defaultActionType) {
+    setSyncedActionType(defaultActionType);
+    setActionType(defaultActionType);
+  }
   const { activeUsers } = usePresence(params.orgId, params.projectId, filePath);
   const { vercelToken, vercelTeamId, vercelProjectId } = useVercelIntegration(
     params.orgId,
   );
 
-  const [ghStatusState, setGhStatusState] = useState<string | undefined>(
-    undefined,
-  );
-  const [glStatusState, setGlStatusState] = useState<string | undefined>(
-    undefined,
-  );
-  const isGitHub = isGitHubProvider(config.provider);
-  const isGitLab = isGitLabProvider(config.provider);
-  const ghPollingInterval = useDeploymentStatusPollingInterval(ghStatusState);
-  const glPollingInterval = useDeploymentStatusPollingInterval(glStatusState);
+  const [statusState, setStatusState] = useState<string | undefined>(undefined);
+  const pollingInterval = useDeploymentStatusPollingInterval(statusState);
 
-  const { data: ghStatus, refetch: refetchGhStatus } =
-    useGetGitHubCommitStatusQuery(
-      {
-        owner: config.owner,
-        repo: config.repoName,
-        ref: config.branch,
-      },
-      {
-        skip:
-          !config.owner ||
-          !config.repoName ||
-          !config.branch ||
-          !isGitHub ||
-          !canAccessProFeatures,
-        pollingInterval: ghPollingInterval,
-      },
-    );
-  const ghStatusStateFromData =
-    typeof ghStatus === "object" && ghStatus !== null
-      ? (ghStatus as any).state
-      : ghStatus;
-
-  const { data: glStatus, refetch: refetchGlStatus } =
-    useGetGitLabCommitStatusQuery(
-      {
-        id: config.repoName
-          ? `${config.owner}/${config.repoName}`
-          : config.owner,
-        ref: config.branch,
-      },
-      {
-        skip:
-          !config.owner ||
-          !config.repoName ||
-          !config.branch ||
-          !isGitLab ||
-          !canAccessProFeatures,
-        pollingInterval: glPollingInterval,
-      },
-    );
-  const glStatusStateFromData =
-    typeof glStatus === "object" && glStatus !== null
-      ? (glStatus as any).state
-      : glStatus;
+  const { useGitCommitStatus } = useGitProvider();
+  const { data: rawStatus, refetch: refetchStatus } = useGitCommitStatus({
+    skip: !config.owner || !config.branch || !canAccessProFeatures,
+    pollingInterval,
+  });
+  const statusStateFromData = commitStatusState(rawStatus);
 
   // When a commit push completes (pending: true → false), force-refetch the
   // status query to bypass the RTK Query cache and pick up the new deployment.
@@ -192,31 +141,20 @@ export default function EditorHeader({
   const prevPendingRef = useRef(pending);
   useEffect(() => {
     if (prevPendingRef.current && !pending) {
-      setGhStatusState(undefined);
-      setGlStatusState(undefined);
-      if (isGitHub && canAccessProFeatures) refetchGhStatus();
-      if (isGitLab && canAccessProFeatures) refetchGlStatus();
+      setStatusState(undefined);
+      if (canAccessProFeatures) refetchStatus();
     }
     prevPendingRef.current = pending;
-  }, [
-    pending,
-    isGitHub,
-    isGitLab,
-    canAccessProFeatures,
-    refetchGhStatus,
-    refetchGlStatus,
-  ]);
+  }, [pending, canAccessProFeatures, refetchStatus]);
 
-  useEffect(() => {
-    setGhStatusState(ghStatusStateFromData);
-  }, [ghStatusStateFromData]);
-  useEffect(() => {
-    setGlStatusState(glStatusStateFromData);
-  }, [glStatusStateFromData]);
+  // The polling interval feeds the status query's options, so the query result
+  // cannot be passed straight to the interval hook. Mirroring it during render
+  // breaks that cycle without the extra commit an effect would cause.
+  if (statusState !== statusStateFromData) {
+    setStatusState(statusStateFromData);
+  }
 
-  const deploymentStatus = isGitLab
-    ? glStatusStateFromData
-    : ghStatusStateFromData;
+  const deploymentStatus = statusStateFromData;
 
   useEffect(() => {
     const classNames = [

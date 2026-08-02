@@ -1,20 +1,16 @@
 "use client";
 
+import { useHydrated } from "@/hooks/use-hydrated";
 import Avatar from "@/components/avatar";
 import Logo from "@/components/logo";
 import { Button } from "@/components/ui/button";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 
 export default function SimpleHeader({ auth }: { auth?: any }) {
   const tCommon = useTranslations("common");
   const tAuth = useTranslations("auth.login");
-  const [hasMounted, setHasMounted] = useState(false);
-
-  useEffect(() => {
-    setHasMounted(true);
-  }, []);
+  const hasMounted = useHydrated();
 
   return (
     <header className="py-3">

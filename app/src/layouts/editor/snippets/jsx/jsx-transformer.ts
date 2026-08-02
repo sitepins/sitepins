@@ -218,80 +218,74 @@ function transformJsxTree(tree: Root) {
   remarkHtml()(tree);
 
   // Pre-pass: Lift ALL JSX components (opening, closing, self-closing) out of paragraphs
-  visit(
-    tree,
-    "paragraph",
-    (node, index, parent) => {
-      if (!parent || index === undefined) return;
+  visit(tree, "paragraph", (node, index, parent) => {
+    if (!parent || index === undefined) return;
 
-      const children = node.children;
-      // Identify PascalCase tags (opening or closing)
-      const hasJsxTag = children.some(isJsxTagNode);
+    const children = node.children;
+    // Identify PascalCase tags (opening or closing)
+    const hasJsxTag = children.some(isJsxTagNode);
 
-      if (!hasJsxTag) return;
+    if (!hasJsxTag) return;
 
-      const newNodes: RootContent[] = [];
-      let currentParagraphChildren: PhrasingContent[] = [];
+    const newNodes: RootContent[] = [];
+    let currentParagraphChildren: PhrasingContent[] = [];
 
-      for (const child of children) {
-        if (isJsxTagNode(child)) {
-          // Closing JSX tags (</Tab>, </Tabs>) are ALWAYS lifted regardless of surrounding text.
-          const isClosingTag = /^<\/[A-Z]/.test(
-            normalizeForTagMatch(nodeValue(child)),
-          );
-
-          if (!isClosingTag) {
-            // For opening/self-closing tags, only keep inline if real text has been
-            // accumulated BEFORE this node in the current paragraph.
-            const hasRealTextBefore = currentParagraphChildren.some((c) => {
-              if (c.type === "text") {
-                return normalizeForTagMatch(nodeValue(c)).length > 0;
-              }
-              // Non-text, non-JSX elements count as real content
-              return c.type !== "html" || !isJsxTagNode(c);
-            });
-
-            if (hasRealTextBefore) {
-              currentParagraphChildren.push(child);
-              continue;
-            }
-          }
-
-          if (currentParagraphChildren.length > 0) {
-            const hasMeaningfulContent = currentParagraphChildren.some(
-              hasMeaningfulValue,
-            );
-
-            if (hasMeaningfulContent) {
-              newNodes.push({
-                type: "paragraph",
-                children: currentParagraphChildren,
-              });
-            }
-            currentParagraphChildren = [];
-          }
-          newNodes.push(child);
-        } else {
-          currentParagraphChildren.push(child);
-        }
-      }
-
-      if (currentParagraphChildren.length > 0) {
-        const hasMeaningfulContent = currentParagraphChildren.some(
-          hasMeaningfulValue,
+    for (const child of children) {
+      if (isJsxTagNode(child)) {
+        // Closing JSX tags (</Tab>, </Tabs>) are ALWAYS lifted regardless of surrounding text.
+        const isClosingTag = /^<\/[A-Z]/.test(
+          normalizeForTagMatch(nodeValue(child)),
         );
-        if (hasMeaningfulContent) {
-          newNodes.push({
-            type: "paragraph",
-            children: currentParagraphChildren,
-          });
-        }
-      }
 
-      parent.children.splice(index, 1, ...newNodes);
-      return index + newNodes.length;
-    },
-  );
+        if (!isClosingTag) {
+          // For opening/self-closing tags, only keep inline if real text has been
+          // accumulated BEFORE this node in the current paragraph.
+          const hasRealTextBefore = currentParagraphChildren.some((c) => {
+            if (c.type === "text") {
+              return normalizeForTagMatch(nodeValue(c)).length > 0;
+            }
+            // Non-text, non-JSX elements count as real content
+            return c.type !== "html" || !isJsxTagNode(c);
+          });
+
+          if (hasRealTextBefore) {
+            currentParagraphChildren.push(child);
+            continue;
+          }
+        }
+
+        if (currentParagraphChildren.length > 0) {
+          const hasMeaningfulContent =
+            currentParagraphChildren.some(hasMeaningfulValue);
+
+          if (hasMeaningfulContent) {
+            newNodes.push({
+              type: "paragraph",
+              children: currentParagraphChildren,
+            });
+          }
+          currentParagraphChildren = [];
+        }
+        newNodes.push(child);
+      } else {
+        currentParagraphChildren.push(child);
+      }
+    }
+
+    if (currentParagraphChildren.length > 0) {
+      const hasMeaningfulContent =
+        currentParagraphChildren.some(hasMeaningfulValue);
+      if (hasMeaningfulContent) {
+        newNodes.push({
+          type: "paragraph",
+          children: currentParagraphChildren,
+        });
+      }
+    }
+
+    parent.children.splice(index, 1, ...newNodes);
+    return index + newNodes.length;
+  });
 
   // First pass: Split HTML/text nodes so JSX and surrounding text become separate nodes
   visit(tree, ["html", "text"], (node, index, parent) => {
@@ -578,77 +572,71 @@ function transformJsxTree(tree: Root) {
   );
 
   // Third pass: Lift jsx_block nodes out of paragraphs ONLY if they're acting as blocks
-  visit(
-    tree,
-    "paragraph",
-    (node, index, parent) => {
-      if (!parent || index === undefined) return;
+  visit(tree, "paragraph", (node, index, parent) => {
+    if (!parent || index === undefined) return;
 
-      const children = node.children;
-      const hasJsxBlock = children.some(
-        (child) => child.type === "jsx_block" || child.type === "jsx_inline",
-      );
+    const children = node.children;
+    const hasJsxBlock = children.some(
+      (child) => child.type === "jsx_block" || child.type === "jsx_inline",
+    );
 
-      if (!hasJsxBlock) return;
+    if (!hasJsxBlock) return;
 
-      // Check if the paragraph has meaningful non-JSX content
-      const hasNonJsxContent = children.some((child) => {
-        if (child.type === "jsx_block" || child.type === "jsx_inline")
-          return false;
-        return hasMeaningfulValue(child);
-      });
+    // Check if the paragraph has meaningful non-JSX content
+    const hasNonJsxContent = children.some((child) => {
+      if (child.type === "jsx_block" || child.type === "jsx_inline")
+        return false;
+      return hasMeaningfulValue(child);
+    });
 
-      // If there's other meaningful content, keep all JSX inline
-      if (hasNonJsxContent) {
-        return;
-      }
+    // If there's other meaningful content, keep all JSX inline
+    if (hasNonJsxContent) {
+      return;
+    }
 
-      const newNodes: RootContent[] = [];
-      let currentParagraphChildren: PhrasingContent[] = [];
+    const newNodes: RootContent[] = [];
+    let currentParagraphChildren: PhrasingContent[] = [];
 
-      for (const child of children) {
-        if (child.type === "jsx_block" || child.type === "jsx_inline") {
-          // Upgrade inline to block since it's standing alone with no non-JSX content
-          child.type = "jsx_block";
-          if (child.data && child.data.hName) {
-            child.data.hName = "jsx_block";
-          }
-
-          // Lift jsx_block out of paragraph
-          if (currentParagraphChildren.length > 0) {
-            const hasMeaningfulContent = currentParagraphChildren.some(
-              hasMeaningfulValue,
-            );
-            if (hasMeaningfulContent) {
-              newNodes.push({
-                type: "paragraph",
-                children: currentParagraphChildren,
-              });
-            }
-            currentParagraphChildren = [];
-          }
-          newNodes.push(child);
-        } else {
-          currentParagraphChildren.push(child);
+    for (const child of children) {
+      if (child.type === "jsx_block" || child.type === "jsx_inline") {
+        // Upgrade inline to block since it's standing alone with no non-JSX content
+        child.type = "jsx_block";
+        if (child.data && child.data.hName) {
+          child.data.hName = "jsx_block";
         }
-      }
 
-      if (currentParagraphChildren.length > 0) {
-        const hasMeaningfulContent = currentParagraphChildren.some(
-          hasMeaningfulValue,
-        );
-        if (hasMeaningfulContent) {
-          newNodes.push({
-            type: "paragraph",
-            children: currentParagraphChildren,
-          });
+        // Lift jsx_block out of paragraph
+        if (currentParagraphChildren.length > 0) {
+          const hasMeaningfulContent =
+            currentParagraphChildren.some(hasMeaningfulValue);
+          if (hasMeaningfulContent) {
+            newNodes.push({
+              type: "paragraph",
+              children: currentParagraphChildren,
+            });
+          }
+          currentParagraphChildren = [];
         }
+        newNodes.push(child);
+      } else {
+        currentParagraphChildren.push(child);
       }
+    }
 
-      parent.children.splice(index, 1, ...newNodes);
-      return index + newNodes.length;
-    },
-  );
+    if (currentParagraphChildren.length > 0) {
+      const hasMeaningfulContent =
+        currentParagraphChildren.some(hasMeaningfulValue);
+      if (hasMeaningfulContent) {
+        newNodes.push({
+          type: "paragraph",
+          children: currentParagraphChildren,
+        });
+      }
+    }
+
+    parent.children.splice(index, 1, ...newNodes);
+    return index + newNodes.length;
+  });
   // Fourth pass: Clean up empty paragraphs at root level introduced by editor normalization
   if (tree.type === "root" && tree.children) {
     tree.children = tree.children.filter((node) => {

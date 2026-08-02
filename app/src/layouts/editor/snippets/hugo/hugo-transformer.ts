@@ -420,184 +420,180 @@ export function remarkHugo(this: Processor, options: ShortcodeOptions = {}) {
     // remark always hands a Root here.
     const tree = treeNode as Root;
 
-    visit(
-      tree,
-      ["text", "html"],
-      (node, index, parent) => {
-        if (node.type !== "text" && node.type !== "html") return;
-        if (!parent || index === undefined) return;
+    visit(tree, ["text", "html"], (node, index, parent) => {
+      if (node.type !== "text" && node.type !== "html") return;
+      if (!parent || index === undefined) return;
 
-        const value = node.value;
+      const value = node.value;
 
-        // Find the first matching start block using regex
-        type ShortcodeMatch = {
-          start: string;
-          end: string;
-          index: number;
-          definitionIndex: number;
-        };
+      // Find the first matching start block using regex
+      type ShortcodeMatch = {
+        start: string;
+        end: string;
+        index: number;
+        definitionIndex: number;
+      };
 
-        let bestMatch: ShortcodeMatch | null = null;
+      let bestMatch: ShortcodeMatch | null = null;
 
-        // Reset regex state
-        startRegex.lastIndex = 0;
+      // Reset regex state
+      startRegex.lastIndex = 0;
 
-        let match;
-        while ((match = startRegex.exec(value)) !== null) {
-          const startBlock = match[0];
-          const idx = match.index;
+      let match;
+      while ((match = startRegex.exec(value)) !== null) {
+        const startBlock = match[0];
+        const idx = match.index;
 
-          // Find which definition this corresponds to
-          const def = definitions.find((d) => d.start === startBlock);
-          if (!def) continue;
+        // Find which definition this corresponds to
+        const def = definitions.find((d) => d.start === startBlock);
+        if (!def) continue;
 
-          const defIndex = definitions.indexOf(def);
+        const defIndex = definitions.indexOf(def);
 
-          let isValid = true;
-          if (def.start === "<") {
-            const nextChar = value[idx + def.start.length];
+        let isValid = true;
+        if (def.start === "<") {
+          const nextChar = value[idx + def.start.length];
 
-            // For the < delimiter, ONLY match JSX components (uppercase first letter)
-            // This distinguishes JSX components like <Button> from HTML like <div>
-            // Hugo shortcodes use {{< delimiter so they won't hit this path
-            const isJsxOpening = nextChar >= "A" && nextChar <= "Z";
-            const isJsxClosing =
-              nextChar === "/" &&
-              value[idx + def.start.length + 1] >= "A" &&
-              value[idx + def.start.length + 1] <= "Z";
+          // For the < delimiter, ONLY match JSX components (uppercase first letter)
+          // This distinguishes JSX components like <Button> from HTML like <div>
+          // Hugo shortcodes use {{< delimiter so they won't hit this path
+          const isJsxOpening = nextChar >= "A" && nextChar <= "Z";
+          const isJsxClosing =
+            nextChar === "/" &&
+            value[idx + def.start.length + 1] >= "A" &&
+            value[idx + def.start.length + 1] <= "Z";
 
-            // Reject if it's NOT a JSX component (e.g., reject <hr>, <div>, etc.)
-            if (!isJsxOpening && !isJsxClosing) {
-              isValid = false;
-            }
-          }
-
-          if (isValid) {
-            bestMatch = {
-              start: def.start,
-              end: def.end,
-              index: idx,
-              definitionIndex: defIndex,
-            };
-            break; // Found the first valid match
+          // Reject if it's NOT a JSX component (e.g., reject <hr>, <div>, etc.)
+          if (!isJsxOpening && !isJsxClosing) {
+            isValid = false;
           }
         }
 
-        if (!bestMatch) return;
+        if (isValid) {
+          bestMatch = {
+            start: def.start,
+            end: def.end,
+            index: idx,
+            definitionIndex: defIndex,
+          };
+          break; // Found the first valid match
+        }
+      }
 
-        const matchResult = bestMatch as ShortcodeMatch;
+      if (!bestMatch) return;
 
-        const startIdx = matchResult.index;
-        const startBlock = matchResult.start;
-        const endBlock = matchResult.end;
+      const matchResult = bestMatch as ShortcodeMatch;
 
-        const endIdx = value.indexOf(endBlock, startIdx + startBlock.length);
-        let fullContent = "";
-        const nodesToMerge: Node[] = [];
-        let postText = "";
-        let foundEnd = false;
+      const startIdx = matchResult.index;
+      const startBlock = matchResult.start;
+      const endBlock = matchResult.end;
 
-        if (endIdx !== -1) {
-          // Found in current node
-          fullContent = value.slice(startIdx, endIdx + endBlock.length);
-          postText = value.slice(endIdx + endBlock.length);
-          foundEnd = true;
-        } else {
-          // Look ahead logic for split nodes (e.g. by remark-gfm autolink)
-          let tempContent = value.slice(startIdx);
-          let siblingIdx = index + 1;
+      const endIdx = value.indexOf(endBlock, startIdx + startBlock.length);
+      let fullContent = "";
+      const nodesToMerge: Node[] = [];
+      let postText = "";
+      let foundEnd = false;
 
-          while (siblingIdx < parent.children.length) {
-            const sibling = parent.children[siblingIdx];
-            let siblingText = "";
+      if (endIdx !== -1) {
+        // Found in current node
+        fullContent = value.slice(startIdx, endIdx + endBlock.length);
+        postText = value.slice(endIdx + endBlock.length);
+        foundEnd = true;
+      } else {
+        // Look ahead logic for split nodes (e.g. by remark-gfm autolink)
+        let tempContent = value.slice(startIdx);
+        let siblingIdx = index + 1;
 
-            if (sibling.type === "text" || sibling.type === "html") {
-              siblingText = nodeValue(sibling);
-            } else if (
-              sibling.type === "link" ||
-              sibling.type === "strong" ||
-              sibling.type === "emphasis"
-            ) {
-              const firstChild = sibling.children?.[0];
-              if (firstChild && nodeValue(firstChild)) {
-                siblingText = nodeValue(firstChild);
-              } else {
-                siblingText = "";
-              }
+        while (siblingIdx < parent.children.length) {
+          const sibling = parent.children[siblingIdx];
+          let siblingText = "";
+
+          if (sibling.type === "text" || sibling.type === "html") {
+            siblingText = nodeValue(sibling);
+          } else if (
+            sibling.type === "link" ||
+            sibling.type === "strong" ||
+            sibling.type === "emphasis"
+          ) {
+            const firstChild = sibling.children?.[0];
+            if (firstChild && nodeValue(firstChild)) {
+              siblingText = nodeValue(firstChild);
             } else {
-              break;
+              siblingText = "";
             }
-
-            tempContent += siblingText;
-            nodesToMerge.push(sibling);
-
-            const matchPos = tempContent.indexOf(endBlock);
-            if (matchPos !== -1) {
-              const matchEnd = matchPos + endBlock.length;
-              fullContent = tempContent.slice(0, matchEnd);
-              postText = tempContent.slice(matchEnd);
-              foundEnd = true;
-              break;
-            }
-
-            siblingIdx++;
+          } else {
+            break;
           }
+
+          tempContent += siblingText;
+          nodesToMerge.push(sibling);
+
+          const matchPos = tempContent.indexOf(endBlock);
+          if (matchPos !== -1) {
+            const matchEnd = matchPos + endBlock.length;
+            fullContent = tempContent.slice(0, matchEnd);
+            postText = tempContent.slice(matchEnd);
+            foundEnd = true;
+            break;
+          }
+
+          siblingIdx++;
         }
+      }
 
-        if (!foundEnd) return;
+      if (!foundEnd) return;
 
-        // Found a shortcode
-        const preText = value.slice(0, startIdx);
-        // fullContent is the complete shortcode string
-        const shortcodeRaw = fullContent;
+      // Found a shortcode
+      const preText = value.slice(0, startIdx);
+      // fullContent is the complete shortcode string
+      const shortcodeRaw = fullContent;
 
-        const nodes: RootContent[] = [];
+      const nodes: RootContent[] = [];
 
-        // The fragments keep the split node's own type. Emitting the leftovers
-        // of an `html` node as text turns markup like `<br />` into literal
-        // characters, which the stringifier then escapes to `\<br />`.
-        const fragmentType = node.type === "html" ? "html" : "text";
+      // The fragments keep the split node's own type. Emitting the leftovers
+      // of an `html` node as text turns markup like `<br />` into literal
+      // characters, which the stringifier then escapes to `\<br />`.
+      const fragmentType = node.type === "html" ? "html" : "text";
 
-        if (preText) {
-          nodes.push({ type: fragmentType, value: preText });
-        }
+      if (preText) {
+        nodes.push({ type: fragmentType, value: preText });
+      }
 
-        // Mark if this is a JSX component
-        const isJsxComponent = startBlock === "<";
+      // Mark if this is a JSX component
+      const isJsxComponent = startBlock === "<";
 
-        nodes.push({
-          type: "shortcode",
-          content: stripInvisibleChars(shortcodeRaw),
-          data: {
-            hName: "shortcode",
-            hProperties: {
-              content: stripInvisibleChars(shortcodeRaw),
-            },
-            shortcode: {
-              definitionIndex: matchResult.definitionIndex,
-              start: startBlock,
-              end: endBlock,
-              startContent: stripInvisibleChars(shortcodeRaw),
-              isJsxComponent, // Add metadata to distinguish JSX from Hugo
-            },
+      nodes.push({
+        type: "shortcode",
+        content: stripInvisibleChars(shortcodeRaw),
+        data: {
+          hName: "shortcode",
+          hProperties: {
+            content: stripInvisibleChars(shortcodeRaw),
           },
-        });
+          shortcode: {
+            definitionIndex: matchResult.definitionIndex,
+            start: startBlock,
+            end: endBlock,
+            startContent: stripInvisibleChars(shortcodeRaw),
+            isJsxComponent, // Add metadata to distinguish JSX from Hugo
+          },
+        },
+      });
 
-        if (postText) {
-          nodes.push({ type: fragmentType, value: postText });
-        }
+      if (postText) {
+        nodes.push({ type: fragmentType, value: postText });
+      }
 
-        // Replace the current node AND any merged siblings
-        const removeCount = 1 + nodesToMerge.length;
-        parent.children.splice(index, removeCount, ...nodes);
+      // Replace the current node AND any merged siblings
+      const removeCount = 1 + nodesToMerge.length;
+      parent.children.splice(index, removeCount, ...nodes);
 
-        // Return the next index to visit
-        if (postText) {
-          return index + nodes.length - 1;
-        }
-        return index + nodes.length;
-      },
-    );
+      // Return the next index to visit
+      if (postText) {
+        return index + nodes.length - 1;
+      }
+      return index + nodes.length;
+    });
 
     // Second pass: Lift standalone shortcodes out of paragraphs EARLY.
     // This ensures opening/closing tags become siblings at the root so they can be merged.
@@ -613,125 +609,118 @@ export function remarkHugo(this: Processor, options: ShortcodeOptions = {}) {
       }
     });
 
-    visit(
-      tree,
-      "paragraph",
-      (node, index, parent) => {
-        if (!parent || index === undefined) return;
+    visit(tree, "paragraph", (node, index, parent) => {
+      if (!parent || index === undefined) return;
 
-        const children = node.children;
-        const hasShortcode = children.some(
-          (child) => child.type === "shortcode",
-        );
+      const children = node.children;
+      const hasShortcode = children.some((child) => child.type === "shortcode");
 
-        if (!hasShortcode) return;
+      if (!hasShortcode) return;
 
-        const newNodes: RootContent[] = [];
-        let currentParagraphChildren: PhrasingContent[] = [];
+      const newNodes: RootContent[] = [];
+      let currentParagraphChildren: PhrasingContent[] = [];
 
-        const containsRealText = children.some(
-          (c) => c.type === "text" && normalizeForTagMatch(nodeValue(c)).length > 0,
-        );
+      const containsRealText = children.some(
+        (c) =>
+          c.type === "text" && normalizeForTagMatch(nodeValue(c)).length > 0,
+      );
 
-        for (const child of children) {
-          if (child.type === "shortcode") {
-            // Check if this is a JSX inline component
-            const shortcodeMeta = shortcodeMetaOf(child);
+      for (const child of children) {
+        if (child.type === "shortcode") {
+          // Check if this is a JSX inline component
+          const shortcodeMeta = shortcodeMetaOf(child);
 
-            // If it's a JSX component, we MUST lift it if it's standalone or part of a PascalCase pair
-            // To be safe and ensure nesting works, we lift if it's PascalCase
-            const isPascalCase = shortcodeMeta?.isJsxComponent;
+          // If it's a JSX component, we MUST lift it if it's standalone or part of a PascalCase pair
+          // To be safe and ensure nesting works, we lift if it's PascalCase
+          const isPascalCase = shortcodeMeta?.isJsxComponent;
 
-            if (isPascalCase) {
-              // Closing JSX tags (</Tab>, </Tabs>, etc.) are ALWAYS lifted.
-              const isClosingTag = child.content?.trimStart().startsWith("</");
+          if (isPascalCase) {
+            // Closing JSX tags (</Tab>, </Tabs>, etc.) are ALWAYS lifted.
+            const isClosingTag = child.content?.trimStart().startsWith("</");
 
-              if (!isClosingTag) {
-                // For opening/self-closing tags, only keep inline if there is
-                // real text in the nodes accumulated BEFORE this one.
-                const hasRealTextBefore = currentParagraphChildren.some(
-                  (c) => {
-                    if (c.type === "text") {
-                      return normalizeForTagMatch(nodeValue(c)).length > 0;
-                    }
-                    return c.type !== "shortcode";
-                  },
-                );
-
-                if (hasRealTextBefore) {
-                  currentParagraphChildren.push(child);
-                  continue;
+            if (!isClosingTag) {
+              // For opening/self-closing tags, only keep inline if there is
+              // real text in the nodes accumulated BEFORE this one.
+              const hasRealTextBefore = currentParagraphChildren.some((c) => {
+                if (c.type === "text") {
+                  return normalizeForTagMatch(nodeValue(c)).length > 0;
                 }
-              }
-            } else {
-              // Dynamic block identification:
-              // If we've seen a closing tag for this name elsewhere in the document, we lift it.
-              // Also lift if it's at the start of the paragraph (standard Hugo block behavior).
-              const isKnownBlock = closingShortcodeNames.has(
-                shortcodeMeta?.name || "",
-              );
-              const isAtStart = currentParagraphChildren.every(
-                (c) => c.type === "text" && !normalizeForTagMatch(nodeValue(c)),
-              );
+                return c.type !== "shortcode";
+              });
 
-              const shouldLift =
-                shortcodeMeta?.isBlock ||
-                isKnownBlock ||
-                isAtStart ||
-                !containsRealText;
-
-              if (!shouldLift) {
+              if (hasRealTextBefore) {
                 currentParagraphChildren.push(child);
                 continue;
               }
             }
-
-            // If we're lifting it, and it's an opening tag, mark as block for merger
-            const nodeMeta = getShortcodeMeta(child as ShortcodeNode);
-            if (!containsRealText && nodeMeta && !nodeMeta.isClosing) {
-              nodeMeta.isBlock = true;
-            }
-
-            // Lift block shortcodes out of paragraphs (existing behavior)
-            if (currentParagraphChildren.length > 0) {
-              const hasMeaningfulText = currentParagraphChildren.some(
-                (c) =>
-                  c.type !== "text" ||
-                  normalizeForTagMatch(nodeValue(c)).length > 0,
-              );
-
-              if (hasMeaningfulText) {
-                newNodes.push({
-                  type: "paragraph",
-                  children: currentParagraphChildren,
-                });
-              }
-              currentParagraphChildren = [];
-            }
-            newNodes.push(child);
           } else {
-            currentParagraphChildren.push(child);
+            // Dynamic block identification:
+            // If we've seen a closing tag for this name elsewhere in the document, we lift it.
+            // Also lift if it's at the start of the paragraph (standard Hugo block behavior).
+            const isKnownBlock = closingShortcodeNames.has(
+              shortcodeMeta?.name || "",
+            );
+            const isAtStart = currentParagraphChildren.every(
+              (c) => c.type === "text" && !normalizeForTagMatch(nodeValue(c)),
+            );
+
+            const shouldLift =
+              shortcodeMeta?.isBlock ||
+              isKnownBlock ||
+              isAtStart ||
+              !containsRealText;
+
+            if (!shouldLift) {
+              currentParagraphChildren.push(child);
+              continue;
+            }
           }
-        }
 
-        if (currentParagraphChildren.length > 0) {
-          const hasMeaningfulText = currentParagraphChildren.some(
-            (c) =>
-              c.type !== "text" || normalizeForTagMatch(nodeValue(c)).length > 0,
-          );
-
-          if (hasMeaningfulText) {
-            newNodes.push({
-              type: "paragraph",
-              children: currentParagraphChildren,
-            });
+          // If we're lifting it, and it's an opening tag, mark as block for merger
+          const nodeMeta = getShortcodeMeta(child as ShortcodeNode);
+          if (!containsRealText && nodeMeta && !nodeMeta.isClosing) {
+            nodeMeta.isBlock = true;
           }
-        }
 
-        parent.children.splice(index, 1, ...newNodes);
-        return index + newNodes.length;
-      },
-    );
+          // Lift block shortcodes out of paragraphs (existing behavior)
+          if (currentParagraphChildren.length > 0) {
+            const hasMeaningfulText = currentParagraphChildren.some(
+              (c) =>
+                c.type !== "text" ||
+                normalizeForTagMatch(nodeValue(c)).length > 0,
+            );
+
+            if (hasMeaningfulText) {
+              newNodes.push({
+                type: "paragraph",
+                children: currentParagraphChildren,
+              });
+            }
+            currentParagraphChildren = [];
+          }
+          newNodes.push(child);
+        } else {
+          currentParagraphChildren.push(child);
+        }
+      }
+
+      if (currentParagraphChildren.length > 0) {
+        const hasMeaningfulText = currentParagraphChildren.some(
+          (c) =>
+            c.type !== "text" || normalizeForTagMatch(nodeValue(c)).length > 0,
+        );
+
+        if (hasMeaningfulText) {
+          newNodes.push({
+            type: "paragraph",
+            children: currentParagraphChildren,
+          });
+        }
+      }
+
+      parent.children.splice(index, 1, ...newNodes);
+      return index + newNodes.length;
+    });
 
     // Third pass: Recursively lift closing shortcodes out of nested structures
     function liftClosingShortcodes(node: Node): void {
@@ -823,39 +812,35 @@ export function remarkHugo(this: Processor, options: ShortcodeOptions = {}) {
     mergeBlockShortcodes(tree, definitions, toMarkdownExtensions);
 
     // Final Pass: One more visit to paragraphs to lift any newly merged block shortcodes
-    visit(
-      tree,
-      "paragraph",
-      (node, index, parent) => {
-        if (!parent || index === undefined) return;
-        const hasBlockShortcode = node.children.some(
-          (c) => c.type === "shortcode" && c.data?.shortcode?.isBlock,
-        );
-        if (!hasBlockShortcode) return;
+    visit(tree, "paragraph", (node, index, parent) => {
+      if (!parent || index === undefined) return;
+      const hasBlockShortcode = node.children.some(
+        (c) => c.type === "shortcode" && c.data?.shortcode?.isBlock,
+      );
+      if (!hasBlockShortcode) return;
 
-        // If a paragraph contains a block shortcode, we should lift it.
-        const newNodes: RootContent[] = [];
-        let current: PhrasingContent[] = [];
+      // If a paragraph contains a block shortcode, we should lift it.
+      const newNodes: RootContent[] = [];
+      let current: PhrasingContent[] = [];
 
-        for (const child of node.children) {
-          if (child.type === "shortcode" && child.data?.shortcode?.isBlock) {
-            if (current.length > 0) {
-              newNodes.push({ type: "paragraph", children: current });
-              current = [];
-            }
-            newNodes.push(child);
-          } else {
-            current.push(child);
+      for (const child of node.children) {
+        if (child.type === "shortcode" && child.data?.shortcode?.isBlock) {
+          if (current.length > 0) {
+            newNodes.push({ type: "paragraph", children: current });
+            current = [];
           }
+          newNodes.push(child);
+        } else {
+          current.push(child);
         }
-        if (current.length > 0) {
-          newNodes.push({ type: "paragraph", children: current });
-        }
+      }
+      if (current.length > 0) {
+        newNodes.push({ type: "paragraph", children: current });
+      }
 
-        parent.children.splice(index, 1, ...newNodes);
-        return index + newNodes.length;
-      },
-    );
+      parent.children.splice(index, 1, ...newNodes);
+      return index + newNodes.length;
+    });
 
     // Fourth pass: Clean up artifacts at root level:
     // - empty paragraphs injected by the editor
@@ -873,8 +858,8 @@ export function remarkHugo(this: Processor, options: ShortcodeOptions = {}) {
         // Remove whitespace-only text nodes at root level
         if (node.type === "text") {
           return (
-            nodeValue(node).replace(/[\u200B\u200C\u200D\uFEFF\s]/g, "").length >
-            0
+            nodeValue(node).replace(/[\u200B\u200C\u200D\uFEFF\s]/g, "")
+              .length > 0
           );
         }
         return true;

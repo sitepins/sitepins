@@ -33,7 +33,7 @@ import { Folder } from "lucide-react";
 import { Reorder } from "motion/react";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
-import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
+import { Dispatch, SetStateAction, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { toast } from "sonner";
 import { FileForm, FolderForm, HeadingForm } from "./arrange-site-forms";
@@ -89,7 +89,6 @@ export default function Arrangement({
   const [arrangements, setArrangement] =
     useState<TArrangement[]>(memoArrangement);
   const [syncedArrangement, setSyncedArrangement] = useState(memoArrangement);
-  const [isChanged, setIsChanged] = useState(false);
   const [type, setType] = useState<"folder" | "file" | "heading">();
   const Form = type ? formComponent[type] : null;
   const [modalOpen, setModalOpen] = useState(false);
@@ -141,9 +140,8 @@ export default function Arrangement({
     setModalOpen(true);
   };
 
-  useEffect(() => {
-    setIsChanged(!deepEqualArray(baseline, arrangements, ["id"]));
-  }, [arrangements]);
+  // Saving updates the baseline, so this goes false on its own afterwards.
+  const isChanged = !deepEqualArray(baseline, arrangements, ["id"]);
 
   const isConfigLoaded =
     config.token && config.repoName && config.branch && config.provider;
@@ -342,7 +340,6 @@ export default function Arrangement({
                   updateConfig({ ...config, arrangement: arrangements }),
                 );
                 setBaseline(JSON.parse(JSON.stringify(arrangements)));
-                setIsChanged(false);
               }
             });
           }}

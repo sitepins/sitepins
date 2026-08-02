@@ -10,7 +10,10 @@ import {
   KEY_SHORTCODE,
   KEY_SHORTCODE_INLINE,
 } from "./snippet-keys";
-import { deserializeShortcode, serializeShortcode } from "./hugo/hugo-serialization";
+import {
+  deserializeShortcode,
+  serializeShortcode,
+} from "./hugo/hugo-serialization";
 import { parseJsxString } from "./jsx/jsx-parser";
 import {
   deserializeJsx,
@@ -34,15 +37,17 @@ describe("parseJsxString", () => {
   });
 
   it("extracts quoted attributes", () => {
-    expect(parseJsxString('<Notice type="warn" title="Hi" />').attributes).toEqual(
-      { type: "warn", title: "Hi" },
-    );
+    expect(
+      parseJsxString('<Notice type="warn" title="Hi" />').attributes,
+    ).toEqual({ type: "warn", title: "Hi" });
   });
 
   it("keeps an attribute value containing an angle bracket", () => {
-    expect(parseJsxString('<Notice label="a > b" />').attributes).toMatchObject({
-      label: "a > b",
-    });
+    expect(parseJsxString('<Notice label="a > b" />').attributes).toMatchObject(
+      {
+        label: "a > b",
+      },
+    );
   });
 
   it("returns an empty name for a lowercase tag", () => {

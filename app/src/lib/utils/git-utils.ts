@@ -310,8 +310,7 @@ export function delay(ms: number) {
 export function isTransientNetworkError(error: unknown) {
   const msg = messageOf(error);
 
-  const status =
-    statusOf(error) ?? asRecord(asRecord(error)?.error)?.status;
+  const status = statusOf(error) ?? asRecord(asRecord(error)?.error)?.status;
 
   return (
     msg.toLowerCase().includes("failed to fetch") ||

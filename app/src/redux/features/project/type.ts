@@ -12,6 +12,8 @@ export type TProject<
   project_name: string;
   provider: "Github" | "Gitlab";
   repository: string;
+  /** GitLab's numeric project id, which survives a rename. GitLab only. */
+  repository_id?: string;
   project_image?: string;
   branch: string;
   visibility: "public" | "private";

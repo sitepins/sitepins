@@ -453,20 +453,21 @@ function SchemaEditDialog({
     },
   });
 
-  // Populate form when schema data is loaded
-  useEffect(() => {
-    if (schema.data) {
-      schemaForm.setValue("file", schema.data.file || "");
-      schemaForm.setValue("fmType", schema.data.fmType || "yaml");
-      schemaForm.setValue("fileType", schema.data.fileType || "md");
-      schemaForm.setValue("name", schema.data.name || schema.name);
-      const cleaned = cleanTemplateData(schema.data.template || []);
-      setTemplate(cleaned);
-      if (initialTemplate === null) {
-        setInitialTemplate(JSON.stringify(cleaned));
-      }
+  // Seed the form once per loaded schema; re-running on every render would
+  // stomp the author's in-progress edits.
+  const [seededSchema, setSeededSchema] = useState<unknown>(null);
+  if (schema.data && seededSchema !== schema.data) {
+    setSeededSchema(schema.data);
+    schemaForm.setValue("file", schema.data.file || "");
+    schemaForm.setValue("fmType", schema.data.fmType || "yaml");
+    schemaForm.setValue("fileType", schema.data.fileType || "md");
+    schemaForm.setValue("name", schema.data.name || schema.name);
+    const cleaned = cleanTemplateData(schema.data.template || []);
+    setTemplate(cleaned);
+    if (initialTemplate === null) {
+      setInitialTemplate(JSON.stringify(cleaned));
     }
-  }, [schema, schemaForm, initialTemplate]);
+  }
 
   const handleUpdateSchema = async (data: z.infer<typeof createSchema>) => {
     const processedTemplate = processTemplateForSave(template as any);

@@ -23,7 +23,7 @@ const eslintConfig = defineConfig([
       "@typescript-eslint/ban-ts-comment": "off",
       "@typescript-eslint/no-empty-object-type": "error",
       "@typescript-eslint/no-explicit-any": "warn",
-      "@typescript-eslint/no-non-null-asserted-optional-chain": "warn",
+      "@typescript-eslint/no-non-null-asserted-optional-chain": "error",
       "@typescript-eslint/no-unused-expressions": "error",
       "@typescript-eslint/no-unused-vars": [
         "error",
@@ -42,12 +42,12 @@ const eslintConfig = defineConfig([
       // ==========================================
       // Next.js Specific Rules
       // ==========================================
-      "@next/next/no-img-element": "warn",
+      "@next/next/no-img-element": "warn", // backlog: 12
 
       // ==========================================
       // React Rules
       // ==========================================
-      "react/display-name": "warn",
+      "react/display-name": "warn", // backlog: 3, Plate render wrappers
       "react/jsx-no-undef": "error",
       "react/no-unescaped-entities": "error",
 
@@ -56,11 +56,13 @@ const eslintConfig = defineConfig([
       // ==========================================
       // React Compiler diagnostics. The first four are real defects; the last
       // two only report that the compiler skipped optimizing a component.
-      "react-hooks/immutability": "warn",
-      "react-hooks/refs": "warn",
+      "react-hooks/immutability": "warn", // backlog: 1
+      "react-hooks/refs": "warn", // backlog: 4
+      // backlog: 11, all synchronising with something outside React —
+      // sockets, timers, DOM measurement, async I/O and parent callbacks.
       "react-hooks/set-state-in-effect": "warn",
-      "react-hooks/static-components": "warn",
-      "react-hooks/use-memo": "warn",
+      "react-hooks/static-components": "warn", // backlog: 1
+      "react-hooks/use-memo": "warn", // backlog: 1
       "react-hooks/incompatible-library": "off",
       "react-hooks/preserve-manual-memoization": "off",
 

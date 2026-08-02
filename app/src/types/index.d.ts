@@ -62,6 +62,8 @@ export type TConfig = TConfigFile & {
   token: string;
   owner: string;
   repoName: string;
+  /** GitLab's numeric project id, which survives a rename. GitLab only. */
+  repositoryId?: string;
   branch: string;
   framework:
     "nextjs" | "astro" | "hugo" | "hugo_examplesite" | "tanstack" | null;

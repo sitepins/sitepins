@@ -15,12 +15,8 @@ import { Button, ButtonProps } from "@/components/ui/button";
 import { useDialog } from "@/hooks/use-dialog";
 import { isGitLabProvider } from "@/lib/utils/provider-checker";
 import { selectConfig } from "@/redux/features/config/slice";
-import {
-  useUpdateGitHubFilesMutation,
-} from "@/redux/features/github";
-import {
-  useUpdateGitLabFilesMutation,
-} from "@/redux/features/gitlab";
+import { useUpdateGitHubFilesMutation } from "@/redux/features/github";
+import { useUpdateGitLabFilesMutation } from "@/redux/features/gitlab";
 import { excludeMedia } from "@/redux/features/media/slice";
 import { EAction, EProjectLogType } from "@/redux/features/project-log/type";
 import { getGitProviderAdapter } from "@/redux/features/git/provider-adapter";

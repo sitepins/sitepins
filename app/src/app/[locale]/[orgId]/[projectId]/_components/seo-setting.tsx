@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { UpgradeDialog } from "@/components/upgrade-dialog";
 import { revertToOriginal } from "@/editor/utils/plate-utils";
 import { useDebounce } from "@/hooks/use-debounce";
+import { useHydrated } from "@/hooks/use-hydrated";
 import { useOwnerPlan } from "@/hooks/use-owner-plan";
 import {
   getSeoScore,
@@ -75,17 +76,11 @@ export default function SeoSetting({
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [showUpgradeOrg, setShowUpgradeOrg] = useState(false);
   const [focusKeyword, setFocusKeyword] = useState("");
-  const [portalContainer, setPortalContainer] = useState<HTMLElement | null>(
-    null,
-  );
+  const hydrated = useHydrated();
+  const portalContainer = hydrated ? document.body : null;
   // State, not a ref: `displayData` reads this during render, and a memo
   // cannot depend on a ref.
   const [pendingSlug, setPendingSlug] = useState<string | null>(null);
-
-  useEffect(() => {
-    // Set portal container on client side only
-    setPortalContainer(document.body);
-  }, []);
 
   // The target keyphrase is a per-file editor preference, so it is kept in
   // localStorage rather than written into the user's frontmatter.
@@ -93,13 +88,17 @@ export default function SeoSetting({
     fileParams?.join("/") ?? ""
   }`;
 
-  useEffect(() => {
+  // Reseeded during render when the file changes, so switching files never
+  // shows the previous file's keyphrase for a frame.
+  const [loadedKeywordKey, setLoadedKeywordKey] = useState<string | null>(null);
+  if (hydrated && loadedKeywordKey !== focusKeywordStorageKey) {
+    setLoadedKeywordKey(focusKeywordStorageKey);
     try {
       setFocusKeyword(localStorage.getItem(focusKeywordStorageKey) ?? "");
     } catch {
       setFocusKeyword("");
     }
-  }, [focusKeywordStorageKey]);
+  }
 
   const handleFocusKeywordChange = useCallback(
     (value: string) => {
@@ -123,10 +122,12 @@ export default function SeoSetting({
 
   const [virtualSlug, setVirtualSlug] = useState(filename);
 
-  useEffect(() => {
+  const [slugResetKey, setSlugResetKey] = useState(`${filename}:${resetKey}`);
+  if (slugResetKey !== `${filename}:${resetKey}`) {
+    setSlugResetKey(`${filename}:${resetKey}`);
     setPendingSlug(null);
     setVirtualSlug(filename);
-  }, [filename, resetKey]);
+  }
 
   const displayData = useMemo(() => {
     if (hasSlugInFrontmatter) return data;
@@ -166,8 +167,11 @@ export default function SeoSetting({
       [setState],
     );
 
+  // Notifying the parent has to happen after commit, so this one stays an
+  // effect: `onSlugChange` is a callback into another component.
   useEffect(() => {
     if (pendingSlug !== null) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setPendingSlug(null);
       setVirtualSlug(pendingSlug);
       onSlugChange?.(pendingSlug);

@@ -29,6 +29,9 @@ jobs:
       - name: Lint (api + web)
         run: pnpm lint
 
+      - name: Formatting
+        run: pnpm format:check
+
   typecheck:
     runs-on: ubuntu-latest
     steps:

@@ -18,12 +18,8 @@ import { checkMedia } from "@/lib/utils/check-media-file";
 import { toBase64 } from "@/lib/utils/git-utils";
 import { isGitLabProvider } from "@/lib/utils/provider-checker";
 import { selectConfig } from "@/redux/features/config/slice";
-import {
-  useUpdateGitHubFilesMutation,
-} from "@/redux/features/github";
-import {
-  useUpdateGitLabFilesMutation,
-} from "@/redux/features/gitlab";
+import { useUpdateGitHubFilesMutation } from "@/redux/features/github";
+import { useUpdateGitLabFilesMutation } from "@/redux/features/gitlab";
 import { selectMediaInfo, setMedia } from "@/redux/features/media/slice";
 import { getGitProviderAdapter } from "@/redux/features/git/provider-adapter";
 import { store, useAppDispatch } from "@/redux/store";

@@ -1,16 +1,12 @@
 "use client";
 
+import { useGitProvider } from "@/hooks/use-git-provider";
 import { useInView } from "@/hooks/use-in-view";
 import { isVideo } from "@/lib/utils/check-media-file";
 import { cn } from "@/lib/utils/cn";
 import { cleanMediaPath } from "@/lib/utils/common";
-import {
-  isGitHubProvider,
-  isGitLabProvider,
-} from "@/lib/utils/provider-checker";
+import {} from "@/lib/utils/provider-checker";
 import { selectConfig } from "@/redux/features/config/slice";
-import { useGetGitHubImageQuery } from "@/redux/features/github";
-import { useGetGitLabContentQuery } from "@/redux/features/gitlab";
 import Image from "next/image";
 import path from "path";
 import {
@@ -70,7 +66,8 @@ const SafeImage = forwardRef<HTMLImageElement, SafeImageProps>(
 
     const isInView = useInView(containerRef, { once: true });
     const config = useSelector(selectConfig);
-    const { branch, provider, owner, repoName, media } = config;
+    const { media } = config;
+    const { useGitImage } = useGitProvider();
 
     const finalPath = filePath ? cleanMediaPath(media, filePath) : "";
 
@@ -78,35 +75,11 @@ const SafeImage = forwardRef<HTMLImageElement, SafeImageProps>(
     const shouldFetch = !!filePath && (lazy ? isInView : true);
 
     const {
-      data: ghImage,
-      isLoading: isGhLoading,
-      error: ghError,
-      isUninitialized: isGhUninitialized,
-    } = useGetGitHubImageQuery(
-      { ref: branch, owner, repo: repoName, path: finalPath },
-      { skip: !shouldFetch || !isGitHubProvider(provider) },
-    );
-
-    const {
-      data: glImage,
-      isLoading: isGlLoading,
-      error: glError,
-      isUninitialized: isGlUninitialized,
-    } = useGetGitLabContentQuery(
-      {
-        id: repoName ? `${owner}/${repoName}` : owner,
-        file_path: finalPath,
-        ref: branch,
-      },
-      { skip: !shouldFetch || !isGitLabProvider(provider) },
-    );
-
-    const gitImage = isGitLabProvider(provider) ? glImage : ghImage;
-    const isGitLoading = isGitLabProvider(provider) ? isGlLoading : isGhLoading;
-    const gitError = isGitLabProvider(provider) ? glError : ghError;
-    const isGitUninitialized = isGitLabProvider(provider)
-      ? isGlUninitialized
-      : isGhUninitialized;
+      data: gitImage,
+      isLoading: isGitLoading,
+      error: gitError,
+      isUninitialized: isGitUninitialized,
+    } = useGitImage(finalPath, { skip: !shouldFetch });
 
     const isFetching =
       externalIsFetching ||
@@ -117,12 +90,7 @@ const SafeImage = forwardRef<HTMLImageElement, SafeImageProps>(
       let src = directSrc || PLACEHOLDER_IMAGE;
 
       if (shouldFetch && !isGitLoading && !gitError && gitImage) {
-        const content = isGitLabProvider(provider)
-          ? (gitImage as any)?.data
-          : gitImage?.content;
-        const downloadUrl = isGitLabProvider(provider)
-          ? undefined
-          : gitImage?.download_url;
+        const { content, download_url: downloadUrl } = gitImage;
 
         if (content) {
           const ext = path.extname(filePath!).toLowerCase();
@@ -135,23 +103,14 @@ const SafeImage = forwardRef<HTMLImageElement, SafeImageProps>(
         } else if (downloadUrl) {
           // Add a cache buster to the download URL to force browser refetch
           // We use the file's SHA as a stable, pure cache-buster value
-          const separator = (downloadUrl as string).includes("?") ? "&" : "?";
-          const sha = (gitImage as any)?.sha;
-          src = sha
-            ? `${downloadUrl}${separator}v=${sha}`
-            : (downloadUrl as string);
+          const separator = downloadUrl.includes("?") ? "&" : "?";
+          src = gitImage.sha
+            ? `${downloadUrl}${separator}v=${gitImage.sha}`
+            : downloadUrl;
         }
       }
       return src;
-    }, [
-      directSrc,
-      shouldFetch,
-      isGitLoading,
-      gitError,
-      gitImage,
-      provider,
-      filePath,
-    ]);
+    }, [directSrc, shouldFetch, isGitLoading, gitError, gitImage, filePath]);
 
     const finalSrc = isError
       ? FALLBACK_IMAGE

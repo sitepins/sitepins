@@ -1,5 +1,6 @@
 "use client";
 
+import { useHydrated } from "@/hooks/use-hydrated";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -23,7 +24,7 @@ import { Switch } from "@/components/ui/switch";
 import { aiProviders } from "@/lib/constant";
 import { Eye, EyeOff, Trash } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { ChangeEvent, useEffect, useMemo, useState } from "react";
+import { ChangeEvent, useMemo, useState } from "react";
 import { toast } from "sonner";
 
 // --- Types ---
@@ -331,9 +332,13 @@ function useAISettings(t: (key: string) => string) {
   const [autocomplete, setAutocomplete] = useState<boolean>(false);
   const [initialAutocomplete, setInitialAutocomplete] =
     useState<boolean>(false);
-  const [isHydrated, setIsHydrated] = useState(false);
+  const isHydrated = useHydrated();
 
-  useEffect(() => {
+  // localStorage is unreadable on the server, so the form seeds itself on the
+  // first client render rather than after a mount effect.
+  const [isSeeded, setIsSeeded] = useState(false);
+  if (isHydrated && !isSeeded) {
+    setIsSeeded(true);
     const loaded = {
       provider: localStorage.getItem("sitepins-ai-provider") || "",
       model: localStorage.getItem("sitepins-ai-model") || "",
@@ -346,8 +351,7 @@ function useAISettings(t: (key: string) => string) {
     setInitialAiCredential(loaded);
     setAutocomplete(loadedAutocomplete);
     setInitialAutocomplete(loadedAutocomplete);
-    setIsHydrated(true);
-  }, []);
+  }
 
   const [showKey, setShowKey] = useState<boolean>(false);
 

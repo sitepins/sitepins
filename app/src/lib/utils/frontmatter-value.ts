@@ -38,9 +38,7 @@ export type TMutableNode = Record<string | number, unknown>;
 
 /** Treats a walked value as a mutable node; non-objects become empty. */
 export const asNode = (value: unknown): TMutableNode =>
-  (typeof value === "object" && value !== null
-    ? value
-    : {}) as TMutableNode;
+  (typeof value === "object" && value !== null ? value : {}) as TMutableNode;
 
 /** The stable `id` the form layer attaches to a wrapped value. */
 export const idOf = (value: unknown): string | undefined => {

@@ -919,8 +919,13 @@ export default function FrontmatterRenderer({
             } else if (item.type === "boolean" && item.name === "draft") {
               return null;
             } else if (item.type === "Date") {
-              const value =
-                stringValue(fieldValue(currentData, item.name)) ?? "";
+              const rawValue = fieldValue(currentData, item.name);
+              const dateValue =
+                rawValue instanceof Date
+                  ? rawValue
+                  : typeof rawValue === "string" && rawValue
+                    ? new Date(rawValue)
+                    : undefined;
               return (
                 <div key={item.name}>
                   <PreviewLabel
@@ -931,7 +936,7 @@ export default function FrontmatterRenderer({
                   </PreviewLabel>
 
                   <DateTimePicker
-                    date={value ? new Date(value) : undefined}
+                    date={dateValue}
                     setDate={(date: Date | undefined) => {
                       handleUpdateData(
                         generateName({

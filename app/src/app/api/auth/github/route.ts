@@ -7,7 +7,14 @@ import { createAppAuth } from "@octokit/auth-app";
 import { NextRequest, NextResponse } from "next/server";
 import { App, Octokit } from "octokit";
 
-type GitHubAppInstallation = {
+// GitHub returns these for expiring-token apps; octokit's types omit them.
+type TExpiringTokenFields = {
+  refreshToken?: string;
+  expiresAt?: string;
+  refreshTokenExpiresAt?: string;
+};
+
+type TGitHubAppInstallation = {
   type: "token";
   tokenType: "installation";
   token: string;
@@ -32,7 +39,7 @@ type GitHubAppInstallation = {
   repositorySelection: "all" | "selected";
 };
 
-export type GitHubAppOAuthAuthentication = {
+export type TGitHubAppOAuthAuthentication = {
   type: "token";
   tokenType: "oauth";
   clientType: "github-app";
@@ -131,20 +138,20 @@ async function handler(request: NextRequest) {
 
     const installation = (await octokit.auth({
       type: "installation",
-    })) as GitHubAppInstallation;
+    })) as TGitHubAppInstallation;
+
+    const auth = token.authentication as typeof token.authentication &
+      TExpiringTokenFields;
 
     await createProvider({
       provider: "Github",
-      access_token: token.authentication.token,
-      refresh_token: (token.authentication as any).refreshToken || "", // Pass refreshToken if available
-      access_token_expires_at: (token.authentication as any).expiresAt
-        ? new Date((token.authentication as any).expiresAt).getTime()
+      access_token: auth.token,
+      refresh_token: auth.refreshToken || "", // Pass refreshToken if available
+      access_token_expires_at: auth.expiresAt
+        ? new Date(auth.expiresAt).getTime()
         : Date.now() + 28800000, // Default to 8h if missing
-      refresh_token_expires_at: (token.authentication as any)
-        .refreshTokenExpiresAt
-        ? new Date(
-            (token.authentication as any).refreshTokenExpiresAt,
-          ).getTime()
+      refresh_token_expires_at: auth.refreshTokenExpiresAt
+        ? new Date(auth.refreshTokenExpiresAt).getTime()
         : undefined,
       token_type: installation.tokenType,
       installation_access_token: installation.token,

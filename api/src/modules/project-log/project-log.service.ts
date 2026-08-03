@@ -1,12 +1,12 @@
 import { paginationHelpers } from "@/lib/paginationHelper";
-import { IPagination } from "@/types";
+import { TPagination } from "@/types";
 import { PipelineStage } from "mongoose";
 import { ProjectLog } from "./project-log.model";
 import { ProjectLogType } from "./project-log.type";
 
 // get all project log
 const getAllProjectLogService = async (
-  paginationOptions: Partial<IPagination>,
+  paginationOptions: Partial<TPagination>,
 ) => {
   const { limit, skip } =
     paginationHelpers.calculatePagination(paginationOptions);
@@ -52,7 +52,7 @@ const getAllProjectLogService = async (
 // get single project log
 const getSingleProjectLogService = async (
   project_id: string,
-  paginationOptions?: Partial<IPagination>,
+  paginationOptions?: Partial<TPagination>,
 ) => {
   const { limit, skip } = paginationOptions
     ? paginationHelpers.calculatePagination(paginationOptions)

@@ -19,9 +19,9 @@ import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { CoAuthorPreferenceSkeleton } from "./coauthor-preference-skeleton";
 
-interface CoAuthorPreferenceProps {
+type CoAuthorPreferenceProps = {
   userId: string;
-}
+};
 
 export default function CoAuthorPreference({
   userId,

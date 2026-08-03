@@ -1,4 +1,4 @@
-export type Role = "admin" | "user";
+export type TRole = "admin" | "user";
 
 export type TSaveProfilePicture = {
   variables: FormData;
@@ -19,7 +19,7 @@ export type TSaveProfilePicture = {
   etag: string;
 };
 
-export type DeleteAccount = {
+export type TDeleteAccount = {
   variables: {
     user_id: string;
     reason?: string;

@@ -48,11 +48,11 @@ import Link from "next/link";
 import { ChangeEvent, useEffect, useState } from "react";
 import { toast } from "sonner";
 
-interface ProjectBranchingProps {
+type ProjectBranchingProps = {
   project: any;
   config: any;
   repoInfo: any;
-}
+};
 
 /**
  * Component to manage branch comparisons and PR/MR creation/merging.

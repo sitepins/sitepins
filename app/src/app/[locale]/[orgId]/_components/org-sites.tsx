@@ -8,13 +8,13 @@ import { Edit, ExternalLink, Search } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 
-interface ProjectNameSectionProps {
+type ProjectNameSectionProps = {
   projectName: string;
   orgId: string;
   projectId: string;
   projectImage?: string;
   siteUrl?: string;
-}
+};
 
 function ProjectNameSection({
   projectName,
@@ -45,9 +45,9 @@ function ProjectNameSection({
 // NOTE: visibility is shown inline next to repository (plain text) to keep
 // the table compact — we no longer render a separate badge for visibility.
 
-interface StatusBadgeProps {
+type StatusBadgeProps = {
   status: string;
-}
+};
 
 function StatusBadge({ status }: StatusBadgeProps) {
   const tOrgSites = useTranslations("org-sites");
@@ -59,12 +59,12 @@ function StatusBadge({ status }: StatusBadgeProps) {
   );
 }
 
-interface RepositoryLinkProps {
+type RepositoryLinkProps = {
   repository: string;
   branch: string;
   provider: "Github" | "Gitlab";
   visibility?: string;
-}
+};
 
 function RepositoryLink({
   repository,
@@ -110,10 +110,10 @@ function RepositoryLink({
   );
 }
 
-interface SiteItemProps {
+type SiteItemProps = {
   site: TProject;
   orgId: string;
-}
+};
 
 function SiteItem({ site, orgId }: SiteItemProps) {
   const {

@@ -5,23 +5,23 @@ import { Server as IOServer, Socket } from "socket.io";
 // Types
 // ---------------------------------------------------------------------------
 
-interface JoinPayload {
+type JoinPayload = {
   org_id: string;
   project_id: string;
   file: string;
-}
+};
 
-interface CommitPayload extends JoinPayload {
+type CommitPayload = JoinPayload & {
   action: string;
-}
+};
 
-interface CommitBroadcast {
+type CommitBroadcast = {
   file: string;
   action: string;
   user_id: string;
   user_name: string;
   committed_at: string;
-}
+};
 
 // ---------------------------------------------------------------------------
 // Helpers

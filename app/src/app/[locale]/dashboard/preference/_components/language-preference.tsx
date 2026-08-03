@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import languages from "@/config/languages.json";
 import { usePathname, useRouter } from "@/lib/i18n/navigation";
-import { type Locale } from "@/lib/i18n/routing";
+import { type TLocale } from "@/lib/i18n/routing";
 import { cn } from "@/lib/utils/cn";
 import {
   useGetUserPreferenceQuery,
@@ -28,7 +28,7 @@ export default function LanguagePreference({ userId }: { userId: string }) {
     "dashboard.preference.language",
   );
   const tCommon = useTranslations("common");
-  const locale = useLocale() as Locale;
+  const locale = useLocale() as TLocale;
   const router = useRouter();
   const pathname = usePathname();
   const [isPending, startTransition] = useTransition();
@@ -55,7 +55,7 @@ export default function LanguagePreference({ userId }: { userId: string }) {
             "Failed to update language",
         );
       }
-      router.replace(pathname, { locale: nextLocale as Locale });
+      router.replace(pathname, { locale: nextLocale as TLocale });
       router.refresh();
     });
   }

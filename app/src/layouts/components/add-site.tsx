@@ -111,11 +111,11 @@ const providersList: {
   },
 ];
 
-interface AddSiteProps extends ButtonProps {
+type AddSiteProps = ButtonProps & {
   orgId?: string;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
-}
+};
 
 export default function AddSite({
   orgId,

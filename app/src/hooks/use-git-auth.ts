@@ -4,11 +4,11 @@ import { useGetProvidersQuery } from "@/redux/features/provider/provider-api";
 import { TProvider } from "@/redux/features/provider/type";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-interface UseGitAuthProps {
+type UseGitAuthProps = {
   ignore?: boolean;
   onSuccess?: (providers: TProvider) => void;
   selectedProvider?: TProvider["provider"];
-}
+};
 
 export function useGitAuth({
   ignore = false,

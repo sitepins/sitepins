@@ -1,15 +1,15 @@
 import { api } from "../api-slice";
 
-export interface ProjectContentPayload {
+export type ProjectContentPayload = {
   file: string;
   content: string;
   /** User who saved the draft content. */
   user_id?: string;
   /** File SHA from Git at the time of saving. Used for conflict detection on reload. */
   git_sha?: string;
-}
+};
 
-export interface ProjectContentRecord {
+export type ProjectContentRecord = {
   _id: string;
   project_id: string;
   user_id: string;
@@ -19,7 +19,7 @@ export interface ProjectContentRecord {
   git_sha?: string | null;
   createdAt: string;
   updatedAt: string;
-}
+};
 
 export const projectContentApi = api.injectEndpoints({
   endpoints: (builder) => ({

@@ -64,14 +64,14 @@ export function SidebarPageLayout({
 }
 
 // sidebar layout type
-interface SidebarLayoutProps extends HTMLAttributes<HTMLElement> {
+type SidebarLayoutProps = HTMLAttributes<HTMLElement> & {
   header?: ReactNode;
   headerClassName?: string;
   navClassName?: string;
   footer?: ReactNode;
   footerClassName?: string;
   children: ReactNode;
-}
+};
 
 // sidebar layout
 export function SidebarLayout({
@@ -179,9 +179,9 @@ export function SidebarMenu({
   );
 }
 // sidebar user menu props
-interface SidebarUserMenuProps {
+type SidebarUserMenuProps = {
   orgs?: TOrg[];
-}
+};
 
 /**
  * User menu with settings and account options

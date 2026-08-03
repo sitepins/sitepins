@@ -1,7 +1,7 @@
 import mongoose, { model } from "mongoose";
 import {
   UserPreferenceModel,
-  UserPreferenceTheme,
+  EUserPreferenceTheme,
   UserPreferenceType,
 } from "./user-preference.type";
 
@@ -17,8 +17,8 @@ const userPreferenceSchema = new mongoose.Schema<
     },
     theme: {
       type: String,
-      enum: Object.values(UserPreferenceTheme),
-      default: UserPreferenceTheme.SYSTEM,
+      enum: Object.values(EUserPreferenceTheme),
+      default: EUserPreferenceTheme.SYSTEM,
     },
     language: {
       type: String,

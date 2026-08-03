@@ -9,7 +9,7 @@ import { DefaultChatTransport, type UIMessage } from "ai";
 import { useEditorRef, usePluginOption } from "platejs/react";
 import * as React from "react";
 
-export type ToolName = "comment" | "edit" | "generate";
+export type TToolName = "comment" | "edit" | "generate";
 
 export type TComment = {
   comment: {
@@ -20,20 +20,20 @@ export type TComment = {
   status: "finished" | "streaming";
 };
 
-export type MessageDataPart = {
-  toolName: ToolName;
+export type TMessageDataPart = {
+  toolName: TToolName;
   comment?: TComment;
 };
 
-export type Chat = UseChatHelpers<ChatMessage>;
+export type TChat = UseChatHelpers<TChatMessage>;
 
-export type ChatMessage = UIMessage<Record<string, never>, MessageDataPart>;
+export type TChatMessage = UIMessage<Record<string, never>, TMessageDataPart>;
 
 export const useAiCommand = () => {
   const editor = useEditorRef();
   const options = usePluginOption(aiChatPlugin, "chatOptions");
 
-  const baseChat = useBaseChat<ChatMessage>({
+  const baseChat = useBaseChat<TChatMessage>({
     id: "editor",
     transport: new DefaultChatTransport({
       api: options.api || "/api/ai/command",

@@ -5,13 +5,13 @@ import { useCallback, useState } from "react";
 import { FileRejection } from "react-dropzone";
 import { toast } from "sonner";
 
-interface UseImageUploadOptions {
+type UseImageUploadOptions = {
   folder: "sitepins/users" | "sitepins/orgs" | "sitepins/sites";
   onError?: (message: string) => void;
   onSelectFile?: (file: File) => void;
-}
+};
 
-interface UseImageUploadReturn {
+type UseImageUploadReturn = {
   file: File | null;
   previewSrc: string | undefined;
   isUploading: boolean;
@@ -20,7 +20,7 @@ interface UseImageUploadReturn {
   handleFileReject: (rejections: FileRejection[]) => void;
   uploadFile: () => Promise<string | undefined>;
   reset: () => void;
-}
+};
 
 export function useImageUpload({
   folder,

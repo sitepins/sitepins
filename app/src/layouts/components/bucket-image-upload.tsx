@@ -21,7 +21,7 @@ import {
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 
-interface BucketImageUploadProps {
+type BucketImageUploadProps = {
   folder: "sitepins/users" | "sitepins/orgs" | "sitepins/sites";
   previewSrc?: string;
   defaultImage?: string;
@@ -34,7 +34,7 @@ interface BucketImageUploadProps {
   siteUrl?: string;
   email?: string;
   usedFor: "user" | "org" | "site";
-}
+};
 
 const SIZES = {
   sm: "size-16",

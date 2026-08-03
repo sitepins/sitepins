@@ -23,11 +23,11 @@ type Type =
   | "undefined"
   | "function";
 
-interface Frontmatter {
+type Frontmatter = {
   [key: string]: unknown;
-}
+};
 
-export interface FieldSchema {
+export type FieldSchema = {
   type: Type;
   name: string;
   label: string;
@@ -35,9 +35,9 @@ export interface FieldSchema {
   fields?: FieldSchema[];
   value?: unknown;
   defaultValue?: unknown;
-}
+};
 
-export type IJsonSchema =
+export type TJsonSchema =
   | {
       path: string;
       frontmatter: FieldSchema[];
@@ -76,7 +76,7 @@ const convertToCamelCase = (input: string = ""): string => {
 const reShapeJsonToFieldSchema = (data: {
   name?: string;
   content: string;
-}): IJsonSchema => {
+}): TJsonSchema => {
   if (!data?.name) return undefined;
 
   const filePath = data.name;

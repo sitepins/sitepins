@@ -3,7 +3,10 @@ import isConfigFile from "@/lib/utils/is-config-file";
 import { EProjectLogType } from "@/redux/features/project-log/type";
 
 // Helper to infer log type from a file path and project config
-export function getLogType(filePath?: string, config?: any): EProjectLogType {
+export function getLogType(
+  filePath?: string,
+  config?: { content?: string },
+): EProjectLogType {
   if (!filePath) return EProjectLogType.CONTENT;
   const p = String(filePath).replace(/^\/+/, "");
   // explicit schema/snippet folders

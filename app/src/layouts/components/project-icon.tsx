@@ -36,14 +36,14 @@ const VARIANTS = {
   },
 } as const;
 
-interface ProjectIconProps {
+type ProjectIconProps = {
   variant: keyof typeof VARIANTS;
   projectName?: string;
   projectImage?: string;
   siteUrl?: string;
   /** Shown when the project has no name. */
   fallbackLabel?: string;
-}
+};
 
 // Chain: uploaded image -> site favicon -> initial letter. The favicon proxy
 // answers 404 with a 1x1 pixel when the lookup fails, so both onError and a

@@ -21,16 +21,16 @@ import {
   getCloudDashboardSecondaryItems,
   getCloudFooterAccountItems,
 } from "./menu-cloud";
-import { Locale, getMenuTranslations, locales } from "./utils/localized-text";
+import { TLocale, getMenuTranslations, locales } from "./utils/localized-text";
 
-export type MenuLocale = Locale;
+export type TMenuLocale = TLocale;
 
 export const menuTranslations = locales.reduce(
   (acc, lang) => {
     acc[lang] = getMenuTranslations(lang);
     return acc;
   },
-  {} as Record<Locale, typeof NavigationType.navigation.menu>,
+  {} as Record<TLocale, typeof NavigationType.navigation.menu>,
 );
 
 export const resolveMenuTranslations = (locale?: string) => {
@@ -38,7 +38,7 @@ export const resolveMenuTranslations = (locale?: string) => {
   const lowerLocale = locale.toLowerCase();
   for (const lang of locales) {
     if (lowerLocale.startsWith(lang)) {
-      return menuTranslations[lang as Locale];
+      return menuTranslations[lang as TLocale];
     }
   }
   return menuTranslations.en;

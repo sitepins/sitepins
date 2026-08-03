@@ -57,8 +57,8 @@ const eslintConfig = defineConfig([
       // React Compiler diagnostics. The first four are real defects; the last
       // two only report that the compiler skipped optimizing a component.
       "react-hooks/immutability": "warn", // backlog: 1
-      "react-hooks/refs": "warn", // backlog: 4
-      // backlog: 11, all synchronising with something outside React —
+      "react-hooks/refs": "warn", // backlog: 3
+      // backlog: 10, all synchronising with something outside React —
       // sockets, timers, DOM measurement, async I/O and parent callbacks.
       "react-hooks/set-state-in-effect": "warn",
       "react-hooks/static-components": "warn", // backlog: 1

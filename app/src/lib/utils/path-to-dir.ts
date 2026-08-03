@@ -61,12 +61,12 @@ const formatPathsIntoDir = ({
   }
 };
 
-interface FilteredResult {
+type FilteredResult = {
   contentFiles: TFiles[];
   codeFiles: TFiles[];
   mediaFiles: TFiles[];
   themeFiles: TFiles[];
-}
+};
 
 export function convertRepoTreeToTFiles(
   repoTree: TTree[],

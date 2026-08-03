@@ -1,4 +1,4 @@
-export enum UserPreferenceTheme {
+export enum EUserPreferenceTheme {
   SYSTEM = "system",
   LIGHT = "light",
   DARK = "dark",
@@ -6,7 +6,7 @@ export enum UserPreferenceTheme {
 
 export type TUserPreference = {
   user_id: string;
-  theme: UserPreferenceTheme;
+  theme: EUserPreferenceTheme;
   impersonate: boolean;
   language: string;
 };

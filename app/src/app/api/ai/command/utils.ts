@@ -1,4 +1,4 @@
-import { ChatMessage } from "@/hooks/use-ai-command";
+import { TChatMessage } from "@/hooks/use-ai-command";
 import { getMarkdown } from "@platejs/ai";
 import { serializeMd } from "@platejs/markdown";
 import type { UIMessage } from "ai";
@@ -164,7 +164,7 @@ export function getTextFromMessage(message: UIMessage): string {
  * formats as ROLE: text.
  */
 export function formatTextFromMessages(
-  messages: ChatMessage[],
+  messages: TChatMessage[],
   options?: { limit?: number },
 ): string {
   const historyMessages = options?.limit

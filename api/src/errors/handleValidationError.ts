@@ -1,10 +1,10 @@
-import type { IErrorMessage, IErrorResponse } from "@/types";
+import type { TErrorMessage, TErrorResponse } from "@/types";
 import mongoose from "mongoose";
 
 export const handleValidationErrors = (
   error: mongoose.Error.ValidationError,
-): IErrorResponse => {
-  const errors: IErrorMessage[] = Object.keys(error.errors).map(
+): TErrorResponse => {
+  const errors: TErrorMessage[] = Object.keys(error.errors).map(
     (el: string) => {
       return {
         path: error.errors[el].path,

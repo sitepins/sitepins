@@ -131,7 +131,7 @@ export const githubContentApi = githubApi.injectEndpoints({
           baseQueryReturnValue as TGitHubPromise<"GET /repos/{owner}/{repo}/git/trees/{tree_sha}">;
 
         return {
-          trees: pathToDir(response.tree as any, arg.config),
+          trees: pathToDir(response.tree as unknown as TTree[], arg.config),
           files: response.tree,
         };
       },
@@ -227,7 +227,7 @@ export const githubContentApi = githubApi.injectEndpoints({
 
           return {
             trees: pathToDir(
-              enrichedFiles as any,
+              enrichedFiles as unknown as TTree[],
               arg.config || store.getState().config,
             ),
             files: enrichedFiles,

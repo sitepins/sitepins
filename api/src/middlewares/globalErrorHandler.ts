@@ -2,7 +2,7 @@ import config from "@/config/variables";
 import ApiError from "@/errors/ApiError";
 import { handleValidationErrors } from "@/errors/handleValidationError";
 import { logger } from "@/lib/logger";
-import { IErrorMessage } from "@/types";
+import { TErrorMessage } from "@/types";
 import { ErrorRequestHandler } from "express";
 
 export const globalErrorhandler: ErrorRequestHandler = (
@@ -13,7 +13,7 @@ export const globalErrorhandler: ErrorRequestHandler = (
 ) => {
   let statuscode = 500;
   let message = "something went wrong";
-  let errorMessage: IErrorMessage[] = [];
+  let errorMessage: TErrorMessage[] = [];
   if (error.name === "ValidationError") {
     const simplifiedErrors = handleValidationErrors(error);
     statuscode = simplifiedErrors.statusCode;

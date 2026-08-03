@@ -5,7 +5,7 @@ import { API_URL, IS_DEMO } from "@/lib/constant";
 import { CustomApiError } from "@/lib/utils/custom-api-error";
 import { revalidatePath, revalidateTag } from "next/cache";
 
-export type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
+export type THttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 
 export type TExtractVariables<T> = T extends { variables: object }
   ? T["variables"]
@@ -44,7 +44,7 @@ export async function fetchApi<T>({
   headers?: HeadersInit;
   tags?: string[];
   body?: TExtractVariables<T> | FormData;
-  method?: HttpMethod;
+  method?: THttpMethod;
 }): Promise<{ status: number; body: Omit<T, "variables"> }> {
   if (IS_DEMO && method !== "GET") {
     return {
@@ -52,7 +52,7 @@ export async function fetchApi<T>({
       body: {
         message: "Demo mode: changes are not saved.",
         result: null,
-      } as any,
+      } as unknown as Omit<T, "variables">,
     };
   }
 
@@ -118,7 +118,7 @@ export async function fetchApi<T>({
 }
 
 export async function mutate<T>(
-  callback: () => Promise<any>,
+  callback: () => Promise<unknown>,
 ): Promise<TSubmitFormState<T>> {
   if (IS_DEMO) {
     return {
@@ -132,11 +132,16 @@ export async function mutate<T>(
   }
 
   try {
-    const { body, status } = (await callback()) || {};
+    // Every caller returns a fetchApi envelope; the generic T describes the
+    // payload, not the envelope, so it can't be tied to the callback type.
+    const { body, status } = (await callback()) as {
+      status: number;
+      body: { result?: unknown; message?: string };
+    };
     return {
-      data: body.result as T,
+      data: body.result as Omit<T, "variables">,
       error: [],
-      message: body.message,
+      message: body.message ?? null,
       isError: false,
       isSuccess: true,
       statusCode: status,

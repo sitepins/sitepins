@@ -20,7 +20,7 @@ import { useSelector } from "react-redux";
 import ContentEditor from "./content-editor";
 import FrontmatterRenderer from "./frontmatter-renderer";
 
-interface ResponsiveEditorLayoutProps {
+type ResponsiveEditorLayoutProps = {
   shouldShowEditor: boolean;
   schema: TField[];
   data: Record<string, any>;
@@ -29,7 +29,7 @@ interface ResponsiveEditorLayoutProps {
   onUpdateMarkdown: (content: string) => void;
   markdownContent: string;
   onUpdateContentRef: (content: string) => void;
-}
+};
 
 export default function ResponsiveEditorLayout({
   shouldShowEditor,

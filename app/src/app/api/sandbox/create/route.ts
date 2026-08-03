@@ -36,10 +36,25 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const maxDuration = 600;
 
+type TSandboxRequestBody = {
+  repository: string;
+  branch: string;
+  token?: string;
+  provider: string;
+  generator?: string;
+  forceSync?: boolean;
+  uncommittedFile?: { path: string; content: string };
+  spProjectId: string;
+  onlyIfActive?: boolean;
+  vercelToken?: unknown;
+  vercelTeamId?: unknown;
+  vercelProjectId?: unknown;
+};
+
 // ── Quick ops handler ──
 
 async function handleQuickOp(
-  body: Record<string, any>,
+  body: TSandboxRequestBody,
   cookieHeader: string,
   signal: AbortSignal,
 ): Promise<NextResponse> {
@@ -186,7 +201,7 @@ async function handleQuickOp(
 const enc = new TextEncoder();
 
 async function* streamCreate(
-  body: Record<string, any>,
+  body: TSandboxRequestBody,
   cookieHeader: string,
   signal: AbortSignal,
 ): AsyncGenerator<object> {
@@ -398,7 +413,7 @@ async function* streamCreate(
 
 // The Vercel SDK's APIError puts the response body on `.json`; `error` is
 // either a structured object or a bare string depending on the endpoint.
-type VercelApiErrorBody = {
+type TVercelApiErrorBody = {
   error?: { message?: string; code?: string } | string;
   code?: string;
 };
@@ -459,7 +474,7 @@ export async function POST(req: NextRequest) {
         // Surface the real Vercel API error body — the SDK wraps the response
         // payload in `.json` / `.text` on its APIError. Without this, all
         // failures collapse to a generic "Status code 403 is not ok".
-        const apiError = e as { json?: VercelApiErrorBody; text?: string };
+        const apiError = e as { json?: TVercelApiErrorBody; text?: string };
         const apiJson = apiError.json;
         const apiJsonError =
           typeof apiJson?.error === "object" ? apiJson.error : undefined;

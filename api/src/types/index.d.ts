@@ -1,24 +1,24 @@
 import { SortOrder } from "mongoose";
 
-export type IErrorMessage = {
+export type TErrorMessage = {
   message: string;
   path: string;
 };
 
-export type IErrorResponse = {
-  errorMessage: IErrorMessage[];
+export type TErrorResponse = {
+  errorMessage: TErrorMessage[];
   statusCode: number;
   message: string;
 };
 
-export type IPagination = {
+export type TPagination = {
   page: number;
   limit: number;
   sortBy: string;
   sortOrder: SortOrder;
 };
 
-export type IFilterOptions = {
+export type TFilterOptions = {
   published?: boolean;
   theme?: string;
   trash?: boolean;

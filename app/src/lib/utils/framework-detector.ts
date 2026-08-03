@@ -107,7 +107,10 @@ export const refineFrameworkFromPackageJson = (
     framework === null || Boolean(frameworks[framework]?.requireAll);
   if (!ambiguous) return framework;
 
-  let pkg: Record<string, any>;
+  let pkg: {
+    dependencies?: Record<string, string>;
+    devDependencies?: Record<string, string>;
+  };
   try {
     pkg = JSON.parse(packageJsonRaw);
   } catch {

@@ -6,10 +6,10 @@ import { selectConfig } from "@/redux/features/config/slice";
 import { useAppSelector } from "@/redux/store";
 import { RefObject, useCallback, useEffect, useRef } from "react";
 
-interface UncommittedFile {
+type UncommittedFile = {
   path: string;
   content: string;
-}
+};
 
 // Shared registry of open preview windows keyed by `repo#branch`. The
 // EditorWrapper-scoped `previewWindowRef` is reset whenever the user
@@ -37,7 +37,7 @@ export function getPreviewWindow(cacheKey: string): Window | null {
 // Start — get a postMessage to the bridge component injected into the sandbox,
 // which refreshes in place and preserves the user's current URL.
 
-interface UseSandboxPreviewProps {
+type UseSandboxPreviewProps = {
   contentVersion: unknown;
   getUncommittedFile: () => UncommittedFile;
   previewWindowRef?: RefObject<Window | null>;
@@ -46,7 +46,7 @@ interface UseSandboxPreviewProps {
   vercelProjectId?: string;
   spProjectId?: string;
   debounceMs?: number;
-}
+};
 
 export function useSandboxPreview({
   contentVersion,

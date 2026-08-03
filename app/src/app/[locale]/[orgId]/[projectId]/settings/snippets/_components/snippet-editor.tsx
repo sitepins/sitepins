@@ -14,10 +14,10 @@ const Editor = dynamic(() => import("@monaco-editor/react"), {
   loading: () => <EditorSkeleton />,
 });
 
-interface CodeEditorProps {
+type CodeEditorProps = {
   value: string;
   onChange: (value: string) => void;
-}
+};
 
 export function SnippetEditor({ value, onChange }: CodeEditorProps) {
   const { resolvedTheme } = useTheme();

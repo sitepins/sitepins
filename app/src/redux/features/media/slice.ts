@@ -2,13 +2,13 @@ import { RootState } from "@/redux/store";
 import { TFiles } from "@/types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-interface MediaState {
+type MediaState = {
   media: TFiles[];
   recentUpload: TFiles[];
   sortby: string;
   view: "grid" | "list";
   popupBreadcrumbs: TFiles[];
-}
+};
 
 const initialState: MediaState = {
   media: [],

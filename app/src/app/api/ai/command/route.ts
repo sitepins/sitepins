@@ -1,7 +1,7 @@
 import { logger } from "@/lib/logger";
 import { getAuth } from "@/lib/auth/auth-server";
 import { BaseEditorKit } from "@/editor/plugins/editor-base-kit";
-import { ChatMessage } from "@/hooks/use-ai-command";
+import { TChatMessage } from "@/hooks/use-ai-command";
 import { markdownJoinerTransform } from "@/lib/utils/markdown-joiner-transform";
 import { AnthropicProvider, createAnthropic } from "@ai-sdk/anthropic";
 import { createGoogle, GoogleProvider } from "@ai-sdk/google";
@@ -73,7 +73,7 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const stream = createUIMessageStream<ChatMessage>({
+    const stream = createUIMessageStream<TChatMessage>({
       execute: async ({ writer }) => {
         const toolName = toolNameParam || "generate";
 
@@ -156,9 +156,9 @@ const getCommentTool = (
     model,
     writer,
   }: {
-    messagesRaw: ChatMessage[];
+    messagesRaw: TChatMessage[];
     model: LanguageModel;
-    writer: UIMessageStreamWriter<ChatMessage>;
+    writer: UIMessageStreamWriter<TChatMessage>;
   },
 ) =>
   tool({

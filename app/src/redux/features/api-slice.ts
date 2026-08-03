@@ -4,26 +4,26 @@ import { BaseQueryFn, createApi } from "@reduxjs/toolkit/query/react";
 import axios, { AxiosError, AxiosRequestConfig } from "axios";
 
 // Define API error types with stronger type safety
-export interface ValidationError {
+export type ValidationError = {
   path: string;
   message: string;
-}
+};
 
-export interface ApiErrorResponse {
+export type ApiErrorResponse = {
   message: string;
   errorMessage?: ValidationError[];
-}
+};
 
-export interface ApiError {
+export type ApiError = {
   status: number;
   data: ApiErrorResponse;
-}
+};
 
 // Custom error type for the base query
-export interface AxiosBaseQueryError {
+export type AxiosBaseQueryError = {
   status: number;
   data: ApiErrorResponse;
-}
+};
 
 // Type guard to check if an error is an API error
 export function isApiError(error: unknown): error is ApiError {

@@ -74,9 +74,9 @@ function getOS(): UseOSReturnValue["os"] {
   return "unknown";
 }
 
-export interface UseOsOptions {
+export type UseOsOptions = {
   getValueInEffect: boolean;
-}
+};
 
 export function useOs(
   options: UseOsOptions = { getValueInEffect: true },

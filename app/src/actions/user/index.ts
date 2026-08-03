@@ -2,7 +2,7 @@
 
 import { TExtractVariables } from "@/types";
 import { fetchApi, mutate } from "../utils";
-import { DeleteAccount, TSaveProfilePicture } from "./types";
+import { TDeleteAccount, TSaveProfilePicture } from "./types";
 
 export const updateImage = async (
   data: TExtractVariables<TSaveProfilePicture>,
@@ -19,10 +19,10 @@ export const updateImage = async (
 };
 
 export const deleteAccountAction = async (
-  data: TExtractVariables<DeleteAccount>,
+  data: TExtractVariables<TDeleteAccount>,
 ) => {
-  return await mutate<DeleteAccount>(async () => {
-    return await fetchApi<DeleteAccount>({
+  return await mutate<TDeleteAccount>(async () => {
+    return await fetchApi<TDeleteAccount>({
       endPoint: `/user/delete/${data.user_id}`,
       method: "DELETE",
       cache: "no-cache",

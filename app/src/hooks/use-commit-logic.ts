@@ -21,18 +21,18 @@ import type { Socket } from "socket.io-client";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
-interface CommitData {
+type CommitData = {
   path: string;
   content: string;
-}
+};
 
-interface CommitDetails {
+type CommitDetails = {
   message: string;
   description?: string;
   createPullRequest?: boolean;
-}
+};
 
-interface UseCommitLogicProps {
+type UseCommitLogicProps = {
   socket?: Socket | null;
   state: TState | undefined;
   setState: React.Dispatch<React.SetStateAction<TState | undefined>>;
@@ -48,7 +48,7 @@ interface UseCommitLogicProps {
   onRenameComplete?: (newPath: string) => void;
   /** Fired once after a successful commit. Used to trigger sandbox commit-sync. */
   onCommitSuccess?: () => void;
-}
+};
 
 function checkRequiredFields(
   schemaFields: TField[],

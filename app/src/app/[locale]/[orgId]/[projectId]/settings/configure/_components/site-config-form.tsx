@@ -85,13 +85,13 @@ const folderContainsConfigFiles = (folderPath: string, trees: TTree[]) => {
 };
 
 // Reusable FolderSelector component
-interface FolderSelectorProps {
+type FolderSelectorProps = {
   value?: { value: string; label: string } | null;
   onChange: (value: { value: string; label: string }) => void;
   placeholder: string;
   folders: TTree[];
   onSelect?: (value: string) => void;
-}
+};
 
 const folderSuggestion = {
   nextjs: {

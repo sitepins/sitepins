@@ -11,20 +11,20 @@ import { TFiles } from "@/types";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 
-interface Config {
+type Config = {
   owner?: string;
   repoName?: string;
   branch?: string;
   provider?: string;
   currentLoginUserToken?: string;
   token?: string;
-}
+};
 
-interface UseFolderOpsProps {
+type UseFolderOpsProps = {
   config: Config;
   repoFiles: TFiles[];
   projectId: string;
-}
+};
 
 export function useFolderOps({
   config,

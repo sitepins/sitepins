@@ -8,13 +8,13 @@ import { extractLinks } from "@/lib/utils/link-analyzer";
 import { LinkIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 
-interface LinkAnalysisResult {
+type LinkAnalysisResult = {
   internalLinks: number;
   externalLinks: number;
   totalLinks: number;
   internalUrls: string[];
   externalUrls: string[];
-}
+};
 
 // Function to analyze markdown content and count internal/external links
 export function analyzeMarkdownLinks(

@@ -13,7 +13,7 @@ export function Description({ description }: { description?: string }) {
   return <p className={cn("text-muted-foreground text-sm")}>{description}</p>;
 }
 
-interface PreviewLabelProps extends React.LabelHTMLAttributes<HTMLLabelElement> {
+type PreviewLabelProps = React.LabelHTMLAttributes<HTMLLabelElement> & {
   isRequired?: boolean;
   className?: string;
   children?: React.ReactNode;
@@ -36,7 +36,7 @@ interface PreviewLabelProps extends React.LabelHTMLAttributes<HTMLLabelElement> 
   referenceField?: string;
   subType?: string;
   label?: string;
-}
+};
 
 export function PreviewLabel({
   isRequired,

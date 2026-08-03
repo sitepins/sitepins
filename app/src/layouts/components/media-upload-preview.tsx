@@ -12,7 +12,7 @@ import {
 } from "./ui/alert-dialog";
 import { Button } from "./ui/button";
 
-interface MediaUploadPreviewProps {
+type MediaUploadPreviewProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   previewSrc: string | undefined;
@@ -22,7 +22,7 @@ interface MediaUploadPreviewProps {
   isUploading: boolean;
   title?: string;
   description?: string;
-}
+};
 
 export function MediaUploadPreview({
   open,

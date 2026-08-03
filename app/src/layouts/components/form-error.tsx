@@ -9,10 +9,10 @@ type TError = {
   message: string;
 };
 
-interface FormErrorProps extends Omit<Partial<TSubmitFormState<any>>, "error"> {
+type FormErrorProps = Omit<Partial<TSubmitFormState<any>>, "error"> & {
   error?: (BetterFetchError & Record<string, any>) | TError[] | null;
   onReset?: () => void;
-}
+};
 
 export default function FormError({
   error: errors,

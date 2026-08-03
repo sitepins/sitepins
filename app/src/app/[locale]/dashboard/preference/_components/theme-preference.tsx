@@ -20,9 +20,9 @@ import { useTheme } from "next-themes";
 import { toast } from "sonner";
 import { ThemePreferenceSkeleton } from "./theme-preference-skeleton";
 
-interface ThemePreferenceProps {
+type ThemePreferenceProps = {
   userId: string;
-}
+};
 
 export default function ThemePreference({ userId }: ThemePreferenceProps) {
   const tDashboardPreferenceTheme = useTranslations(

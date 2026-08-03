@@ -1,19 +1,19 @@
 import { createContext, useState } from "react";
 
-export interface TImage {
+export type TImage = {
   path: string;
   content: string;
   isLoading?: boolean;
   error?: string;
-}
+};
 
-export interface TImageContext {
+export type TImageContext = {
   images: TImage[];
   addImage: (item: TImage) => void;
   removeImage: (path: string) => void;
   getImage: (path: string) => TImage | undefined;
   clearImages: () => void;
-}
+};
 
 export const ImageContext = createContext<TImageContext>(null!);
 

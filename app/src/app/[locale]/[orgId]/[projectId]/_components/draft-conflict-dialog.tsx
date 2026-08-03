@@ -14,7 +14,7 @@ import { useTranslations } from "next-intl";
 
 export type ConflictChoice = "use-draft" | "use-git";
 
-interface DraftConflictDialogProps {
+type DraftConflictDialogProps = {
   open: boolean;
   /** ISO string — when the DB draft was last saved */
   draftSavedAt?: string;
@@ -23,7 +23,7 @@ interface DraftConflictDialogProps {
   /** Parsed content/body from saved DB draft. */
   draftContent?: string;
   onChoose: (choice: ConflictChoice) => void;
-}
+};
 
 export default function DraftConflictDialog({
   open,

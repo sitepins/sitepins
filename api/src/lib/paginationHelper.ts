@@ -1,6 +1,6 @@
-import { IPagination } from "@/types";
+import { TPagination } from "@/types";
 
-export type IPaginationResult = IPagination & {
+export type TPaginationResult = TPagination & {
   skip: number;
 };
 
@@ -25,8 +25,8 @@ const SORTABLE_FIELDS = new Set([
 ]);
 
 const calculatePagination = (
-  options: Partial<IPagination>,
-): IPaginationResult => {
+  options: Partial<TPagination>,
+): TPaginationResult => {
   const parsedPage = Number(options.page);
   const parsedLimit = Number(options.limit);
   const page =

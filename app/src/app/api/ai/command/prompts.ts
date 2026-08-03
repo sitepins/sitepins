@@ -1,4 +1,4 @@
-import { ChatMessage } from "@/hooks/use-ai-command";
+import { TChatMessage } from "@/hooks/use-ai-command";
 import { getMarkdown } from "@platejs/ai";
 import { serializeMd } from "@platejs/markdown";
 import dedent from "dedent";
@@ -11,7 +11,11 @@ import {
   isMultiBlocks,
 } from "./utils";
 
-export function getChooseToolPrompt({ messages }: { messages: ChatMessage[] }) {
+export function getChooseToolPrompt({
+  messages,
+}: {
+  messages: TChatMessage[];
+}) {
   return buildStructuredPrompt({
     examples: [
       // GENERATE
@@ -44,7 +48,7 @@ export function getCommentPrompt(
   {
     messages,
   }: {
-    messages: ChatMessage[];
+    messages: TChatMessage[];
   },
 ) {
   const selectingMarkdown = getMarkdown(editor, {
@@ -173,7 +177,7 @@ export function getCommentPrompt(
 
 export function getGeneratePrompt(
   editor: SlateEditor,
-  { messages }: { messages: ChatMessage[] },
+  { messages }: { messages: TChatMessage[] },
 ) {
   let selectingMarkdown = "";
 
@@ -234,7 +238,7 @@ export function getGeneratePrompt(
 
 export function getEditPrompt(
   editor: SlateEditor,
-  { isSelecting, messages }: { isSelecting: boolean; messages: ChatMessage[] },
+  { isSelecting, messages }: { isSelecting: boolean; messages: TChatMessage[] },
 ) {
   if (!isSelecting)
     throw new Error("Edit tool is only available when selecting");

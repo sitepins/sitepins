@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/select";
 import languages from "@/config/languages.json";
 import { usePathname, useRouter } from "@/lib/i18n/navigation";
-import { type Locale } from "@/lib/i18n/routing";
+import { type TLocale } from "@/lib/i18n/routing";
 import { Globe } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useMemo, useTransition } from "react";
@@ -24,7 +24,7 @@ export default function LanguageSwitcher({
   userId: _userId,
 }: LanguageSwitcherProps) {
   const tCommon = useTranslations("common");
-  const locale = useLocale() as Locale;
+  const locale = useLocale() as TLocale;
   const router = useRouter();
   const pathname = usePathname();
   const [isPending, startTransition] = useTransition();
@@ -36,7 +36,7 @@ export default function LanguageSwitcher({
   function onSelectChange(nextLocale: string) {
     startTransition(() => {
       document.cookie = `NEXT_LOCALE=${nextLocale};path=/;max-age=31536000`;
-      router.replace(pathname, { locale: nextLocale as Locale });
+      router.replace(pathname, { locale: nextLocale as TLocale });
       router.refresh();
     });
   }

@@ -32,7 +32,7 @@ import { useParams, useRouter } from "next/navigation";
 import { RefObject, useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
-interface PreviewButtonProps {
+type PreviewButtonProps = {
   repository: string;
   branch: string;
   token: string;
@@ -44,7 +44,7 @@ interface PreviewButtonProps {
   vercelTeamId?: string;
   vercelProjectId?: string;
   spProjectId?: string;
-}
+};
 
 type SandboxStatus = "running" | "starting" | "stopped";
 

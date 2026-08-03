@@ -2,7 +2,7 @@ import config from "@/config/variables";
 import axios from "axios";
 import { logger } from "@/lib/logger";
 
-interface EmailVerificationResponse {
+type EmailVerificationResponse = {
   email: string;
   status: string;
   is_valid_syntax: boolean;
@@ -21,14 +21,14 @@ interface EmailVerificationResponse {
   is_safe_to_send?: boolean;
   overall_score?: number;
   can_connect_smtp?: boolean;
-}
+};
 
-interface EmailVerificationResult {
+type EmailVerificationResult = {
   isValid: boolean;
   email: string;
   reason?: string;
   details?: EmailVerificationResponse;
-}
+};
 
 export const verifyEmailWithReoon = async (
   email: string,

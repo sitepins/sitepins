@@ -39,11 +39,11 @@ import _Link from "next/link";
 import { useState } from "react";
 import { toast } from "sonner";
 
-interface SandboxConnectFormProps {
+type SandboxConnectFormProps = {
   org: TOrg;
   canUpdate: boolean;
   isRestricted: boolean;
-}
+};
 
 type Team = { id: string; name: string; slug: string };
 

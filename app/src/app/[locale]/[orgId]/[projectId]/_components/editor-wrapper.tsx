@@ -27,7 +27,7 @@ import PreventNavigation from "./prevent-navigation";
 import ResponsiveEditorLayout from "./responsive-editor-layout";
 import SeoSetting from "./seo-setting";
 
-interface EditorWrapperProps {
+type EditorWrapperProps = {
   socket?: any;
   data: Record<string, any>;
   content: string;
@@ -39,7 +39,7 @@ interface EditorWrapperProps {
   gitSha?: string;
   isLoadedFromDbDraft?: boolean;
   hasSavedDraft?: boolean;
-}
+};
 
 const EditorWrapper: React.FC<EditorWrapperProps> = memo(
   ({

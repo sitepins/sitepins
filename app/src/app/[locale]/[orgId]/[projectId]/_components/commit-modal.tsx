@@ -11,18 +11,18 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useEffect, useRef, useState } from "react";
 
-interface CommitDetails {
+type CommitDetails = {
   message: string;
   description: string;
   createPullRequest: boolean;
-}
+};
 
-interface CommitModalProps {
+type CommitModalProps = {
   isOpen: boolean;
   onClose: () => void;
   onCommit: (details: CommitDetails) => void;
   isLoading: boolean;
-}
+};
 
 import { useTranslations } from "next-intl";
 

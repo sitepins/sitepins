@@ -12,12 +12,12 @@ import path from "path";
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
 
-interface UseSnippetsResult {
+type UseSnippetsResult = {
   snippets: MdxSnippet[];
   isLoading: boolean;
   isError: boolean;
   refetch: () => void;
-}
+};
 
 export const useSnippets = (): UseSnippetsResult => {
   const config = useSelector(selectConfig);
@@ -63,9 +63,12 @@ export const useSnippets = (): UseSnippetsResult => {
     isError: isGhError,
     refetch: ghRefetch,
     isFetching: isGhFetching,
-  } = useGetGitHubSnippetsQuery(queryArgs as any, {
-    skip: queryArgs === skipToken || !isGitHubProvider(config.provider),
-  });
+  } = useGetGitHubSnippetsQuery(
+    queryArgs as Parameters<typeof useGetGitHubSnippetsQuery>[0],
+    {
+      skip: queryArgs === skipToken || !isGitHubProvider(config.provider),
+    },
+  );
 
   const {
     data: glData,
@@ -73,9 +76,12 @@ export const useSnippets = (): UseSnippetsResult => {
     isError: isGlError,
     refetch: glRefetch,
     isFetching: isGlFetching,
-  } = useGetGitLabSnippetsQuery(queryArgs as any, {
-    skip: queryArgs === skipToken || !isGitLabProvider(config.provider),
-  });
+  } = useGetGitLabSnippetsQuery(
+    queryArgs as Parameters<typeof useGetGitLabSnippetsQuery>[0],
+    {
+      skip: queryArgs === skipToken || !isGitLabProvider(config.provider),
+    },
+  );
 
   const data = isGitLabProvider(config.provider) ? glData : ghData;
   const isLoading = isGitLabProvider(config.provider)

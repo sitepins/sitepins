@@ -1,4 +1,5 @@
 import { languageMap } from "@/app/[locale]/[orgId]/[projectId]/code/[...file]/_components/file-icons";
+import type { Monaco } from "@monaco-editor/react";
 import { shikiToMonaco } from "@shikijs/monaco";
 import { createHighlighter } from "shiki";
 
@@ -27,7 +28,7 @@ export function preloadShiki(): Promise<void> {
  * Call this from MonacoEditor's `beforeMount` — by that point `preloadShiki()`
  * must have already resolved (gate Monaco render on the returned promise).
  */
-export function applyShikiToMonaco(monaco: any, theme: string) {
+export function applyShikiToMonaco(monaco: Monaco, theme: string) {
   if (!cachedHighlighter) return;
   const langs = Object.values(languageMap);
   langs.forEach((lang) => monaco.languages.register({ id: lang }));
@@ -36,7 +37,7 @@ export function applyShikiToMonaco(monaco: any, theme: string) {
 }
 
 /** Legacy async helper kept for any other callers. */
-export async function initializeShiki(monaco: any, theme?: string) {
+export async function initializeShiki(monaco: Monaco, theme?: string) {
   await preloadShiki();
   applyShikiToMonaco(monaco, theme ?? "light-plus");
 }

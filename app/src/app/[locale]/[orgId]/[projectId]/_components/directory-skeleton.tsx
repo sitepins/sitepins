@@ -9,9 +9,9 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-interface DirectorySkeletonProps {
+type DirectorySkeletonProps = {
   isCodePath: boolean;
-}
+};
 
 export default function DirectorySkeleton({
   isCodePath,

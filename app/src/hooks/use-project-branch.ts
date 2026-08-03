@@ -1,14 +1,14 @@
 import { logger } from "@/lib/logger";
+import { TProject } from "@/redux/features/project/type";
 import { updateConfig } from "@/redux/features/config/slice";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
-import { useEffect, useState } from "react";
+import { useEffect, useRef } from "react";
 
-export function useProjectBranch(project: any) {
+export function useProjectBranch(project: TProject | undefined) {
   const dispatch = useAppDispatch();
   const config = useAppSelector((state) => state.config);
-  const [restoredProjectId, setRestoredProjectId] = useState<string | null>(
-    null,
-  );
+  // Latch only, never rendered — a ref keeps it out of the render cycle.
+  const restoredProjectId = useRef<string | null>(null);
 
   // Restore the last working branch or default
   useEffect(() => {
@@ -16,7 +16,7 @@ export function useProjectBranch(project: any) {
     if (!project?.project_id) return;
 
     // If we have already restored for this project ID, do nothing
-    if (restoredProjectId === project.project_id) {
+    if (restoredProjectId.current === project.project_id) {
       return;
     }
 
@@ -36,14 +36,8 @@ export function useProjectBranch(project: any) {
       }
     }
 
-    setRestoredProjectId(project.project_id);
-  }, [
-    project?.project_id,
-    project?.branch,
-    restoredProjectId,
-    dispatch,
-    config.branch,
-  ]); // config.branch excluded to avoid fighting with user changes
+    restoredProjectId.current = project.project_id;
+  }, [project?.project_id, project?.branch, dispatch, config.branch]);
 
   // Persist the last working branch
   useEffect(() => {
@@ -52,7 +46,7 @@ export function useProjectBranch(project: any) {
     if (
       project?.project_id &&
       config.branch &&
-      restoredProjectId === project.project_id
+      restoredProjectId.current === project.project_id
     ) {
       try {
         localStorage.setItem(
@@ -63,7 +57,7 @@ export function useProjectBranch(project: any) {
         logger.warn("Failed to persist last working branch in localStorage", e);
       }
     }
-  }, [project?.project_id, config.branch, restoredProjectId]);
+  }, [project?.project_id, config.branch]);
 
   return { branch: config.branch };
 }

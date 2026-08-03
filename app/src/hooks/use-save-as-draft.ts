@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl";
 import { useCallback } from "react";
 import { toast } from "sonner";
 
-interface UseSaveAsDraftOptions {
+type UseSaveAsDraftOptions = {
   projectId: string;
   orgId: string;
   filePath: string;
@@ -17,7 +17,7 @@ interface UseSaveAsDraftOptions {
   getGitSha: () => string | null | undefined;
   /** Called after the upsert succeeds so the caller can sync its baseline. */
   onSuccess?: () => void;
-}
+};
 
 /**
  * Saves the current editor content to the database (project-content module)

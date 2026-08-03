@@ -1,10 +1,10 @@
 import { RefObject, useEffect, useState } from "react";
 
-interface Options {
+type Options = {
   once?: boolean;
   amount?: number;
   rootMargin?: number;
-}
+};
 
 export const useInView = (
   ref: RefObject<HTMLElement | null>,

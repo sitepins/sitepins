@@ -20,12 +20,10 @@ async function vercelFetch(
   });
   if (!res.ok) {
     const body = await res.json().catch(() => ({}));
-    const err: any = new Error(
-      body?.error?.message ?? `Vercel API error ${res.status}`,
+    throw Object.assign(
+      new Error(body?.error?.message ?? `Vercel API error ${res.status}`),
+      { status: res.status, code: body?.error?.code },
     );
-    err.status = res.status;
-    err.code = body?.error?.code;
-    throw err;
   }
   return res.json();
 }
@@ -63,7 +61,7 @@ export async function POST(req: NextRequest) {
       ) {
         const listRes = await vercelFetch(`/v9/projects${listQuery}`, token);
         const existing = (listRes?.projects ?? []).find(
-          (p: any) => p.name === projectName,
+          (p: { id: string; name: string }) => p.name === projectName,
         );
         if (existing) {
           return NextResponse.json({ id: existing.id, name: existing.name });

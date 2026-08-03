@@ -34,41 +34,41 @@ const SITE_CONFIG_PATH = ".sitepins/config.json";
 
 const { github: gh, gitlab: gl } = gitProviderAdapters;
 
-interface GitFile {
+type GitFile = {
   path: string;
   content?: string;
   delete?: boolean;
-}
+};
 
-interface UpdateFilesOptions {
+type UpdateFilesOptions = {
   files: GitFile[];
   message: string;
   description?: string;
-}
+};
 
-interface QueryOptions {
+type QueryOptions = {
   skip?: boolean;
-}
+};
 
-interface ContentOptions extends QueryOptions {
+type ContentOptions = QueryOptions & {
   parser?: boolean;
-}
+};
 
-interface TreeOptions extends QueryOptions, TreeQueryOptions {}
+type TreeOptions = QueryOptions & TreeQueryOptions;
 
-interface CommitsOptions extends QueryOptions, CommitsQueryOptions {}
+type CommitsOptions = QueryOptions & CommitsQueryOptions;
 
-interface CommitStatusOptions extends QueryOptions {
+type CommitStatusOptions = QueryOptions & {
   commitRef?: string;
   pollingInterval?: number;
-}
+};
 
-interface SiteConfigOptions extends QueryOptions {
+type SiteConfigOptions = QueryOptions & {
   framework?: string;
   refetchOnMountOrArgChange?: boolean;
-}
+};
 
-interface CreateBranchOptions {
+type CreateBranchOptions = {
   /** Name of the new branch. */
   name: string;
   /**
@@ -77,7 +77,7 @@ interface CreateBranchOptions {
    * stays untyped and is narrowed on read.
    */
   branches?: readonly unknown[];
-}
+};
 
 const baseShaOf = (
   branches: readonly unknown[] | undefined,

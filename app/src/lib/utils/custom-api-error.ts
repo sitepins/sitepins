@@ -1,17 +1,17 @@
-interface IErrorMessage {
+type TErrorMessage = {
   path: string;
   message: string;
-}
+};
 
 export class CustomApiError extends Error {
   statusCode: number;
-  errorMessage: IErrorMessage[];
+  errorMessage: TErrorMessage[];
   tokenVerificationFailed: boolean;
 
   constructor(
     statusCode: number,
     message: string,
-    errorMessage: IErrorMessage[] = [],
+    errorMessage: TErrorMessage[] = [],
   ) {
     super(message);
     this.name = "CustomApiError";

@@ -2,7 +2,7 @@
 import languages from "@/config/languages.json";
 
 export const locales = languages.map((l) => l.code);
-export type Locale = string;
+export type TLocale = string;
 
 export const getMenuTranslations = (locale: string) => {
   return require(`../../i18n/${locale}/navigation.json`).navigation.menu;

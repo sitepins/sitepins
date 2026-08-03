@@ -70,10 +70,10 @@ function useLatestRef<T>(value: T): React.RefObject<T> {
 // Context
 // ---------------------------------------------------------------------------
 
-interface SocketContextValue {
+type SocketContextValue = {
   sendEvent: SendEvent<EventMap>;
   subscribe: Subscribe;
-}
+};
 
 const SocketContext = createContext<SocketContextValue | null>(null);
 
@@ -81,10 +81,10 @@ const SocketContext = createContext<SocketContextValue | null>(null);
 // Provider
 // ---------------------------------------------------------------------------
 
-export interface SocketProviderProps<TServerEvents extends EventMap> {
+export type SocketProviderProps<TServerEvents extends EventMap> = {
   onReceive?: OnReceive<TServerEvents>;
   children: ReactNode;
-}
+};
 
 export function SocketProvider<TServerEvents extends EventMap>({
   onReceive,
@@ -143,13 +143,13 @@ export function SocketProvider<TServerEvents extends EventMap>({
 // useSocket
 // ---------------------------------------------------------------------------
 
-export interface UseSocketOptions<TServerEvents extends EventMap> {
+export type UseSocketOptions<TServerEvents extends EventMap> = {
   onReceive?: OnReceive<TServerEvents>;
-}
+};
 
-export interface UseSocketReturn<TClientEvents extends EventMap> {
+export type UseSocketReturn<TClientEvents extends EventMap> = {
   sendEvent: SendEvent<TClientEvents>;
-}
+};
 
 export function useSocket<
   TServerEvents extends EventMap,

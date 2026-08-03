@@ -9,11 +9,11 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 
-interface EllipsisPaginationProps {
+type EllipsisPaginationProps = {
   totalPages: number;
   currentPage: number;
   onPageChange: (page: number) => void;
-}
+};
 
 export default function EllipsisPagination({
   totalPages,

@@ -1,6 +1,6 @@
 import { Response } from "express";
 
-export type IApiResponse<T> = {
+export type TApiResponse<T> = {
   statusCode?: number;
   success?: boolean;
   message?: string | null;
@@ -13,7 +13,7 @@ export type IApiResponse<T> = {
   };
 };
 
-export const sendResponse = <T>(res: Response, response: IApiResponse<T>) => {
+export const sendResponse = <T>(res: Response, response: TApiResponse<T>) => {
   res.status(response.statusCode || 200).json({
     success: response.success,
     message: response.message,

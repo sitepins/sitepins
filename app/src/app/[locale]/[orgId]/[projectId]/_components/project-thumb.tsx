@@ -11,9 +11,9 @@ import {
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
-export interface ProjectThumbProps {
+export type ProjectThumbProps = {
   project: any;
-}
+};
 
 export function ProjectThumb({ project }: ProjectThumbProps) {
   const tDashboard = useTranslations("dashboard");

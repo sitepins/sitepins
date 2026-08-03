@@ -1,8 +1,8 @@
-export interface LinkInfo {
+export type LinkInfo = {
   text: string;
   url: string;
   isInternal: boolean;
-}
+};
 
 export function extractLinks(content: string, baseUrl?: string): LinkInfo[] {
   if (!content) return [];

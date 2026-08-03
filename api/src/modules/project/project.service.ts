@@ -2,7 +2,7 @@ import { checkOrder } from "@/lib/entitlements";
 import { paginationHelpers } from "@/lib/paginationHelper";
 import { escapeRegex } from "@/lib/regexEscape";
 import { deleteFile } from "@/lib/s3-utils";
-import { IPagination } from "@/types";
+import { TPagination } from "@/types";
 import { PipelineStage } from "mongoose";
 import type { QueryFilter, UpdateQuery } from "mongoose";
 import { Organization } from "../organization/organization.model";
@@ -14,7 +14,7 @@ import { ProjectFilterOptions, ProjectType } from "./project.type";
 
 // get all projects
 const getAllProjectService = async (
-  paginationOptions: Partial<IPagination>,
+  paginationOptions: Partial<TPagination>,
   filterOptions: ProjectFilterOptions,
 ) => {
   const { limit, skip, sortBy, sortOrder } =

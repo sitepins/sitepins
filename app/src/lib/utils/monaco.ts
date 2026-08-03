@@ -1,6 +1,6 @@
 import { logger } from "@/lib/logger";
 import useMounted from "@/hooks/use-mounted";
-import { loader } from "@monaco-editor/react";
+import { loader, type Monaco } from "@monaco-editor/react";
 import { useTheme } from "next-themes";
 import { useEffect } from "react";
 
@@ -11,7 +11,7 @@ export const configureMonacoLoader = () => {
   });
 };
 
-export const useMonacoTheme = (monaco: any) => {
+export const useMonacoTheme = (monaco: Monaco | null | undefined) => {
   const { resolvedTheme } = useTheme();
   const mounted = useMounted();
 

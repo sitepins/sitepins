@@ -5,6 +5,12 @@ import { getAuth } from "@/lib/auth/auth-server";
 import { NextRequest, NextResponse } from "next/server";
 import { App } from "octokit";
 
+// GitHub returns these for expiring-token apps; octokit's types omit them.
+type TExpiringTokenFields = {
+  refreshToken?: string;
+  refreshTokenExpiresAt?: string;
+};
+
 export async function POST(request: NextRequest) {
   try {
     // Without a session this is an open refresh-token exchange oracle.
@@ -36,13 +42,15 @@ export async function POST(request: NextRequest) {
       refreshToken: refresh_token,
     });
 
+    const auth = authentication as typeof authentication & TExpiringTokenFields;
+
     // Calculate absolute expiry times
-    const accessTokenExpiresAt = authentication.expiresAt
-      ? new Date(authentication.expiresAt).getTime()
+    const accessTokenExpiresAt = auth.expiresAt
+      ? new Date(auth.expiresAt).getTime()
       : Date.now() + 28800000; // Default to 8 hours if missing
 
-    const refreshTokenExpiresAt = (authentication as any).refreshTokenExpiresAt
-      ? new Date((authentication as any).refreshTokenExpiresAt).getTime()
+    const refreshTokenExpiresAt = auth.refreshTokenExpiresAt
+      ? new Date(auth.refreshTokenExpiresAt).getTime()
       : undefined;
 
     // Persist onto the row that held the consumed refresh token — the token
@@ -53,8 +61,8 @@ export async function POST(request: NextRequest) {
       await rotateProviderTokens({
         provider: "Github",
         old_refresh_token: refresh_token,
-        access_token: authentication.token,
-        refresh_token: (authentication as any).refreshToken || refresh_token,
+        access_token: auth.token,
+        refresh_token: auth.refreshToken || refresh_token,
         access_token_expires_at: accessTokenExpiresAt,
         refresh_token_expires_at: refreshTokenExpiresAt,
       });
@@ -65,9 +73,8 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      access_token: authentication.token,
-      // @ts-ignore
-      refresh_token: (authentication as any).refreshToken || refresh_token,
+      access_token: auth.token,
+      refresh_token: auth.refreshToken || refresh_token,
       access_token_expires_at: accessTokenExpiresAt,
       refresh_token_expires_at: refreshTokenExpiresAt,
       last_refreshed_at: Date.now(),

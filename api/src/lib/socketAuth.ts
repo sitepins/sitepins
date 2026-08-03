@@ -4,13 +4,13 @@ import { authDemo } from "@/auth-demo";
 import { fromNodeHeaders } from "better-auth/node";
 import type { Socket } from "socket.io";
 
-export interface SocketUser {
+export type SocketUser = {
   user_id: string;
   full_name?: string;
   email?: string;
   image?: string;
   role?: string;
-}
+};
 
 declare module "socket.io" {
   interface SocketData {

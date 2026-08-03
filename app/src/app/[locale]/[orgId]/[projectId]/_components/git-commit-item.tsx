@@ -18,14 +18,14 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { RevertConfirmDialog } from "./git-revert";
 
-interface CommitItemProps {
+type CommitItemProps = {
   provider: "Github" | "Gitlab";
   commit: any;
   setShowUpgradeDialog: (show: boolean) => void;
   onSuccess?: () => void;
   isLatest?: boolean;
   deploymentStatus?: string | null;
-}
+};
 
 export function GitCommitItem({
   provider,

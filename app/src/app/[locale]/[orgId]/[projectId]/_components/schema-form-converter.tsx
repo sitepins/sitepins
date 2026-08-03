@@ -1,6 +1,6 @@
 import { checkMedia } from "@/lib/utils/check-media-file";
 
-interface FieldSchema {
+type FieldSchema = {
   label: string;
   name: string;
   type: string;
@@ -8,7 +8,7 @@ interface FieldSchema {
   fields?: FieldSchema[];
   defaultValue?: string;
   alwaysUseCurrentDate?: boolean;
-}
+};
 
 /** Frontmatter values, which are whatever the file's YAML/TOML held. */
 type FormValue = unknown;

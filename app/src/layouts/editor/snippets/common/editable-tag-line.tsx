@@ -65,7 +65,9 @@ export const ContentEditableSpan = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const initialValue = useRef(value);
+  // Mount-time value only — later updates go through the effect above so the
+  // caret doesn't jump on re-render.
+  const [initialValue] = useState(value);
 
   return (
     <span
@@ -102,7 +104,7 @@ export const ContentEditableSpan = ({
         onFocus?.();
       }}
     >
-      {initialValue.current}
+      {initialValue}
     </span>
   );
 };

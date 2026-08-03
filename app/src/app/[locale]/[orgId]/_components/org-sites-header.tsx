@@ -5,12 +5,12 @@ import Search from "@/components/search";
 import { Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
 
-interface OrgSitesHeaderProps {
+type OrgSitesHeaderProps = {
   searchQuery: string;
   setSearchQuery: (query: string) => void;
   orgId: string;
   isArchived: boolean;
-}
+};
 
 const OrgSitesHeader = ({
   searchQuery,

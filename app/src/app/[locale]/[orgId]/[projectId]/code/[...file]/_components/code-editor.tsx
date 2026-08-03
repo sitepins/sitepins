@@ -56,12 +56,12 @@ const MonacoEditor = dynamic(() => import("@monaco-editor/react"), {
   loading: CodeSkeleton,
 });
 
-interface CodeEditorProps {
+type CodeEditorProps = {
   filePath: string;
   content: string;
   orgId: string;
   projectId: string;
-}
+};
 
 export default function CodeEditor({
   filePath,

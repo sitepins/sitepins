@@ -1,6 +1,6 @@
 import { Model } from "mongoose";
 
-export enum UserPreferenceTheme {
+export enum EUserPreferenceTheme {
   SYSTEM = "system",
   LIGHT = "light",
   DARK = "dark",
@@ -8,13 +8,13 @@ export enum UserPreferenceTheme {
 
 export type UserPreferenceType = {
   user_id: string;
-  theme: UserPreferenceTheme;
+  theme: EUserPreferenceTheme;
   language: string;
   timezone: string;
   impersonate: boolean;
 };
 
-export type IUserPreferenceFilter = {
+export type TUserPreferenceFilter = {
   search?: string;
 };
 

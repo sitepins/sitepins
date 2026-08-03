@@ -25,12 +25,12 @@ import { useParams, useRouter } from "next/navigation";
 import path from "path";
 import * as React from "react";
 
-interface OrgSearchBarProps {
+type OrgSearchBarProps = {
   files?: TFiles[];
   config?: any;
   open?: boolean;
   setOpen?: React.Dispatch<React.SetStateAction<boolean>>;
-}
+};
 
 type SearchItem = {
   id: string;
@@ -500,7 +500,7 @@ export function GlobalSearch({
   );
 }
 
-interface SearchItemGroup {
+type SearchItemGroup = {
   groupLabel: string;
   items: SearchItem[];
-}
+};

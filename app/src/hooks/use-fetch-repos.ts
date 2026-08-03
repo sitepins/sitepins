@@ -127,9 +127,12 @@ export const useAllInstallationRepos = (override?: {
 
           try {
             // "user:ownerName query"
-            const accountLogin =
-              (installation.account as any)?.login ||
-              (installation.account as any)?.slug;
+            // account is a user or an org — only one of login/slug is set
+            const account = installation.account as {
+              login?: string;
+              slug?: string;
+            } | null;
+            const accountLogin = account?.login || account?.slug;
             if (!accountLogin) continue;
 
             const q = `user:${accountLogin} ${searchQuery} in:name`;

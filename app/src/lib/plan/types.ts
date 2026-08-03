@@ -3,4 +3,4 @@
 // this module (types.cloud.ts) with its own tiers and billing periods, and
 // can add new ones without touching core.
 
-export type PackageId = string;
+export type TPackageId = string;

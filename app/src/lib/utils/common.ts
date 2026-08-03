@@ -181,13 +181,13 @@ export const excludeFile = (trees: TFiles[], path: string) => {
 
 type MatchType = "includes" | "startsWith" | "endsWith";
 
-interface SearchOptions {
+type SearchOptions = {
   key?: keyof TFiles; // Field to search by, default = "path"
   caseSensitive?: boolean; // Whether the search is case sensitive
   matchType?: MatchType; // Type of string match
   maxDepth?: number; // Limit depth for recursion
   matcher?: (value: string, search: string) => boolean; // Custom matcher
-}
+};
 
 export function searchByPath(
   files: TFiles[],

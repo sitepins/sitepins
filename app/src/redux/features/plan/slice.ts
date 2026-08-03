@@ -1,4 +1,4 @@
-import { PackageId } from "@/lib/plan/types";
+import { TPackageId } from "@/lib/plan/types";
 import { createSlice } from "@reduxjs/toolkit";
 
 // Self-hosted plan state: every feature unlocked, no billing. `null` means
@@ -6,11 +6,11 @@ import { createSlice } from "@reduxjs/toolkit";
 // A hosted deployment overrides this module (slice.cloud.ts) with a
 // billing-backed implementation exposing the same exports.
 
-interface PlanState {
-  currentPackage: PackageId | null;
+type PlanState = {
+  currentPackage: TPackageId | null;
   frequency?: string;
   isPending: boolean;
-}
+};
 
 export const packageSlice = createSlice({
   name: "package",
@@ -24,7 +24,7 @@ export const packageSlice = createSlice({
       state: PlanState,
       action: {
         payload: {
-          currentPackage: PackageId | null;
+          currentPackage: TPackageId | null;
           frequency?: string;
         };
       },

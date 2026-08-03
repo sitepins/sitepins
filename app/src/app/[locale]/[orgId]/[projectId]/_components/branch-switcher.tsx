@@ -45,10 +45,10 @@ import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 
-interface BranchSwitcherProps {
+type BranchSwitcherProps = {
   project: any;
   config: any;
-}
+};
 
 export function BranchSwitcher({ project, config }: BranchSwitcherProps) {
   const dispatch = useAppDispatch();

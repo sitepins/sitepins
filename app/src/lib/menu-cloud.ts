@@ -1,3 +1,5 @@
+import type { LucideIcon } from "lucide-react";
+
 // Cloud-only menu entries (billing, subscription overview). Empty in the
 // open-source build — those pages don't exist here. The hosted cloud
 // edition overrides this module (menu-cloud.cloud.ts) and resolves labels
@@ -7,7 +9,7 @@ export type CloudMenuItem = {
   name: string;
   tKey: string;
   href: string;
-  icon: any;
+  icon: LucideIcon;
 };
 
 // inserted into the account dropdown, before "Preferences"

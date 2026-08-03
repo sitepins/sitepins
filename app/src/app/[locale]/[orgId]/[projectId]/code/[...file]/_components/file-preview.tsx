@@ -7,12 +7,12 @@ import { Code2, Eye, FileText } from "lucide-react";
 import Link from "next/link";
 import path from "path";
 
-interface FilePreviewProps {
+type FilePreviewProps = {
   filePath: string;
   content: string;
   orgId: string;
   projectId: string;
-}
+};
 
 const getLanguageFromExtension = (filePath: string): string => {
   const ext = path.extname(filePath).toLowerCase();

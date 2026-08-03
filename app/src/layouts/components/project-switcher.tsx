@@ -27,12 +27,12 @@ import { useState } from "react";
 import AddSite from "./add-site";
 import ProjectIcon from "./project-icon";
 
-interface ProjectSwitcherProps {
+type ProjectSwitcherProps = {
   projects: TProject[];
   currentProject?: TProject;
   orgId: string;
   className?: string;
-}
+};
 
 export default function ProjectSwitcher({
   projects,

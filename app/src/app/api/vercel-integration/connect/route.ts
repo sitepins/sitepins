@@ -5,6 +5,8 @@ import { NextRequest, NextResponse } from "next/server";
 
 const VERCEL_API = "https://api.vercel.com";
 
+type TVercelTeam = { id: string; name: string; slug: string; type?: string };
+
 async function vercelFetch(
   path: string,
   token: string,
@@ -50,14 +52,14 @@ export async function POST(req: NextRequest) {
       const teamsRes = await vercelFetch("/v2/teams", token);
       teams = (teamsRes?.teams ?? [])
         .filter(
-          (t: any) =>
+          (t: TVercelTeam) =>
             t.id !== userId &&
             t.slug !== "personal" &&
             t.slug !== username &&
             t.type !== "user" &&
             !t.id?.startsWith("user_"),
         )
-        .map((t: any) => ({ id: t.id, name: t.name, slug: t.slug }));
+        .map((t: TVercelTeam) => ({ id: t.id, name: t.name, slug: t.slug }));
     } catch {
       // personal account — no teams
     }

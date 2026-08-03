@@ -26,7 +26,7 @@ import { useTranslations } from "next-intl";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
 
-interface RevertConfirmDialogProps {
+type RevertConfirmDialogProps = {
   isOpen: boolean;
   onClose: () => void;
   onSuccess?: () => void;
@@ -36,7 +36,7 @@ interface RevertConfirmDialogProps {
   description: string;
   warningText: string;
   type: "reset" | "revert";
-}
+};
 
 export function RevertConfirmDialog({
   isOpen,

@@ -4,9 +4,9 @@ export const hasPermission = (
   role: string,
   requiredPermission: string,
 ): boolean => {
-  const permissions =
+  const permissions: readonly string[] =
     ROLE_PERMISSIONS[
       role as (typeof ENUM_ROLE_ORG)[keyof typeof ENUM_ROLE_ORG]
     ] || [];
-  return permissions.includes(requiredPermission as any);
+  return permissions.includes(requiredPermission);
 };

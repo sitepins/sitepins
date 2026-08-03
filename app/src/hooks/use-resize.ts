@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 
 export const useResize = (
-  ref: React.RefObject<any>,
+  ref: React.RefObject<Element | null>,
   callback: (entry: ResizeObserverEntry) => void,
 ) => {
   useEffect(() => {

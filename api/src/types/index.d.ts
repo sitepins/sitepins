@@ -40,6 +40,8 @@ declare global {
   namespace Express {
     interface Request {
       user?: TAuthUser | null;
+      /** Set by internalOrAuth when the caller presented INTERNAL_API_SECRET. */
+      isInternal?: boolean;
     }
   }
 }

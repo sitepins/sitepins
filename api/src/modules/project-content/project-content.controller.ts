@@ -1,6 +1,7 @@
 import { paginationField } from "@/config/constants";
 import catchAsync from "@/lib/catchAsync";
 import pick from "@/lib/filterPicker";
+import { requireUserId } from "@/lib/requireUser";
 import { sendResponse } from "@/lib/sendResponse";
 import { Request, Response } from "express";
 import { projectContentService } from "./project-content.service";
@@ -54,11 +55,13 @@ const getSingleProjectContentController = catchAsync(
 const upsertProjectContentController = catchAsync(
   async (req: Request, res: Response) => {
     const project_id = req.params.project_id as string;
-    const { user_id, file, content, git_sha } = req.body;
+    const { file, content, git_sha } = req.body;
 
     const data = await projectContentService.upsertProjectContentService({
       project_id,
-      user_id,
+      // Authorship comes from the session, never the request body, so a
+      // collaborator can't attribute an edit to someone else.
+      user_id: requireUserId(req),
       file,
       content,
       git_sha,

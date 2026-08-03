@@ -1,63 +1,35 @@
-import { ENUM_ROLE_ORG } from "@/enums/roles";
+import { TOrgRole } from "@/enums/roles";
 import ApiError from "@/errors/ApiError";
-import { Organization } from "@/modules/organization/organization.model";
+import { requireOrgRole, resolveTargetOrgId } from "@/lib/resourceAuth";
 import { RequestHandler } from "express";
 
-type OrgRole = (typeof ENUM_ROLE_ORG)[keyof typeof ENUM_ROLE_ORG];
-
 export const projectMiddleware = (
-  ...allowedRoles: OrgRole[]
+  ...allowedRoles: TOrgRole[]
 ): RequestHandler => {
   return async (req, res, next) => {
     try {
+      // Server-to-server callers hold INTERNAL_API_SECRET and have no org
+      // membership to check; the calling app already authorized the user.
+      if (req.isInternal) {
+        return next();
+      }
+
       const userId = req.user?.user_id;
 
       if (!userId) {
         throw new ApiError("User authentication required", 401, "");
       }
 
-      const orgId = req.params.orgId || req.query.orgId || req.body.org_id;
+      // Derived from the target project itself, never from a caller-supplied
+      // query/body org id — see resolveTargetOrgId.
+      const orgId = await resolveTargetOrgId(req);
 
       if (!orgId) {
         throw new ApiError("Organization ID is required", 400, "");
       }
 
-      const organization = await Organization.findOne({
-        org_id: orgId,
-      });
-
-      if (!organization) {
-        throw new ApiError("Organization not found", 404, "");
-      }
-
-      // Check owner (has all permissions)
-      if (organization.owner === userId) {
-        return next();
-      }
-
-      const member = organization.members.find((m) => m.user_id === userId);
-
-      if (!member) {
-        throw new ApiError(
-          "Access denied. Only organization members can view project information.",
-          403,
-          "",
-        );
-      }
-
-      if (allowedRoles.length === 0) {
-        return next();
-      }
-
-      if (allowedRoles.includes(member.role as OrgRole)) {
-        return next();
-      }
-
-      throw new ApiError(
-        "Access denied. You do not have permission to perform this action.",
-        403,
-        "",
-      );
+      await requireOrgRole(userId, orgId, allowedRoles);
+      next();
     } catch (error) {
       next(error);
     }

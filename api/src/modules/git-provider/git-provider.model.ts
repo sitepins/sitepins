@@ -17,6 +17,12 @@ const gitProviderSchema = new mongoose.Schema<GitProviderType>(
     refresh_token: {
       type: String,
     },
+    // HMAC of the plaintext refresh token. Tokens are stored encrypted with a
+    // random IV, so rotation can't look them up by value — this can.
+    refresh_token_index: {
+      type: String,
+      index: true,
+    },
     refresh_token_expires_at: {
       type: Date,
     },

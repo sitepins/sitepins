@@ -1,5 +1,8 @@
+import { ENUM_ROLE } from "@/enums/roles";
+import ApiError from "@/errors/ApiError";
 import catchAsync from "@/lib/catchAsync";
 import { nanoId } from "@/lib/nanoId";
+import { requireUser } from "@/lib/requireUser";
 import { sendResponse } from "@/lib/sendResponse";
 import { Request, Response } from "express";
 import { projectService } from "./project.service";
@@ -44,8 +47,20 @@ const getProjectByOrgIdController = catchAsync(
 // get project by user id
 const getProjectByUserIdController = catchAsync(
   async (req: Request, res: Response) => {
+    const requester = requireUser(req);
+    const targetId = (req.params.userId as string) || requester.user_id;
+
+    // Only platform admins may read someone else's project list.
+    if (targetId !== requester.user_id && requester.role !== ENUM_ROLE.ADMIN) {
+      throw new ApiError(
+        "You are not authorized to access this resource",
+        403,
+        "",
+      );
+    }
+
     const project = await projectService.getProjectByUserIdService({
-      user_id: req.params.userId as string,
+      user_id: targetId,
     });
 
     sendResponse(res, {
@@ -76,10 +91,34 @@ const getSingleProjectController = catchAsync(
 // insert project
 const createProjectController = catchAsync(
   async (req: Request, res: Response) => {
+    // Explicit allowlist — spreading req.body let a client seed fields the
+    // plan-limit checks own (visibility, status) or fields that are derived.
+    const {
+      org_id,
+      project_name,
+      project_image,
+      branch,
+      provider: gitProvider,
+      repository,
+      repository_id,
+      generator,
+      site_url,
+      visibility,
+    } = req.body ?? {};
+
     const provider = await projectService.createProjectService({
-      ...req.body,
+      org_id,
+      project_name,
+      project_image,
+      branch,
+      provider: gitProvider,
+      repository,
+      repository_id,
+      generator,
+      site_url,
+      visibility,
       project_id: await nanoId(10),
-      user_id: req.user?.user_id,
+      user_id: requireUser(req).user_id,
     });
 
     sendResponse(res, {
@@ -94,10 +133,16 @@ const createProjectController = catchAsync(
 // update project
 const updateProjectController = catchAsync(
   async (req: Request, res: Response) => {
-    const { ...project } = req.body;
-    project.project_id = req.params.projectId as string;
-    project.org_id = req.query.orgId;
-    const updateProject = await projectService.updateProjectService(project);
+    const { project_name, project_image, site_url } = req.body ?? {};
+
+    // org_id is resolved from the stored project inside the service — never
+    // from `?orgId=`, which the caller controls.
+    const updateProject = await projectService.updateProjectService({
+      project_id: req.params.projectId as string,
+      project_name,
+      project_image,
+      site_url,
+    });
 
     sendResponse(res, {
       success: true,

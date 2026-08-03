@@ -11,6 +11,8 @@ export type GitProviderType = {
   access_token_expires_at?: Date;
 
   refresh_token?: string;
+  /** HMAC lookup index for the encrypted `refresh_token`. */
+  refresh_token_index?: string | null;
   refresh_token_expires_at?: Date;
 
   installation_access_token: string;

@@ -21,6 +21,7 @@ const createToken = (
   };
 
   return jwt.sign(enhancedPayload, secret as Secret, <SignOptions>{
+    algorithm: "HS256",
     expiresIn: expires ? expires : "24h",
     issuer: "sitepins-backend",
   });
@@ -40,7 +41,9 @@ const verifyToken = (
   issuer?: string,
 ): JwtPayload => {
   try {
-    const options: VerifyOptions = {};
+    // Pin the algorithm. Without it a token signed HS256 with a public key
+    // would verify against an issuer registered with an RSA public key.
+    const options: VerifyOptions = { algorithms: ["HS256"] };
     if (issuer) {
       options.issuer = issuer;
     }

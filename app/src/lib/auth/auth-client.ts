@@ -12,7 +12,7 @@ const customSignupClient = () => {
     id: "custom-signup",
     getActions: ($fetch) => ({
       createUser: async (
-        data: { email: string; name: string },
+        data: { email: string; name: string; handoff_token?: string },
         fetchOptions?: BetterFetchOption,
       ) => {
         const res = await $fetch<Session>("/custom-signup", {

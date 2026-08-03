@@ -1,6 +1,7 @@
 import { errorMessageOr } from "@/lib/utils/error";
 import { logger } from "@/lib/logger";
 import { createProvider } from "@/actions/provider";
+import { getAuth } from "@/lib/auth/auth-server";
 import { GITHUB_API_VERSION } from "@/lib/constant";
 import { createAppAuth } from "@octokit/auth-app";
 import { NextRequest, NextResponse } from "next/server";
@@ -45,9 +46,24 @@ export type GitHubAppOAuthAuthentication = {
 
 async function handler(request: NextRequest) {
   try {
+    const session = await getAuth(request);
+    if (!session) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     const { searchParams } = new URL(request.url);
     const code = searchParams.get("code");
     const installationId = searchParams.get("installation_id");
+
+    if (!code) {
+      return NextResponse.json({ error: "Missing code" }, { status: 400 });
+    }
+    if (!installationId || !/^\d+$/.test(installationId)) {
+      return NextResponse.json(
+        { error: "Missing or invalid installation_id" },
+        { status: 400 },
+      );
+    }
 
     const octokit: Octokit = new Octokit({
       authStrategy: createAppAuth,
@@ -79,13 +95,43 @@ async function handler(request: NextRequest) {
       privateKey: process.env.GITHUB_APP_PRIVATE_KEY!,
     });
 
+    // Exchange the OAuth code FIRST: the resulting user token is what proves
+    // who is calling, and it gates the installation token below.
+    const token = await app.oauth.createToken({
+      code,
+    });
+
+    // `installation_id` arrives in the query string, and installation ids are
+    // sequential integers. Without this check, passing another org's id would
+    // hand the caller an installation token with contents:write on that org's
+    // repositories. Only installations this user can actually see are allowed.
+    const userOctokit = new Octokit({
+      auth: token.authentication.token,
+      request: { headers: { "X-GitHub-Api-Version": GITHUB_API_VERSION } },
+    });
+
+    const userInstallations = await userOctokit.paginate(
+      "GET /user/installations",
+      { per_page: 100 },
+    );
+
+    const canAccessInstallation = userInstallations.some(
+      (candidate: { id: number }) => String(candidate.id) === installationId,
+    );
+
+    if (!canAccessInstallation) {
+      logger.error("GitHub installation not accessible to caller", {
+        installationId,
+      });
+      return NextResponse.json(
+        { error: "You do not have access to that GitHub installation" },
+        { status: 403 },
+      );
+    }
+
     const installation = (await octokit.auth({
       type: "installation",
     })) as GitHubAppInstallation;
-
-    const token = await app.oauth.createToken({
-      code: code!,
-    });
 
     await createProvider({
       provider: "Github",

@@ -26,10 +26,9 @@ const getOrganizationByIdController = catchAsync(
   async (req: Request, res: Response) => {
     const organization = await organizationService.getOrganizationService({
       org_id: req.params.org_id as string,
-      userId:
-        typeof req.query.owner_id === "string"
-          ? req.query.owner_id
-          : requireUserId(req),
+      // Always the session user. `?owner_id=` let a caller ask for the org as
+      // seen by someone else.
+      userId: requireUserId(req),
     });
 
     sendResponse(res, {

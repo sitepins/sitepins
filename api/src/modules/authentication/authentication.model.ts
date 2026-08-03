@@ -17,6 +17,12 @@ export const authenticationSchema = new mongoose.Schema<AuthenticationType>(
     expires: {
       type: String,
     },
+    // Failed OTP guesses against this token. Bounds brute force — the code is
+    // burned once the budget is spent.
+    attempts: {
+      type: Number,
+      default: 0,
+    },
   },
   {
     timestamps: true,

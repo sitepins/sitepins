@@ -234,7 +234,10 @@ const getProjectByUserIdService = async ({ user_id }: { user_id: string }) => {
 };
 
 // create project
-const createProjectService = async (project: ProjectType & { id: string }) => {
+const createProjectService = async (
+  project: Omit<ProjectType, "status" | "visibility"> &
+    Partial<Pick<ProjectType, "status" | "visibility">>,
+) => {
   const query: QueryFilter<ProjectType> = {
     project_name: project.project_name,
   };
@@ -260,14 +263,23 @@ const updateProjectService = async ({
   project_name,
   project_image,
   site_url,
-  org_id,
-}: ProjectType) => {
+}: Pick<
+  ProjectType,
+  "project_id" | "project_name" | "project_image" | "site_url"
+>) => {
   const projectData = await Project.findOne({ project_id });
-  const project = await Project.findOne({ project_name: project_name, org_id });
 
   if (!projectData) {
     throw Error("Project not found");
   }
+
+  // Name uniqueness is scoped to the project's OWN org, read from the stored
+  // document — a caller-supplied org id would scope the check to the wrong
+  // tenant.
+  const project = await Project.findOne({
+    project_name: project_name,
+    org_id: projectData.org_id,
+  });
 
   if (project && project.project_name !== project_name) {
     throw Error("Site name already exist");

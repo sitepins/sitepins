@@ -1,11 +1,18 @@
 import { errorMessageOr } from "@/lib/utils/error";
 import { logger } from "@/lib/logger";
 import { rotateProviderTokens } from "@/actions/provider";
+import { getAuth } from "@/lib/auth/auth-server";
 import { NextRequest, NextResponse } from "next/server";
 import { App } from "octokit";
 
 export async function POST(request: NextRequest) {
   try {
+    // Without a session this is an open refresh-token exchange oracle.
+    const session = await getAuth(request);
+    if (!session) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     const { refresh_token } = await request.json();
 
     if (!refresh_token) {

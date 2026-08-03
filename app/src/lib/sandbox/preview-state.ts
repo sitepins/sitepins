@@ -12,6 +12,33 @@ export function internalHeaders(cookieHeader: string): HeadersInit {
   };
 }
 
+/**
+ * Confirms the session behind `cookieHeader` may act on this project.
+ *
+ * The preview-state calls below authenticate with INTERNAL_API_SECRET, which
+ * deliberately bypasses per-user checks — so without this a signed-in user
+ * could pass any `spProjectId` and read or clobber another tenant's sandbox.
+ * Deliberately does NOT send the internal secret: the org membership check
+ * has to run.
+ */
+export async function canAccessProject(
+  projectId: string,
+  cookieHeader: string,
+): Promise<boolean> {
+  try {
+    const res = await fetch(
+      `${BACKEND}/project/${encodeURIComponent(projectId)}`,
+      {
+        headers: { "Content-Type": "application/json", cookie: cookieHeader },
+        cache: "no-store",
+      },
+    );
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
 export type CachedPreview = {
   sandboxName?: string;
   commitSha?: string;

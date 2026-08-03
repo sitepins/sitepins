@@ -1,6 +1,6 @@
-import { ENUM_PERMISSIONS, ENUM_ROLE, ENUM_ROLE_ORG } from "@/enums/roles";
+import { ENUM_ROLE, ENUM_ROLE_ORG } from "@/enums/roles";
 import { authMiddleware } from "@/middlewares/authMiddleware";
-import orgMiddleware from "@/middlewares/orgMiddleware";
+import { moveProjectMiddleware } from "@/middlewares/moveProjectMiddleware";
 import { projectLimit } from "@/middlewares/projectLimit";
 import { projectMiddleware } from "@/middlewares/projectMiddleware";
 import express from "express";
@@ -34,7 +34,8 @@ projectRouter.get(
   projectController.getSingleProjectController,
 );
 
-// get project by user id
+// get project by user id — the controller restricts non-admin callers to
+// their own id.
 projectRouter.get(
   "/user/:userId",
   authMiddleware.verifyAuth(ENUM_ROLE.ADMIN, ENUM_ROLE.USER),
@@ -102,11 +103,12 @@ projectRouter.patch(
   projectController.updateGitConnectionController,
 );
 
-// move project to another org
+// move project to another org — requires rights on BOTH the source and the
+// destination org
 projectRouter.patch(
   "/move/:orgId/:projectId",
   authMiddleware.verifyAuth(ENUM_ROLE.ADMIN, ENUM_ROLE.USER),
-  orgMiddleware(ENUM_PERMISSIONS.DELETE_ORG),
+  moveProjectMiddleware,
   projectController.moveProjectController,
 );
 
@@ -114,7 +116,7 @@ projectRouter.patch(
 projectRouter.delete(
   "/:projectId",
   authMiddleware.verifyAuth(ENUM_ROLE.ADMIN, ENUM_ROLE.USER),
-  orgMiddleware(ENUM_PERMISSIONS.MANAGE_PROJECTS),
+  projectMiddleware(ENUM_ROLE_ORG.OWNER, ENUM_ROLE_ORG.ADMIN), // DELETE IS ONLY FOR OWNER AND ADMIN OF THE PROJECT'S OWN ORG
   projectController.deleteProjectController,
 );
 

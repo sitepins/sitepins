@@ -2,6 +2,7 @@ import { Session } from "@/auth";
 import { BetterAuthPlugin, generateId } from "better-auth";
 import { APIError, createAuthEndpoint } from "better-auth/api";
 import * as z from "zod";
+import { verifySignupHandoffToken } from "./signupHandoff";
 import { generateUserId } from "./userIdGenerator";
 
 const schema = z.object({
@@ -27,7 +28,7 @@ export const customEndpoints = () => {
           method: "POST",
         },
         async (ctx) => {
-          const { email, name } = ctx?.body || {};
+          const { email, name, handoff_token: handoffToken } = ctx?.body || {};
 
           const { success, error } = schema.safeParse({ email, name });
 
@@ -37,6 +38,19 @@ export const customEndpoints = () => {
             throw new APIError("BAD_REQUEST", {
               message,
               code: "INVALID_INPUT",
+            });
+          }
+
+          // This endpoint creates an account with emailVerified=true and sets
+          // a session cookie for it. Nothing here proves the caller owns the
+          // address, so a trusted backend must vouch for it first — see
+          // signupHandoff. Fails closed when INTERNAL_API_SECRET is unset,
+          // which is the correct posture for self-hosted installs that have
+          // no partner-signup flow at all.
+          if (!verifySignupHandoffToken(handoffToken, email, name)) {
+            throw new APIError("UNAUTHORIZED", {
+              message: "Signup verification failed",
+              code: "INVALID_HANDOFF",
             });
           }
 

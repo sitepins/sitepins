@@ -1,5 +1,6 @@
 import { Sandbox } from "@vercel/sandbox";
 import { getAuth } from "@/lib/auth/auth-server";
+import { canAccessProject } from "@/lib/sandbox/preview-state";
 import { cleanVercelFetch, getSandboxAuth } from "@/lib/vercel-sandbox-auth";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -44,6 +45,18 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(
         { ok: false, error: "Missing params" },
         { status: 400 },
+      );
+    }
+
+    // clearProjectPreviewState below authenticates with INTERNAL_API_SECRET,
+    // which skips per-user checks — verify project access first.
+    if (
+      spProjectId &&
+      !(await canAccessProject(spProjectId, req.headers.get("cookie") ?? ""))
+    ) {
+      return NextResponse.json(
+        { ok: false, error: "Forbidden" },
+        { status: 403 },
       );
     }
 

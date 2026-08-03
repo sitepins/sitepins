@@ -6,6 +6,23 @@ export type IPaginationResult = IPagination & {
 
 const DEFAULT_PAGE = 1;
 const DEFAULT_LIMIT = 10;
+// Caps `?limit=` so a single request can't pull an entire collection into
+// memory.
+const MAX_LIMIT = 200;
+// `sortBy` is interpolated into a `$sort` stage, so it is an allowlist rather
+// than free text.
+const SORTABLE_FIELDS = new Set([
+  "createdAt",
+  "updatedAt",
+  "project_name",
+  "org_name",
+  "full_name",
+  "email",
+  "status",
+  "package",
+  "billing_period",
+  "expires_date",
+]);
 
 const calculatePagination = (
   options: Partial<IPagination>,
@@ -16,11 +33,15 @@ const calculatePagination = (
     Number.isFinite(parsedPage) && parsedPage > 0 ? parsedPage : DEFAULT_PAGE;
   const limit =
     Number.isFinite(parsedLimit) && parsedLimit > 0
-      ? parsedLimit
+      ? Math.min(parsedLimit, MAX_LIMIT)
       : DEFAULT_LIMIT;
   const skip = (page - 1) * limit;
-  const sortBy = options.sortBy || "createdAt";
-  const sortOrder = options.sortOrder || "desc";
+  const requestedSortBy = options.sortBy;
+  const sortBy =
+    typeof requestedSortBy === "string" && SORTABLE_FIELDS.has(requestedSortBy)
+      ? requestedSortBy
+      : "createdAt";
+  const sortOrder = options.sortOrder === "asc" ? "asc" : "desc";
 
   return {
     page,

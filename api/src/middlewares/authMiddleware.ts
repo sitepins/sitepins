@@ -48,14 +48,22 @@ class AuthMiddleware {
           const secretsWithIssuers = getJwtIssuers();
 
           let tokenVerified = false;
-          for (const { secret, issuer } of secretsWithIssuers) {
+          for (const { secret, issuer, validate } of secretsWithIssuers) {
             if (!secret) continue;
             try {
-              verifiedToken = jwtHelpers.verifyToken(
+              const candidate = jwtHelpers.verifyToken(
                 verificationToken,
                 secret as Secret,
                 issuer,
               );
+              // A valid signature only proves the token was minted. The
+              // issuer's own check decides whether it is still current, so a
+              // revoked token stops working here and not just on the routes
+              // that read the token store directly.
+              if (validate && !(await validate(verificationToken, candidate))) {
+                continue;
+              }
+              verifiedToken = candidate;
               tokenVerified = true;
               break;
             } catch {

@@ -334,6 +334,15 @@ export const auth = betterAuth({
           });
         }
       }
+
+      // `password` is declared as an additional user field (it predates
+      // credentials moving into better-auth's account table), which means
+      // /update-user would happily write a caller-supplied value straight
+      // onto the user document. Real password changes go through
+      // setPassword/reset, never here.
+      if (ctx.path === "/update-user" && ctx.body?.password !== undefined) {
+        delete ctx.body.password;
+      }
     }),
   },
 

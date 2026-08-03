@@ -1,5 +1,7 @@
 import config from "@/config/variables";
 import { globalErrorhandler } from "@/middlewares/globalErrorHandler";
+import { apiLimiter } from "@/middlewares/rateLimiters";
+import { sanitizeInput } from "@/middlewares/sanitizeInput";
 import router from "@/routes";
 import { toNodeHandler } from "better-auth/node";
 import cors from "cors";
@@ -25,6 +27,12 @@ const trustProxyValue =
       ? Number(tp)
       : tp;
 app.set("trust proxy", trustProxyValue);
+
+// Express 5's default. Pinned explicitly because it is a security property,
+// not a preference: "simple" yields string | string[] values only, so a query
+// string can never carry a Mongo operator object (`?id[$ne]=`) into a filter.
+// Switching this to "extended" would reopen that door.
+app.set("query parser", "simple");
 
 // Security headers. This is a JSON API behind CORS, so cross-origin resource
 // policy is relaxed to allow the separate web origin to read responses.
@@ -66,7 +74,10 @@ app.get("/healthz", (req, res) => {
   res.status(200).json({ status: "ok", uptime: process.uptime() });
 });
 
-app.use("/api/v1", router);
+// Strip Mongo operator keys before anything can reach a query filter, then
+// apply a broad request ceiling. better-auth runs its own rate limiter on
+// /api/v1/auth/*, which is mounted above this.
+app.use("/api/v1", sanitizeInput, apiLimiter, router);
 
 app.use(globalErrorhandler);
 

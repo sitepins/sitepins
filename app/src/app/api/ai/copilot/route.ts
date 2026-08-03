@@ -1,4 +1,5 @@
 import { logger } from "@/lib/logger";
+import { getAuth } from "@/lib/auth/auth-server";
 import { AnthropicProvider, createAnthropic } from "@ai-sdk/anthropic";
 import { createGoogle, GoogleProvider } from "@ai-sdk/google";
 import { createOpenAI, OpenAIProvider } from "@ai-sdk/openai";
@@ -8,6 +9,13 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
+  // This route can fall back to the server's own AI_GATEWAY_API_KEY, so an
+  // unauthenticated caller could spend the deployment's AI budget.
+  const session = await getAuth(req);
+  if (!session) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const {
     apiKey: key,
     model = "gpt-4o-mini",

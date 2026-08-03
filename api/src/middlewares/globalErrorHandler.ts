@@ -1,6 +1,7 @@
 import config from "@/config/variables";
 import ApiError from "@/errors/ApiError";
 import { handleValidationErrors } from "@/errors/handleValidationError";
+import { logger } from "@/lib/logger";
 import { IErrorMessage } from "@/types";
 import { ErrorRequestHandler } from "express";
 
@@ -41,15 +42,24 @@ export const globalErrorhandler: ErrorRequestHandler = (
         ]
       : [];
   } else if (error instanceof Error) {
-    message = error.message;
-    errorMessage = error?.message
-      ? [
-          {
-            path: "",
-            message: error?.message,
-          },
-        ]
-      : [];
+    // Errors thrown deliberately by services carry user-facing text and are
+    // safe to return. Anything else (driver/runtime failures) can embed
+    // connection strings, collection names or stack detail, so it stays
+    // server-side and the client gets the generic message.
+    const isOperational = error.name === "Error";
+    if (isOperational) {
+      message = error.message;
+      errorMessage = error.message
+        ? [
+            {
+              path: "",
+              message: error.message,
+            },
+          ]
+        : [];
+    } else {
+      logger.error("Unhandled error", error);
+    }
   }
   res.status(statuscode).json({
     success: false,

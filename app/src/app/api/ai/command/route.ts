@@ -1,4 +1,5 @@
 import { logger } from "@/lib/logger";
+import { getAuth } from "@/lib/auth/auth-server";
 import { BaseEditorKit } from "@/editor/plugins/editor-base-kit";
 import { ChatMessage } from "@/hooks/use-ai-command";
 import { markdownJoinerTransform } from "@/lib/utils/markdown-joiner-transform";
@@ -21,6 +22,12 @@ import { z } from "zod/v4";
 import { getCommentPrompt, getEditPrompt, getGeneratePrompt } from "./prompts";
 
 export async function POST(req: NextRequest) {
+  // Editor-only surface — don't let anonymous callers relay through it.
+  const session = await getAuth(req);
+  if (!session) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const {
     apiKey,
     ctx,

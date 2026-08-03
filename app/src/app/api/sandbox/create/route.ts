@@ -16,6 +16,7 @@ import {
   pullLatestCommits,
 } from "@/lib/sandbox/git";
 import {
+  canAccessProject,
   getCachedPreview,
   syncSandboxPreviewState,
 } from "@/lib/sandbox/preview-state";
@@ -431,6 +432,12 @@ export async function POST(req: NextRequest) {
       },
       { status: 400 },
     );
+  }
+
+  // The preview-state calls below use INTERNAL_API_SECRET, which skips
+  // per-user checks — so the caller's access to this project is verified here.
+  if (!(await canAccessProject(body.spProjectId, cookieHeader))) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
   // Quick background ops (typing sync) → JSON

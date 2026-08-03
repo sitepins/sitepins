@@ -1,14 +1,19 @@
 import { ENUM_ROLE } from "@/enums/roles";
 import { authMiddleware } from "@/middlewares/authMiddleware";
+import { selfOrAdmin } from "@/middlewares/selfOrAdmin";
 import express from "express";
 import { userPreferenceController } from "./user-preference.controller";
 
 const userPreferenceRouter: express.Router = express.Router();
 
+// `:id` is a user id — a caller may only read/write their own preferences.
+const ownPreference = selfOrAdmin("id");
+
 // get single user preference
 userPreferenceRouter.get(
   "/:id",
   authMiddleware.verifyAuth(ENUM_ROLE.USER),
+  ownPreference,
   userPreferenceController.getUserPreferenceController,
 );
 
@@ -16,6 +21,7 @@ userPreferenceRouter.get(
 userPreferenceRouter.patch(
   "/theme/:id",
   authMiddleware.verifyAuth(ENUM_ROLE.USER),
+  ownPreference,
   userPreferenceController.updateThemePreferenceController,
 );
 
@@ -23,6 +29,7 @@ userPreferenceRouter.patch(
 userPreferenceRouter.patch(
   "/language/:id",
   authMiddleware.verifyAuth(ENUM_ROLE.USER),
+  ownPreference,
   userPreferenceController.updateLanguagePreferenceController,
 );
 
@@ -30,6 +37,7 @@ userPreferenceRouter.patch(
 userPreferenceRouter.patch(
   "/timezone/:id",
   authMiddleware.verifyAuth(ENUM_ROLE.USER),
+  ownPreference,
   userPreferenceController.updateTimezonePreferenceController,
 );
 
@@ -37,6 +45,7 @@ userPreferenceRouter.patch(
 userPreferenceRouter.patch(
   "/impersonate/:id",
   authMiddleware.verifyAuth(ENUM_ROLE.USER),
+  ownPreference,
   userPreferenceController.updateCoAuthorPreferenceController,
 );
 
@@ -44,6 +53,7 @@ userPreferenceRouter.patch(
 userPreferenceRouter.patch(
   "/:id",
   authMiddleware.verifyAuth(ENUM_ROLE.USER),
+  ownPreference,
   userPreferenceController.updateUserPreferenceController,
 );
 

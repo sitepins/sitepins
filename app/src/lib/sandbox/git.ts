@@ -55,7 +55,9 @@ export async function pullLatestCommits(
     : `https://x-access-token:${token}@github.com/${repository}.git`;
   await session.runCommand({
     cmd: "git",
-    args: ["fetch", "--depth", "1", authUrl, branch],
+    // `--` stops option parsing: git keeps reading flags after positional
+    // args, so a branch named `--upload-pack=…` would otherwise run a command.
+    args: ["fetch", "--depth", "1", "--", authUrl, branch],
     signal,
   });
   await session.runCommand({

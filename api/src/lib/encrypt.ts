@@ -31,6 +31,18 @@ export function encrypt(plaintext: string): string {
   return `${iv.toString("hex")}:${tag.toString("hex")}:${encrypted.toString("hex")}`;
 }
 
+/**
+ * Deterministic lookup index for a value stored encrypted. AES-GCM uses a
+ * random IV, so the ciphertext of the same token differs every write and
+ * cannot be matched with an equality query — this HMAC can.
+ * Returns null when no key is configured (callers then match on plaintext).
+ */
+export function tokenIndex(plaintext: string): string | null {
+  const key = getKey();
+  if (!key || !plaintext) return null;
+  return crypto.createHmac("sha256", key).update(plaintext).digest("hex");
+}
+
 export function decrypt(ciphertext: string): string {
   const key = getKey();
   const parts = ciphertext.split(":");

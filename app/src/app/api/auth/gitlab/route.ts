@@ -1,10 +1,18 @@
 import { errorMessageOr } from "@/lib/utils/error";
 import { logger } from "@/lib/logger";
 import { createProvider } from "@/actions/provider";
+import { getAuth } from "@/lib/auth/auth-server";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
   try {
+    // The exchanged token is persisted against the session user, so there has
+    // to be one.
+    const session = await getAuth(request);
+    if (!session) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     const { searchParams } = new URL(request.url);
     const code = searchParams.get("code");
 

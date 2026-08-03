@@ -100,6 +100,8 @@ export function DateTimePicker({
       newDate.setHours(hours24);
       newDate.setMinutes(minutes);
       setDate(newDate);
+    } else {
+      setDate(undefined);
     }
   };
 

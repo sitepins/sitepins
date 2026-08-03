@@ -10,6 +10,7 @@ import { useHydrated } from "@/hooks/use-hydrated";
 import { useOwnerPlan } from "@/hooks/use-owner-plan";
 import {
   getSeoScore,
+  KEYWORD_KEYS,
   META_DESC_KEYS,
   META_TITLE_KEYS,
   validateSEO,
@@ -157,7 +158,7 @@ export default function SeoSetting({
             setPendingSlug(newSlugVal);
 
             // Remove slug from the data to be saved to state
-            const { _slug, ...restData } = next.data;
+            const { slug: _slug, ...restData } = next.data;
             return { ...next, data: restData };
           }
 
@@ -204,6 +205,9 @@ export default function SeoSetting({
   const filteredSchema = useMemo(
     () =>
       schema.reduce((acc, field) => {
+        // Keyword/tag fields feed the analysis only — they stay in the
+        // frontmatter panel, not here.
+        if (KEYWORD_KEYS.includes(field.name)) return acc;
         const keys = Object.keys(results);
         if (keys.some((k) => k === field.name)) {
           if (field.type === "Date") {

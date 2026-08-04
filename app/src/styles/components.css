@@ -35,6 +35,7 @@
 
 .tree ul li {
   @apply border-border border-l;
+  display: flow-root;
 }
 
 .tree ul li:last-child {

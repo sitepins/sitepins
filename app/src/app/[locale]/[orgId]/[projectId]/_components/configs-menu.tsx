@@ -89,7 +89,7 @@ const ConfigsMenu = ({
     return (
       <li key={file.path}>
         <NavLink
-          className="text-foreground hover:text-primary hover:bg-muted/50 ml-1 flex items-center rounded px-2.5 py-2.5 transition-colors"
+          className="text-foreground hover:text-primary hover:bg-muted/50 ml-2 flex items-center rounded px-2 py-2.5 transition-colors"
           activeClassName="bg-muted text-primary"
           href={resolveHref(file.path)}
         >

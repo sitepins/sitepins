@@ -82,7 +82,7 @@ const ContentMenu = ({
         ) : (
           <NavLink
             key={item.path}
-            className="text-foreground hover:text-primary hover:bg-muted/50 ml-1 flex items-center rounded px-2.5 py-2.5 transition-colors"
+            className="text-foreground hover:text-primary hover:bg-muted/50 ml-2 flex items-center rounded px-2 py-2.5 transition-colors"
             href={resolveHref(item.path)}
             activeClassName="bg-muted text-primary"
           >
@@ -106,7 +106,7 @@ const ContentMenu = ({
       return (
         <li key={item.path + "_" + index}>
           <NavLink
-            className="bg-primary! my-2 mr-3 ml-3 flex cursor-default items-center rounded-sm px-2.5 py-1 text-white!"
+            className="bg-primary! my-2 ml-2 flex cursor-default items-center rounded-sm px-2 py-1 text-white!"
             activeClassName="bg-background text-primary"
             href={``}
             key={item.path + "_" + index}
@@ -121,7 +121,7 @@ const ContentMenu = ({
       return (
         <li key={item.path + "_" + item.type + "_" + index}>
           <NavLink
-            className="text-foreground hover:text-primary hover:bg-muted/50 ml-1 flex items-center rounded px-2.5 py-2.5 transition-colors"
+            className="text-foreground hover:text-primary hover:bg-muted/50 ml-2 flex items-center rounded px-2 py-2.5 transition-colors"
             activeClassName="bg-muted text-primary"
             href={resolveHref(item.path)}
           >

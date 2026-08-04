@@ -69,7 +69,7 @@ const CodeMenu = ({
         ) : (
           <NavLink
             key={item.path}
-            className="text-foreground hover:text-primary hover:bg-muted/50 ml-1 flex items-center rounded px-2.5 py-2.5 transition-colors"
+            className="text-foreground hover:text-primary hover:bg-muted/50 ml-2 flex items-center rounded px-2 py-2.5 transition-colors"
             href={resolveHref(item.path)}
             activeClassName="bg-muted text-primary"
           >
@@ -108,7 +108,7 @@ const CodeMenu = ({
       return (
         <li key={item.path + "_" + item.type + "_" + index}>
           <NavLink
-            className="text-foreground hover:text-primary hover:bg-muted/50 ml-1 flex items-center rounded px-2.5 py-2.5 transition-colors"
+            className="text-foreground hover:text-primary hover:bg-muted/50 ml-2 flex items-center rounded px-2 py-2.5 transition-colors"
             activeClassName="bg-muted text-primary"
             href={resolveHref(item.path)}
           >

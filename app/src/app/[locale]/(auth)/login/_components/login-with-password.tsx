@@ -74,7 +74,7 @@ export default function LoginWithPassword({
 
           const from = params.get("from");
           const redirectTo = storedRedirect || from || "/";
-          const onboardingRedirect = `/onboarding?redirect=${encodeURIComponent(redirectTo)}`;
+          const onboardingRedirect = `/onboarding?from=${encodeURIComponent(redirectTo)}`;
           // Use window.location.href for full page navigation to bypass any router interception
           window.location.href = onboardingRedirect;
         },

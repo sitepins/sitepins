@@ -161,7 +161,7 @@ export async function proxy(request: NextRequest) {
       } else {
         const onboardingUrl = new URL("/onboarding", origin);
         const from = `${nextUrl.pathname}${nextUrl.search || ""}`;
-        onboardingUrl.searchParams.set("redirect", from);
+        onboardingUrl.searchParams.set("from", from);
         return NextResponse.redirect(onboardingUrl, 302);
       }
     }

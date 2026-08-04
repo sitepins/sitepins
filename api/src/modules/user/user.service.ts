@@ -17,11 +17,11 @@ import { ProjectContent } from "../project-content/project-content.model";
 import { ProjectPreview } from "../project-preview/project-preview.model";
 import { Project } from "../project/project.model";
 import { User } from "./user.model";
-import { UserType } from "./user.type";
+import { TUserType } from "./user.type";
 import { logger } from "@/lib/logger";
 
 // get single user data
-const getSingleUserService = async (id: string): Promise<UserType | null> => {
+const getSingleUserService = async (id: string): Promise<TUserType | null> => {
   const user = await User.aggregate([
     {
       $match: { user_id: id },

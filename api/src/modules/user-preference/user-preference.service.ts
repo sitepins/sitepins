@@ -1,5 +1,5 @@
 import { UserPreference } from "./user-preference.model";
-import { UserPreferenceType } from "./user-preference.type";
+import { TUserPreferenceType } from "./user-preference.type";
 
 // get user preference
 const getUserPreferenceService = async (id: string) => {
@@ -10,7 +10,7 @@ const getUserPreferenceService = async (id: string) => {
 // update / create user preference
 const updateUserPreferenceService = async (
   id: string,
-  preference: UserPreferenceType,
+  preference: TUserPreferenceType,
 ) => {
   const result = await UserPreference.findOneAndUpdate(
     { user_id: id },

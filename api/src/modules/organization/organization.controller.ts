@@ -99,7 +99,7 @@ const removeMemberController = catchAsync(
     sendResponse(res, {
       statusCode: 200,
       success: true,
-      message: "Member removed successfully",
+      message: "TMember removed successfully",
       result: removeMember,
     });
   },
@@ -121,7 +121,7 @@ const updateRoleController = catchAsync(async (req: Request, res: Response) => {
   sendResponse(res, {
     statusCode: 200,
     success: true,
-    message: "Member updated successfully",
+    message: "TMember updated successfully",
     result: updateTeamMember,
   });
 });
@@ -143,7 +143,7 @@ const addMemberController = catchAsync(async (req: Request, res: Response) => {
   sendResponse(res, {
     statusCode: 200,
     success: true,
-    message: "Member added successfully",
+    message: "TMember added successfully",
     result: teamMember,
   });
 });

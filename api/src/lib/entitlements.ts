@@ -1,14 +1,14 @@
 import { TAuthUser } from "@/types";
-import { PlanLimits, UNLIMITED } from "@/config/limits";
+import { TPlanLimits, UNLIMITED } from "@/config/limits";
 import { PackageId } from "@/config/plans";
 import type { ClientSession } from "mongoose";
 import { logger } from "@/lib/logger";
 
-export type { PlanLimits };
+export type { TPlanLimits };
 
 export type Entitlements = {
   currentPackage: PackageId | null;
-  limits: PlanLimits;
+  limits: TPlanLimits;
 };
 
 export type EntitlementsProvider = (userId: string) => Promise<Entitlements>;

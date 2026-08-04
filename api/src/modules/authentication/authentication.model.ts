@@ -1,8 +1,8 @@
 import mongoose, { model } from "mongoose";
-import { AuthenticationType } from "./authentication.type";
+import { TAuthenticationType } from "./authentication.type";
 
 // password verification token model
-export const authenticationSchema = new mongoose.Schema<AuthenticationType>(
+export const authenticationSchema = new mongoose.Schema<TAuthenticationType>(
   {
     user_id: {
       type: String,
@@ -29,7 +29,7 @@ export const authenticationSchema = new mongoose.Schema<AuthenticationType>(
   },
 );
 
-export const Authentication = model<AuthenticationType>(
+export const Authentication = model<TAuthenticationType>(
   "authentication",
   authenticationSchema,
 );

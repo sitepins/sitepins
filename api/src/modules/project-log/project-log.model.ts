@@ -2,11 +2,11 @@ import mongoose, { model } from "mongoose";
 import {
   EProjectLogAction,
   EProjectLogType,
-  ProjectLogModel,
-  ProjectLogType,
+  TProjectLogModel,
+  TProjectLogType,
 } from "./project-log.type";
 
-const projectLogSchema = new mongoose.Schema<ProjectLogType, ProjectLogModel>(
+const projectLogSchema = new mongoose.Schema<TProjectLogType, TProjectLogModel>(
   {
     project_id: {
       type: String,
@@ -40,7 +40,7 @@ const projectLogSchema = new mongoose.Schema<ProjectLogType, ProjectLogModel>(
 // Index for efficient querying by project and date
 projectLogSchema.index({ project_id: 1, date: -1 });
 
-export const ProjectLog = model<ProjectLogType, ProjectLogModel>(
+export const ProjectLog = model<TProjectLogType, TProjectLogModel>(
   "project_log",
   projectLogSchema,
 );

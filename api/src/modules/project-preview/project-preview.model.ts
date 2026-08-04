@@ -1,7 +1,7 @@
 import mongoose, { model } from "mongoose";
-import { ProjectPreviewType } from "./project-preview.type";
+import { TProjectPreviewType } from "./project-preview.type";
 
-const projectPreviewSchema = new mongoose.Schema<ProjectPreviewType>(
+const projectPreviewSchema = new mongoose.Schema<TProjectPreviewType>(
   {
     project_id: {
       type: String,
@@ -30,7 +30,7 @@ const projectPreviewSchema = new mongoose.Schema<ProjectPreviewType>(
   },
 );
 
-export const ProjectPreview = model<ProjectPreviewType>(
+export const ProjectPreview = model<TProjectPreviewType>(
   "project_preview",
   projectPreviewSchema,
 );

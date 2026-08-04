@@ -1,15 +1,15 @@
-export type PlanLimits = {
+export type TPlanLimits = {
   org_limit: number;
   org_site_limit: number;
   org_private_site_limit: number;
   org_member_limit: number;
 };
 
-const UNLIMITED: PlanLimits = {
+const UNLIMITED: TPlanLimits = {
   org_limit: Infinity,
   org_site_limit: Infinity,
   org_private_site_limit: Infinity,
   org_member_limit: Infinity,
 };
 
-export const getPlanLimits = (_pkg?: string | null): PlanLimits => UNLIMITED;
+export const getPlanLimits = (_pkg?: string | null): TPlanLimits => UNLIMITED;

@@ -1,4 +1,4 @@
-export type ProjectType = {
+export type TProjectType = {
   project_id: string;
   user_id: string;
   org_id: string;
@@ -15,6 +15,6 @@ export type ProjectType = {
   site_url: string;
 };
 
-export type ProjectFilterOptions = {
+export type TProjectFilterOptions = {
   search?: string | number;
 };

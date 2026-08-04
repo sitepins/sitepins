@@ -1,7 +1,7 @@
 import mongoose, { model } from "mongoose";
-import { GitProviderType } from "./git-provider.type";
+import { TGitProviderType } from "./git-provider.type";
 
-const gitProviderSchema = new mongoose.Schema<GitProviderType>(
+const gitProviderSchema = new mongoose.Schema<TGitProviderType>(
   {
     user_id: {
       type: String,
@@ -49,7 +49,7 @@ const gitProviderSchema = new mongoose.Schema<GitProviderType>(
 
 gitProviderSchema.index({ provider: 1 });
 
-export const GitProvider = model<GitProviderType>(
+export const GitProvider = model<TGitProviderType>(
   "git_provider",
   gitProviderSchema,
 );

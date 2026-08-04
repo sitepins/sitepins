@@ -1,7 +1,7 @@
 import mongoose, { model } from "mongoose";
-import { ProjectType } from "./project.type";
+import { TProjectType } from "./project.type";
 
-const ProjectSchema = new mongoose.Schema<ProjectType>(
+const ProjectSchema = new mongoose.Schema<TProjectType>(
   {
     project_id: {
       type: String,
@@ -63,4 +63,4 @@ const ProjectSchema = new mongoose.Schema<ProjectType>(
   },
 );
 
-export const Project = model<ProjectType>("project", ProjectSchema);
+export const Project = model<TProjectType>("project", ProjectSchema);

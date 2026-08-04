@@ -1,12 +1,12 @@
 import mongoose, { model } from "mongoose";
 import {
-  ProjectContentModel,
-  ProjectContentType,
+  TProjectContentModel,
+  TProjectContentType,
 } from "./project-content.type";
 
 const projectContentSchema = new mongoose.Schema<
-  ProjectContentType,
-  ProjectContentModel
+  TProjectContentType,
+  TProjectContentModel
 >(
   {
     project_id: {
@@ -38,7 +38,7 @@ const projectContentSchema = new mongoose.Schema<
 // Unique content record per project + file path
 projectContentSchema.index({ project_id: 1, file: 1 }, { unique: true });
 
-export const ProjectContent = model<ProjectContentType, ProjectContentModel>(
+export const ProjectContent = model<TProjectContentType, TProjectContentModel>(
   "project_content",
   projectContentSchema,
 );

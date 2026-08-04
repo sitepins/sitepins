@@ -1,5 +1,5 @@
 import { ProjectPreview } from "./project-preview.model";
-import { ProjectPreviewType } from "./project-preview.type";
+import { TProjectPreviewType } from "./project-preview.type";
 
 const getByProjectIdService = async (project_id: string) => {
   return ProjectPreview.findOne({ project_id });
@@ -7,7 +7,7 @@ const getByProjectIdService = async (project_id: string) => {
 
 const upsertService = async (
   project_id: string,
-  data: Partial<Omit<ProjectPreviewType, "project_id">>,
+  data: Partial<Omit<TProjectPreviewType, "project_id">>,
 ) => {
   return ProjectPreview.findOneAndUpdate(
     { project_id },

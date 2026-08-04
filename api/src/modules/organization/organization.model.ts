@@ -1,8 +1,8 @@
 import { ENUM_ROLE_ORG } from "@/enums/roles";
 import mongoose, { model } from "mongoose";
-import { OrganizationType } from "./organization.type";
+import { TOrganizationType } from "./organization.type";
 
-const organizationSchema = new mongoose.Schema<OrganizationType>(
+const organizationSchema = new mongoose.Schema<TOrganizationType>(
   {
     org_name: {
       type: String,
@@ -61,7 +61,7 @@ const organizationSchema = new mongoose.Schema<OrganizationType>(
   },
 );
 
-export const Organization = model<OrganizationType>(
+export const Organization = model<TOrganizationType>(
   "organization",
   organizationSchema,
 );

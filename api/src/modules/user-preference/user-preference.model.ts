@@ -1,13 +1,13 @@
 import mongoose, { model } from "mongoose";
 import {
-  UserPreferenceModel,
+  TUserPreferenceModel,
   EUserPreferenceTheme,
-  UserPreferenceType,
+  TUserPreferenceType,
 } from "./user-preference.type";
 
 const userPreferenceSchema = new mongoose.Schema<
-  UserPreferenceType,
-  UserPreferenceModel
+  TUserPreferenceType,
+  TUserPreferenceModel
 >(
   {
     user_id: {
@@ -38,7 +38,7 @@ const userPreferenceSchema = new mongoose.Schema<
   },
 );
 
-export const UserPreference = model<UserPreferenceType, UserPreferenceModel>(
+export const UserPreference = model<TUserPreferenceType, TUserPreferenceModel>(
   "user_preference",
   userPreferenceSchema,
 );

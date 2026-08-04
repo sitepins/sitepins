@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-export type GitProviderType = {
+export type TGitProviderType = {
   _id: mongoose.Types.ObjectId;
   user_id: string;
 

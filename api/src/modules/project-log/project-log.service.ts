@@ -2,7 +2,7 @@ import { paginationHelpers } from "@/lib/paginationHelper";
 import { TPagination } from "@/types";
 import { PipelineStage } from "mongoose";
 import { ProjectLog } from "./project-log.model";
-import { ProjectLogType } from "./project-log.type";
+import { TProjectLogType } from "./project-log.type";
 
 // get all project log
 const getAllProjectLogService = async (
@@ -145,7 +145,7 @@ const getSingleProjectLogService = async (
 };
 
 // create/add new project log
-const createProjectLogService = async (log: Omit<ProjectLogType, "_id">) => {
+const createProjectLogService = async (log: Omit<TProjectLogType, "_id">) => {
   const newLog = await ProjectLog.create(log);
   return newLog;
 };

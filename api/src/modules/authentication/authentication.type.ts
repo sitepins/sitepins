@@ -1,4 +1,4 @@
-export type AuthenticationType = {
+export type TAuthenticationType = {
   user_id: string;
   token: string;
   expires: string;

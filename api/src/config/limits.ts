@@ -1,4 +1,4 @@
-export type PlanLimits = {
+export type TPlanLimits = {
   org_limit: number;
   org_site_limit: number;
   org_private_site_limit: number;
@@ -6,7 +6,7 @@ export type PlanLimits = {
 };
 
 // Self-hosted installs are unmetered.
-export const UNLIMITED: PlanLimits = {
+export const UNLIMITED: TPlanLimits = {
   org_limit: Infinity,
   org_site_limit: Infinity,
   org_private_site_limit: Infinity,

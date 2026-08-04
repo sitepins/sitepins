@@ -10,12 +10,12 @@ import { ProjectLog } from "../project-log/project-log.model";
 import { ProjectPreview } from "../project-preview/project-preview.model";
 import { ProjectContent } from "../project-content/project-content.model";
 import { Project } from "./project.model";
-import { ProjectFilterOptions, ProjectType } from "./project.type";
+import { TProjectFilterOptions, TProjectType } from "./project.type";
 
 // get all projects
 const getAllProjectService = async (
   paginationOptions: Partial<TPagination>,
-  filterOptions: ProjectFilterOptions,
+  filterOptions: TProjectFilterOptions,
 ) => {
   const { limit, skip, sortBy, sortOrder } =
     paginationHelpers.calculatePagination(paginationOptions);
@@ -235,10 +235,10 @@ const getProjectByUserIdService = async ({ user_id }: { user_id: string }) => {
 
 // create project
 const createProjectService = async (
-  project: Omit<ProjectType, "status" | "visibility"> &
-    Partial<Pick<ProjectType, "status" | "visibility">>,
+  project: Omit<TProjectType, "status" | "visibility"> &
+    Partial<Pick<TProjectType, "status" | "visibility">>,
 ) => {
-  const query: QueryFilter<ProjectType> = {
+  const query: QueryFilter<TProjectType> = {
     project_name: project.project_name,
   };
   if (project.org_id) {
@@ -264,7 +264,7 @@ const updateProjectService = async ({
   project_image,
   site_url,
 }: Pick<
-  ProjectType,
+  TProjectType,
   "project_id" | "project_name" | "project_image" | "site_url"
 >) => {
   const projectData = await Project.findOne({ project_id });
@@ -441,7 +441,7 @@ const updateGitConnectionService = async ({
     throw new Error("Project not found");
   }
 
-  const updateFields: UpdateQuery<ProjectType> = {};
+  const updateFields: UpdateQuery<TProjectType> = {};
   if (repository !== undefined) updateFields.repository = repository;
   if (repository_id !== undefined) updateFields.repository_id = repository_id;
   if (branch !== undefined) updateFields.branch = branch;

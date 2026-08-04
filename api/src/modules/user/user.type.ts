@@ -6,7 +6,7 @@ export enum EProvider {
   Credentials = "Credentials",
 }
 
-export type UserType = {
+export type TUserType = {
   user_id: string;
   email: string;
   full_name: string;
@@ -22,17 +22,17 @@ export type UserType = {
   updatedAt?: Date;
 };
 
-export type UserFilterOptions = {
+export type TUserFilterOptions = {
   search?: string | number;
   country?: string;
 };
 
-export type LoginResponse<T> = Partial<T> & {
+export type TLoginResponse<T> = Partial<T> & {
   accessToken: string;
 };
 
-export type UserMethods = {
-  isUserExist: (params: string) => Promise<Partial<UserType> | null>;
+export type TUserMethods = {
+  isUserExist: (params: string) => Promise<Partial<TUserType> | null>;
 };
 
-export type UserModel = Model<UserType, object, UserMethods>;
+export type TUserModel = Model<TUserType, object, TUserMethods>;

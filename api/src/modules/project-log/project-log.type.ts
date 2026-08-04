@@ -17,7 +17,7 @@ export enum EProjectLogAction {
   DUPLICATE = "duplicate",
 }
 
-export type ProjectLogType = {
+export type TProjectLogType = {
   _id?: string;
   project_id: string;
   action: EProjectLogAction;
@@ -26,4 +26,4 @@ export type ProjectLogType = {
   file_type: EProjectLogType;
 };
 
-export type ProjectLogModel = Model<ProjectLogType, object>;
+export type TProjectLogModel = Model<TProjectLogType, object>;

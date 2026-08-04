@@ -1,4 +1,4 @@
-export type ProjectPreviewType = {
+export type TProjectPreviewType = {
   project_id: string;
   sandbox_name?: string;
   preview_url?: string;

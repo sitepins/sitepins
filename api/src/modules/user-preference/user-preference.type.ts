@@ -6,7 +6,7 @@ export enum EUserPreferenceTheme {
   DARK = "dark",
 }
 
-export type UserPreferenceType = {
+export type TUserPreferenceType = {
   user_id: string;
   theme: EUserPreferenceTheme;
   language: string;
@@ -18,4 +18,4 @@ export type TUserPreferenceFilter = {
   search?: string;
 };
 
-export type UserPreferenceModel = Model<UserPreferenceType, object>;
+export type TUserPreferenceModel = Model<TUserPreferenceType, object>;

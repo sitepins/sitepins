@@ -4,14 +4,14 @@ import { TPagination } from "@/types";
 import { PipelineStage } from "mongoose";
 import { ProjectContent } from "./project-content.model";
 import {
-  ProjectContentFilterOptions,
-  ProjectContentType,
+  TProjectContentFilterOptions,
+  TProjectContentType,
 } from "./project-content.type";
 
 // ─── Get all content files for a project ────────────────────────────────────
 const getProjectContentListService = async (
   project_id: string,
-  filters: ProjectContentFilterOptions,
+  filters: TProjectContentFilterOptions,
   paginationOptions: Partial<TPagination>,
 ) => {
   const { limit, skip } =
@@ -86,7 +86,7 @@ const getSingleProjectContentService = async (
 
 // ─── Create or fully replace a file's content ────────────────────────────────
 const upsertProjectContentService = async (
-  data: Omit<ProjectContentType, "_id">,
+  data: Omit<TProjectContentType, "_id">,
 ) => {
   const { project_id, user_id, file, content, git_sha } = data;
 

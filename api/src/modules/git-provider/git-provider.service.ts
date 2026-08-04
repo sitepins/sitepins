@@ -1,6 +1,6 @@
 import { decrypt, encrypt, tokenIndex } from "@/lib/encrypt";
 import { GitProvider } from "./git-provider.model";
-import { GitProviderType } from "./git-provider.type";
+import { TGitProviderType } from "./git-provider.type";
 
 // OAuth tokens are encrypted at rest (AES-256-GCM, SANDBOX_ENCRYPTION_KEY) so
 // a database dump doesn't hand out every user's GitHub/GitLab account. They're
@@ -43,7 +43,7 @@ const decryptTokens = <T extends TokenBearing>(doc: T | null): T | null => {
 };
 
 const createProviderService = async (
-  provider: GitProviderType & { user_id: string },
+  provider: TGitProviderType & { user_id: string },
 ) => {
   const stored = encryptTokens(provider);
   const updateProvider = await GitProvider.findOneAndUpdate(
@@ -83,7 +83,7 @@ const deleteProviderService = async (userId: string) => {
 // updates the CREATOR's row instead of corrupting their own, and possession
 // of the row's current refresh token is itself the write authorization.
 const rotateProviderTokensService = async (payload: {
-  provider: GitProviderType["provider"];
+  provider: TGitProviderType["provider"];
   old_refresh_token: string;
   access_token: string;
   refresh_token: string;

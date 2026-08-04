@@ -1,6 +1,6 @@
 import { Model } from "mongoose";
 
-export type ProjectContentType = {
+export type TProjectContentType = {
   _id?: string;
   project_id: string;
   user_id: string;
@@ -9,9 +9,9 @@ export type ProjectContentType = {
   git_sha?: string;
 };
 
-export type ProjectContentModel = Model<ProjectContentType, object>;
+export type TProjectContentModel = Model<TProjectContentType, object>;
 
-export type ProjectContentFilterOptions = {
+export type TProjectContentFilterOptions = {
   search?: string;
   file?: string;
 };

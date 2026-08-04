@@ -1,10 +1,10 @@
-export type Member = {
+export type TMember = {
   email: string;
   user_id: string;
   role: "admin" | "editor";
 };
 
-export type SandboxIntegration = {
+export type TSandboxIntegration = {
   token: string;
   team_id: string;
   project_id: string;
@@ -12,7 +12,7 @@ export type SandboxIntegration = {
   username?: string;
 };
 
-export type OrgOwnerData = {
+export type TOrgOwnerData = {
   user_id: string;
   email?: string;
   image?: string;
@@ -20,18 +20,18 @@ export type OrgOwnerData = {
   active_package?: unknown;
 };
 
-export type OrganizationType = {
+export type TOrganizationType = {
   org_name: string;
   org_id: string;
   org_image: string;
   owner: string;
-  members: Member[];
+  members: TMember[];
   default: boolean;
   status: "active" | "archived";
-  ownerData?: OrgOwnerData[];
-  sandbox?: SandboxIntegration | null;
+  ownerData?: TOrgOwnerData[];
+  sandbox?: TSandboxIntegration | null;
 };
 
-export type OrgFilterOptions = {
+export type TOrgFilterOptions = {
   search?: string | number;
 };

@@ -12,14 +12,14 @@ import { Project } from "../project/project.model";
 import { User } from "../user/user.model";
 import { Organization } from "./organization.model";
 import {
-  Member,
-  OrganizationType,
-  SandboxIntegration,
+  TMember,
+  TOrganizationType,
+  TSandboxIntegration,
 } from "./organization.type";
 import { logger } from "@/lib/logger";
 
 function decryptOrgSandboxToken<
-  T extends { sandbox?: SandboxIntegration | null },
+  T extends { sandbox?: TSandboxIntegration | null },
 >(org: T): T {
   if (org?.sandbox?.token) {
     try {
@@ -251,7 +251,7 @@ const createOrganizationService = async ({
   default?: boolean;
   org_image?: string;
   org_id?: string;
-}): Promise<OrganizationType | null> => {
+}): Promise<TOrganizationType | null> => {
   const existing = await Organization.findOne({ org_name, owner });
 
   if (existing) {
@@ -260,7 +260,7 @@ const createOrganizationService = async ({
 
   const generatedOrgId = org_id ?? (await nanoId(10));
 
-  const organizationData: OrganizationType = {
+  const organizationData: TOrganizationType = {
     members: [
       {
         user_id: owner,
@@ -288,7 +288,7 @@ const addTeamMemberService = async ({
   loggedInUserId,
 }: {
   org_id: string;
-  teamMember: Member;
+  teamMember: TMember;
   loggedInUserId: string;
 }) => {
   // Verify admin access
@@ -367,7 +367,7 @@ const updateRoleService = async ({
   loggedInUserId,
 }: {
   org_id: string;
-  teamMember: Omit<Member, "email">;
+  teamMember: Omit<TMember, "email">;
   loggedInUserId: string;
 }) => {
   // Verify admin access
@@ -517,7 +517,7 @@ const updateOrganizationService = async ({
   organization,
   org_id,
 }: {
-  organization: Partial<OrganizationType>;
+  organization: Partial<TOrganizationType>;
   org_id: string;
 }) => {
   // Build a $set payload with only the defined fields

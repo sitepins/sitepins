@@ -239,10 +239,23 @@
       "good_results": "Buenos resultados",
       "improvements": "Mejoras",
       "issues": "Problemas",
+      "not_applicable": "No aplicable",
       "current": "Actual:",
       "length": "Longitud: {length} caracteres",
       "recommendation": "Recomendación:",
       "no_results_found": "No se encontraron {title}",
+      "base_labels": {
+        "content": "Contenido",
+        "alt_text": "Texto alternativo de imagen",
+        "slug": "Slug",
+        "meta_title": "Metatítulo",
+        "meta_description": "Metadescripción",
+        "keywords": "Palabras clave",
+        "open_graph": "Etiquetas Open Graph",
+        "canonical_url": "URL canónica",
+        "structured_data": "Datos estructurados",
+        "last_updated": "Última actualización"
+      },
       "tips": {
         "meta_title_length": "El título meta debe tener entre 50–60 caracteres.",
         "meta_desc_length": "La descripción meta debe tener 50–160 caracteres.",
@@ -290,6 +303,7 @@
       "focus_keyword_help": "Se usa para evaluar la colocación de la palabra clave. Separa varias con comas. Si se deja vacío, se usan tus etiquetas.",
       "insights": {
         "teaser": "Desbloquea {count} comprobaciones SEO más",
+        "teaser_scored": "Ya se incluyen en tu puntuación SEO.",
         "labels": {
           "readability": "Puntuación de Legibilidad",
           "heading_structure": "Estructura de Encabezados",

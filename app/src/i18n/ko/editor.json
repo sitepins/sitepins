@@ -239,10 +239,23 @@
       "good_results": "좋은 결과",
       "improvements": "개선",
       "issues": "문제",
+      "not_applicable": "해당 없음",
       "current": "현재:",
       "length": "길이: {length}자",
       "recommendation": "추천:",
       "no_results_found": "{title}을(를) 찾을 수 없습니다",
+      "base_labels": {
+        "content": "콘텐츠",
+        "alt_text": "이미지 대체 텍스트",
+        "slug": "슬러그",
+        "meta_title": "메타 제목",
+        "meta_description": "메타 설명",
+        "keywords": "키워드",
+        "open_graph": "Open Graph 태그",
+        "canonical_url": "표준 URL",
+        "structured_data": "구조화된 데이터",
+        "last_updated": "마지막 업데이트"
+      },
       "tips": {
         "meta_title_length": "메타 제목은 50~60자 사이여야 합니다.",
         "meta_desc_length": "메타 설명은 50~160자여야 합니다.",
@@ -290,6 +303,7 @@
       "focus_keyword_help": "키워드 배치를 평가하는 데 사용됩니다. 여러 개는 쉼표로 구분하세요. 비워 두면 태그가 사용됩니다.",
       "insights": {
         "teaser": "SEO 검사 {count}개를 추가로 잠금 해제하세요",
+        "teaser_scored": "이미 SEO 점수에 반영되어 있습니다.",
         "labels": {
           "readability": "가독성 점수",
           "heading_structure": "제목 구조",

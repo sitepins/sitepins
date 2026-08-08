@@ -239,10 +239,23 @@
       "good_results": "良好な結果",
       "improvements": "改善点",
       "issues": "問題",
+      "not_applicable": "対象外",
       "current": "現在：",
       "length": "長さ：{length} 文字",
       "recommendation": "推奨：",
       "no_results_found": "{title} が見つかりません",
+      "base_labels": {
+        "content": "コンテンツ",
+        "alt_text": "画像の代替テキスト",
+        "slug": "スラッグ",
+        "meta_title": "メタタイトル",
+        "meta_description": "メタディスクリプション",
+        "keywords": "キーワード",
+        "open_graph": "Open Graph タグ",
+        "canonical_url": "正規 URL",
+        "structured_data": "構造化データ",
+        "last_updated": "最終更新日"
+      },
       "tips": {
         "meta_title_length": "メタタイトルは50〜60文字にしてください。",
         "meta_desc_length": "メタディスクリプションは50〜160文字にしてください。",
@@ -290,6 +303,7 @@
       "focus_keyword_help": "キーワードの配置を評価するために使用します。複数はカンマ区切り。空の場合はタグが使われます。",
       "insights": {
         "teaser": "さらに{count}件のSEOチェックを解除",
+        "teaser_scored": "SEOスコアにはすでに反映されています。",
         "labels": {
           "readability": "読みやすさスコア",
           "heading_structure": "見出し構造",

@@ -239,10 +239,23 @@
       "good_results": "Kết Quả Tốt",
       "improvements": "Cải tiến",
       "issues": "Vấn đề",
+      "not_applicable": "Không áp dụng",
       "current": "Hiện tại:",
       "length": "Độ dài: {length} ký tự",
       "recommendation": "Khuyến nghị:",
       "no_results_found": "Không tìm thấy {title}",
+      "base_labels": {
+        "content": "Nội dung",
+        "alt_text": "Văn bản thay thế ảnh",
+        "slug": "Slug",
+        "meta_title": "Meta Title",
+        "meta_description": "Meta Description",
+        "keywords": "Từ khóa",
+        "open_graph": "Thẻ Open Graph",
+        "canonical_url": "URL chuẩn",
+        "structured_data": "Dữ liệu có cấu trúc",
+        "last_updated": "Cập nhật lần cuối"
+      },
       "tips": {
         "meta_title_length": "Tiêu đề meta phải có từ 50–60 ký tự.",
         "meta_desc_length": "Mô tả meta phải có 50–160 ký tự.",
@@ -290,6 +303,7 @@
       "focus_keyword_help": "Dùng để chấm điểm vị trí từ khóa. Nhiều từ khóa cách nhau bằng dấu phẩy. Để trống sẽ dùng thẻ tag của bạn.",
       "insights": {
         "teaser": "Mở khóa thêm {count} kiểm tra SEO",
+        "teaser_scored": "Đã được tính vào điểm SEO của bạn.",
         "labels": {
           "readability": "Điểm Dễ Đọc",
           "heading_structure": "Cấu Trúc Tiêu Đề",

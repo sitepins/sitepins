@@ -239,10 +239,23 @@
       "good_results": "Bons résultats",
       "improvements": "Améliorations",
       "issues": "Problèmes",
+      "not_applicable": "Non applicable",
       "current": "Actuel :",
       "length": "Longueur : {length} caractères",
       "recommendation": "Recommandation :",
       "no_results_found": "Aucun {title} trouvé",
+      "base_labels": {
+        "content": "Contenu",
+        "alt_text": "Texte alternatif des images",
+        "slug": "Slug",
+        "meta_title": "Méta-titre",
+        "meta_description": "Méta-description",
+        "keywords": "Mots-clés",
+        "open_graph": "Balises Open Graph",
+        "canonical_url": "URL canonique",
+        "structured_data": "Données structurées",
+        "last_updated": "Dernière mise à jour"
+      },
       "tips": {
         "meta_title_length": "Le méta-titre doit comporter entre 50 et 60 caractères.",
         "meta_desc_length": "La méta-description doit comporter entre 50 et 160 caractères.",
@@ -290,6 +303,7 @@
       "focus_keyword_help": "Sert à évaluer le placement du mot-clé. Séparez-en plusieurs par des virgules. Vos tags sont utilisés si le champ est vide.",
       "insights": {
         "teaser": "Débloquez {count} vérifications SEO de plus",
+        "teaser_scored": "Déjà pris en compte dans votre score SEO.",
         "labels": {
           "readability": "Score de Lisibilité",
           "heading_structure": "Structure des Titres",

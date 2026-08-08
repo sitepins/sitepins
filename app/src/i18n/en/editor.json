@@ -239,10 +239,23 @@
       "good_results": "Good Results",
       "improvements": "Improvements",
       "issues": "Issues",
+      "not_applicable": "Not Applicable",
       "current": "Current:",
       "length": "Length: {length} characters",
       "recommendation": "Recommendation:",
       "no_results_found": "No {title} found",
+      "base_labels": {
+        "content": "Content",
+        "alt_text": "Image Alt Text",
+        "slug": "Slug",
+        "meta_title": "Meta Title",
+        "meta_description": "Meta Description",
+        "keywords": "Keywords",
+        "open_graph": "Open Graph Tags",
+        "canonical_url": "Canonical URL",
+        "structured_data": "Structured Data",
+        "last_updated": "Last Updated"
+      },
       "tips": {
         "meta_title_length": "Meta title should be between 50–60 characters.",
         "meta_desc_length": "Meta description should be 50–160 characters.",
@@ -290,6 +303,7 @@
       "focus_keyword_help": "Used to grade keyword placement. Separate multiple with commas. Falls back to your tags when empty.",
       "insights": {
         "teaser": "Unlock {count} more SEO checks",
+        "teaser_scored": "Already counted in your SEO score.",
         "labels": {
           "readability": "Readability Score",
           "heading_structure": "Heading Structure",

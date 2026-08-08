@@ -239,10 +239,23 @@
       "good_results": "Hasil Bagus",
       "improvements": "Perbaikan",
       "issues": "Masalah",
+      "not_applicable": "Tidak Berlaku",
       "current": "Saat ini:",
       "length": "Panjangnya: {length} karakter",
       "recommendation": "Rekomendasi:",
       "no_results_found": "Tidak ditemukan {title}",
+      "base_labels": {
+        "content": "Konten",
+        "alt_text": "Teks Alt Gambar",
+        "slug": "Slug",
+        "meta_title": "Meta Judul",
+        "meta_description": "Meta Deskripsi",
+        "keywords": "Kata Kunci",
+        "open_graph": "Tag Open Graph",
+        "canonical_url": "URL Kanonik",
+        "structured_data": "Data Terstruktur",
+        "last_updated": "Terakhir Diperbarui"
+      },
       "tips": {
         "meta_title_length": "Judul meta harus antara 50–60 karakter.",
         "meta_desc_length": "Deskripsi meta harus terdiri dari 50–160 karakter.",
@@ -290,6 +303,7 @@
       "focus_keyword_help": "Dipakai untuk menilai penempatan kata kunci. Pisahkan beberapa dengan koma. Jika kosong, tag Anda yang dipakai.",
       "insights": {
         "teaser": "Buka {count} pemeriksaan SEO lagi",
+        "teaser_scored": "Sudah dihitung dalam skor SEO Anda.",
         "labels": {
           "readability": "Skor Keterbacaan",
           "heading_structure": "Struktur Heading",

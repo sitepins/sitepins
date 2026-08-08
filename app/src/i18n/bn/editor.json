@@ -239,10 +239,23 @@
       "good_results": "ভালো ফলাফল",
       "improvements": "উন্নতি প্রয়োজন",
       "issues": "সমস্যা",
+      "not_applicable": "প্রযোজ্য নয়",
       "current": "বর্তমান:",
       "length": "দৈর্ঘ্য: {length} অক্ষর",
       "recommendation": "সুপারিশ:",
       "no_results_found": "কোনো {title} পাওয়া যায়নি",
+      "base_labels": {
+        "content": "কনটেন্ট",
+        "alt_text": "ছবির অল্ট টেক্সট",
+        "slug": "স্লাগ",
+        "meta_title": "মেটা টাইটেল",
+        "meta_description": "মেটা ডেসক্রিপশন",
+        "keywords": "কীওয়ার্ড",
+        "open_graph": "Open Graph ট্যাগ",
+        "canonical_url": "ক্যানোনিক্যাল URL",
+        "structured_data": "স্ট্রাকচার্ড ডেটা",
+        "last_updated": "সর্বশেষ আপডেট"
+      },
       "tips": {
         "meta_title_length": "মেটা শিরোনাম 50–60 অক্ষরের মধ্যে হওয়া উচিত।",
         "meta_desc_length": "মেটা বিবরণ 50–160 অক্ষরের মধ্যে হওয়া উচিত।",
@@ -290,6 +303,7 @@
       "focus_keyword_help": "কীওয়ার্ড প্লেসমেন্ট মূল্যায়নে ব্যবহৃত হয়। একাধিক হলে কমা দিয়ে আলাদা করুন। খালি রাখলে আপনার ট্যাগ ব্যবহৃত হবে।",
       "insights": {
         "teaser": "আরও {count}টি SEO চেক আনলক করুন",
+        "teaser_scored": "এগুলি ইতিমধ্যেই আপনার SEO স্কোরে গণনা করা হয়েছে।",
         "labels": {
           "readability": "রিডেবিলিটি স্কোর",
           "heading_structure": "হেডিং স্ট্রাকচার",

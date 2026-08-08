@@ -239,10 +239,23 @@
       "good_results": "良好结果",
       "improvements": "有待改进",
       "issues": "问题",
+      "not_applicable": "不适用",
       "current": "当前：",
       "length": "长度：{length} 字符",
       "recommendation": "建议：",
       "no_results_found": "未找到 {title}",
+      "base_labels": {
+        "content": "内容",
+        "alt_text": "图片替代文本",
+        "slug": "Slug",
+        "meta_title": "元标题",
+        "meta_description": "元描述",
+        "keywords": "关键词",
+        "open_graph": "Open Graph 标签",
+        "canonical_url": "规范链接",
+        "structured_data": "结构化数据",
+        "last_updated": "最后更新"
+      },
       "tips": {
         "meta_title_length": "Meta 标题应介于 50–60 个字符之间。",
         "meta_desc_length": "Meta 描述应介于 50–160 个字符之间。",
@@ -290,6 +303,7 @@
       "focus_keyword_help": "用于评估关键词布局。多个关键词用逗号分隔。留空时使用你的标签。",
       "insights": {
         "teaser": "再解锁 {count} 项 SEO 检查",
+        "teaser_scored": "已计入你的 SEO 评分。",
         "labels": {
           "readability": "可读性得分",
           "heading_structure": "标题结构",

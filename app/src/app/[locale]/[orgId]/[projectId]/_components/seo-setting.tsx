@@ -182,17 +182,23 @@ export default function SeoSetting({
   // Runs with the panel closed too — the button's score badge reads from it.
   const debouncedContent = useDebounce(content, 600);
 
-  const { results, metaTitle, metaDescription, metaDate, seoInsights } =
-    useMemo(
-      () =>
-        validateSEO(
-          revertToOriginal(displayData),
-          debouncedContent,
-          baseUrl,
-          tEditorSeo,
-        ),
-      [displayData, debouncedContent, baseUrl, tEditorSeo],
-    );
+  const {
+    results,
+    metaTitle,
+    metaDescription,
+    metaDate,
+    seoInsights,
+    wordCount,
+  } = useMemo(
+    () =>
+      validateSEO(
+        revertToOriginal(displayData),
+        debouncedContent,
+        baseUrl,
+        tEditorSeo,
+      ),
+    [displayData, debouncedContent, baseUrl, tEditorSeo],
+  );
 
   const formattedDate = metaDate
     ? new Date(metaDate).toLocaleDateString("en-US", {
@@ -274,7 +280,7 @@ export default function SeoSetting({
     [displayData, debouncedContent, tEditorSeo, focusKeyword],
   );
 
-  const seoScore = getSeoScore(results, insightsResults);
+  const seoScore = getSeoScore([results, insightsResults], wordCount);
 
   const scoreBadge =
     seoScore === null ? null : (

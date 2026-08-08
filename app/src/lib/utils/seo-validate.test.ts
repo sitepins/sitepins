@@ -341,24 +341,31 @@ describe("validateSeoInsights", () => {
     });
   });
 
-  it("returns a good/bad/improvement summary consistent with the results", () => {
+  it("returns a summary consistent with the result statuses", () => {
     const content = "The cat sat. The dog ran.\n\nMore short text here.";
     const { results, summary } = validateSeoInsights({}, content);
-    const values = Object.values(results) as { valid: boolean | undefined }[];
-    expect(summary.good).toBe(values.filter((r) => r.valid === true).length);
-    expect(summary.bad).toBe(values.filter((r) => r.valid === false).length);
-    expect(summary.improvement).toBe(
-      values.filter((r) => r.valid === undefined).length,
-    );
+    const values = Object.values(results);
+    const count = (status: string) =>
+      values.filter((r) => r.status === status).length;
+
+    expect(summary.good).toBe(count("pass"));
+    expect(summary.bad).toBe(count("fail"));
+    expect(summary.improvement).toBe(count("warn"));
+    expect(summary.notApplicable).toBe(count("na"));
   });
 
   it("handles empty content without throwing and returns all keys", () => {
     const { results, summary } = validateSeoInsights({}, "");
     expect(Object.keys(results).length).toBe(21);
-    expect(summary.good + summary.bad + summary.improvement).toBe(21);
-    // No content and no keyword -> nothing should be a confident pass except
-    // checks whose "empty" state is acceptable; just assert no crash + shape.
-    expect(results.readability.valid).toBeUndefined();
+    expect(
+      summary.good + summary.bad + summary.improvement + summary.notApplicable,
+    ).toBe(21);
+  });
+
+  it("marks every insight not applicable when there is nothing to analyse", () => {
+    const { results } = validateSeoInsights({}, "");
+    const statuses = Object.values(results).map((r) => r.status);
+    expect(statuses.every((s) => s === "na")).toBe(true);
   });
 
   it("unwraps frontmatter values shaped as { value } objects", () => {
@@ -387,53 +394,239 @@ describe("validateSeoInsights", () => {
   });
 });
 
+describe("frontmatter alias resolution", () => {
+  const title = "A perfectly reasonable title for a blog post, honestly";
+
+  it("falls through a blank meta_title to a filled title", () => {
+    const { results, metaTitle } = validateSEO(
+      { meta_title: "", title },
+      "body",
+    );
+    expect(metaTitle).toBe(title);
+    expect(results.title.status).toBe("pass");
+    expect(results.meta_title).toBeUndefined();
+  });
+
+  it("still prefers meta_title when it holds a value", () => {
+    const { metaTitle } = validateSEO(
+      { meta_title: "The chosen one", title },
+      "body",
+    );
+    expect(metaTitle).toBe("The chosen one");
+  });
+
+  it("treats a whitespace-only alias as blank", () => {
+    const { metaTitle } = validateSEO({ meta_title: "   ", title }, "body");
+    expect(metaTitle).toBe(title);
+  });
+
+  it("falls through wrapped { value } aliases too", () => {
+    const { metaTitle } = validateSEO(
+      { meta_title: { value: "" }, title: { value: title } },
+      "body",
+    );
+    expect(metaTitle).toBe(title);
+  });
+
+  it("falls through a blank meta_description to description", () => {
+    const description = "A short but real description of the post contents.";
+    const { metaDescription } = validateSEO(
+      { meta_description: "", description },
+      "body",
+    );
+    expect(metaDescription).toBe(description);
+  });
+
+  it("falls through an empty keywords list to tags", () => {
+    const { results } = validateSEO(
+      { keywords: [], tags: ["apple"] },
+      `${words(50, "apple")} and filler`,
+    );
+    expect(results.tags).toBeDefined();
+    expect(results.keywords).toBeUndefined();
+  });
+
+  it("falls through a blank date to a filled lastUpdated", () => {
+    const stamp = new Date().toISOString();
+    const { metaDate } = validateSEO({ date: "", lastUpdated: stamp }, "body");
+    expect(metaDate).toBe(stamp);
+  });
+
+  it("keeps the blank key when no alias has a value", () => {
+    const { results } = validateSEO({ meta_title: "", title: "" }, "body");
+    expect(results.meta_title.status).toBe("fail");
+  });
+
+  it("resolves the same aliases in the insights pass", () => {
+    const { results } = validateSeoInsights(
+      { meta_title: "", title: "7 Proven Apple Pie Tips", keywords: ["apple"] },
+      "body",
+    );
+    expect(results.keyphrase_in_title.status).toBe("pass");
+    expect(results.title_has_number.status).toBe("pass");
+  });
+});
+
 describe("getSeoScore", () => {
   it("returns null when there is nothing to score", () => {
-    expect(getSeoScore({})).toBeNull();
+    expect(getSeoScore([{}])).toBeNull();
   });
 
   it("ignores empty and missing result sets", () => {
-    expect(getSeoScore({}, undefined, null)).toBeNull();
+    expect(getSeoScore([{}, undefined, null])).toBeNull();
   });
 
   it("gives passes full credit, warnings half, issues none", () => {
     expect(
-      getSeoScore({
-        a: { valid: true },
-        b: { valid: false },
-        c: { valid: undefined },
-        d: { valid: true },
-      }),
+      getSeoScore([
+        {
+          a: { status: "pass" },
+          b: { status: "fail" },
+          c: { status: "warn" },
+          d: { status: "pass" },
+        },
+      ]),
     ).toBe(63); // (1 + 0 + 0.5 + 1) / 4
   });
 
   it("returns 100 when every check passes", () => {
-    expect(getSeoScore({ a: { valid: true }, b: { valid: true } })).toBe(100);
+    expect(
+      getSeoScore([{ a: { status: "pass" }, b: { status: "pass" } }]),
+    ).toBe(100);
   });
 
   it("returns 0 only when every check is a hard failure", () => {
-    expect(getSeoScore({ a: { valid: false }, b: { valid: false } })).toBe(0);
+    expect(
+      getSeoScore([{ a: { status: "fail" }, b: { status: "fail" } }]),
+    ).toBe(0);
   });
 
   it("returns 50 when every check is a warning", () => {
-    expect(getSeoScore({ a: {}, b: { valid: undefined } })).toBe(50);
+    expect(getSeoScore([{ a: {}, b: { status: "warn" } }])).toBe(50);
   });
 
   it("rounds to a whole number", () => {
     expect(
-      getSeoScore({
-        a: { valid: true },
-        b: { valid: false },
-        c: { valid: false },
-      }),
+      getSeoScore([
+        { a: { status: "pass" }, b: { status: "fail" }, c: { status: "fail" } },
+      ]),
     ).toBe(33);
   });
 
   it("pools every result set it is given", () => {
-    const base = { a: { valid: true }, b: { valid: true } };
-    const insights = { c: { valid: false }, d: { valid: false } };
-    expect(getSeoScore(base)).toBe(100);
-    expect(getSeoScore(base, insights)).toBe(50);
+    const base = {
+      a: { status: "pass" as const },
+      b: { status: "pass" as const },
+    };
+    const insights = {
+      c: { status: "fail" as const },
+      d: { status: "fail" as const },
+    };
+    expect(getSeoScore([base])).toBe(100);
+    expect(getSeoScore([base, insights])).toBe(50);
+  });
+
+  it("reads legacy rows that only carry `valid`", () => {
+    expect(getSeoScore([{ a: { valid: true }, b: { valid: false } }])).toBe(50);
+  });
+
+  it("excludes not-applicable rows from both sides of the ratio", () => {
+    const withoutNa = getSeoScore([
+      { a: { status: "pass" }, b: { status: "fail" } },
+    ]);
+    const withNa = getSeoScore([
+      { a: { status: "pass" }, b: { status: "fail" }, c: { status: "na" } },
+    ]);
+    expect(withNa).toBe(withoutNa);
+  });
+
+  it("returns null when every row is not applicable", () => {
+    expect(
+      getSeoScore([{ a: { status: "na" }, b: { status: "na" } }]),
+    ).toBeNull();
+  });
+
+  it("weights heavier checks more", () => {
+    const critical = getSeoScore([
+      { a: { status: "fail", weight: 4 }, b: { status: "pass", weight: 1 } },
+    ]);
+    const minor = getSeoScore([
+      { a: { status: "pass", weight: 4 }, b: { status: "fail", weight: 1 } },
+    ]);
+    expect(critical).toBe(20);
+    expect(minor).toBe(80);
+  });
+
+  it("scores an empty post at zero", () => {
+    const { results, wordCount } = validateSEO({}, "");
+    const insights = validateSeoInsights({}, "").results;
+    expect(getSeoScore([results, insights], wordCount)).toBe(0);
+  });
+
+  it("stays at zero even when a virtual slug is present", () => {
+    const entry = { slug: "my-post" };
+    const { results, wordCount } = validateSEO(entry, "");
+    const insights = validateSeoInsights(entry, "").results;
+    expect(getSeoScore([results, insights], wordCount)).toBe(0);
+  });
+
+  it("caps a stub post with perfect metadata", () => {
+    const entry = {
+      title: "The Complete Guide to Static Site Generators in 2026",
+      description:
+        "A practical guide to static site generators: how they work, when to use them, and how to pick one for your next project.",
+      slug: "static-site-generators-guide",
+      lastUpdated: new Date().toISOString(),
+    };
+    const body = "Static site generators turn content into prerendered pages.";
+    const { results, wordCount } = validateSEO(entry, body);
+    const insights = validateSeoInsights(entry, body).results;
+    const score = getSeoScore([results, insights], wordCount);
+
+    expect(wordCount).toBeLessThan(100);
+    expect(score).toBeLessThanOrEqual(40);
+  });
+
+  it("drops the score each time a field is emptied", () => {
+    const body = [
+      "Static site generators turn content into fast, prerendered pages.",
+      "However, choosing one takes some thought.",
+      "",
+      "## Why static site generators win",
+      "",
+      words(150, "static site generators are worth learning because"),
+      "",
+      "## How to choose",
+      "",
+      words(150, "therefore you should compare build speed and ecosystem"),
+    ].join("\n");
+
+    const full: Record<string, unknown> = {
+      title: "The Complete Guide to Static Site Generators in 2026",
+      description:
+        "A practical guide to static site generators: how they work, when to use them, and how to pick one for your next project.",
+      slug: "static-site-generators-guide",
+      tags: ["static site generators"],
+      lastUpdated: new Date().toISOString(),
+    };
+
+    const scoreOf = (entry: Record<string, unknown>) => {
+      const { results, wordCount } = validateSEO(entry, body);
+      const insights = validateSeoInsights(entry, body).results;
+      return getSeoScore([results, insights], wordCount)!;
+    };
+
+    // Each step blanks one more field; the score must never go back up.
+    const steps = ["lastUpdated", "tags", "description", "title"];
+    let previous = scoreOf(full);
+    const entry = { ...full };
+
+    for (const field of steps) {
+      entry[field] = "";
+      const next = scoreOf(entry);
+      expect(next).toBeLessThan(previous);
+      previous = next;
+    }
   });
 
   it("scores base and insight results together for a real post", () => {
@@ -443,10 +636,10 @@ describe("getSeoScore", () => {
       tags: ["blog"],
     };
     const body = "## Intro\n\nSome body copy about a blog.";
-    const score = getSeoScore(
+    const score = getSeoScore([
       validateSEO(entry, body).results,
       validateSeoInsights(entry, body).results,
-    );
+    ]);
     expect(score).not.toBeNull();
     expect(score).toBeGreaterThanOrEqual(0);
     expect(score).toBeLessThanOrEqual(100);
@@ -477,16 +670,21 @@ describe("getSeoScore", () => {
       words(150, "therefore you should compare build speed and ecosystem"),
     ].join("\n");
 
+    const bareResult = validateSEO(bare, bareBody);
+    const goodResult = validateSEO(good, goodBody);
+
     const bareScore = getSeoScore(
-      validateSEO(bare, bareBody).results,
-      validateSeoInsights(bare, bareBody).results,
+      [bareResult.results, validateSeoInsights(bare, bareBody).results],
+      bareResult.wordCount,
     );
     const goodScore = getSeoScore(
-      validateSEO(good, goodBody).results,
-      validateSeoInsights(good, goodBody).results,
+      [goodResult.results, validateSeoInsights(good, goodBody).results],
+      goodResult.wordCount,
     );
 
     expect(goodScore).toBeGreaterThan(bareScore!);
+    expect(goodScore).toBeGreaterThanOrEqual(80);
+    expect(bareScore).toBeLessThanOrEqual(40);
   });
 });
 
@@ -509,8 +707,8 @@ describe("validateSEO word count", () => {
   });
 
   it("moves the score when the body grows", () => {
-    const short = getSeoScore(validateSEO(entry, "hello test").results);
-    const long = getSeoScore(validateSEO(entry, `${words(300)}.`).results);
+    const short = getSeoScore([validateSEO(entry, "hello test").results]);
+    const long = getSeoScore([validateSEO(entry, `${words(300)}.`).results]);
     expect(long).toBeGreaterThan(short!);
   });
 

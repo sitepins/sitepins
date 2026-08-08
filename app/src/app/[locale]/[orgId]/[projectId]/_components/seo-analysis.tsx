@@ -7,8 +7,15 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { UpgradeDialog } from "@/components/upgrade-dialog";
+import { getSeoStatus, type TSeoStatus } from "@/lib/utils/seo-validate";
 import { TField } from "@/types";
-import { AlertTriangle, CheckCircle, Lock, XCircle } from "lucide-react";
+import {
+  AlertTriangle,
+  CheckCircle,
+  Lock,
+  MinusCircle,
+  XCircle,
+} from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 
@@ -39,9 +46,25 @@ const INSIGHT_KEYS = [
   "title_sentiment",
 ] as const;
 
+// Base-result keys with no matching schema field — either synthetic, or
+// tracked as "not applicable" precisely because the frontmatter lacks them.
+const BASE_LABEL_KEYS: Record<string, string> = {
+  Content: "content",
+  "Alt Text": "alt_text",
+  slug: "slug",
+  metaTitle: "meta_title",
+  metaDescription: "meta_description",
+  keywords: "keywords",
+  openGraph: "open_graph",
+  canonicalUrl: "canonical_url",
+  structuredData: "structured_data",
+  lastUpdated: "last_updated",
+};
+
 type Row = {
   key: string;
   name: string;
+  status: TSeoStatus;
   valid?: boolean;
   value?: any;
   length?: number;
@@ -63,12 +86,19 @@ export default function SeoAnalysis({
   const tEditorSeo = useTranslations("editor.seo");
   const [showUpgrade, setShowUpgrade] = useState(false);
 
-  // Base analysis-summary rows (Pro), labelled via the content schema.
-  const baseRows: Row[] = Object.keys(results).map((key, index) => ({
-    key: `base-${key || index}`,
-    name: schema.find((field) => field.name === key)?.label || key,
-    ...results[key],
-  }));
+  // Base analysis-summary rows (Pro), labelled via the content schema, then
+  // by a built-in label for keys the schema does not define.
+  const baseRows: Row[] = Object.keys(results).map((key, index) => {
+    const labelKey = BASE_LABEL_KEYS[key];
+    return {
+      key: `base-${key || index}`,
+      name:
+        schema.find((field) => field.name === key)?.label ||
+        (labelKey ? tEditorSeo(`base_labels.${labelKey}`) : key),
+      ...results[key],
+      status: getSeoStatus(results[key]),
+    };
+  });
 
   // Team+ insight rows, labelled via the insights i18n namespace.
   const insightRows: Row[] = INSIGHT_KEYS.filter(
@@ -77,15 +107,18 @@ export default function SeoAnalysis({
     key: `insight-${key}`,
     name: tEditorSeo(`insights.labels.${key}`),
     ...insightsResults[key],
+    status: getSeoStatus(insightsResults[key]),
   }));
 
   const resultsArray = [...baseRows, ...insightRows];
 
-  const goodResults = resultsArray.filter((result) => result.valid === true);
-  const improvements = resultsArray.filter(
-    (result) => result.valid === undefined,
-  );
-  const issues = resultsArray.filter((result) => result.valid === false);
+  const byStatus = (status: TSeoStatus) =>
+    resultsArray.filter((result) => result.status === status);
+
+  const goodResults = byStatus("pass");
+  const improvements = byStatus("warn");
+  const issues = byStatus("fail");
+  const notApplicable = byStatus("na");
 
   const categories = [
     {
@@ -118,17 +151,34 @@ export default function SeoAnalysis({
       borderColor: "border-destructive/20",
       results: issues,
     },
+    // Checks with nothing to measure. Listed so the reason is visible, but
+    // they carry no weight in the score.
+    {
+      id: "not-applicable",
+      title: tEditorSeo("not_applicable"),
+      count: notApplicable.length,
+      icon: MinusCircle,
+      iconColor: "text-muted-foreground",
+      bgColor: "bg-muted/40",
+      borderColor: "border-border",
+      results: notApplicable,
+    },
   ];
 
-  const getStatusIcon = (valid: boolean | undefined) => {
-    if (valid === true) return <CheckCircle className="text-success size-4" />;
-    if (valid === false) return <XCircle className="text-destructive size-4" />;
+  const getStatusIcon = (status: TSeoStatus) => {
+    if (status === "pass")
+      return <CheckCircle className="text-success size-4" />;
+    if (status === "fail")
+      return <XCircle className="text-destructive size-4" />;
+    if (status === "na")
+      return <MinusCircle className="text-muted-foreground size-4" />;
     return <AlertTriangle className="text-warning size-4" />;
   };
 
-  const getProgressBarColor = (valid: boolean | undefined) => {
-    if (valid === true) return "bg-success";
-    if (valid === false) return "bg-destructive";
+  const getProgressBarColor = (status: TSeoStatus) => {
+    if (status === "pass") return "bg-success";
+    if (status === "fail") return "bg-destructive";
+    if (status === "na") return "bg-muted-foreground/40";
     return "bg-warning";
   };
 
@@ -169,7 +219,7 @@ export default function SeoAnalysis({
                       >
                         <div className="mb-2 flex items-start justify-between">
                           <div className="flex min-w-0 items-center gap-2">
-                            {getStatusIcon(result.valid)}
+                            {getStatusIcon(result.status)}
                             <span className="text-card-foreground truncate text-sm font-medium">
                               {result.name}
                             </span>
@@ -201,7 +251,7 @@ export default function SeoAnalysis({
                             {!!result.percentage && (
                               <div className="bg-muted/30 h-1.5 overflow-hidden rounded-full">
                                 <div
-                                  className={`h-full rounded-full transition-all duration-300 ${getProgressBarColor(result.valid)}`}
+                                  className={`h-full rounded-full transition-all duration-300 ${getProgressBarColor(result.status)}`}
                                   style={{
                                     width: `${Math.min(result.percentage, 100)}%`,
                                   }}
@@ -248,8 +298,15 @@ export default function SeoAnalysis({
               className="border-border bg-light/50 hover:bg-light flex w-full items-center gap-2 rounded-lg border border-dashed px-4 py-3 text-left text-sm transition-colors"
             >
               <Lock className="text-muted-foreground size-4 shrink-0" />
-              <span className="text-text font-medium">
-                {tEditorSeo("insights.teaser", { count: INSIGHT_KEYS.length })}
+              <span className="min-w-0">
+                <span className="text-text block font-medium">
+                  {tEditorSeo("insights.teaser", {
+                    count: INSIGHT_KEYS.length,
+                  })}
+                </span>
+                <span className="text-muted-foreground block text-xs">
+                  {tEditorSeo("insights.teaser_scored")}
+                </span>
               </span>
             </button>
             <UpgradeDialog

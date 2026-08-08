@@ -239,10 +239,23 @@
       "good_results": "Gute Ergebnisse",
       "improvements": "Verbesserungen",
       "issues": "Probleme",
+      "not_applicable": "Nicht zutreffend",
       "current": "Aktuell:",
       "length": "Länge: {length} Zeichen",
       "recommendation": "Empfehlung:",
       "no_results_found": "Keine {title} gefunden",
+      "base_labels": {
+        "content": "Inhalt",
+        "alt_text": "Bild-Alt-Text",
+        "slug": "Slug",
+        "meta_title": "Meta-Titel",
+        "meta_description": "Meta-Beschreibung",
+        "keywords": "Keywords",
+        "open_graph": "Open-Graph-Tags",
+        "canonical_url": "Canonical-URL",
+        "structured_data": "Strukturierte Daten",
+        "last_updated": "Zuletzt aktualisiert"
+      },
       "tips": {
         "meta_title_length": "Der Meta-Titel sollte zwischen 50 und 60 Zeichen lang sein.",
         "meta_desc_length": "Die Meta-Beschreibung sollte 50 bis 160 Zeichen lang sein.",
@@ -290,6 +303,7 @@
       "focus_keyword_help": "Dient zur Bewertung der Keyword-Platzierung. Mehrere durch Kommas trennen. Leer: Es werden deine Tags verwendet.",
       "insights": {
         "teaser": "Schalte {count} weitere SEO-Prüfungen frei",
+        "teaser_scored": "Bereits in deinem SEO-Score berücksichtigt.",
         "labels": {
           "readability": "Lesbarkeitswert",
           "heading_structure": "Überschriftenstruktur",

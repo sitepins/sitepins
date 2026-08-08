@@ -239,10 +239,23 @@
       "good_results": "Хорошие результаты",
       "improvements": "Улучшения",
       "issues": "Проблемы",
+      "not_applicable": "Неприменимо",
       "current": "Текущее:",
       "length": "Длина: {length} символов",
       "recommendation": "Рекомендация:",
       "no_results_found": "{title} не найдено",
+      "base_labels": {
+        "content": "Содержимое",
+        "alt_text": "Alt-текст изображений",
+        "slug": "Slug",
+        "meta_title": "Meta-заголовок",
+        "meta_description": "Meta-описание",
+        "keywords": "Ключевые слова",
+        "open_graph": "Теги Open Graph",
+        "canonical_url": "Канонический URL",
+        "structured_data": "Структурированные данные",
+        "last_updated": "Последнее обновление"
+      },
       "tips": {
         "meta_title_length": "Мета-заголовок должен быть от 50 до 60 символов.",
         "meta_desc_length": "Мета-описание должно быть от 50 до 160 символов.",
@@ -290,6 +303,7 @@
       "focus_keyword_help": "Используется для оценки размещения ключевого слова. Несколько разделяйте запятыми. Если пусто — берутся ваши теги.",
       "insights": {
         "teaser": "Разблокируйте ещё {count} SEO-проверок",
+        "teaser_scored": "Уже учтены в вашем SEO-рейтинге.",
         "labels": {
           "readability": "Показатель читабельности",
           "heading_structure": "Структура заголовков",

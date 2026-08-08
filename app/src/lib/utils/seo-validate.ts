@@ -58,8 +58,19 @@ export const KEYWORD_KEYS = [
   "search-tags",
 ];
 
-/** One row of an SEO report: `valid: undefined` means "could be better". */
+/**
+ * Outcome of a single check. `na` means the check does not apply to this
+ * entry (no images to caption, no keyphrase set, no body to read) and is
+ * excluded from the score entirely rather than earning partial credit.
+ */
+export type TSeoStatus = "pass" | "warn" | "fail" | "na";
+
+/** One row of an SEO report. */
 export type TSeoCheck = {
+  status: TSeoStatus;
+  /** Relative importance in the overall score. */
+  weight: number;
+  /** Derived from `status`, for consumers that predate it. */
   valid?: boolean;
   value?: unknown;
   length?: number;
@@ -72,6 +83,98 @@ export type TSeoCheck = {
 };
 
 export type TSeoResults = Record<string, TSeoCheck>;
+
+/**
+ * What a check reports. `weight` and `valid` are filled in by the tracker.
+ * Spelled out rather than derived from `TSeoCheck`, because `Omit` over a type
+ * with an index signature widens the named properties back to `unknown`.
+ */
+type TSeoCheckInput = {
+  status: TSeoStatus;
+  value?: unknown;
+  length?: number;
+  percentage?: number;
+  tip?: string;
+  count?: number;
+  density?: Record<string, number>;
+  [key: string]: unknown;
+};
+
+/** Score weights, by how much a check actually moves rankings. */
+export const SEO_WEIGHT = {
+  content: 4,
+  meta: 3,
+  important: 2,
+  minor: 1,
+} as const;
+
+export type TSeoSummary = {
+  good: number;
+  bad: number;
+  improvement: number;
+  notApplicable: number;
+};
+
+function statusToValid(status: TSeoStatus): boolean | undefined {
+  if (status === "pass") return true;
+  if (status === "fail") return false;
+  return undefined;
+}
+
+/** Collects rows into `results` and keeps a running summary. */
+function makeTracker(results: TSeoResults) {
+  const summary: TSeoSummary = {
+    good: 0,
+    bad: 0,
+    improvement: 0,
+    notApplicable: 0,
+  };
+
+  function track(key: string, weight: number, check: TSeoCheckInput) {
+    results[key] = { ...check, weight, valid: statusToValid(check.status) };
+
+    if (check.status === "pass") summary.good++;
+    else if (check.status === "fail") summary.bad++;
+    else if (check.status === "warn") summary.improvement++;
+    else summary.notApplicable++;
+  }
+
+  return { summary, track };
+}
+
+function hasValue(raw: unknown): boolean {
+  const value = unwrap(raw);
+  if (value == null) return false;
+  if (typeof value === "string") return value.trim().length > 0;
+  if (Array.isArray(value)) return value.length > 0;
+  return true;
+}
+
+/**
+ * Picks the first alias that actually holds a value, falling back to the first
+ * one merely present. Without the second pass a declared-but-blank
+ * `meta_title` would shadow a filled `title` further down the alias list.
+ */
+function resolveKey(
+  entry: TSeoEntry,
+  keys: readonly string[],
+): string | undefined {
+  return (
+    keys.find((k) => entry[k] !== undefined && hasValue(entry[k])) ??
+    keys.find((k) => entry[k] !== undefined)
+  );
+}
+
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+/** Normalises frontmatter keywords to a flat list of non-empty strings. */
+function toKeywordList(raw: unknown): string[] {
+  return (Array.isArray(raw) ? raw : raw != null ? [raw] : [])
+    .map((k) => unwrap(k))
+    .filter((k): k is string => typeof k === "string" && k.trim().length > 0);
+}
 
 /** Frontmatter, whose values may be raw or wrapped as `{ value }`. */
 export type TSeoEntry = Record<string, unknown>;
@@ -96,39 +199,24 @@ export function validateSEO(
   t?: TSeoTranslate,
 ) {
   const results: TSeoResults = {};
-  let good = 0;
-  let bad = 0;
-  let improvement = 0;
-
-  // Helper: evaluate a check
-  function trackResult(key: string, obj: TSeoCheck) {
-    results[key] = obj;
-
-    if (obj.valid === true) {
-      good++;
-    } else if (obj.valid === false) {
-      bad++;
-    } else {
-      improvement++;
-    }
-  }
+  const { summary, track } = makeTracker(results);
 
   // --- Meta Title ---
-  const metaTitleKeyUsed = META_TITLE_KEYS.find((k) => entry[k] !== undefined);
+  const metaTitleKeyUsed = resolveKey(entry, META_TITLE_KEYS);
   const metaTitle = unwrap(
     metaTitleKeyUsed ? entry[metaTitleKeyUsed] : undefined,
   );
-  const titleLen = metaTitle?.length ?? 0;
+  const titleLen = typeof metaTitle === "string" ? metaTitle.length : 0;
 
-  trackResult(metaTitleKeyUsed || "metaTitle", {
+  track(metaTitleKeyUsed || "metaTitle", SEO_WEIGHT.meta, {
     value: metaTitle,
     length: titleLen,
-    valid:
+    status:
       titleLen === 0
-        ? false
+        ? "fail"
         : titleLen >= 50 && titleLen <= 60
-          ? true
-          : undefined,
+          ? "pass"
+          : "warn",
     percentage: Math.round((titleLen / 60) * 100),
     tip: t
       ? t("tips.meta_title_length")
@@ -136,21 +224,22 @@ export function validateSEO(
   });
 
   // --- Meta Description ---
-  const metaDescKeyUsed = META_DESC_KEYS.find((k) => entry[k] !== undefined);
+  const metaDescKeyUsed = resolveKey(entry, META_DESC_KEYS);
   const metaDescription = unwrap(
     metaDescKeyUsed ? entry[metaDescKeyUsed] : undefined,
   );
-  const descLen = metaDescription?.length ?? 0;
+  const descLen =
+    typeof metaDescription === "string" ? metaDescription.length : 0;
 
-  trackResult(metaDescKeyUsed || "metaDescription", {
+  track(metaDescKeyUsed || "metaDescription", SEO_WEIGHT.meta, {
     value: metaDescription,
     length: descLen,
-    valid:
+    status:
       descLen === 0
-        ? false
+        ? "fail"
         : descLen >= 50 && descLen <= 160
-          ? true
-          : undefined,
+          ? "pass"
+          : "warn",
     percentage: Math.round((descLen / 160) * 100),
     tip: t
       ? t("tips.meta_desc_length")
@@ -160,7 +249,7 @@ export function validateSEO(
   // --- Word Count ---
   // Body first, frontmatter keys as fallback.
   const contentKeys = ["content", "body", "text"];
-  const contentKeyUsed = contentKeys.find((k) => entry[k] !== undefined);
+  const contentKeyUsed = resolveKey(entry, contentKeys);
   const entryContent = unwrap(
     contentKeyUsed ? entry[contentKeyUsed] : undefined,
   );
@@ -172,9 +261,9 @@ export function validateSEO(
         : "";
   const text = rawBody.replace(/<[^>]+>/g, "");
   const wordCount = text.trim().split(/\s+/).filter(Boolean).length;
-  trackResult(contentKeyUsed || "Content", {
+  track(contentKeyUsed || "Content", SEO_WEIGHT.content, {
     count: wordCount,
-    valid: wordCount >= 300,
+    status: wordCount >= 300 ? "pass" : wordCount >= 100 ? "warn" : "fail",
     percentage: Math.round((wordCount / 300) * 100),
     tip: t
       ? t("tips.content_length")
@@ -182,25 +271,33 @@ export function validateSEO(
   });
 
   // --- Keyword Density ---
-  const keywordKeyUsed = KEYWORD_KEYS.find((k) => entry[k] !== undefined);
-  const keywords = unwrap(keywordKeyUsed ? entry[keywordKeyUsed] : undefined);
+  const keywordKeyUsed = resolveKey(entry, KEYWORD_KEYS);
+  const keywordList = toKeywordList(
+    unwrap(keywordKeyUsed ? entry[keywordKeyUsed] : undefined),
+  );
   const keywordDensity: Record<string, number> = {};
-  if (Array.isArray(keywords) && keywords.length && text) {
-    keywords.forEach((kw: string) => {
-      const re = new RegExp(`\\b${kw}\\b`, "gi");
-      const matches = text.match(re)?.length || 0;
-      keywordDensity[kw] = (matches / wordCount) * 100;
+  if (keywordList.length && wordCount > 0) {
+    keywordList.forEach((kw) => {
+      const re = new RegExp(`\\b${escapeRegExp(kw)}\\b`, "gi");
+      keywordDensity[kw] = ((text.match(re)?.length || 0) / wordCount) * 100;
     });
-    trackResult(keywordKeyUsed!, {
-      density: keywordDensity,
-      valid: Object.values(keywordDensity).some((d) => d >= 0.5 && d <= 3),
-      tip: t
-        ? t("tips.keyword_density")
-        : "Keyword density should be 0.5–3% for each keyword.",
-    });
-  } else if (keywordKeyUsed) {
-    improvement++;
   }
+
+  track(keywordKeyUsed || "keywords", SEO_WEIGHT.minor, {
+    density: keywordDensity,
+    status: !keywordKeyUsed
+      ? "na"
+      : keywordList.length === 0
+        ? "fail"
+        : wordCount === 0
+          ? "na"
+          : Object.values(keywordDensity).some((d) => d >= 0.5 && d <= 3)
+            ? "pass"
+            : "warn",
+    tip: t
+      ? t("tips.keyword_density")
+      : "Keyword density should be 0.5–3% for each keyword.",
+  });
 
   // --- Slug Analysis ---
   const slug = unwrap(entry.slug);
@@ -280,9 +377,9 @@ export function validateSEO(
       issues.push(t ? t("tips.slug_no_dynamic") : "Avoid dynamic parameters.");
     }
 
-    trackResult("slug", {
+    track("slug", SEO_WEIGHT.important, {
       value: slug,
-      valid: issues.length === 0 ? true : undefined,
+      status: issues.length === 0 ? "pass" : "warn",
       tip:
         issues.length > 0
           ? issues.join(" ")
@@ -291,9 +388,8 @@ export function validateSEO(
             : "Slug looks good!",
     });
   } else {
-    // If slug is missing (improvement, though in our UI it might always be present virtually)
-    trackResult("slug", {
-      valid: undefined,
+    track("slug", SEO_WEIGHT.important, {
+      status: "fail",
       tip: t ? t("tips.slug_missing") : "Define a SEO-friendly slug.",
     });
   }
@@ -322,11 +418,19 @@ export function validateSEO(
   const altTextPercentage =
     imageCount > 0 ? Math.round((imagesWithAlt / imageCount) * 100) : 0;
 
-  trackResult("Alt Text", {
+  track("Alt Text", SEO_WEIGHT.important, {
     count: imageCount,
     withAlt: imagesWithAlt,
     withoutAlt: imageCount - imagesWithAlt,
-    valid: imageCount === 0 || altTextPercentage >= 90,
+    // No images is "nothing to caption", not a pass.
+    status:
+      imageCount === 0
+        ? "na"
+        : altTextPercentage >= 90
+          ? "pass"
+          : altTextPercentage >= 50
+            ? "warn"
+            : "fail",
     percentage: altTextPercentage,
     tip: t
       ? t("tips.alt_text")
@@ -364,21 +468,34 @@ export function validateSEO(
     "openGraphProps",
     "openGraphProperties",
   ];
-  const openGraphKeyUsed = openGraphKeys.find((k) => entry[k] !== undefined);
+  const openGraphKeyUsed = resolveKey(entry, openGraphKeys);
   const openGraph = unwrap(
     openGraphKeyUsed ? entry[openGraphKeyUsed] : undefined,
   );
-  if (openGraphKeyUsed) {
-    trackResult(openGraphKeyUsed, {
-      valid:
-        !!openGraph?.title && !!openGraph?.description && !!openGraph?.image,
-      tip: t
-        ? t("tips.og_tags")
-        : "OG tags (title, description, image) should be defined for better social sharing.",
-    });
-  } else {
-    improvement++;
-  }
+  // A schema with no OG field at all is not the author's fault — `na`, not a
+  // penalty. Same for the canonical / structured-data / freshness checks below.
+  const ogParts = [
+    openGraph?.title,
+    openGraph?.description,
+    openGraph?.image,
+  ].filter(Boolean).length;
+
+  track(openGraphKeyUsed || "openGraph", SEO_WEIGHT.minor, {
+    status: !openGraphKeyUsed
+      ? "na"
+      : typeof openGraph === "string"
+        ? openGraph.trim()
+          ? "pass"
+          : "fail"
+        : ogParts === 3
+          ? "pass"
+          : ogParts > 0
+            ? "warn"
+            : "fail",
+    tip: t
+      ? t("tips.og_tags")
+      : "OG tags (title, description, image) should be defined for better social sharing.",
+  });
 
   // --- Canonical URL ---
   const canonicalKeys = [
@@ -396,21 +513,17 @@ export function validateSEO(
     "canonical_href",
     "canonical-href",
   ];
-  const canonicalKeyUsed = canonicalKeys.find((k) => entry[k] !== undefined);
+  const canonicalKeyUsed = resolveKey(entry, canonicalKeys);
   const canonicalUrl = unwrap(
     canonicalKeyUsed ? entry[canonicalKeyUsed] : undefined,
   );
-  if (canonicalKeyUsed) {
-    trackResult(canonicalKeyUsed, {
-      value: canonicalUrl,
-      valid: !!canonicalUrl,
-      tip: t
-        ? t("tips.canonical_url")
-        : "A canonical URL helps prevent duplicate content issues.",
-    });
-  } else {
-    improvement++;
-  }
+  track(canonicalKeyUsed || "canonicalUrl", SEO_WEIGHT.minor, {
+    value: canonicalUrl,
+    status: !canonicalKeyUsed ? "na" : canonicalUrl ? "pass" : "fail",
+    tip: t
+      ? t("tips.canonical_url")
+      : "A canonical URL helps prevent duplicate content issues.",
+  });
 
   // --- Structured Data ---
   const structuredKeys = [
@@ -432,20 +545,16 @@ export function validateSEO(
     "serp_schema",
     "serp-schema",
   ];
-  const structuredKeyUsed = structuredKeys.find((k) => entry[k] !== undefined);
+  const structuredKeyUsed = resolveKey(entry, structuredKeys);
   const structuredData = unwrap(
     structuredKeyUsed ? entry[structuredKeyUsed] : undefined,
   );
-  if (structuredKeyUsed) {
-    trackResult(structuredKeyUsed, {
-      valid: !!structuredData,
-      tip: t
-        ? t("tips.json_ld")
-        : "Include JSON-LD schema for better SERP enhancements.",
-    });
-  } else {
-    improvement++;
-  }
+  track(structuredKeyUsed || "structuredData", SEO_WEIGHT.minor, {
+    status: !structuredKeyUsed ? "na" : structuredData ? "pass" : "fail",
+    tip: t
+      ? t("tips.json_ld")
+      : "Include JSON-LD schema for better SERP enhancements.",
+  });
 
   // --- Meta Robots ---
   const robotsKeys = [
@@ -464,13 +573,15 @@ export function validateSEO(
     "robots_directive",
     "robots-directive",
   ];
-  const robotsKeyUsed = robotsKeys.find((k) => entry[k] !== undefined);
+  const robotsKeyUsed = resolveKey(entry, robotsKeys);
   const robots = unwrap(robotsKeyUsed ? entry[robotsKeyUsed] : undefined);
   const robotsArr = Array.isArray(robots) ? robots : robots ? [robots] : [];
+  // Informational only: any robots directive is a deliberate choice, so this
+  // never earns or costs points.
   if (robotsKeyUsed) {
-    trackResult(robotsKeyUsed, {
+    track(robotsKeyUsed, SEO_WEIGHT.minor, {
       value: robotsArr,
-      valid: true,
+      status: "na",
       tip: t
         ? t("tips.meta_robots")
         : "Use meta robots if you need indexing restrictions (noindex, nofollow, etc.).",
@@ -499,39 +610,44 @@ export function validateSEO(
     "date-updated",
     "date",
   ];
-  const lastUpdatedKeyUsed = lastUpdatedKeys.find(
-    (k) => entry[k] !== undefined,
-  );
+  const lastUpdatedKeyUsed = resolveKey(entry, lastUpdatedKeys);
   const lastUpdated = unwrap(
     lastUpdatedKeyUsed ? entry[lastUpdatedKeyUsed] : undefined,
   );
-  const updated = lastUpdated ? new Date(lastUpdated) : new Date(0);
-  const withinYear =
-    (Date.now() - updated.getTime()) / (1000 * 60 * 60 * 24 * 365) < 1;
-  if (lastUpdatedKeyUsed) {
-    trackResult(lastUpdatedKeyUsed, {
-      value: updated,
-      valid: withinYear,
-      tip: t
-        ? t("tips.content_freshness")
-        : "Content should be updated at least once per year.",
-    });
-  } else {
-    improvement++;
-  }
+  const parsedUpdate =
+    lastUpdated != null && lastUpdated !== ""
+      ? new Date(lastUpdated as string | number | Date)
+      : null;
+  // An unparseable or blank date is a failure, not "very old".
+  const updatedAt =
+    parsedUpdate && !Number.isNaN(parsedUpdate.getTime()) ? parsedUpdate : null;
+  const ageYears = updatedAt
+    ? (Date.now() - updatedAt.getTime()) / (1000 * 60 * 60 * 24 * 365)
+    : Infinity;
+
+  track(lastUpdatedKeyUsed || "lastUpdated", SEO_WEIGHT.important, {
+    value: updatedAt ?? undefined,
+    status: !lastUpdatedKeyUsed
+      ? "na"
+      : !updatedAt
+        ? "fail"
+        : ageYears < 1
+          ? "pass"
+          : ageYears < 2
+            ? "warn"
+            : "fail",
+    tip: t
+      ? t("tips.content_freshness")
+      : "Content should be updated at least once per year.",
+  });
 
   return {
     metaTitle,
     metaDescription,
-    metaDate: lastUpdatedKeyUsed
-      ? String(entry[lastUpdatedKeyUsed])
-      : undefined,
+    metaDate: updatedAt ? updatedAt.toISOString() : undefined,
+    wordCount,
     results,
-    summary: {
-      good,
-      bad,
-      improvement,
-    },
+    summary,
     seoInsights: {
       externalLinks,
       internalLinks,
@@ -718,22 +834,17 @@ export function validateSeoInsights(
   focusKeyword?: string,
 ) {
   const results: TSeoResults = {};
-  let good = 0;
-  let bad = 0;
-  let improvement = 0;
-
-  function trackResult(key: string, obj: TSeoCheck) {
-    results[key] = obj;
-    if (obj.valid === true) good++;
-    else if (obj.valid === false) bad++;
-    else improvement++;
-  }
+  const { summary, track } = makeTracker(results);
 
   const plainText = stripMarkdownSyntax(markdownContent);
   const words = plainText.split(/\s+/).filter(Boolean);
   const sentences = splitSentences(plainText);
   const wordCount = words.length;
   const sentenceCount = sentences.length;
+  const hasContent = wordCount > 0;
+  // Below three sentences the prose ratios (passive voice, transitions, em
+  // dashes) are statistically meaningless.
+  const hasSample = sentenceCount >= 3;
 
   // Fenced code blocks are removed before any markdown-structure detection so
   // that `#` comments, example image syntax, or anchor links inside code are
@@ -753,16 +864,16 @@ export function validateSeoInsights(
         )
       : undefined;
 
-  trackResult("readability", {
+  track("readability", SEO_WEIGHT.important, {
     value: readabilityScore,
-    valid:
+    status:
       readabilityScore === undefined
-        ? undefined
+        ? "na"
         : readabilityScore >= 60
-          ? true
+          ? "pass"
           : readabilityScore >= 30
-            ? undefined
-            : false,
+            ? "warn"
+            : "fail",
     percentage:
       readabilityScore === undefined
         ? 0
@@ -785,25 +896,26 @@ export function validateSeoInsights(
     }
   }
 
-  trackResult("heading_structure", {
+  track("heading_structure", SEO_WEIGHT.important, {
     count: headingLevels.length,
-    valid:
-      headingLevels.length === 0 ? undefined : hasSkippedLevel ? false : true,
+    status: !hasContent
+      ? "na"
+      : headingLevels.length === 0
+        ? "warn"
+        : hasSkippedLevel
+          ? "fail"
+          : "pass",
     tip: t
       ? t("tips.heading_structure")
       : "Keep a logical heading order (H2 → H3 → H4) without skipping levels, and use subheadings to break up content.",
   });
 
   // --- Keyword in Intro Paragraph ---
-  const keywordKeyUsed = KEYWORD_KEYS.find((k) => entry[k] !== undefined);
+  const keywordKeyUsed = resolveKey(entry, KEYWORD_KEYS);
   const keywords = unwrap(keywordKeyUsed ? entry[keywordKeyUsed] : undefined);
-  // Normalise to a string[]: arrays may hold plain strings or wrapped
-  // { value } items; a scalar keyphrase comes through as a single string.
-  const frontmatterKeywords: string[] = (
-    Array.isArray(keywords) ? keywords : keywords != null ? [keywords] : []
-  )
-    .map((k) => unwrap(k))
-    .filter((k): k is string => typeof k === "string" && k.trim().length > 0);
+  // Arrays may hold plain strings or wrapped { value } items; a scalar
+  // keyphrase comes through as a single string.
+  const frontmatterKeywords = toKeywordList(keywords);
 
   const explicitKeywords = (focusKeyword ?? "")
     .split(",")
@@ -817,11 +929,13 @@ export function validateSeoInsights(
   const paragraphs = getParagraphs(markdownContent).map(stripMarkdownSyntax);
   const introText = (paragraphs[0] || "").toLowerCase();
 
-  trackResult("keyword_first_paragraph", {
-    valid:
-      keywordList.length === 0
-        ? undefined
-        : keywordList.some((kw) => introText.includes(kw.toLowerCase())),
+  track("keyword_first_paragraph", SEO_WEIGHT.minor, {
+    status:
+      keywordList.length === 0 || !hasContent
+        ? "na"
+        : keywordList.some((kw) => introText.includes(kw.toLowerCase()))
+          ? "pass"
+          : "fail",
     tip: t
       ? t("tips.keyword_first_paragraph")
       : "Mention your focus keyword within the first paragraph to strengthen topical relevance.",
@@ -833,21 +947,21 @@ export function validateSeoInsights(
   );
   const longParagraphs = paragraphWordCounts.filter((c) => c > 150).length;
 
-  trackResult("paragraph_length", {
+  track("paragraph_length", SEO_WEIGHT.minor, {
     count: longParagraphs,
     length: paragraphs.length,
     percentage:
       paragraphs.length > 0
         ? Math.round((longParagraphs / paragraphs.length) * 100)
         : 0,
-    valid:
+    status:
       paragraphs.length === 0
-        ? undefined
+        ? "na"
         : longParagraphs === 0
-          ? true
+          ? "pass"
           : longParagraphs / paragraphs.length > 0.5
-            ? false
-            : undefined,
+            ? "fail"
+            : "warn",
     tip: t
       ? t("tips.paragraph_length")
       : "Keep paragraphs under ~150 words. Long paragraphs are harder to read and scan.",
@@ -861,17 +975,17 @@ export function validateSeoInsights(
   const longSentencePercentage =
     sentenceCount > 0 ? Math.round((longSentences / sentenceCount) * 100) : 0;
 
-  trackResult("sentence_length", {
+  track("sentence_length", SEO_WEIGHT.minor, {
     length: sentenceCount > 0 ? Math.round(wordCount / sentenceCount) : 0,
     percentage: longSentencePercentage,
-    valid:
+    status:
       sentenceCount === 0
-        ? undefined
+        ? "na"
         : longSentencePercentage <= 25
-          ? true
+          ? "pass"
           : longSentencePercentage <= 50
-            ? undefined
-            : false,
+            ? "warn"
+            : "fail",
     tip: t
       ? t("tips.sentence_length")
       : "Keep most sentences under 20 words. Long sentences hurt readability.",
@@ -887,16 +1001,15 @@ export function validateSeoInsights(
       ? Math.round((sentencesWithTransition / sentenceCount) * 100)
       : 0;
 
-  trackResult("transition_words", {
+  track("transition_words", SEO_WEIGHT.minor, {
     percentage: transitionPercentage,
-    valid:
-      sentenceCount < 3
-        ? undefined
-        : transitionPercentage >= 30
-          ? true
-          : transitionPercentage > 0
-            ? undefined
-            : false,
+    status: !hasSample
+      ? "na"
+      : transitionPercentage >= 30
+        ? "pass"
+        : transitionPercentage > 0
+          ? "warn"
+          : "fail",
     tip: t
       ? t("tips.transition_words")
       : "Use transition words (e.g., however, therefore, for example) to improve flow between sentences.",
@@ -907,16 +1020,15 @@ export function validateSeoInsights(
   const passivePercentage =
     sentenceCount > 0 ? Math.round((passiveCount / sentenceCount) * 100) : 0;
 
-  trackResult("passive_voice", {
+  track("passive_voice", SEO_WEIGHT.minor, {
     percentage: passivePercentage,
-    valid:
-      sentenceCount < 3
-        ? undefined
-        : passivePercentage <= 10
-          ? true
-          : passivePercentage <= 20
-            ? undefined
-            : false,
+    status: !hasSample
+      ? "na"
+      : passivePercentage <= 10
+        ? "pass"
+        : passivePercentage <= 20
+          ? "warn"
+          : "fail",
     tip: t
       ? t("tips.passive_voice")
       : "Keep passive voice under 10% of sentences. Prefer active voice for clearer, more direct writing.",
@@ -928,17 +1040,16 @@ export function validateSeoInsights(
   const emDashCount = (contentNoCode.match(/—|\s--\s/g) || []).length;
   const emDashPerSentence = sentenceCount > 0 ? emDashCount / sentenceCount : 0;
 
-  trackResult("em_dash_overuse", {
+  track("em_dash_overuse", SEO_WEIGHT.minor, {
     count: emDashCount,
     percentage: Math.min(Math.round(emDashPerSentence * 100), 100),
-    valid:
-      sentenceCount < 3
-        ? undefined
-        : emDashPerSentence <= 0.1
-          ? true
-          : emDashPerSentence <= 0.25
-            ? undefined
-            : false,
+    status: !hasSample
+      ? "na"
+      : emDashPerSentence <= 0.1
+        ? "pass"
+        : emDashPerSentence <= 0.25
+          ? "warn"
+          : "fail",
     tip: t
       ? t("tips.em_dash_overuse")
       : "Frequent em dashes (—) read as AI-generated. Prefer commas, parentheses, or splitting the sentence.",
@@ -951,9 +1062,9 @@ export function validateSeoInsights(
       stripMarkdownSyntax(section).split(/\s+/).filter(Boolean).length > 300,
   );
 
-  trackResult("subheading_distribution", {
-    valid:
-      wordCount < 300 ? undefined : hasLongSectionWithoutHeading ? false : true,
+  track("subheading_distribution", SEO_WEIGHT.minor, {
+    status:
+      wordCount < 300 ? "na" : hasLongSectionWithoutHeading ? "fail" : "pass",
     tip: t
       ? t("tips.subheading_distribution")
       : "Break up long sections with subheadings. Avoid stretches of 300+ words without an H2 or H3.",
@@ -977,8 +1088,8 @@ export function validateSeoInsights(
     }
   }
 
-  trackResult("repeated_sentence_start", {
-    valid: sentenceCount < 3 ? undefined : hasRepeatedStart ? undefined : true,
+  track("repeated_sentence_start", SEO_WEIGHT.minor, {
+    status: !hasSample ? "na" : hasRepeatedStart ? "warn" : "pass",
     tip: t
       ? t("tips.repeated_sentence_start")
       : "Avoid starting three or more consecutive sentences with the same word.",
@@ -990,10 +1101,10 @@ export function validateSeoInsights(
     keywordList.some((kw) => text.toLowerCase().includes(kw.toLowerCase()));
   const hasKeyword = keywordList.length > 0;
 
-  const metaTitleKey = META_TITLE_KEYS.find((k) => entry[k] !== undefined);
+  const metaTitleKey = resolveKey(entry, META_TITLE_KEYS);
   const metaTitle = unwrap(metaTitleKey ? entry[metaTitleKey] : undefined) as
     string | undefined;
-  const metaDescKey = META_DESC_KEYS.find((k) => entry[k] !== undefined);
+  const metaDescKey = resolveKey(entry, META_DESC_KEYS);
   const metaDescription = unwrap(
     metaDescKey ? entry[metaDescKey] : undefined,
   ) as string | undefined;
@@ -1006,15 +1117,15 @@ export function validateSeoInsights(
     (m) => m[1],
   );
 
-  trackResult("keyphrase_in_title", {
-    valid: !hasKeyword ? undefined : kwMatch(metaTitle),
+  track("keyphrase_in_title", SEO_WEIGHT.important, {
+    status: !hasKeyword ? "na" : kwMatch(metaTitle) ? "pass" : "fail",
     tip: t
       ? t("tips.keyphrase_in_title")
       : "Include your focus keyword in the SEO/meta title.",
   });
 
-  trackResult("keyphrase_in_description", {
-    valid: !hasKeyword ? undefined : kwMatch(metaDescription),
+  track("keyphrase_in_description", SEO_WEIGHT.important, {
+    status: !hasKeyword ? "na" : kwMatch(metaDescription) ? "pass" : "fail",
     tip: t
       ? t("tips.keyphrase_in_description")
       : "Include your focus keyword in the meta description.",
@@ -1031,29 +1142,33 @@ export function validateSeoInsights(
       return k.length > 0 && alnum(slug).includes(k);
     });
 
-  trackResult("keyphrase_in_slug", {
+  track("keyphrase_in_slug", SEO_WEIGHT.important, {
     value: slug,
-    valid: !hasKeyword ? undefined : slugKeywordMatch,
+    status: !hasKeyword || !slug ? "na" : slugKeywordMatch ? "pass" : "fail",
     tip: t
       ? t("tips.keyphrase_in_slug")
       : "Include your focus keyword in the URL slug.",
   });
 
-  trackResult("keyphrase_in_subheadings", {
-    valid:
+  track("keyphrase_in_subheadings", SEO_WEIGHT.minor, {
+    status:
       !hasKeyword || headingTexts.length === 0
-        ? undefined
-        : headingTexts.some((h) => kwMatch(h)),
+        ? "na"
+        : headingTexts.some((h) => kwMatch(h))
+          ? "pass"
+          : "fail",
     tip: t
       ? t("tips.keyphrase_in_subheadings")
       : "Use your focus keyword in at least one subheading (H2/H3).",
   });
 
-  trackResult("keyphrase_in_alt", {
-    valid:
+  track("keyphrase_in_alt", SEO_WEIGHT.minor, {
+    status:
       !hasKeyword || imageAlts.length === 0
-        ? undefined
-        : imageAlts.some((a) => kwMatch(a)),
+        ? "na"
+        : imageAlts.some((a) => kwMatch(a))
+          ? "pass"
+          : "fail",
     tip: t
       ? t("tips.keyphrase_in_alt")
       : "Include your focus keyword in at least one image's alt text.",
@@ -1062,30 +1177,30 @@ export function validateSeoInsights(
   // --- Title Engagement ---
   const titleLower = (metaTitle || "").toLowerCase();
 
-  trackResult("title_has_number", {
-    valid: !metaTitle ? undefined : /\d/.test(metaTitle) ? true : undefined,
+  track("title_has_number", SEO_WEIGHT.minor, {
+    status: !metaTitle ? "na" : /\d/.test(metaTitle) ? "pass" : "warn",
     tip: t
       ? t("tips.title_has_number")
       : "Adding a number to the title (e.g., a year or list count) can improve click-through rate.",
   });
 
-  trackResult("title_power_word", {
-    valid: !metaTitle
-      ? undefined
+  track("title_power_word", SEO_WEIGHT.minor, {
+    status: !metaTitle
+      ? "na"
       : POWER_WORDS.some((w) => titleLower.includes(w))
-        ? true
-        : undefined,
+        ? "pass"
+        : "warn",
     tip: t
       ? t("tips.title_power_word")
       : "Add a power word (e.g., essential, proven, ultimate) to make the title more compelling.",
   });
 
-  trackResult("title_sentiment", {
-    valid: !metaTitle
-      ? undefined
+  track("title_sentiment", SEO_WEIGHT.minor, {
+    status: !metaTitle
+      ? "na"
       : SENTIMENT_WORDS.some((w) => titleLower.includes(w))
-        ? true
-        : undefined,
+        ? "pass"
+        : "warn",
     tip: t
       ? t("tips.title_sentiment")
       : "A title that evokes emotion (positive or negative) tends to attract more clicks.",
@@ -1096,19 +1211,25 @@ export function validateSeoInsights(
     (contentNoCode.match(/!\[[^\]]*\]\([^)]+\)/g) || []).length +
     (contentNoCode.match(/<(?:img|video|iframe)\b/gi) || []).length;
 
-  trackResult("media_count", {
+  track("media_count", SEO_WEIGHT.important, {
     count: mediaCount,
-    valid: mediaCount >= 3 ? true : mediaCount >= 1 ? undefined : false,
+    status: !hasContent
+      ? "na"
+      : mediaCount >= 3
+        ? "pass"
+        : mediaCount >= 1
+          ? "warn"
+          : "fail",
     tip: t
       ? t("tips.media_count")
       : "Add images or videos to enrich the content. Aim for at least a few relevant media items.",
   });
 
   // --- Slug Length ---
-  trackResult("slug_length", {
+  track("slug_length", SEO_WEIGHT.minor, {
     value: slug,
     length: slug?.length ?? 0,
-    valid: !slug ? undefined : slug.length <= 75 ? true : false,
+    status: !slug ? "na" : slug.length <= 75 ? "pass" : "fail",
     tip: t
       ? t("tips.slug_length")
       : "Keep the URL slug concise — 75 characters or fewer.",
@@ -1120,40 +1241,64 @@ export function validateSeoInsights(
     /\{\{<?\s*toc/i.test(contentNoCode) ||
     /\[[^\]]+\]\(#[^)]+\)/.test(contentNoCode);
 
-  trackResult("toc_present", {
-    valid: headingTexts.length < 3 ? undefined : tocDetected ? true : undefined,
+  track("toc_present", SEO_WEIGHT.minor, {
+    status: headingTexts.length < 3 ? "na" : tocDetected ? "pass" : "warn",
     tip: t
       ? t("tips.toc_present")
       : "For long posts with several sections, add a table of contents to aid navigation.",
   });
 
-  return {
-    results,
-    summary: {
-      good,
-      bad,
-      improvement,
-    },
-  };
+  return { results, summary };
 }
 
-// `undefined` gets half credit: that bucket mixes "could be better" with
-// "not applicable here", which the checks don't distinguish.
-const SCORE_WEIGHTS = { pass: 1, warn: 0.5, fail: 0 } as const;
+const STATUS_CREDIT: Record<TSeoStatus, number> = {
+  pass: 1,
+  warn: 0.5,
+  fail: 0,
+  na: 0,
+};
 
-/** Overall score (0-100) across every result set given. Null if nothing to score. */
+/** Under this word count a post is a stub, whatever its metadata looks like. */
+const STUB_WORD_COUNT = 100;
+const STUB_SCORE_CAP = 40;
 
+type TScorableRow = {
+  status?: TSeoStatus;
+  valid?: boolean;
+  weight?: number;
+};
+
+/** Rows written before `status` existed are read through `valid`. */
+export function getSeoStatus(row: TScorableRow): TSeoStatus {
+  if (row.status) return row.status;
+  if (row.valid === true) return "pass";
+  if (row.valid === false) return "fail";
+  return "warn";
+}
+
+/**
+ * Weighted score (0-100) across every result set given. `na` rows are dropped
+ * from both sides of the ratio so an entry with nothing to analyse cannot
+ * coast on partial credit. Null when no check applies.
+ */
 export function getSeoScore(
-  ...resultSets: Array<Record<string, { valid?: boolean }> | undefined | null>
+  resultSets: Array<Record<string, TScorableRow> | undefined | null>,
+  wordCount?: number,
 ): number | null {
   const rows = resultSets.flatMap((set) => (set ? Object.values(set) : []));
-  if (!rows.length) return null;
+  const scored = rows.filter((row) => getSeoStatus(row) !== "na");
+  if (!scored.length) return null;
 
-  const earned = rows.reduce((sum, row) => {
-    if (row.valid === true) return sum + SCORE_WEIGHTS.pass;
-    if (row.valid === false) return sum + SCORE_WEIGHTS.fail;
-    return sum + SCORE_WEIGHTS.warn;
-  }, 0);
+  const possible = scored.reduce((sum, row) => sum + (row.weight ?? 1), 0);
+  if (possible === 0) return null;
 
-  return Math.round((earned / rows.length) * 100);
+  const earned = scored.reduce(
+    (sum, row) => sum + (row.weight ?? 1) * STATUS_CREDIT[getSeoStatus(row)],
+    0,
+  );
+  const score = Math.round((earned / possible) * 100);
+
+  if (wordCount === undefined) return score;
+  if (wordCount === 0) return 0;
+  return wordCount < STUB_WORD_COUNT ? Math.min(score, STUB_SCORE_CAP) : score;
 }

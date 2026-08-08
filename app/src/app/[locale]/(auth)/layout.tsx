@@ -8,7 +8,7 @@ import { authClient } from "@/lib/auth/auth-client";
 import { BRAND_URL } from "@/lib/brand";
 import { DEMO_EMAIL, DEMO_PASSWORD, IS_DEMO } from "@/lib/constant";
 import LanguageSwitcher from "@/layouts/components/language-switcher";
-import { useRouter } from "next/navigation";
+import { safeInternalPath } from "@/lib/safe-redirect";
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 
@@ -17,8 +17,6 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const router = useRouter();
-
   useEffect(() => {
     if (IS_DEMO) {
       async function autoDemoSignin() {
@@ -30,7 +28,11 @@ export default function RootLayout({
           },
           {
             onSuccess: (_ctx) => {
-              router.replace("/");
+              // Preserve the deep link the middleware stashed in `?from=`
+              const from = safeInternalPath(
+                new URLSearchParams(window.location.search).get("from"),
+              );
+              window.location.href = `/onboarding?from=${encodeURIComponent(from)}`;
             },
             onError: (error) => {
               logger.error("Sign-in failed", error);
@@ -40,7 +42,7 @@ export default function RootLayout({
       }
       autoDemoSignin();
     }
-  }, [router]);
+  }, []);
 
   const [shouldShowLoader] = useState(IS_DEMO);
   const tAuth = useTranslations("auth");

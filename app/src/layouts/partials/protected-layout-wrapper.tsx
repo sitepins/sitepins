@@ -17,10 +17,11 @@ export default function ProtectedLayoutWrapper({
   const router = useRouter();
   const hasHydrated = useHydrated();
 
-  // Redirect unauthenticated users to login
+  // Redirect unauthenticated users to login, keeping the current deep link
   useEffect(() => {
     if (!isPending && !auth) {
-      router.replace("/login");
+      const from = `${window.location.pathname}${window.location.search}`;
+      router.replace(`/login?from=${encodeURIComponent(from)}`);
     }
   }, [auth, isPending, router]);
 

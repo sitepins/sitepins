@@ -1,6 +1,7 @@
 "use client";
 
 import { usePartnerLoginBridge } from "@/lib/partner-login";
+import { safeInternalPath } from "@/lib/safe-redirect";
 import { ShieldCheck } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
@@ -19,7 +20,7 @@ export default function Login() {
     email: "",
     password: "",
   });
-  const from = params.get("from") || "/";
+  const from = safeInternalPath(params.get("from"));
   const callbackURL = `/onboarding?from=${encodeURIComponent(from)}`;
 
   const { pending, redirectUser } = usePartnerLoginBridge({

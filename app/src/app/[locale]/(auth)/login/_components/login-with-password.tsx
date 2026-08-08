@@ -12,6 +12,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth/auth-client";
 import { IS_DEMO, POST_LOGIN_REDIRECT_KEY } from "@/lib/constant";
+import { safeInternalPath } from "@/lib/safe-redirect";
 import { loginSchema } from "@/lib/validate";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { type BetterFetchError } from "better-auth/react";
@@ -72,8 +73,9 @@ export default function LoginWithPassword({
             sessionStorage.removeItem(POST_LOGIN_REDIRECT_KEY);
           }
 
-          const from = params.get("from");
-          const redirectTo = storedRedirect || from || "/";
+          const redirectTo = safeInternalPath(
+            storedRedirect || params.get("from"),
+          );
           const onboardingRedirect = `/onboarding?from=${encodeURIComponent(redirectTo)}`;
           // Use window.location.href for full page navigation to bypass any router interception
           window.location.href = onboardingRedirect;

@@ -8,6 +8,7 @@ import {
   onboardingEnabled,
 } from "./lib/onboarding-gate";
 import { getUserLanguage } from "./redux/features/user-preference/preference-server";
+import { safeInternalPath } from "./lib/safe-redirect";
 
 // Routes that are accessible without authentication (path without locale prefix)
 const AUTH_ROUTES = ["/login", "/register", "/forgot-password"];
@@ -23,17 +24,6 @@ function isAuthRoute(pathname: string) {
   return AUTH_ROUTES.some(
     (p) => pathname === p || pathname.startsWith(p + "/"),
   );
-}
-
-// Ensure redirect URL is same-origin to prevent open redirect vulnerabilities
-function isSafeRedirect(from: string | null, origin: string) {
-  if (!from) return false;
-  try {
-    const url = new URL(from, origin);
-    return url.origin === origin;
-  } catch {
-    return false;
-  }
 }
 
 export async function proxy(request: NextRequest) {
@@ -64,8 +54,7 @@ export async function proxy(request: NextRequest) {
       const hasPersonaCookie = request.cookies.get(
         "onboarding_completed",
       )?.value;
-      const from = nextUrl.searchParams.get("from") || "/";
-      const safe = isSafeRedirect(from, origin) ? from : "/";
+      const safe = safeInternalPath(nextUrl.searchParams.get("from"));
       if (hasPersonaCookie || !onboardingEnabled) {
         return NextResponse.redirect(new URL(safe, origin), 302);
       }
@@ -126,7 +115,7 @@ export async function proxy(request: NextRequest) {
   const hasPersonaCookie = request.cookies.get("onboarding_completed")?.value;
 
   if (pathname === "/onboarding") {
-    const from = nextUrl.searchParams.get("from") || "/";
+    const from = safeInternalPath(nextUrl.searchParams.get("from"));
     if (hasPersonaCookie) {
       return NextResponse.redirect(new URL(from, origin), 302);
     }

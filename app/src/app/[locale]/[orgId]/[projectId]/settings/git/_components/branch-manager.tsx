@@ -128,7 +128,7 @@ export default function BranchManager({ canUpdate }: { canUpdate?: boolean }) {
     return null;
   }
 
-  const branchList = branches?.map((b: any) => ({
+  const branchList = branches?.map((b: { name: string }) => ({
     value: b.name,
     label: b.name,
   }));

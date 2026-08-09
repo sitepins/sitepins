@@ -11,6 +11,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { TProjectLogQuery } from "@/redux/features/project-log/type";
 import { formatDistanceToNow } from "date-fns";
 import { Clock, FileText, User } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -21,23 +22,23 @@ import { useRef, useState } from "react";
 export default function AppActivity({
   projectLogQuery,
 }: {
-  projectLogQuery: any;
+  projectLogQuery: TProjectLogQuery;
 }) {
   const tProjectActivity = useTranslations("project.activity");
   const params = useParams();
 
   // Guard
-  const logs: any[] = projectLogQuery?.data?.logs ?? [];
+  const logs = projectLogQuery?.data?.logs ?? [];
 
   // Filter: only content files with action create or update
   const recentContentFull = logs
-    .filter((l: any) => {
+    .filter((l) => {
       const fileType = String(l.file_type ?? "").toLowerCase();
       return fileType === "content";
     })
     .slice()
     .sort(
-      (a: any, b: any) =>
+      (a, b) =>
         new Date(b.createdAt || 0).getTime() -
         new Date(a.createdAt || 0).getTime(),
     );
@@ -92,7 +93,7 @@ export default function AppActivity({
               className="h-full overflow-x-hidden md:max-h-72.5 md:overflow-y-auto"
             >
               <ul>
-                {displayed.map((log: any, idx: number) => {
+                {displayed.map((log, idx: number) => {
                   const filePath: string = log.file || "";
                   const fileName = filePath ? filePath.split("/").pop() : "";
                   const dateObj = log.createdAt

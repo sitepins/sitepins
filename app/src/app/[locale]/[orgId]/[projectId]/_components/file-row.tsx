@@ -75,7 +75,8 @@ export default function FileRow({ file }: { file: TFiles }) {
     );
   }
 
-  const { data } = (response as any) || {};
+  const { data } =
+    (response as { data?: { title?: string; draft?: boolean } }) || {};
   const title = data?.title?.trim() || groupName || fileName;
   const { name, ext } = path.parse(fileName);
   const commitDate = isGitLabProvider(config.provider)

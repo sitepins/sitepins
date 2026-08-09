@@ -23,17 +23,17 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { useTranslations } from "next-intl";
 import * as z from "zod/v4";
 
 type NewPasspayload = z.infer<typeof newPasswordSchema>;
 
 export default function SetNewPassword() {
   const [error, setError] = useState<
-    (BetterFetchError & Record<string, any>) | null
+    (BetterFetchError & Record<string, unknown>) | null
   >(null);
 
   const router = useRouter();

@@ -1,6 +1,5 @@
 "use client";
 
-import { useAddLog } from "@/hooks/use-add-log";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -19,6 +18,7 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { useAddLog } from "@/hooks/use-add-log";
 import { useDialog } from "@/hooks/use-dialog";
 import { useGitCacheUpdates } from "@/hooks/use-git-cache-updates";
 import { useGitProvider } from "@/hooks/use-git-provider";
@@ -143,7 +143,7 @@ export function FileOperation({
       message: `Rename file ${fileName}`,
     });
 
-    updatePromise.then((res: any) => {
+    updatePromise.then((res) => {
       if (!res.error?.message) {
         addLog({
           project_id: params.projectId as string,
@@ -257,7 +257,7 @@ export function FileOperation({
       message: `Delete file ${fileName}`,
     });
 
-    deletePromise.then((res: any) => {
+    deletePromise.then((res) => {
       if (!res.error?.message) {
         addLog({
           project_id: params.projectId as string,
@@ -314,7 +314,7 @@ export function FileOperation({
       message: `Duplicate file ${name}`,
     });
 
-    updatePromise.then((res: any) => {
+    updatePromise.then((res) => {
       if (!res.error?.message) {
         addLog({
           project_id: params.projectId as string,

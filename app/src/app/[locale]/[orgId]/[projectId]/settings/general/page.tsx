@@ -7,9 +7,9 @@ import { use } from "react";
 import ArchiveProject from "./_components/archive-project";
 import DeleteProject from "./_components/delete-project";
 import MoveProject from "./_components/move-project";
+import ProjectAvatar from "./_components/project-avatar";
 import ProjectForm from "./_components/project-form";
 import { ProjectGeneralSkeleton } from "./_components/project-general-skeleton";
-import ProjectAvatar from "./_components/project-avatar";
 
 export default function GeneralSettingsPage({
   params,
@@ -35,12 +35,8 @@ export default function GeneralSettingsPage({
 
   return (
     <>
-      {project && (
-        <ProjectAvatar {...(project as any)} canUpdate={canUpdateSettings} />
-      )}
-      {project && (
-        <ProjectForm {...(project as any)} canUpdate={canUpdateSettings} />
-      )}
+      {project && <ProjectAvatar {...project} canUpdate={canUpdateSettings} />}
+      {project && <ProjectForm {...project} canUpdate={canUpdateSettings} />}
 
       {canPerformDestructiveActions && (
         <>
@@ -53,7 +49,7 @@ export default function GeneralSettingsPage({
             <ArchiveProject
               id={project?.project_id ?? ""}
               org_id={project?.org_id ?? ""}
-              status={(project as any)?.status}
+              status={project?.status}
             />
           ) : null}
 

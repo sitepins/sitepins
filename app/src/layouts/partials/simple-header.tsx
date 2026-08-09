@@ -1,13 +1,16 @@
 "use client";
 
-import { useHydrated } from "@/hooks/use-hydrated";
 import Avatar from "@/components/avatar";
 import Logo from "@/components/logo";
 import { Button } from "@/components/ui/button";
+import { useHydrated } from "@/hooks/use-hydrated";
+import { authClient } from "@/lib/auth/auth-client";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 
-export default function SimpleHeader({ auth }: { auth?: any }) {
+type TSession = ReturnType<typeof authClient.useSession>["data"];
+
+export default function SimpleHeader({ auth }: { auth?: TSession }) {
   const tCommon = useTranslations("common");
   const tAuth = useTranslations("auth.login");
   const hasMounted = useHydrated();

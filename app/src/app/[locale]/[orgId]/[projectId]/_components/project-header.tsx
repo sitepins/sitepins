@@ -17,6 +17,7 @@ import { generateSchemaName } from "@/lib/utils/schema-generator";
 import { useVercelIntegration } from "@/hooks/use-vercel-integration";
 import { selectConfig } from "@/redux/features/config/slice";
 import { useGetProjectsQuery } from "@/redux/features/project/project-api";
+import { TProject } from "@/redux/features/project/type";
 import { MoreHorizontal } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
@@ -25,7 +26,7 @@ import { useSelector } from "react-redux";
 import FolderActions from "./folder-actions";
 import PreviewButton from "./preview-button";
 
-export default function ProjectHeader({ project }: { project: any }) {
+export default function ProjectHeader({ project }: { project?: TProject }) {
   const tCommon = useTranslations("common");
   const tMedia = useTranslations("media");
   // Org id from the URL, not the async project query — while the project is
@@ -41,7 +42,7 @@ export default function ProjectHeader({ project }: { project: any }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const config = useSelector(selectConfig);
-  const projectSettingsMenu = getProjectSettingsMenu(tCommon("locale") as any);
+  const projectSettingsMenu = getProjectSettingsMenu(tCommon("locale"));
   const { vercelToken, vercelTeamId, vercelProjectId } = useVercelIntegration(
     project?.org_id ?? "",
   );
@@ -85,7 +86,8 @@ export default function ProjectHeader({ project }: { project: any }) {
         const filePathStr = fileSegments.join("/");
         // Schema keyed by raw URL slug, not resolved repo path.
         const schemaName = generateSchemaName(filePathStr, config.content);
-        let schemaDir = SCHEMA_FOLDER + "/" + schemaName + ".json";
+        let schemaDir: string | undefined =
+          SCHEMA_FOLDER + "/" + schemaName + ".json";
 
         // Resolve slug to real path just for the content-route check.
         const resolvedFilePathStr = resolveRepoPath(filePathStr, config);
@@ -95,7 +97,7 @@ export default function ProjectHeader({ project }: { project: any }) {
             resolvedFilePathStr.startsWith(config.content + "/"));
 
         if (!isContentRoute) {
-          schemaDir = undefined as any;
+          schemaDir = undefined;
         }
 
         folderActionsProps = {

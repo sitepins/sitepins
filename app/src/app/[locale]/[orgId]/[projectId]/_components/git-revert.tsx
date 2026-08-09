@@ -1,6 +1,5 @@
 "use client";
 
-import { errorMessageOr } from "@/lib/utils/error";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -10,8 +9,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { errorMessageOr } from "@/lib/utils/error";
 import { isGitLabProvider } from "@/lib/utils/provider-checker";
 import { selectConfig } from "@/redux/features/config/slice";
+import { TGitCommit } from "@/redux/features/git/provider-args";
 import {
   githubApi,
   useRevertGitHubCommitMutation,
@@ -31,7 +32,7 @@ type RevertConfirmDialogProps = {
   onClose: () => void;
   onSuccess?: () => void;
   provider: "Github" | "Gitlab" | string;
-  commit: any;
+  commit: TGitCommit;
   title: string;
   description: string;
   warningText: string;
@@ -76,7 +77,7 @@ export function RevertConfirmDialog({
         if (type === "reset") {
           const result = await revertToGitLab({
             projectId: `${owner}/${repoName}`,
-            sha: commit.id,
+            sha: commit.id ?? "",
             branch,
             token,
           }).unwrap();
@@ -92,7 +93,7 @@ export function RevertConfirmDialog({
           const result = await revertToGitHub({
             owner,
             repo: repoName,
-            sha: commit.sha,
+            sha: commit.sha ?? "",
             branch,
             token,
           }).unwrap();
@@ -106,7 +107,7 @@ export function RevertConfirmDialog({
           const result = await revertGitHub({
             owner,
             repo: repoName,
-            sha: commit.sha,
+            sha: commit.sha ?? "",
             branch,
             token,
           }).unwrap();

@@ -63,7 +63,7 @@ function Button({
   children,
   ...props
 }: React.ComponentProps<"button"> & ButtonProps) {
-  const Comp = (asChild ? Slot.Root : "button") as any;
+  const Comp: React.ElementType = asChild ? Slot.Root : "button";
 
   // If loading, ensure button is disabled
   const mergedDisabled = Boolean(props.disabled) || Boolean(isLoading);

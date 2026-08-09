@@ -587,7 +587,7 @@ export default function CreateSchema({
                     tree: config.branch,
                   });
 
-              schemaCreatePromise.then((res: any) => {
+              schemaCreatePromise.then((res) => {
                 if (!res.error?.message) {
                   if (!IS_DEMO) {
                     refetch();

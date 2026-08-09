@@ -1,10 +1,9 @@
 "use client";
 
-import { useGitProvider } from "@/hooks/use-git-provider";
-import { commitStatusState } from "@/redux/features/git/provider-adapter";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { useDeploymentStatusPollingInterval } from "@/hooks/use-deployment-status-polling";
+import { useGitProvider } from "@/hooks/use-git-provider";
 import { useOwnerPlan } from "@/hooks/use-owner-plan";
 import {
   getDeploymentStatusI18nKey,
@@ -12,6 +11,10 @@ import {
   isDisplayableDeploymentStatus,
 } from "@/lib/utils/deployment-status";
 import { isGitLabProvider } from "@/lib/utils/provider-checker";
+import { commitStatusState } from "@/redux/features/git/provider-adapter";
+import { TProjectLogQuery } from "@/redux/features/project-log/type";
+import { TProject } from "@/redux/features/project/type";
+import { TConfig } from "@/types";
 import { SiGithub, SiGitlab } from "@icons-pack/react-simple-icons";
 import { formatDistanceToNow } from "date-fns";
 import { ExternalLink, Loader2, PencilLine } from "lucide-react";
@@ -27,9 +30,9 @@ export default function ProjectOverview({
   config,
   projectLogQuery,
 }: {
-  project: any;
-  config: any;
-  projectLogQuery: any;
+  project?: TProject;
+  config: TConfig;
+  projectLogQuery: TProjectLogQuery;
 }) {
   const tDashboard = useTranslations("dashboard");
   const tCommon = useTranslations("common");

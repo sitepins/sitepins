@@ -1,5 +1,6 @@
 "use client";
 
+import { TFileMetaCacheEntry } from "@/redux/features/config/meta-slice";
 import { selectMediaInfo, setMedia } from "@/redux/features/media/slice";
 import { useAppDispatch } from "@/redux/store";
 import { TFiles } from "@/types";
@@ -11,7 +12,7 @@ import ListView from "./media-list-view";
 const MediaManager = forwardRef<
   HTMLDivElement,
   {
-    gitMeta?: any;
+    gitMeta?: Record<string, TFileMetaCacheEntry>;
     trees: TFiles[];
   }
 >(({ trees }, _ref) => {

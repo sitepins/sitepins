@@ -301,7 +301,7 @@ const MediaPopupList = ({
       });
 
       updatePromise
-        .then((res: any) => {
+        .then((res) => {
           if (res.error) throw new Error(res.error.message);
 
           const syntheticEvent = {

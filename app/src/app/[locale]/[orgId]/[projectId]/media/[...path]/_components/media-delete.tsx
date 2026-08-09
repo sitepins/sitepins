@@ -91,7 +91,7 @@ export default function MediaDelete({
                       tree: config.branch,
                     });
 
-                deletePromise.then((res: any) => {
+                deletePromise.then((res) => {
                   if (!res.error?.message) {
                     addLog({
                       project_id: params.projectId as string,

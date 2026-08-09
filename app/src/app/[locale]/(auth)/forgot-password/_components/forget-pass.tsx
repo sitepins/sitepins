@@ -1,5 +1,6 @@
 "use client";
 
+import FormError from "@/components/form-error";
 import { Button } from "@/components/ui/button";
 import {
   CardContent,
@@ -15,14 +16,16 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import FormError from "@/components/form-error";
+import { forgotPasswordSchema } from "@/lib/validate";
 import { type BetterFetchError } from "better-auth/react";
 import { Mail } from "lucide-react";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { Controller, type UseFormReturn } from "react-hook-form";
-import { useTranslations } from "next-intl";
+import { z } from "zod/v4";
 
-type MaybeBetterError = (BetterFetchError & Record<string, any>) | null;
+type MaybeBetterError = (BetterFetchError & Record<string, unknown>) | null;
+type TForgotPassword = z.infer<typeof forgotPasswordSchema>;
 
 export default function ForgotPasswordView({
   form,
@@ -32,8 +35,8 @@ export default function ForgotPasswordView({
   betterError,
   onResetError,
 }: {
-  form: UseFormReturn<any>;
-  onSubmit: (data: any) => void | Promise<void>;
+  form: UseFormReturn<TForgotPassword>;
+  onSubmit: (data: TForgotPassword) => void | Promise<void>;
   isPending: boolean;
   isSuccess: boolean;
   betterError: MaybeBetterError;

@@ -14,7 +14,7 @@ import ForgotPasswordView from "./_components/forget-pass";
 import LinkExpiredView from "./_components/link-expired";
 import ResetPasswordView from "./_components/reset-pass";
 
-type MaybeBetterError = (BetterFetchError & Record<string, any>) | null;
+type MaybeBetterError = (BetterFetchError & Record<string, unknown>) | null;
 
 export default function ForgetPassword() {
   const searchParams = useSearchParams();

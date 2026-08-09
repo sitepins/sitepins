@@ -28,6 +28,8 @@ import {
   ExternalLink,
   Rocket,
 } from "lucide-react";
+import { TProjectLogQuery } from "@/redux/features/project-log/type";
+import { TProject } from "@/redux/features/project/type";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useState } from "react";
@@ -39,8 +41,8 @@ export default function ProjectSetupSteps({
   projectLogQuery,
   refetchRepo,
 }: {
-  project: any;
-  projectLogQuery: any;
+  project?: TProject;
+  projectLogQuery: TProjectLogQuery;
   refetchRepo: () => void;
 }) {
   const tProjectSetupSteps = useTranslations("project.setup-steps");
@@ -55,8 +57,8 @@ export default function ProjectSetupSteps({
   const isConfigured = !!config.content;
 
   // Check if any content has been edited (Step 3)
-  const logs: any[] = projectLogQuery?.data?.logs ?? [];
-  const hasContentEdits = logs.some((l: any) => {
+  const logs = projectLogQuery?.data?.logs ?? [];
+  const hasContentEdits = logs.some((l) => {
     const fileType = String(l.file_type ?? "").toLowerCase();
     const action = String(l.action ?? "").toLowerCase();
     return (
@@ -256,7 +258,7 @@ export default function ProjectSetupSteps({
                   <p className="text-muted-foreground text-sm">
                     <Link
                       className="stretched-link"
-                      href={`https://vercel.com/new/import?repository-url=${encodeURIComponent(`https://github.com/${project?.repository}`)}&project-name=${encodeURIComponent(slugify(project?.project_name))}`}
+                      href={`https://vercel.com/new/import?repository-url=${encodeURIComponent(`https://github.com/${project?.repository}`)}&project-name=${encodeURIComponent(slugify(project?.project_name ?? ""))}`}
                       target="_blank"
                     >
                       {tProjectSetupSteps("deploy_repo")}
@@ -290,8 +292,8 @@ export default function ProjectSetupSteps({
                   disabled={!manualUrl || isUpdating}
                   onClick={() => {
                     updateProject({
-                      project_id: project.project_id,
-                      org_id: project.org_id,
+                      project_id: project?.project_id,
+                      org_id: project?.org_id,
                       site_url: manualUrl,
                     })
                       .unwrap()

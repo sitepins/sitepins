@@ -1,7 +1,5 @@
 "use client";
 
-import { errorMessage, errorMessageOr } from "@/lib/utils/error";
-import { logger } from "@/lib/logger";
 import { Button } from "@/components/ui/button";
 import {
   Command,
@@ -30,9 +28,13 @@ import { Label } from "@/components/ui/label";
 import { UpgradeDialog } from "@/components/upgrade-dialog";
 import { useGitProvider } from "@/hooks/use-git-provider";
 import { useOwnerPlan } from "@/hooks/use-owner-plan";
+import { logger } from "@/lib/logger";
+import { errorMessage, errorMessageOr } from "@/lib/utils/error";
 import { isGitLabProvider } from "@/lib/utils/provider-checker";
 import { updateConfig } from "@/redux/features/config/slice";
+import { TProject } from "@/redux/features/project/type";
 import { useAppDispatch } from "@/redux/store";
+import { TConfig } from "@/types";
 import {
   ChevronsUpDown,
   ExternalLink,
@@ -46,8 +48,8 @@ import { useMemo, useState } from "react";
 import { toast } from "sonner";
 
 type BranchSwitcherProps = {
-  project: any;
-  config: any;
+  project?: TProject;
+  config: TConfig;
 };
 
 export function BranchSwitcher({ project, config }: BranchSwitcherProps) {
@@ -70,7 +72,7 @@ export function BranchSwitcher({ project, config }: BranchSwitcherProps) {
 
   const branchList = useMemo(() => {
     if (!branches) return [];
-    return branches.map((b: any) => ({
+    return branches.map((b: { name: string }) => ({
       name: b.name,
     }));
   }, [branches]);
@@ -135,7 +137,7 @@ export function BranchSwitcher({ project, config }: BranchSwitcherProps) {
               </CommandEmpty>
               {branches && (
                 <CommandGroup>
-                  {branchList.map((branch: any) => (
+                  {branchList.map((branch) => (
                     <CommandItem
                       key={branch.name}
                       value={branch.name}
@@ -249,7 +251,7 @@ export function BranchSwitcher({ project, config }: BranchSwitcherProps) {
       <a
         href={
           isGitLabProvider(project?.provider)
-            ? `https://gitlab.com/${project.repository}/-/tree/${config.branch}`
+            ? `https://gitlab.com/${project?.repository}/-/tree/${config.branch}`
             : `https://github.com/${config.owner}/${config.repoName}/tree/${config.branch}`
         }
         target="_blank"

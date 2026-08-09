@@ -49,6 +49,7 @@ import {
 } from "@/redux/features/gitlab";
 import { EAction } from "@/redux/features/project-log/type";
 import { useAppDispatch } from "@/redux/store";
+import { TTree } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FileJson, Settings } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -130,9 +131,9 @@ const SchemaList = () => {
 
         const treeItems = treeItemsOf(treeResult);
         const schemaFiles = treeItems.filter(
-          (item: any) =>
+          (item): item is TTree & { path: string } =>
             item.type === "blob" &&
-            item.path &&
+            !!item.path &&
             item.path.startsWith(SCHEMA_FOLDER + "/") &&
             item.path.endsWith(".json"),
         );
@@ -144,7 +145,7 @@ const SchemaList = () => {
         }
 
         // Fetch content for each schema file
-        const schemaPromises = schemaFiles.map(async (file: any) => {
+        const schemaPromises = schemaFiles.map(async (file) => {
           try {
             // @ts-ignore
             const content = isGitLabProvider(config.provider)
@@ -333,14 +334,14 @@ const SchemaList = () => {
 
                   const treeItems = treeItemsOf(treeResult);
                   const schemaFiles = treeItems.filter(
-                    (item: any) =>
+                    (item): item is TTree & { path: string } =>
                       item.type === "blob" &&
-                      item.path &&
+                      !!item.path &&
                       item.path.startsWith(SCHEMA_FOLDER + "/") &&
                       item.path.endsWith(".json"),
                   );
 
-                  const schemaPromises = schemaFiles.map(async (file: any) => {
+                  const schemaPromises = schemaFiles.map(async (file) => {
                     try {
                       // @ts-ignore
                       const content = isGitLabProvider(config.provider)
@@ -629,7 +630,7 @@ function SchemaEditDialog({
             onSubmit={schemaForm.handleSubmit(handleUpdateSchema, (err) => {
               let message: string | undefined;
 
-              const values = Object.values(err || ({} as any));
+              const values = Object.values(err ?? {});
               for (const v of values) {
                 if (!v) continue;
                 if (v.message) {

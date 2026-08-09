@@ -11,6 +11,7 @@ import {
   isDisplayableDeploymentStatus,
 } from "@/lib/utils/deployment-status";
 import { isGitHubProvider } from "@/lib/utils/provider-checker";
+import { TGitCommit } from "@/redux/features/git/provider-args";
 import { formatDistanceToNow } from "date-fns";
 import { Clock, History, RotateCcw } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -20,7 +21,7 @@ import { RevertConfirmDialog } from "./git-revert";
 
 type CommitItemProps = {
   provider: "Github" | "Gitlab";
-  commit: any;
+  commit: TGitCommit;
   setShowUpgradeDialog: (show: boolean) => void;
   onSuccess?: () => void;
   isLatest?: boolean;
@@ -64,7 +65,7 @@ export function GitCommitItem({
     : commit.author_name;
   const authorEmail = isGitHub ? commit.author?.email : commit.author_email;
   const avatarUrl = isGitHub ? commit.author?.avatar_url : "";
-  const commitMessage = isGitHub ? commit.commit.message : commit.title;
+  const commitMessage = isGitHub ? commit.commit?.message : commit.title;
   const commitUrl = isGitHub ? commit.html_url : commit.web_url;
   const commitDate = isGitHub
     ? commit.commit?.author?.date

@@ -35,7 +35,7 @@ export default function RegisterWithPassword({
   const params = useSearchParams();
   const [isPending, setIsPending] = useState(false);
   const [error, setError] = useState<
-    (BetterFetchError & Record<string, any>) | null
+    (BetterFetchError & Record<string, unknown>) | null
   >(null);
 
   const registerForm = useForm<z.infer<typeof registerSchema>>({

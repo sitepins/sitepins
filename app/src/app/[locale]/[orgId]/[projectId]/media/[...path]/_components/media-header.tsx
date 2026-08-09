@@ -88,7 +88,7 @@ export default function MediaHeader() {
             {views.map((item) => (
               <Button
                 key={item.value}
-                onClick={() => dispatch(setView(item.value as any))}
+                onClick={() => dispatch(setView(item.value))}
                 type="button"
                 variant={"ghost"}
                 className={cn(

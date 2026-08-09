@@ -1,7 +1,5 @@
 "use client";
 
-import { useGitProvider } from "@/hooks/use-git-provider";
-import { useAddLog } from "@/hooks/use-add-log";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Card,
@@ -40,6 +38,9 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import manifest from "@/config/manifest.json";
+import { useAddLog } from "@/hooks/use-add-log";
+import { useGitProvider } from "@/hooks/use-git-provider";
+import { SUPPORT_URL } from "@/lib/brand";
 import { cn } from "@/lib/utils/cn";
 import detectFramework from "@/lib/utils/framework-detector";
 import isConfigFile from "@/lib/utils/is-config-file";
@@ -55,7 +56,6 @@ import {
   useUpdateGitLabFilesMutation,
 } from "@/redux/features/gitlab";
 import { EAction, EProjectLogType } from "@/redux/features/project-log/type";
-import { SUPPORT_URL } from "@/lib/brand";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { TTree } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -690,7 +690,8 @@ export const ConfigForm = ({
                 )}
                 onClick={async (e) => {
                   e.currentTarget.blur();
-                  const fieldsToValidate: any[] = [];
+                  const fieldsToValidate: ("content" | "media" | "public")[] =
+                    [];
                   if (currentStep === 0) fieldsToValidate.push("content");
                   if (currentStep === 1) fieldsToValidate.push("media");
                   if (currentStep === 2) fieldsToValidate.push("public");

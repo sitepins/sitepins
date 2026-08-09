@@ -25,7 +25,7 @@ export default function UpdateNewsletterSubscription({
   auth: Session;
 }) {
   const [error, setError] = useState<
-    (BetterFetchError & Record<string, any>) | null
+    (BetterFetchError & Record<string, unknown>) | null
   >(null);
   const { user } = auth;
 
@@ -51,7 +51,7 @@ export default function UpdateNewsletterSubscription({
           );
           router.refresh();
         },
-        onError: (ctx: { error: { message: any } }) => {
+        onError: (ctx: { error: { message?: string } }) => {
           toast.error(
             ctx.error.message || tDashboardAccountNewsletter("error"),
           );

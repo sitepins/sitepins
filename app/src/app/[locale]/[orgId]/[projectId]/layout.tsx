@@ -478,7 +478,7 @@ const ArchiveBlocked = ({
 }: {
   orgId: string;
   projectId: string;
-  t: any;
+  t: ReturnType<typeof useTranslations<"project">>;
 }) => (
   <div className="flex h-full flex-col items-center justify-center p-8 text-center">
     <div className="bg-card border-border max-w-xl rounded-lg border p-6">

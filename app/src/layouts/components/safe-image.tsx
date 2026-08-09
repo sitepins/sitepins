@@ -37,7 +37,7 @@ type SafeImageProps = NextImageProps & {
   renderContent?: (props: {
     src: string;
     isFetching: boolean;
-    ref: React.RefObject<any>;
+    ref: React.RefObject<HTMLImageElement | null>;
   }) => React.ReactNode;
 };
 

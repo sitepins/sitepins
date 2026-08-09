@@ -67,15 +67,15 @@ export default function DirectoryView({
   const fileArrangementMap = useMemo(() => {
     const entries = new Map<string, string>();
     (config.arrangement ?? [])
-      .filter((arrangement: any) => arrangement.type === "file")
-      .forEach((arrangement: any) => {
+      .filter((arrangement) => arrangement.type === "file")
+      .forEach((arrangement) => {
         entries.set(arrangement.targetPath, arrangement.groupName);
       });
     return entries;
   }, [config.arrangement]);
 
   const matchedArrangement = (config.arrangement ?? []).find(
-    (arrangement: any) =>
+    (arrangement) =>
       slugify(arrangement.groupName) === slugify(name) &&
       arrangement.type === "folder",
   );

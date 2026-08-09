@@ -37,7 +37,7 @@ export default function LoginWithPassword({
   const params = useSearchParams();
   const [isPending, setIsPending] = useState(false);
   const [error, setError] = useState<
-    (BetterFetchError & Record<string, any>) | null
+    (BetterFetchError & Record<string, unknown>) | null
   >(null);
 
   const loginForm = useForm<z.infer<typeof loginSchema>>({

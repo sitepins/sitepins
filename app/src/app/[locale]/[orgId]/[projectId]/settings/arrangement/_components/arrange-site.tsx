@@ -136,7 +136,7 @@ export default function Arrangement({
 
   const openModalForEdit = (arr: TArrangement) => {
     setEditingArrangement(arr);
-    setType(arr.type as any);
+    setType(arr.type);
     setModalOpen(true);
   };
 
@@ -223,7 +223,9 @@ export default function Arrangement({
                 </Label>
                 <Select
                   value={type}
-                  onValueChange={(value) => setType(value as any)}
+                  onValueChange={(value) =>
+                    setType(value as "folder" | "file" | "heading")
+                  }
                 >
                   <SelectTrigger className="w-full">
                     <SelectValue

@@ -1,5 +1,6 @@
 "use client";
 
+import FormError from "@/components/form-error";
 import { Button } from "@/components/ui/button";
 import {
   CardContent,
@@ -15,13 +16,15 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import FormError from "@/components/form-error";
+import { confirmPasswordSchema } from "@/lib/validate";
 import { type BetterFetchError } from "better-auth/react";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { Controller, type UseFormReturn } from "react-hook-form";
-import { useTranslations } from "next-intl";
+import { z } from "zod/v4";
 
-type MaybeBetterError = (BetterFetchError & Record<string, any>) | null;
+type MaybeBetterError = (BetterFetchError & Record<string, unknown>) | null;
+type TConfirmPassword = z.infer<typeof confirmPasswordSchema>;
 
 export default function ResetPasswordView({
   form,
@@ -30,8 +33,8 @@ export default function ResetPasswordView({
   betterError,
   onResetError,
 }: {
-  form: UseFormReturn<any>;
-  onSubmit: (data: any) => void | Promise<void>;
+  form: UseFormReturn<TConfirmPassword>;
+  onSubmit: (data: TConfirmPassword) => void | Promise<void>;
   isPending: boolean;
   betterError: MaybeBetterError;
   onResetError: () => void;

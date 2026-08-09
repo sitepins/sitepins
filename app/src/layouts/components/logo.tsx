@@ -25,8 +25,8 @@ const Logo = ({
   }: {
     logo: string;
     logo_darkmode?: string;
-    logo_width: any;
-    logo_height: any;
+    logo_width: string;
+    logo_height: string;
     logo_text: string;
     title: string;
   } = config.site;
@@ -51,8 +51,8 @@ const Logo = ({
       {logoPath ? (
         <>
           <Image
-            width={logo_width.replace("px", "") * 2}
-            height={logo_height.replace("px", "") * 2}
+            width={Number(logo_width.replace("px", "")) * 2}
+            height={Number(logo_height.replace("px", "")) * 2}
             src={logoPath}
             alt={title}
             priority

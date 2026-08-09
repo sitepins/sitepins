@@ -11,7 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { isConfigFile } from "@/lib/utils/is-config-file";
 import { selectConfig } from "@/redux/features/config/slice";
-import { TField, TState } from "@/types";
+import { TField, TFrontmatterData, TState } from "@/types";
 import { Tag, Text } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { usePathname } from "next/navigation";
@@ -23,7 +23,7 @@ import FrontmatterRenderer from "./frontmatter-renderer";
 type ResponsiveEditorLayoutProps = {
   shouldShowEditor: boolean;
   schema: TField[];
-  data: Record<string, any>;
+  data: TFrontmatterData;
   setData: Dispatch<SetStateAction<TState | undefined>>;
   filePath?: string;
   onUpdateMarkdown: (content: string) => void;

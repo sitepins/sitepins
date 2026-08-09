@@ -1,18 +1,19 @@
 "use client";
 
+import { fetchOgImageAction } from "@/actions/utils/fetch-og";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { fetchOgImageAction } from "@/actions/utils/fetch-og";
 import {
   clearOldLocalStoragePreviews,
   getCachedScreenshot,
   setCachedScreenshot,
 } from "@/lib/utils/indexed-db";
+import { TProject } from "@/redux/features/project/type";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
 export type ProjectThumbProps = {
-  project: any;
+  project?: TProject;
 };
 
 export function ProjectThumb({ project }: ProjectThumbProps) {

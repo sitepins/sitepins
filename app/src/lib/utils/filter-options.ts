@@ -67,4 +67,4 @@ export const views = [
     value: "list",
     icon: List,
   },
-];
+] as const;

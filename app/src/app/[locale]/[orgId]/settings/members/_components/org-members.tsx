@@ -139,7 +139,7 @@ function MemberListItem({
   canManageMembers: boolean;
   isUpdating: boolean;
   orgId: string;
-  onUpdateRole: any;
+  onUpdateRole: ReturnType<typeof useUpdateMemberRoleMutation>[0];
 }) {
   const [first_name, last_name] = member.full_name?.split(" ") ?? [];
   const avatarFallBack =
@@ -174,7 +174,7 @@ function MemberListItem({
           <span className="bg-muted text-muted-foreground ring-border inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-semibold capitalize ring-1 ring-inset">
             {owner === member.user_id
               ? tOrgMembers("roles.owner")
-              : tOrgMembers(`roles.${member.role}` as any)}
+              : tOrgMembers(`roles.${member.role}`)}
           </span>
         </div>
         {canManageMembers && (

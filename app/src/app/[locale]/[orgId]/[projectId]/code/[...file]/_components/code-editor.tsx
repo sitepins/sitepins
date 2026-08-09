@@ -1,6 +1,5 @@
 "use client";
 
-import { logger } from "@/lib/logger";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -17,6 +16,7 @@ import { useMediaQuery } from "@/hooks/use-media-query";
 import { usePresence } from "@/hooks/use-presence";
 import { useSandboxPreview } from "@/hooks/use-sandbox-preview";
 import { useVercelIntegration } from "@/hooks/use-vercel-integration";
+import { logger } from "@/lib/logger";
 import { cn } from "@/lib/utils/cn";
 import { configureMonacoLoader } from "@/lib/utils/monaco";
 import { normalizePath } from "@/lib/utils/normalize-path";
@@ -25,6 +25,7 @@ import { applyShikiToMonaco, preloadShiki } from "@/lib/utils/shiki";
 import { selectConfig } from "@/redux/features/config/slice";
 import { useUpdateGitHubFilesMutation } from "@/redux/features/github";
 import { useUpdateGitLabFilesMutation } from "@/redux/features/gitlab";
+import type { OnMount } from "@monaco-editor/react";
 import {
   ArrowLeft,
   ChevronRight,
@@ -94,8 +95,8 @@ export default function CodeEditor({
     preloadShiki().then(() => setShikiReady(true));
   }, []);
 
-  const monacoEditorRef = useRef<any>(null);
-  const monacoModuleRef = useRef<any>(null);
+  const monacoEditorRef = useRef<Parameters<OnMount>[0] | null>(null);
+  const monacoModuleRef = useRef<Parameters<OnMount>[1] | null>(null);
   const previewWindowRef = useRef<Window | null>(null);
 
   const language = getLanguageFromExtension(filePath);
@@ -194,7 +195,7 @@ export default function CodeEditor({
     toast.success(tEditor("code.discard_success"));
   };
 
-  function handleEditorDidMount(monacoEditor: any, monaco: any) {
+  const handleEditorDidMount: OnMount = (monacoEditor, monaco) => {
     monacoEditorRef.current = monacoEditor;
     monacoModuleRef.current = monaco;
 
@@ -211,7 +212,7 @@ export default function CodeEditor({
     const resizeObserver = new ResizeObserver(() => monacoEditor.layout());
     const container = monacoEditor.getContainerDomNode();
     if (container) resizeObserver.observe(container);
-  }
+  };
 
   const repo = config.repoName?.includes("/")
     ? config.repoName

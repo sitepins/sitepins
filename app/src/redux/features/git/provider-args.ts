@@ -29,6 +29,25 @@ export type QueryArgs = Record<string, unknown>;
 /** Shape of a cached trees response, shared by both providers. */
 export type TreeCache = { files: TTree[]; trees: TFiles[] };
 
+/** A commit entry as either provider returns it; fields are provider-specific. */
+export type TGitCommit = {
+  // GitHub
+  sha?: string;
+  html_url?: string;
+  commit?: {
+    message?: string;
+    author?: { name?: string; date?: string } | null;
+  };
+  author?: { email?: string | null; avatar_url?: string } | null;
+  // GitLab
+  id?: string;
+  title?: string;
+  web_url?: string;
+  author_name?: string;
+  author_email?: string;
+  committed_date?: string;
+};
+
 /** Shape of a cached single-file content response, shared by both providers. */
 export type ContentCache = {
   data?: unknown;

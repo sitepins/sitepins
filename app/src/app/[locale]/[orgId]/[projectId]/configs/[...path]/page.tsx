@@ -4,8 +4,10 @@ import { useGitProvider } from "@/hooks/use-git-provider";
 import { Card, CardContent } from "@/components/ui/card";
 import { ImageProvider } from "@/contexts/image-context";
 import { assignUniqueId } from "@/editor/utils/plate-utils";
+import { format } from "@/lib/utils/content-serializer";
 import { convertSchema } from "@/lib/utils/schema-generator";
 import { selectConfig } from "@/redux/features/config/slice";
+import { TFrontmatterData } from "@/types";
 import { Folder } from "lucide-react";
 import { use } from "react";
 import { useSelector } from "react-redux";
@@ -40,8 +42,14 @@ export default function Configuration(
     return <ConfigsSkeleton />;
   }
 
-  const { data, content, fmType, comments } = (response as any) || {};
-  const template = convertSchema(data, comments);
+  const { data, content, fmType, comments } =
+    (response as {
+      data?: TFrontmatterData;
+      content?: string;
+      fmType?: format;
+      comments?: Record<string, string>;
+    }) || {};
+  const template = convertSchema(data ?? {}, comments);
 
   if (template.length === 0) {
     return (
@@ -76,7 +84,7 @@ export default function Configuration(
           data={assignUniqueId(data)}
           // @ts-ignore
           schema={template}
-          fmType={fmType}
+          fmType={fmType as format}
         />
       </ImageProvider>
     </div>

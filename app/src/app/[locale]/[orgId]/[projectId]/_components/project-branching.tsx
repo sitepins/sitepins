@@ -1,7 +1,5 @@
 "use client";
 
-import { errorMessageOr, errorStatus } from "@/lib/utils/error";
-import { logger } from "@/lib/logger";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -16,10 +14,16 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useGitProvider } from "@/hooks/use-git-provider";
+import { logger } from "@/lib/logger";
+import { errorMessageOr, errorStatus } from "@/lib/utils/error";
 import {
   isGitHubProvider,
   isGitLabProvider,
 } from "@/lib/utils/provider-checker";
+import {
+  findRequestForBranch,
+  toPullRequestViews,
+} from "@/redux/features/git/pull-request";
 import {
   useCompareGitHubBranchQuery,
   useCreateGitHubPullRequestMutation,
@@ -27,16 +31,14 @@ import {
   useMergeGitHubPullRequestMutation,
 } from "@/redux/features/github";
 import {
-  findRequestForBranch,
-  toPullRequestViews,
-} from "@/redux/features/git/pull-request";
-import {
   useCompareGitLabBranchQuery,
   useCreateGitLabMergeRequestMutation,
   useGetGitLabMergeRequestsQuery,
   useMergeGitLabMergeRequestMutation,
 } from "@/redux/features/gitlab";
+import { TProject } from "@/redux/features/project/type";
 import { useAppDispatch } from "@/redux/store";
+import { TConfig } from "@/types";
 import {
   CheckCircle2,
   ExternalLink,
@@ -49,8 +51,8 @@ import { ChangeEvent, useEffect, useState } from "react";
 import { toast } from "sonner";
 
 type ProjectBranchingProps = {
-  project: any;
-  config: any;
+  project?: TProject;
+  config: TConfig;
   repoInfo: any;
 };
 

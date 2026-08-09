@@ -22,6 +22,7 @@ export type TLog = {
   user_id: string;
   file: string;
   file_type: EProjectLogType;
+  user_name?: string;
   createdAt?: string | Date;
 };
 
@@ -31,4 +32,9 @@ export type TProjectLog = {
   meta?: {
     total: number;
   };
+};
+
+export type TProjectLogQuery = {
+  data?: TProjectLog;
+  isLoading: boolean;
 };

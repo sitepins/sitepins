@@ -196,7 +196,7 @@ export default function ConfigActions({
           <div className="pt-2">
             <Input
               value={duplicateName}
-              onChange={(e: any) => setDuplicateName(e.target.value)}
+              onChange={(e) => setDuplicateName(e.target.value)}
               placeholder="e.g. index.en.md"
             />
           </div>

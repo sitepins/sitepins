@@ -7,7 +7,11 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { UpgradeDialog } from "@/components/upgrade-dialog";
-import { getSeoStatus, type TSeoStatus } from "@/lib/utils/seo-validate";
+import {
+  getSeoStatus,
+  type TSeoResults,
+  type TSeoStatus,
+} from "@/lib/utils/seo-validate";
 import { TField } from "@/types";
 import {
   AlertTriangle,
@@ -66,7 +70,7 @@ type Row = {
   name: string;
   status: TSeoStatus;
   valid?: boolean;
-  value?: any;
+  value?: unknown;
   length?: number;
   percentage?: number;
   tip?: string;
@@ -78,9 +82,9 @@ export default function SeoAnalysis({
   insightsResults = {},
   canAccessInsights = true,
 }: {
-  results: Record<string, any>;
+  results: TSeoResults;
   schema: TField[];
-  insightsResults?: Record<string, any>;
+  insightsResults?: TSeoResults;
   canAccessInsights?: boolean;
 }) {
   const tEditorSeo = useTranslations("editor.seo");

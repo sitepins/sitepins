@@ -30,6 +30,8 @@ import { selectConfig } from "@/redux/features/config/slice";
 import { githubContentApi } from "@/redux/features/github";
 import { gitlabApi } from "@/redux/features/gitlab";
 import { useAppDispatch } from "@/redux/store";
+import { treeItemsOf } from "@/lib/utils/tree-items";
+import { TTree } from "@/types";
 import { Code, Plus, Settings } from "lucide-react";
 import { useTranslations } from "next-intl";
 import _Link from "next/link";
@@ -107,16 +109,13 @@ const SnippetList = () => {
             ),
           ).unwrap();
 
-      const treeItems =
-        (treeResult &&
-          ((treeResult as any).files || (treeResult as any).tree)) ||
-        [];
+      const treeItems = treeItemsOf(treeResult);
 
       const findFiles = (folder: string, extension: string) =>
         treeItems.filter(
-          (item: any) =>
+          (item): item is TTree & { path: string } =>
             item.type === "blob" &&
-            item.path &&
+            !!item.path &&
             item.path.startsWith(folder + "/") &&
             item.path.endsWith(extension),
         );
@@ -124,8 +123,8 @@ const SnippetList = () => {
       const snippetFiles = findFiles(SNIPPET_FOLDER, ".json");
       const schemaFiles = findFiles(SCHEMA_FOLDER, ".json");
 
-      const fetchContentFor = async (files: any[]) => {
-        const filePromises = files.map(async (file: any) => {
+      const fetchContentFor = async (files: (TTree & { path: string })[]) => {
+        const filePromises = files.map(async (file) => {
           try {
             const content = isGitLabProvider(config.provider)
               ? await dispatch(
@@ -170,7 +169,7 @@ const SnippetList = () => {
 
         const results = await Promise.all(filePromises);
         const filtered = results.filter(
-          (r): r is { name: string; path: string; data: any } => r !== null,
+          (r): r is { name: string; path: string; data: unknown } => r !== null,
         );
         return filtered;
       };

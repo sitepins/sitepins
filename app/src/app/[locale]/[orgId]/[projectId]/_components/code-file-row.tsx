@@ -46,9 +46,7 @@ export default function CodeFileRow({ file }: { file: TFiles }) {
         <p className="text-foreground text-left text-sm font-medium">
           <span className="md:hidden">{tDirectoryView("size")}: </span>
           <span className="line-clamp-1 inline md:block">
-            {(file as any).size
-              ? `${((file as any).size / 1024).toFixed(1)} KB`
-              : "-"}
+            {file.size ? `${(file.size / 1024).toFixed(1)} KB` : "-"}
           </span>
         </p>
 

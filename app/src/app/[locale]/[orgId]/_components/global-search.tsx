@@ -18,7 +18,7 @@ import { getCloudSearchGroups } from "@/lib/menu-cloud";
 import { sanitizedPath } from "@/lib/utils/common";
 import isConfigFile from "@/lib/utils/is-config-file";
 import { useGetOrgsQuery } from "@/redux/features/orgs/org-api";
-import { TFiles } from "@/types";
+import { TConfig, TFiles } from "@/types";
 import { FileCode2, FileIcon, ImageIcon, Search, Settings } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useParams, useRouter } from "next/navigation";
@@ -27,7 +27,7 @@ import * as React from "react";
 
 type OrgSearchBarProps = {
   files?: TFiles[];
-  config?: any;
+  config?: TConfig;
   open?: boolean;
   setOpen?: React.Dispatch<React.SetStateAction<boolean>>;
 };
@@ -58,7 +58,7 @@ const flattenFiles = (nodes: TFiles[]): TFiles[] =>
     return acc;
   }, []);
 
-const flattenConfigFiles = (nodes: TFiles[], configs?: any): TFiles[] =>
+const flattenConfigFiles = (nodes: TFiles[], configs?: string[]): TFiles[] =>
   nodes.reduce((acc: TFiles[], file) => {
     const isIncluded = configs?.some((item: string) => {
       const ext = item.includes(".") ? item.slice(item.lastIndexOf(".")) : "";

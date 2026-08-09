@@ -126,7 +126,7 @@ export function FieldItem({
         <Select
           value={item.type}
           onValueChange={(value) => {
-            const updates: any = { type: value };
+            const updates: Partial<Template> = { type: value };
             if (value === "Array" && !item.subType) {
               updates.subType = "string";
             }

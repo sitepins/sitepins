@@ -18,7 +18,7 @@ import { useTranslations } from "next-intl";
 
 export default function UserAvatar({ auth }: { auth: Session }) {
   const [error, _setError] = useState<
-    (BetterFetchError & Record<string, any>) | null
+    (BetterFetchError & Record<string, unknown>) | null
   >(null);
 
   const [isPending, setIsPending] = useState(false);

@@ -27,7 +27,7 @@ type BucketImageUploadProps = {
   defaultImage?: string;
   defaultLabel?: string;
   onUploadSuccess: (url: string) => void;
-  onUploadError?: (error: any) => void;
+  onUploadError?: (error: unknown) => void;
   altText?: string;
   size?: "sm" | "md" | "lg";
   isDisabled?: boolean;

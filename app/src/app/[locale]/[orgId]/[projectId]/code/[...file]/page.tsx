@@ -7,6 +7,7 @@ import {
   isGitLabProvider,
 } from "@/lib/utils/provider-checker";
 import { selectConfig } from "@/redux/features/config/slice";
+import { TConfig } from "@/types";
 import { useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import path from "path";
@@ -69,7 +70,7 @@ function CodeFilePage({
 }: {
   filePath: string;
   params: { file: string[]; orgId: string; projectId: string };
-  config: ReturnType<typeof useSelector<any, any>>;
+  config: TConfig;
   normalizedContentRoot: string;
 }) {
   const tEditorCode = useTranslations("editor.code");

@@ -15,6 +15,7 @@ import { UpgradeDialog } from "@/components/upgrade-dialog";
 import { useDeploymentStatusPollingInterval } from "@/hooks/use-deployment-status-polling";
 import { useOwnerPlan } from "@/hooks/use-owner-plan";
 import { selectConfig } from "@/redux/features/config/slice";
+import { TGitCommit } from "@/redux/features/git/provider-args";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
@@ -86,7 +87,7 @@ export default function GitActivity() {
           ref={ref}
           className="h-full overflow-x-hidden md:max-h-72.5 md:overflow-y-auto"
         >
-          {commits?.map((commit: any, index: number) => {
+          {commits?.map((commit: TGitCommit, index: number) => {
             const isLatest = index === 0 && page === 1;
             const sha = adapter.commitRef(commit);
 
@@ -136,7 +137,7 @@ function CommitWrapper({
   canAccessProFeatures,
 }: {
   provider: "Github" | "Gitlab";
-  commit: any;
+  commit: TGitCommit;
   setShowUpgradeDialog: (show: boolean) => void;
   onSuccess?: () => void;
   isLatest: boolean;

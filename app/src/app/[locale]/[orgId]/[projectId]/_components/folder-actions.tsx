@@ -850,7 +850,7 @@ export default function FolderActions({
                     message: `Create folder ${data.name}`,
                   };
 
-              await mutation(mutationArgs as any).then((res: any) => {
+              await mutation(mutationArgs as any).then((res) => {
                 if (!res.error?.message) {
                   toast.success(
                     tDirectoryViewActions("folder_created_successfully"),

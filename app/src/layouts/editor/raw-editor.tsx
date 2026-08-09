@@ -18,6 +18,7 @@ import { useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import { useEffect, useRef } from "react";
 import { RichTextType } from "./utils/plate-types";
+import type { OnMount } from "@monaco-editor/react";
 
 // Configure Monaco AMD loader to a compatible CDN version
 configureMonacoLoader();
@@ -45,7 +46,7 @@ export const RawEditor = ({
   const { cursorOffset, isRawMode, fullscreen } = useAppSelector(
     (state) => state.config,
   );
-  const editorRef = useRef<any>(null);
+  const editorRef = useRef<Parameters<OnMount>[0] | null>(null);
   const isSmallMobile = useMediaQuery("(max-width: 768px)");
 
   // Sync cursor from Redux to Monaco when switching mode
@@ -138,7 +139,7 @@ export const RawEditor = ({
             editorRef.current = editor;
 
             // Track cursor position changes
-            editor.onDidChangeCursorPosition((e: any) => {
+            editor.onDidChangeCursorPosition((e) => {
               const model = editor.getModel();
               if (model) {
                 const offset = model.getOffsetAt(e.position);

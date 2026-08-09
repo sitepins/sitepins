@@ -345,8 +345,7 @@ export function useAvailableFields(
                 fields = Object.entries(parsed.data)
                   .filter(
                     ([, v]) =>
-                      Array.isArray(v) &&
-                      (v as any[]).every((i) => typeof i === "string"),
+                      Array.isArray(v) && v.every((i) => typeof i === "string"),
                   )
                   .map(([k]) => k);
               }

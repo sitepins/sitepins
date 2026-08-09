@@ -1,6 +1,10 @@
 "use client";
 
-import { errorMessage } from "@/lib/utils/error";
+import { QuotaUpgradeAction } from "@/components/quota-upgrade-action";
+import {
+  TemplateStartPanel,
+  hasTemplatePanel,
+} from "@/components/template-start-panel";
 import { Button, ButtonProps } from "@/components/ui/button";
 import {
   Combobox,
@@ -35,21 +39,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { QuotaUpgradeAction } from "@/components/quota-upgrade-action";
-import {
-  TemplateStartPanel,
-  hasTemplatePanel,
-} from "@/components/template-start-panel";
-import { cn } from "@/lib/utils/cn";
 import { UpgradeDialog } from "@/components/upgrade-dialog";
 import { useDebounce } from "@/hooks/use-debounce";
 import { useDialog } from "@/hooks/use-dialog";
 import { useAllInstallationRepos } from "@/hooks/use-fetch-repos";
 import { useGitAuth } from "@/hooks/use-git-auth";
-import { authClient } from "@/lib/auth/auth-client";
 import { useOwnerPlan } from "@/hooks/use-owner-plan";
+import { authClient } from "@/lib/auth/auth-client";
 import { getPlanLimits } from "@/lib/limits";
+import { cn } from "@/lib/utils/cn";
 import { isDemoUrl } from "@/lib/utils/demo-urls";
+import { errorMessage } from "@/lib/utils/error";
 import {
   isGitHubProvider,
   isGitLabProvider,
@@ -58,8 +58,8 @@ import { projectSchema } from "@/lib/validate";
 import { AxiosBaseQueryError } from "@/redux/features/api-slice";
 import { useGetGitHubBranchesQuery as useGitHubBranches } from "@/redux/features/github";
 import { useGetGitLabBranchesQuery } from "@/redux/features/gitlab/gitlab-api";
-import { selectCurrentPackage } from "@/redux/features/plan/slice";
 import { useGetOrgQuery, useGetOrgsQuery } from "@/redux/features/orgs/org-api";
+import { selectCurrentPackage } from "@/redux/features/plan/slice";
 import {
   useAddProjectMutation,
   useGetProjectsQuery,
@@ -94,7 +94,7 @@ const providersList: {
   name: string;
   label: string;
   value: string;
-  icon: any;
+  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
   tag?: string;
 }[] = [
   {
@@ -200,9 +200,7 @@ export default function AddSite({
     },
   );
 
-  const selectedRepo = repos?.find(
-    (repo: any) => repo.full_name === repository,
-  );
+  const selectedRepo = repos?.find((repo) => repo.full_name === repository);
 
   const { data: glBranches, isLoading: isGlBranchLoading } =
     useGetGitLabBranchesQuery(
@@ -589,10 +587,10 @@ export default function AddSite({
                         open={repoOpen}
                         onOpenChange={setRepoOpen}
                         value={field.value}
-                        items={repos?.map((repo: any) => repo.full_name)}
+                        items={repos?.map((repo) => repo.full_name)}
                         onValueChange={(currentValue: string | null) => {
                           const repo = repos?.find(
-                            (r: any) => r.full_name === currentValue,
+                            (r) => r.full_name === currentValue,
                           );
                           if (repo) {
                             const homepage = repo.homepage ?? "";
@@ -636,7 +634,7 @@ export default function AddSite({
                           <ComboboxList>
                             {(fullName: string) => {
                               const repo = repos?.find(
-                                (r: any) => r.full_name === fullName,
+                                (r) => r.full_name === fullName,
                               );
                               if (!repo) return null;
                               return (

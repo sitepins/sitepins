@@ -16,10 +16,11 @@ import { isConfigFile } from "@/lib/utils/is-config-file";
 import { selectConfig } from "@/redux/features/config/slice";
 import { useDeleteProjectContentMutation } from "@/redux/features/project-content/project-content-api";
 import { useAppSelector } from "@/redux/store";
-import { TField, TState } from "@/types";
+import { TField, TFrontmatterData, TState } from "@/types";
 import { useParams, useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { memo, useCallback, useEffect, useRef, useState } from "react";
+import type { Socket } from "socket.io-client";
 import { toast } from "sonner";
 import CommitModal from "./commit-modal";
 import EditorHeader from "./editor-header";
@@ -28,8 +29,8 @@ import ResponsiveEditorLayout from "./responsive-editor-layout";
 import SeoSetting from "./seo-setting";
 
 type EditorWrapperProps = {
-  socket?: any;
-  data: Record<string, any>;
+  socket?: Socket | null;
+  data: TFrontmatterData;
   content: string;
   schema: TField[];
   filePath: string;

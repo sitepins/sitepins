@@ -1,7 +1,5 @@
 "use client";
 
-import { useGitProvider } from "@/hooks/use-git-provider";
-import { useAddLog } from "@/hooks/use-add-log";
 import MediaConflictHandler from "@/components/media-conflict-handler";
 import { MediaUploadPreview } from "@/components/media-upload-preview";
 import {
@@ -15,6 +13,8 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Button, ButtonProps } from "@/components/ui/button";
+import { useAddLog } from "@/hooks/use-add-log";
+import { useGitProvider } from "@/hooks/use-git-provider";
 import {
   AcceptMedia,
   MAX_FILES,
@@ -288,7 +288,7 @@ export default function MediaUpload({
             files: images,
           });
 
-      uploadPromise.then((res: any) => {
+      uploadPromise.then((res) => {
         if (!res.error?.message) {
           toast.success(tMedia("upload_successful"));
           setPreviewDialog(false);

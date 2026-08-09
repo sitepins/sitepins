@@ -21,7 +21,10 @@ import { useDialog } from "@/hooks/use-dialog";
 import { usePermission } from "@/hooks/use-permission";
 import { IS_DEMO } from "@/lib/constant";
 import { ENUM_PERMISSIONS } from "@/lib/roles";
-import { useRemoveMemberMutation } from "@/redux/features/orgs/org-api";
+import {
+  useRemoveMemberMutation,
+  useUpdateMemberRoleMutation,
+} from "@/redux/features/orgs/org-api";
 import { TMember } from "@/redux/features/orgs/type";
 import { EllipsisVertical } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -136,7 +139,7 @@ export default function MemberActions({
   owner: string;
   isUpdating: boolean;
   org_id: string;
-  onUpdateRole?: any;
+  onUpdateRole?: ReturnType<typeof useUpdateMemberRoleMutation>[0];
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);

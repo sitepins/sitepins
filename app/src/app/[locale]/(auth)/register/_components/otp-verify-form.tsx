@@ -34,7 +34,11 @@ function OTPGroupField({ index }: { index: number }) {
   );
 }
 
-function OTPField({ field }: { field: any }) {
+function OTPField({
+  field,
+}: {
+  field: { value: string; onChange: (value: string) => void };
+}) {
   return (
     <InputOTP
       value={field.value}

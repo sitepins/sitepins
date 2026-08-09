@@ -33,7 +33,7 @@ export type UserDetailsPayload = z.infer<typeof userDetailsSchema>;
 
 export default function UserDetailsForm({ auth }: { auth: Session }) {
   const [error, setError] = useState<
-    (BetterFetchError & Record<string, any>) | null
+    (BetterFetchError & Record<string, unknown>) | null
   >(null);
 
   const [isPending, setIsPending] = useState(false);

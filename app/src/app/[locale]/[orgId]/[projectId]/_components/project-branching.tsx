@@ -24,6 +24,7 @@ import {
   findRequestForBranch,
   toPullRequestViews,
 } from "@/redux/features/git/pull-request";
+import { TRepoInfoView } from "@/redux/features/git/repo-info";
 import {
   useCompareGitHubBranchQuery,
   useCreateGitHubPullRequestMutation,
@@ -53,7 +54,7 @@ import { toast } from "sonner";
 type ProjectBranchingProps = {
   project?: TProject;
   config: TConfig;
-  repoInfo: any;
+  repoInfo?: TRepoInfoView;
 };
 
 /**
@@ -72,7 +73,7 @@ const ProjectBranching = ({
   const [prLink, setPrLink] = useState<string | null>(null);
   const _dispatch = useAppDispatch();
 
-  const defaultBranch = repoInfo?.default_branch || "main";
+  const defaultBranch = repoInfo?.defaultBranch || "main";
   const currentBranch = config.branch;
   const isDefaultBranch = defaultBranch === currentBranch;
 
@@ -281,11 +282,8 @@ const ProjectBranching = ({
   const showPermissionToast = () => {
     let settingsUrl = "https://github.com/settings/installations";
 
-    if (
-      isGitHubProvider(provider) &&
-      repoInfo?.owner?.type === "Organization"
-    ) {
-      settingsUrl = `https://github.com/organizations/${repoInfo.owner.login}/settings/installations`;
+    if (isGitHubProvider(provider) && repoInfo?.orgName) {
+      settingsUrl = `https://github.com/organizations/${repoInfo.orgName}/settings/installations`;
     }
 
     toast.error(tProjectBranching("permission_error_title"), {

@@ -143,7 +143,13 @@ export const useAllInstallationRepos = (override?: {
             }).unwrap();
 
             if (result.items) {
-              allRepos.push(...result.items);
+              allRepos.push(
+                ...result.items.map((repo) => ({
+                  ...repo,
+                  id:
+                    typeof repo.id === "bigint" ? repo.id.toString() : repo.id,
+                })),
+              );
             }
           } catch (err) {
             logger.error(
@@ -167,7 +173,12 @@ export const useAllInstallationRepos = (override?: {
             }).unwrap();
 
             const reposPage = result.repositories ?? [];
-            allRepos.push(...reposPage);
+            allRepos.push(
+              ...reposPage.map((repo) => ({
+                ...repo,
+                id: typeof repo.id === "bigint" ? repo.id.toString() : repo.id,
+              })),
+            );
           } catch (err) {
             logger.error(
               `Failed to fetch repos for installation ${installation.id}`,
@@ -211,6 +222,8 @@ export const useAllInstallationRepos = (override?: {
         installationsData?.installations?.length) ||
       (isGitLabProvider(config.provider) && config.token)
     ) {
+      // fetchAllRepos sets loading/error state synchronously before its first await
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       fetchAllRepos(active, override?.search);
     } else {
       setRepositories([]);

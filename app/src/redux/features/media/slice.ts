@@ -64,6 +64,9 @@ export const {
   setView,
   setPopupBreadcrumbs,
 } = mediaSlice.actions;
+
 export const selectMediaInfo = (state: RootState) => state.media;
+
+export const selectMediaSortBy = (state: RootState) => state.media.sortby;
 
 export default mediaSlice;

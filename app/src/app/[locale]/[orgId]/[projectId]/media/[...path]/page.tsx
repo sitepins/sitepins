@@ -7,7 +7,7 @@ import { checkMedia } from "@/lib/utils/check-media-file";
 import { findFileByPath } from "@/lib/utils/common";
 import { selectFileMetadata } from "@/redux/features/config/meta-slice";
 import { selectConfig } from "@/redux/features/config/slice";
-import { selectMediaInfo } from "@/redux/features/media/slice";
+import { selectMediaSortBy } from "@/redux/features/media/slice";
 import { redirect, useSearchParams } from "next/navigation";
 import { use, useMemo } from "react";
 import { useSelector } from "react-redux";
@@ -20,7 +20,7 @@ export default function MainPage(
   props: PageProps<"/[locale]/[orgId]/[projectId]/media/[...path]">,
 ) {
   const gitMeta = useSelector(selectFileMetadata);
-  const sortValue = useSelector(selectMediaInfo).sortby || "title-asc";
+  const sortValue = useSelector(selectMediaSortBy) || "title-asc";
   const searchParams = useSearchParams();
   const params = use(props.params);
   const config = useSelector(selectConfig);

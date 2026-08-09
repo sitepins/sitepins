@@ -25,6 +25,8 @@ import { toast } from "sonner";
 import * as z from "zod/v4";
 import { LoginCredential } from "../page";
 
+type TRegisterFields = z.infer<typeof registerSchema> & { profession?: string };
+
 export default function RegisterWithPassword({
   onSetShowVerify,
   onSetLoginInfo,
@@ -38,7 +40,9 @@ export default function RegisterWithPassword({
     (BetterFetchError & Record<string, unknown>) | null
   >(null);
 
-  const registerForm = useForm<z.infer<typeof registerSchema>>({
+  // `profession` is the honeypot: a real field on the form, deliberately
+  // absent from the schema so a filled value can never reach signup.
+  const registerForm = useForm<TRegisterFields>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
       full_name: "",
@@ -52,7 +56,7 @@ export default function RegisterWithPassword({
     // Honeypot detection: if bots fill the hidden field (now `profession`),
     // show a "success" toast then gradually reject the submission
     // (prevent actual signup).
-    const hp = (registerForm.getValues as any)("profession");
+    const hp = registerForm.getValues("profession");
     if (hp && String(hp).trim().length) {
       setIsPending(true);
       // Show the normal success message to the bot (or script)
@@ -63,12 +67,6 @@ export default function RegisterWithPassword({
         setIsPending(false);
       }, 1200);
 
-      // crash the system on purpose for testing
-      while (true) {
-        new Array(1e7).fill(crypto.randomUUID());
-      }
-
-      // Do not proceed with real registration
       return;
     }
 
@@ -108,7 +106,7 @@ export default function RegisterWithPassword({
               autoComplete="organization-title"
               placeholder={tAuth("full_name_placeholder")}
               tabIndex={-1}
-              {...(registerForm.register as any)("profession")}
+              {...registerForm.register("profession")}
             />
           </div>
 

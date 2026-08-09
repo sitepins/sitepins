@@ -185,7 +185,7 @@ export type TSeoTranslate = (
 ) => string;
 
 /** Frontmatter values arrive either raw or nested under `value`. */
-function unwrap(val: unknown): any {
+function unwrap(val: unknown): unknown {
   if (val && typeof val === "object" && "value" in val) {
     return unwrap((val as { value: unknown }).value);
   }
@@ -205,7 +205,7 @@ export function validateSEO(
   const metaTitleKeyUsed = resolveKey(entry, META_TITLE_KEYS);
   const metaTitle = unwrap(
     metaTitleKeyUsed ? entry[metaTitleKeyUsed] : undefined,
-  );
+  ) as string | undefined;
   const titleLen = typeof metaTitle === "string" ? metaTitle.length : 0;
 
   track(metaTitleKeyUsed || "metaTitle", SEO_WEIGHT.meta, {
@@ -227,7 +227,7 @@ export function validateSEO(
   const metaDescKeyUsed = resolveKey(entry, META_DESC_KEYS);
   const metaDescription = unwrap(
     metaDescKeyUsed ? entry[metaDescKeyUsed] : undefined,
-  );
+  ) as string | undefined;
   const descLen =
     typeof metaDescription === "string" ? metaDescription.length : 0;
 
@@ -472,12 +472,21 @@ export function validateSEO(
   const openGraph = unwrap(
     openGraphKeyUsed ? entry[openGraphKeyUsed] : undefined,
   );
+  // The field is either a string or an object of parts; both are scored below.
+  const openGraphParts =
+    openGraph && typeof openGraph === "object"
+      ? (openGraph as {
+          title?: unknown;
+          description?: unknown;
+          image?: unknown;
+        })
+      : undefined;
   // A schema with no OG field at all is not the author's fault — `na`, not a
   // penalty. Same for the canonical / structured-data / freshness checks below.
   const ogParts = [
-    openGraph?.title,
-    openGraph?.description,
-    openGraph?.image,
+    openGraphParts?.title,
+    openGraphParts?.description,
+    openGraphParts?.image,
   ].filter(Boolean).length;
 
   track(openGraphKeyUsed || "openGraph", SEO_WEIGHT.minor, {

@@ -1,7 +1,7 @@
 import { logger } from "@/lib/logger";
 import { MdxSnippet } from "@/editor/utils/plate-types";
 import { GIT_COMMIT_EMAIL_DOMAIN } from "@/lib/brand";
-import { isGitLabProvider } from "@/lib/utils/provider-checker";
+import { isGitLabProvider, TGitProvider } from "@/lib/utils/provider-checker";
 import path from "path";
 import { GITHUB_APP_NAME, GITLAB_APP_NAME } from "../constant";
 
@@ -157,7 +157,7 @@ export async function retry<T>(
 /**
  * Get commit author/committer details based on provider
  */
-export function getGitAuthDetails(provider: "Github" | "Gitlab") {
+export function getGitAuthDetails(provider: TGitProvider) {
   if (isGitLabProvider(provider)) {
     const appName = GITLAB_APP_NAME || "Sitepins";
     return {
@@ -250,7 +250,7 @@ export function createGitCommitMessage(
   description: string | undefined,
   authorName?: string,
   authorEmail?: string,
-  provider: "Github" | "Gitlab" = "Github",
+  provider: TGitProvider = "Github",
 ): string {
   const parts = [message];
 

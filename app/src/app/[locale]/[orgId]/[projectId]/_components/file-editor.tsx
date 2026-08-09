@@ -1,5 +1,3 @@
-import { useGitProvider } from "@/hooks/use-git-provider";
-import { logger } from "@/lib/logger";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -12,10 +10,13 @@ import {
 import { Button } from "@/components/ui/button";
 import { ImageProvider } from "@/contexts/image-context";
 import { assignUniqueId } from "@/editor/utils/plate-utils";
+import { useGitProvider } from "@/hooks/use-git-provider";
 import { API_URL, SCHEMA_FOLDER } from "@/lib/constant";
+import { logger } from "@/lib/logger";
 import { resolveRepoPath } from "@/lib/utils/common";
 import {
   contentFormatter,
+  format,
   parseContentJson,
 } from "@/lib/utils/content-serializer";
 import { fmDetector } from "@/lib/utils/frontmatter-detector";
@@ -23,11 +24,13 @@ import {
   convertSchema,
   generateSchemaName,
 } from "@/lib/utils/schema-generator";
+import { SavedField } from "@/lib/utils/schema-helpers";
 import { selectConfig } from "@/redux/features/config/slice";
 import {
   useDeleteProjectContentMutation,
   useGetProjectContentQuery,
 } from "@/redux/features/project-content/project-content-api";
+import { TParsedContent } from "@/types";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
 import path from "path";
@@ -87,6 +90,9 @@ export default function FileEditor() {
       });
     });
 
+    // State, not a ref: `useCommitLogic` keys its listener effect on the
+    // socket's identity, so it has to re-run once the connection exists.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setSocket(s);
 
     return () => {
@@ -108,7 +114,7 @@ export default function FileEditor() {
   });
 
   const { data, content, fmType, startWith, comments } =
-    (response as any) || {};
+    (response as TParsedContent) || {};
 
   // Resolve schema path
   // 1. Try exact match (e.g. blog/nested.json)
@@ -152,7 +158,13 @@ export default function FileEditor() {
   }
 
   const currentGitSha = useMemo(() => {
-    const r = response as any;
+    const r = response as TParsedContent & {
+      sha?: string;
+      blob_id?: string;
+      last_commit_id?: string;
+      commit_id?: string;
+      result?: { sha?: string };
+    };
     const candidates = [
       r?.sha,
       r?.blob_id,
@@ -248,7 +260,7 @@ export default function FileEditor() {
     activeSource === "draft" && parsedDraft ? parsedDraft.data : data;
   const finalContent =
     activeSource === "draft" && parsedDraft
-      ? parsedDraft.content
+      ? (parsedDraft.content ?? "")
       : (content ?? "");
   const finalFmType =
     activeSource === "draft" && parsedDraft ? parsedDraft.fmType : fmType;
@@ -260,7 +272,9 @@ export default function FileEditor() {
   const isMismatched = useMemo(() => {
     if (!finalData || !schemaData?.data?.template) return false;
     const dataKeys = Object.keys(finalData);
-    const schemaFieldNames = schemaData.data.template.map((f: any) => f.name);
+    const schemaFieldNames = schemaData.data.template.map(
+      (f: SavedField) => f.name,
+    );
 
     // Check if any data key is missing from schema
     const hasMissingInSchema = dataKeys.some(
@@ -349,7 +363,7 @@ export default function FileEditor() {
         content={finalContent}
         data={assignUniqueId(finalData)}
         schema={finalTemplate}
-        fmType={finalFmType}
+        fmType={finalFmType as format}
         startWith={finalStartWith}
         gitSha={gitShaForWrapper}
         isLoadedFromDbDraft={activeSource === "draft"}

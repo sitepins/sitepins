@@ -1,9 +1,5 @@
 "use client";
 
-import { useGitProvider } from "@/hooks/use-git-provider";
-import { useAddLog } from "@/hooks/use-add-log";
-import { treeItemsOf } from "@/lib/utils/tree-items";
-import { firstFormErrorMessage } from "@/lib/utils/form-errors";
 import Loading from "@/components/loading";
 import { Button, ButtonProps } from "@/components/ui/button";
 import {
@@ -29,8 +25,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useAddLog } from "@/hooks/use-add-log";
 import { useDialog } from "@/hooks/use-dialog";
+import { useGitProvider } from "@/hooks/use-git-provider";
 import { IS_DEMO, SCHEMA_FOLDER } from "@/lib/constant";
+import { firstFormErrorMessage } from "@/lib/utils/form-errors";
 import { getLogType } from "@/lib/utils/project-log-type-detector";
 import { isGitLabProvider } from "@/lib/utils/provider-checker";
 import {
@@ -41,8 +40,10 @@ import {
 import {
   cleanTemplateData,
   processTemplateForSave,
+  SavedSchema,
   Template,
 } from "@/lib/utils/schema-helpers";
+import { treeItemsOf } from "@/lib/utils/tree-items";
 import { createSchema } from "@/lib/validate";
 import { selectConfig } from "@/redux/features/config/slice";
 import {
@@ -50,7 +51,7 @@ import {
   useUpdateGitHubFilesMutation,
 } from "@/redux/features/github";
 import {
-  gitlabApi,
+  gitlabContentApi,
   useUpdateGitLabFilesMutation,
 } from "@/redux/features/gitlab";
 import { EAction } from "@/redux/features/project-log/type";
@@ -67,7 +68,7 @@ import * as z from "zod/v4";
 import { SchemaBuilder } from "./schema-builder";
 
 // In-memory cache to avoid refetching ancestor schemas repeatedly
-const inheritedSchemaCache = new Map<string, any>();
+const inheritedSchemaCache = new Map<string, { data?: SavedSchema }>();
 
 type Props = {
   children: ReactNode;
@@ -120,7 +121,7 @@ export default function CreateSchema({
 
   const dispatch = useAppDispatch();
   const [inheritedSchema, setInheritedSchema] = useState<
-    Record<string, any> | undefined
+    { data?: SavedSchema } | undefined
   >(undefined);
   const [isSearchingInherited, setIsSearchingInherited] = useState(false);
 
@@ -195,11 +196,9 @@ export default function CreateSchema({
             if (exists) {
               try {
                 // fetch the actual content once
-                // @ts-ignore
                 const res = isGitLabProvider(config.provider)
                   ? await dispatch(
-                      // @ts-ignore
-                      gitlabApi.endpoints.getGitLabContent.initiate(
+                      gitlabContentApi.endpoints.getGitLabContent.initiate(
                         {
                           id: config.repoName
                             ? `${config.owner}/${config.repoName}`
@@ -212,7 +211,6 @@ export default function CreateSchema({
                       ),
                     ).unwrap()
                   : await dispatch(
-                      // @ts-ignore
                       githubContentApi.endpoints.getGitHubContent.initiate(
                         {
                           owner: config.owner,
@@ -227,7 +225,7 @@ export default function CreateSchema({
                 if (res && !cancelled) {
                   const key = `${config.owner}|${config.repoName}|${config.branch}|${candidate}`;
                   inheritedSchemaCache.set(key, res);
-                  setInheritedSchema(res as Record<string, any>);
+                  setInheritedSchema(res as { data?: SavedSchema });
                   return;
                 }
               } catch {
@@ -239,12 +237,12 @@ export default function CreateSchema({
           // getTrees failed, continue to parallel content fetch as fallback
         }
 
-        const promises = candidates.map((candidate) =>
-          // @ts-ignore
-          dispatch(
-            isGitLabProvider(config.provider)
-              ? // @ts-ignore
-                gitlabApi.endpoints.getGitLabContent.initiate(
+        // Dispatched per branch: a ternary of the two thunks widens to a union
+        // that no `dispatch` overload accepts.
+        const promises = candidates.map((candidate) => {
+          const pending = isGitLabProvider(config.provider)
+            ? dispatch(
+                gitlabContentApi.endpoints.getGitLabContent.initiate(
                   {
                     id: config.repoName
                       ? `${config.owner}/${config.repoName}`
@@ -254,8 +252,9 @@ export default function CreateSchema({
                     parser: true,
                   },
                   { forceRefetch: true },
-                )
-              : // @ts-ignore
+                ),
+              )
+            : dispatch(
                 githubContentApi.endpoints.getGitHubContent.initiate(
                   {
                     owner: config.owner,
@@ -266,21 +265,23 @@ export default function CreateSchema({
                   },
                   { forceRefetch: true },
                 ),
-          )
+              );
+
+          return pending
             .unwrap()
-            .then((res: any) => ({ candidate, res }))
-            .catch(() => null),
-        );
+            .then((res) => ({ candidate, res }))
+            .catch(() => null);
+        });
 
         const results = await Promise.all(promises);
         if (cancelled) return;
 
         for (const candidate of candidates) {
           const found = results.find(
-            (r: any) => r && r.candidate === candidate && r.res,
+            (r) => r && r.candidate === candidate && r.res,
           );
           if (found && !cancelled) {
-            setInheritedSchema(found.res as Record<string, any>);
+            setInheritedSchema(found.res as { data?: SavedSchema });
             break;
           }
         }

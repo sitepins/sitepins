@@ -1,7 +1,9 @@
+import { TGitProvider } from "@/lib/utils/provider-checker";
+
 export type TProvider = {
   _id?: string;
   user_id: string;
-  provider: "Github" | "Gitlab";
+  provider: TGitProvider;
   accessToken: string;
   accessTokenExpiresAt?: number | Date | string;
   installationAccessToken: string;

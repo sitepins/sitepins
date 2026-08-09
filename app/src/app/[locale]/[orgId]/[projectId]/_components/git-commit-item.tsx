@@ -10,7 +10,7 @@ import {
   getDeploymentStatusVariant,
   isDisplayableDeploymentStatus,
 } from "@/lib/utils/deployment-status";
-import { isGitHubProvider } from "@/lib/utils/provider-checker";
+import { isGitHubProvider, TGitProvider } from "@/lib/utils/provider-checker";
 import { TGitCommit } from "@/redux/features/git/provider-args";
 import { formatDistanceToNow } from "date-fns";
 import { Clock, History, RotateCcw } from "lucide-react";
@@ -20,7 +20,7 @@ import { toast } from "sonner";
 import { RevertConfirmDialog } from "./git-revert";
 
 type CommitItemProps = {
-  provider: "Github" | "Gitlab";
+  provider: TGitProvider;
   commit: TGitCommit;
   setShowUpgradeDialog: (show: boolean) => void;
   onSuccess?: () => void;

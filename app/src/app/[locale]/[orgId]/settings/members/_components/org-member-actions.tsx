@@ -203,7 +203,7 @@ export default function MemberActions({
                 {member.role === "admin"
                   ? tOrgMembersActions("make")
                   : tOrgMembersActions("make")}{" "}
-                {tr(role[member.role] as any)}
+                {tr(role[member.role])}
               </Button>
             </li>
             <li>

@@ -44,6 +44,7 @@ import { useGitAuth } from "@/hooks/use-git-auth";
 import {
   isGitHubProvider,
   isGitLabProvider,
+  TGitProvider,
 } from "@/lib/utils/provider-checker";
 import { selectConfig } from "@/redux/features/config/slice";
 import {
@@ -104,7 +105,7 @@ export default function RepoManager({ canUpdate }: { canUpdate?: boolean }) {
     selectedProvider: authProvider,
     isTokenChanged,
   } = useGitAuth({
-    selectedProvider: selectedProvider as "Github" | "Gitlab",
+    selectedProvider: selectedProvider as TGitProvider,
   });
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -257,7 +258,7 @@ export default function RepoManager({ canUpdate }: { canUpdate?: boolean }) {
         org_id: projectOrgId,
         repository: selectedRepo,
         branch: selectedBranch,
-        provider: selectedProvider as "Github" | "Gitlab",
+        provider: selectedProvider as TGitProvider,
       }).unwrap();
 
       toast.success(tProjectSettingsGitRepo("success_connect"));

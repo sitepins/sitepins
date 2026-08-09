@@ -12,8 +12,8 @@ export default function SearchPreview({
   description,
   date,
 }: {
-  title: string;
-  description: string;
+  title?: string;
+  description?: string;
   date?: string;
 }) {
   const tEditorSeo = useTranslations("editor.seo");

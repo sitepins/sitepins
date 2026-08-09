@@ -2,6 +2,7 @@
 
 import { commitStatusState } from "@/redux/features/git/provider-adapter";
 import { useGitProvider } from "@/hooks/use-git-provider";
+import { TGitProvider } from "@/lib/utils/provider-checker";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -136,7 +137,7 @@ function CommitWrapper({
   isLatest,
   canAccessProFeatures,
 }: {
-  provider: "Github" | "Gitlab";
+  provider: TGitProvider;
   commit: TGitCommit;
   setShowUpgradeDialog: (show: boolean) => void;
   onSuccess?: () => void;

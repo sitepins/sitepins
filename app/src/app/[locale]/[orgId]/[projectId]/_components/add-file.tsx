@@ -165,32 +165,28 @@ export default function AddFile({
                   content: newFileText,
                 };
 
-                const mutation = isGitLabProvider(config.provider)
-                  ? updateGitLabFiles
-                  : updateGitHubFiles;
-
                 const commitMessage = tDirectoryView("commit_message", {
                   folder: folderName ?? "",
                 });
 
-                const mutationArgs = isGitLabProvider(config.provider)
-                  ? {
+                // Called per branch: pairing a union of mutations with a union
+                // of their args loses the correlation between the two.
+                const res = isGitLabProvider(config.provider)
+                  ? await updateGitLabFiles({
                       id: config.repoName
                         ? `${config.owner}/${config.repoName}`
                         : config.owner,
                       branch: config.branch,
                       message: commitMessage,
                       files: [fileDataToCreate],
-                    }
-                  : {
+                    })
+                  : await updateGitHubFiles({
                       owner: config.owner,
                       repo: config.repoName,
                       tree: config.branch,
                       files: [fileDataToCreate],
                       message: commitMessage,
-                    };
-
-                const res = await mutation(mutationArgs as any);
+                    });
 
                 if (!("error" in res)) {
                   toast.success(tDirectoryView("file_created_successfully"));

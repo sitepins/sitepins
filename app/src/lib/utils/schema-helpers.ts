@@ -41,6 +41,15 @@ export type SavedField = {
   referenceField?: string;
 };
 
+/** A schema JSON file as it sits in `.sitepins/schema`, per `createSchema`. */
+export type SavedSchema = {
+  file?: string;
+  name: string;
+  fileType: "json" | "md" | "mdx" | "toml" | "yaml";
+  fmType: "toml" | "yaml" | "json";
+  template: SavedField[];
+};
+
 export const createNewField = (type: string, name: string): Template => {
   return {
     name: name.trim(),

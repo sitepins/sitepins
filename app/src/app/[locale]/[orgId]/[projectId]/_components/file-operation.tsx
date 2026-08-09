@@ -279,8 +279,8 @@ export function FileOperation({
     }
 
     const { dir, name, ext } = path.parse(filepath);
-    const treesToUse = (trees as any)?.trees || [];
-    const currentFolderFiles = treesToUse.filter((file: TFiles) =>
+    const treesToUse = trees?.trees ?? [];
+    const currentFolderFiles = treesToUse.filter((file) =>
       file.name.includes(name),
     );
 

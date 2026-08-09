@@ -22,10 +22,10 @@ const ComboboxAnchorContext = React.createContext<
   React.RefObject<HTMLDivElement | null> | undefined
 >(undefined);
 
-function Combobox({
+function Combobox<Value, Multiple extends boolean | undefined = false>({
   children,
   ...props
-}: ComboboxPrimitive.Root.Props<any, any>) {
+}: ComboboxPrimitive.Root.Props<Value, Multiple>) {
   const anchorRef = React.useRef<HTMLDivElement>(null);
   return (
     <ComboboxPrimitive.Root {...props}>
@@ -163,7 +163,7 @@ function ComboboxContent({
         data-slot="combobox-content"
         data-chips={!!resolvedAnchor}
         className={cn(
-          "bg-popover text-popover-foreground data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 ring-foreground/10 *:data-[slot=input-group]:bg-input/30 *:data-[slot=input-group]:border-input/30 data-[side=inline-start]:slide-in-from-right-2 data-[side=inline-end]:slide-in-from-left-2 group/combobox-content pointer-events-auto relative max-h-(--available-height) w-(--anchor-width) max-w-(--available-width) min-w-[calc(var(--anchor-width)+--spacing(7))] origin-(--transform-origin) overflow-hidden rounded-lg shadow-md ring-1 data-[chips=true]:min-w-(--anchor-width) *:data-[slot=input-group]:mx-1 *:data-[slot=input-group]:mt-1 *:data-[slot=input-group]:mb-0 *:data-[slot=input-group]:h-8 *:data-[slot=input-group]:w-[calc(100%-8px)] *:data-[slot=input-group]:shadow-none",
+          "bg-popover text-popover-foreground data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 ring-foreground/10 *:data-[slot=input-group]:bg-input/30 *:data-[slot=input-group]:border-input/30 data-[side=inline-start]:slide-in-from-right-2 data-[side=inline-end]:slide-in-from-left-2 group/combobox-content pointer-events-auto relative max-h-(--available-height) w-(--anchor-width) max-w-(--available-width) min-w-[calc(var(--anchor-width)+(--spacing(7)))] origin-(--transform-origin) overflow-hidden rounded-lg shadow-md ring-1 data-[chips=true]:min-w-(--anchor-width) *:data-[slot=input-group]:mx-1 *:data-[slot=input-group]:mt-1 *:data-[slot=input-group]:mb-0 *:data-[slot=input-group]:h-8 *:data-[slot=input-group]:w-[calc(100%-8px)] *:data-[slot=input-group]:shadow-none",
           className,
         )}
         onWheel={(e) => {

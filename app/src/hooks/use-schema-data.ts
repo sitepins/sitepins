@@ -4,6 +4,7 @@ import { useGitProvider } from "@/hooks/use-git-provider";
 import { SCHEMA_FOLDER } from "@/lib/constant";
 import { isGitLabProvider } from "@/lib/utils/provider-checker";
 import { generateSchemaName } from "@/lib/utils/schema-generator";
+import { SavedSchema } from "@/lib/utils/schema-helpers";
 import { selectConfig } from "@/redux/features/config/slice";
 import { githubContentApi } from "@/redux/features/github";
 import { gitlabContentApi } from "@/redux/features/gitlab";
@@ -11,7 +12,7 @@ import { useAppDispatch } from "@/redux/store";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
-const inheritedSchemaCache = new Map<string, any>();
+const inheritedSchemaCache = new Map<string, { data?: SavedSchema }>();
 
 export function useSchemaData(relativePath: string, schemaDir?: string) {
   const dispatch = useAppDispatch();
@@ -27,7 +28,7 @@ export function useSchemaData(relativePath: string, schemaDir?: string) {
   );
 
   const [inheritedSchema, setInheritedSchema] = useState<
-    Record<string, any> | undefined
+    { data?: SavedSchema } | undefined
   >(undefined);
 
   const primarySchemaData =
@@ -98,7 +99,7 @@ export function useSchemaData(relativePath: string, schemaDir?: string) {
           if (res && !cancelled) {
             const key = `${config.owner}|${config.repoName}|${config.branch}|${nearest}`;
             inheritedSchemaCache.set(key, res);
-            setInheritedSchema(res as Record<string, any>);
+            setInheritedSchema(res as { data?: SavedSchema });
             return;
           }
         } catch {
@@ -108,10 +109,12 @@ export function useSchemaData(relativePath: string, schemaDir?: string) {
         const remaining = candidates.slice(1);
         if (remaining.length === 0) return;
 
-        const promises = remaining.map((candidate) =>
-          (dispatch as any)(
-            isGitLabProvider(config.provider)
-              ? gitlabContentApi.endpoints.getGitLabContent.initiate(
+        // Dispatched per branch: a ternary of the two thunks widens to a union
+        // that no `dispatch` overload accepts.
+        const promises = remaining.map((candidate) => {
+          const pending = isGitLabProvider(config.provider)
+            ? dispatch(
+                gitlabContentApi.endpoints.getGitLabContent.initiate(
                   {
                     id: config.repoName
                       ? `${config.owner}/${config.repoName}`
@@ -121,8 +124,10 @@ export function useSchemaData(relativePath: string, schemaDir?: string) {
                     parser: true,
                   },
                   { forceRefetch: false },
-                )
-              : githubContentApi.endpoints.getGitHubContent.initiate(
+                ),
+              )
+            : dispatch(
+                githubContentApi.endpoints.getGitHubContent.initiate(
                   {
                     owner: config.owner,
                     repo: config.repoName,
@@ -132,23 +137,25 @@ export function useSchemaData(relativePath: string, schemaDir?: string) {
                   },
                   { forceRefetch: false },
                 ),
-          )
+              );
+
+          return pending
             .unwrap()
-            .then((res: any) => ({ candidate, res }))
-            .catch(() => null),
-        );
+            .then((res) => ({ candidate, res }))
+            .catch(() => null);
+        });
 
         const results = await Promise.all(promises);
         if (cancelled) return;
 
         for (const candidate of remaining) {
           const found = results.find(
-            (r: any) => r && r.candidate === candidate && r.res,
+            (r) => r && r.candidate === candidate && r.res,
           );
           if (found && !cancelled) {
             const key = `${config.owner}|${config.repoName}|${config.branch}|${candidate}`;
             inheritedSchemaCache.set(key, found.res);
-            setInheritedSchema(found.res as Record<string, any>);
+            setInheritedSchema(found.res as { data?: SavedSchema });
             break;
           }
         }

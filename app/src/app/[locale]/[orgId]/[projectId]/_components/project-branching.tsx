@@ -268,14 +268,16 @@ const ProjectBranching = ({
     refetchIncomingGlMRs,
   ]);
 
-  const isPermissionError = (error: any) => {
+  const isPermissionError = (error: unknown) => {
     if (!error) return false;
-    const message = errorMessageOr(error, "");
+    const data = (error as { data?: { status?: unknown } }).data;
     return (
-      message.includes("Resource not accessible by integration") ||
+      errorMessageOr(error, "").includes(
+        "Resource not accessible by integration",
+      ) ||
       errorStatus(error) === 403 ||
-      error?.data?.status === 403 ||
-      error?.data?.status === "403"
+      data?.status === 403 ||
+      data?.status === "403"
     );
   };
 

@@ -1,3 +1,6 @@
+/** The two git providers a project can be backed by, spelled as the API sends them. */
+export type TGitProvider = "Github" | "Gitlab";
+
 export const normalizeGitProvider = (
   provider: string | null | undefined,
 ): "github" | "gitlab" | "unknown" => {

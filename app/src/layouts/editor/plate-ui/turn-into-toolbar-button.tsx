@@ -93,7 +93,7 @@ export function TurnIntoToolbarButton(props: DropdownMenuProps) {
     () =>
       turnIntoItemsRaw.map((item) => ({
         ...item,
-        label: tEditorToolbar(item.labelKey as any),
+        label: tEditorToolbar(item.labelKey),
       })),
     [tEditorToolbar],
   );

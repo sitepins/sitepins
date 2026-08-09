@@ -1,6 +1,7 @@
 "use server";
 
 import { getAuth } from "@/lib/auth/auth-server";
+import { TGitProvider } from "@/lib/utils/provider-checker";
 import { revalidateTag } from "next/cache";
 import { TInsertionSuccess, fetchApi } from "../utils";
 import { TProvider } from "./types";
@@ -42,7 +43,7 @@ export const createProvider = async (provider: TProvider) => {
 };
 
 type TRotateTokensPayload = {
-  provider: "Github" | "Gitlab";
+  provider: TGitProvider;
   old_refresh_token: string;
   access_token: string;
   refresh_token: string;

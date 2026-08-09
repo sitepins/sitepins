@@ -53,6 +53,7 @@ import { errorMessage } from "@/lib/utils/error";
 import {
   isGitHubProvider,
   isGitLabProvider,
+  TGitProvider,
 } from "@/lib/utils/provider-checker";
 import { projectSchema } from "@/lib/validate";
 import { AxiosBaseQueryError } from "@/redux/features/api-slice";
@@ -93,7 +94,7 @@ import { Badge } from "./ui/badge";
 const providersList: {
   name: string;
   label: string;
-  value: string;
+  value: TGitProvider;
   icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
   tag?: string;
 }[] = [
@@ -247,13 +248,13 @@ export default function AddSite({
     }
   }, [isTokenChanged, step]);
 
-  const handleProviderSelect = (val: string) => {
+  const handleProviderSelect = (val: TGitProvider) => {
     if (isGitLabProvider(val) && !canAccessProPlusFeatures) {
       setShowUpgradeDialog(true);
       return;
     }
 
-    projectForm.setValue("provider", val as any);
+    projectForm.setValue("provider", val);
     projectForm.setValue("repository", "");
     projectForm.setValue("branch", "");
 
@@ -262,7 +263,7 @@ export default function AddSite({
     if (integration?.accessToken) {
       setStep("form");
     } else {
-      handleClick(val as any);
+      handleClick(val);
     }
   };
 

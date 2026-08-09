@@ -128,9 +128,7 @@ function CodeBlockCombobox() {
     () =>
       languages.map((lang) => ({
         ...lang,
-        label: lang.labelKey
-          ? tEditorToolbar(lang.labelKey as any)
-          : lang.label,
+        label: lang.labelKey ? tEditorToolbar(lang.labelKey) : lang.label,
       })),
     [tEditorToolbar],
   );

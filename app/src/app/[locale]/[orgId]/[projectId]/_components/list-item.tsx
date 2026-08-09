@@ -9,7 +9,7 @@ export default function ListItem({
   className,
 }: {
   children: React.ReactNode;
-  value: any;
+  value: unknown;
   listKey: string;
   className?: string;
 }) {

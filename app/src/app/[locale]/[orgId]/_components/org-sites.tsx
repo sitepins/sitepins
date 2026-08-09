@@ -1,7 +1,7 @@
 import ProjectIcon from "@/components/project-icon";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
-import { isGitLabProvider } from "@/lib/utils/provider-checker";
+import { isGitLabProvider, TGitProvider } from "@/lib/utils/provider-checker";
 import { TProject } from "@/redux/features/project/type";
 import { SiGithub, SiGitlab } from "@icons-pack/react-simple-icons";
 import { Edit, ExternalLink, Search } from "lucide-react";
@@ -62,7 +62,7 @@ function StatusBadge({ status }: StatusBadgeProps) {
 type RepositoryLinkProps = {
   repository: string;
   branch: string;
-  provider: "Github" | "Gitlab";
+  provider: TGitProvider;
   visibility?: string;
 };
 

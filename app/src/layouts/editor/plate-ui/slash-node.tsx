@@ -168,7 +168,7 @@ export function SlashInputElement(
           {displayGroups.map(({ group, items }) => (
             <InlineComboboxGroup key={group} className="">
               <InlineComboboxGroupLabel>
-                {tEditorSlash(group as any)}
+                {tEditorSlash(group)}
               </InlineComboboxGroupLabel>
 
               {items.map((item) => {
@@ -176,7 +176,7 @@ export function SlashInputElement(
                 // cloud upsell items carry a pre-translated label
                 const text =
                   (item as { labelText?: string }).labelText ??
-                  tEditorSlash(label as any);
+                  tEditorSlash(label);
                 return (
                   <InlineComboboxItem
                     key={value}

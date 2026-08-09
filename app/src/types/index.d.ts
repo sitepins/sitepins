@@ -1,3 +1,5 @@
+import { TGitProvider } from "@/lib/utils/provider-checker";
+
 export type TTree = {
   path?: string;
   mode?: "100644" | "100755" | "040000" | "160000" | "120000";
@@ -53,7 +55,7 @@ export type TConfigFile = {
 
 // Full runtime configuration including session and UI state
 export type TConfig = TConfigFile & {
-  provider: "Github" | "Gitlab" | "";
+  provider: TGitProvider | "";
   currentLoginUserToken: string;
   refreshToken: string;
   accessTokenExpiresAt: number | Date | string;
@@ -189,6 +191,16 @@ export type TGitRepo = {
 
 /** Frontmatter values are user-defined, so the map stays open. */
 export type TFrontmatterData = Record<string, unknown>;
+
+/** A content file after the git adapters parse it (`parser: true`). */
+export type TParsedContent = {
+  data?: TFrontmatterData;
+  content?: string;
+  fmType?: "json" | "toml" | "yaml";
+  startWith?: string;
+  comments?: Record<string, string>;
+  sha?: string;
+};
 
 export type TState = {
   data: TFrontmatterData;

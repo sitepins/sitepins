@@ -1,4 +1,5 @@
 import { asFramework } from "@/lib/utils/framework-detector";
+import { TGitProvider } from "@/lib/utils/provider-checker";
 import { TExtractVariables } from "@/actions/utils";
 import { projectSchema } from "@/lib/validate";
 import { api } from "../api-slice";
@@ -44,7 +45,7 @@ export const projectApi = api.injectEndpoints({
               repoName: repoName,
               repositoryId: data.repository_id || undefined,
               branch: data.branch,
-              provider: data.provider as "Github" | "Gitlab",
+              provider: data.provider as TGitProvider,
               framework: asFramework(data.generator),
             }),
           );
@@ -196,7 +197,7 @@ export const projectApi = api.injectEndpoints({
         repository?: string;
         repository_id?: string;
         branch?: string;
-        provider?: "Github" | "Gitlab";
+        provider?: TGitProvider;
       }
     >({
       query: ({
@@ -229,7 +230,7 @@ export const projectApi = api.injectEndpoints({
               repoName: repoName,
               repositoryId: data.repository_id || undefined,
               branch: data.branch,
-              provider: data.provider as "Github" | "Gitlab",
+              provider: data.provider as TGitProvider,
               framework: asFramework(data.generator),
             }),
           );

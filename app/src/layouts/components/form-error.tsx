@@ -9,7 +9,7 @@ type TError = {
   message: string;
 };
 
-type FormErrorProps = Omit<Partial<TSubmitFormState<any>>, "error"> & {
+type FormErrorProps = Omit<Partial<TSubmitFormState<unknown>>, "error"> & {
   error?: (BetterFetchError & Record<string, unknown>) | TError[] | null;
   onReset?: () => void;
 };

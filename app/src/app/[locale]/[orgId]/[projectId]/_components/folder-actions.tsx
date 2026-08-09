@@ -830,27 +830,26 @@ export default function FolderActions({
                 },
               ];
 
-              const mutation = isGitLabProvider(config.provider)
-                ? createNewGitLabFolder
-                : createNewFolder;
-              const mutationArgs = isGitLabProvider(config.provider)
-                ? {
+              // Called per branch: pairing a union of mutations with a union
+              // of their args loses the correlation between the two.
+              const folderCreate = isGitLabProvider(config.provider)
+                ? createNewGitLabFolder({
                     id: config.repoName
                       ? `${config.owner}/${config.repoName}`
                       : config.owner,
                     branch: config.branch,
                     message: `Create folder ${data.name}`,
                     files: filesToCreate,
-                  }
-                : {
+                  })
+                : createNewFolder({
                     owner: config.owner,
                     repo: config.repoName,
                     tree: config.branch,
                     files: filesToCreate,
                     message: `Create folder ${data.name}`,
-                  };
+                  });
 
-              await mutation(mutationArgs as any).then((res) => {
+              await folderCreate.then((res) => {
                 if (!res.error?.message) {
                   toast.success(
                     tDirectoryViewActions("folder_created_successfully"),
@@ -883,7 +882,7 @@ export default function FolderActions({
                           file_path: decodedFilepath,
                           ref: config.branch,
                         },
-                        (oldData: any) => {
+                        (oldData) => {
                           if (oldData && Array.isArray(oldData.items)) {
                             oldData.items.push(newFolderObj);
                           }

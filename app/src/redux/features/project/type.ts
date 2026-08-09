@@ -1,4 +1,5 @@
 import { projectSchema } from "@/lib/validate";
+import { TGitProvider } from "@/lib/utils/provider-checker";
 import { z } from "zod/v4";
 
 export type TProject<
@@ -10,7 +11,7 @@ export type TProject<
   _id: string;
   project_id: string;
   project_name: string;
-  provider: "Github" | "Gitlab";
+  provider: TGitProvider;
   repository: string;
   /** GitLab's numeric project id, which survives a rename. GitLab only. */
   repository_id?: string;

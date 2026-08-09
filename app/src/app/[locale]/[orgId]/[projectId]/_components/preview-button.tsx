@@ -17,7 +17,7 @@ import {
 import { useOwnerPlan } from "@/hooks/use-owner-plan";
 import { setPreviewWindow } from "@/hooks/use-sandbox-preview";
 import { UpgradeDialog } from "@/layouts/components/upgrade-dialog";
-import { isGitLabProvider } from "@/lib/utils/provider-checker";
+import { isGitLabProvider, TGitProvider } from "@/lib/utils/provider-checker";
 import {
   ChevronDown,
   ExternalLink,
@@ -36,7 +36,7 @@ type PreviewButtonProps = {
   repository: string;
   branch: string;
   token: string;
-  provider: "Github" | "Gitlab" | string;
+  provider: TGitProvider | string;
   generator?: string | null;
   getUncommittedFile?: () => { path: string; content: string };
   previewWindowRef?: RefObject<Window | null>;

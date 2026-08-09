@@ -31,7 +31,7 @@ export function SortSelect({ className, isCodePath }: SortSelectProps) {
 
   const options = useMemo(() => {
     return sorts.map((definition) => {
-      let label = tDirectoryView(`sort_options.${definition.labelKey as any}`);
+      let label = tDirectoryView(`sort_options.${definition.labelKey}`);
 
       if (isCodePath && definition.field === "title") {
         label = label.replace("Title", tDirectoryView("headers.file_name"));

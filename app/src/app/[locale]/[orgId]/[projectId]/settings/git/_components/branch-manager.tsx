@@ -1,6 +1,7 @@
 "use client";
 
 import { errorMessageOr } from "@/lib/utils/error";
+import { TGitProvider } from "@/lib/utils/provider-checker";
 import { logger } from "@/lib/logger";
 import { Button } from "@/components/ui/button";
 import {
@@ -103,7 +104,7 @@ export default function BranchManager({ canUpdate }: { canUpdate?: boolean }) {
         org_id: projectOrgId,
         repository: currentRepo,
         branch: selectedBranch,
-        provider: currentProvider as "Github" | "Gitlab",
+        provider: currentProvider as TGitProvider,
       }).unwrap();
 
       toast.success(tProjectSettingsGitBranch("success_message"));

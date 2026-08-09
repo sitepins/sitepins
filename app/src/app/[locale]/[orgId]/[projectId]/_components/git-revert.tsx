@@ -10,7 +10,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { errorMessageOr } from "@/lib/utils/error";
-import { isGitLabProvider } from "@/lib/utils/provider-checker";
+import { isGitLabProvider, TGitProvider } from "@/lib/utils/provider-checker";
 import { selectConfig } from "@/redux/features/config/slice";
 import { TGitCommit } from "@/redux/features/git/provider-args";
 import {
@@ -31,7 +31,7 @@ type RevertConfirmDialogProps = {
   isOpen: boolean;
   onClose: () => void;
   onSuccess?: () => void;
-  provider: "Github" | "Gitlab" | string;
+  provider: TGitProvider | string;
   commit: TGitCommit;
   title: string;
   description: string;

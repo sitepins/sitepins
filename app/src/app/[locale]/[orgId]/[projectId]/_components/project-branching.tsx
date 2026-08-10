@@ -49,7 +49,7 @@ import {
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { ChangeEvent, useEffect, useState } from "react";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 
 type ProjectBranchingProps = {
   project?: TProject;

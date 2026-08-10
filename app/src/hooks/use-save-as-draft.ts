@@ -2,7 +2,7 @@ import { authClient } from "@/lib/auth/auth-client";
 import { useUpsertProjectContentMutation } from "@/redux/features/project-content/project-content-api";
 import { useTranslations } from "next-intl";
 import { useCallback } from "react";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 
 type UseSaveAsDraftOptions = {
   projectId: string;

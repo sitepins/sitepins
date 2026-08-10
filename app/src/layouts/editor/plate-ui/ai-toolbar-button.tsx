@@ -18,7 +18,7 @@ export function AIToolbarButton(
   const handleMouseDown: React.MouseEventHandler<HTMLButtonElement> = (
     event,
   ) => {
-    onMouseDown?.(event);
+    onMouseDown?.(event as Parameters<NonNullable<typeof onMouseDown>>[0]);
     if (!event.defaultPrevented) {
       event.preventDefault();
     }

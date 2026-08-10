@@ -26,7 +26,7 @@ export function BulletedListToolbarButton() {
   return (
     <ToolbarButton
       tooltip="Bullet List"
-      className="data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
+      className="data-pressed:bg-primary data-pressed:text-primary-foreground"
       onClick={() => {
         toggleList(editor, {
           listStyleType: ListStyleType.Disc,
@@ -59,7 +59,7 @@ export function NumberedListToolbarButton() {
   return (
     <ToolbarButton
       tooltip="Num List"
-      className="data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
+      className="data-pressed:bg-primary data-pressed:text-primary-foreground"
       onClick={() => {
         toggleList(editor, {
           listStyleType: ListStyleType.Decimal,

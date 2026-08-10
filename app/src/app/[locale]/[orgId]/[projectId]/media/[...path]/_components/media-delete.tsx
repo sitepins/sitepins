@@ -24,7 +24,7 @@ import { store, useAppDispatch } from "@/redux/store";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
 import { useSelector } from "react-redux";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 
 export default function MediaDelete({
   dir,

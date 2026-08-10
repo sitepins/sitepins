@@ -37,7 +37,7 @@ import {
 import { useTranslations } from "next-intl";
 import _Link from "next/link";
 import { useState } from "react";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 
 type SandboxConnectFormProps = {
   org: TOrg;

@@ -31,7 +31,7 @@ import { useDeleteUserMutation } from "@/redux/features/user/user-api";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 
 export default function DeleteAccount({ auth }: { auth: Session }) {
   const tDashboardAccountDelete = useTranslations("dashboard.account.delete");
@@ -160,7 +160,6 @@ export default function DeleteAccount({ auth }: { auth: Session }) {
                           }`}
                         >
                           <RadioGroupItem
-                            checked={checked}
                             value={option.value}
                             id={option.value}
                           />

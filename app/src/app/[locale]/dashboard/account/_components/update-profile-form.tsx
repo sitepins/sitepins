@@ -26,7 +26,7 @@ import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 import { z } from "zod/v4";
 
 export type UserDetailsPayload = z.infer<typeof userDetailsSchema>;

@@ -12,7 +12,7 @@ import type { TFiles } from "@/types";
 import { CaptionPlugin } from "@platejs/caption/react";
 import { ImagePlugin, PlaceholderPlugin } from "@platejs/media/react";
 import { KEYS, PathApi } from "platejs";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 import { extractBase64, ImageElement } from "../plate-ui/media-image-node";
 import { PlaceholderElement } from "../plate-ui/media-placeholder-node";
 import { MediaPreviewDialog } from "../plate-ui/media-preview-dialog";

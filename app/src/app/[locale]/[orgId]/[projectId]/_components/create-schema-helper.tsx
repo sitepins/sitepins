@@ -68,7 +68,7 @@ import {
 import { Reorder, useDragControls, useMotionValue } from "motion/react";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 
 // snake_case helper used by both components
 const toSnakeCase = (input: string) =>

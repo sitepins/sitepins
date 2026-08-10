@@ -23,7 +23,7 @@ import { IS_DEMO } from "@/lib/constant";
 import { useUpdateOrgStatusMutation } from "@/redux/features/orgs/org-api";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 
 export default function ArchiveOrg({
   id,

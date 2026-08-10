@@ -25,7 +25,7 @@ import {
 import { AlertCircle } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useDispatch, useSelector } from "react-redux";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 
 type RevertConfirmDialogProps = {
   isOpen: boolean;

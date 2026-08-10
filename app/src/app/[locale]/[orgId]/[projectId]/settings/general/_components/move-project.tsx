@@ -33,7 +33,7 @@ import { IS_DEMO } from "@/lib/constant";
 import { useGetOrgsQuery } from "@/redux/features/orgs/org-api";
 import { useMoveProjectMutation } from "@/redux/features/project/project-api";
 import { useMemo, useState } from "react";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 import { useTranslations } from "next-intl";
 
 export default function MoveProject({

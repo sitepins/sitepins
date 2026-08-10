@@ -117,11 +117,7 @@ export default function MediaSidebar({
           }
         }}
         {...(!isFile && { open: false })}
-        direction="right"
-        onClose={() => {
-          setSelectedImage(null);
-          setDimensions(null);
-        }}
+        swipeDirection="right"
         modal
       >
         <DrawerTrigger

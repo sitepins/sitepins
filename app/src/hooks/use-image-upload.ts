@@ -3,7 +3,7 @@ import { IS_DEMO } from "@/lib/constant";
 import { useTranslations } from "next-intl";
 import { useCallback, useState } from "react";
 import { FileRejection } from "react-dropzone";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 
 type UseImageUploadOptions = {
   folder: "sitepins/users" | "sitepins/orgs" | "sitepins/sites";

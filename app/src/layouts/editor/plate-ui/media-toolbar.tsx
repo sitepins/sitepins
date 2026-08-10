@@ -30,7 +30,7 @@ import {
   useSelected,
 } from "platejs/react";
 import { useEffect } from "react";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 import { CaptionButton } from "./caption";
 
 const inputVariants = cva(

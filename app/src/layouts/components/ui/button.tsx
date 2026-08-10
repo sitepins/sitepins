@@ -1,7 +1,8 @@
 import { cn } from "@/lib/utils/cn";
+import { mergeProps } from "@base-ui/react/merge-props";
+import { useRender } from "@base-ui/react/use-render";
 import { cva, type VariantProps } from "class-variance-authority";
 import { Loader2 } from "lucide-react";
-import { Slot } from "radix-ui";
 import * as React from "react";
 
 const buttonVariants = cva(
@@ -47,8 +48,9 @@ const buttonVariants = cva(
 
 export interface ButtonProps
   extends
-    React.ButtonHTMLAttributes<HTMLButtonElement>,
+    useRender.ComponentProps<"button">,
     VariantProps<typeof buttonVariants> {
+  /** Render the single child element instead of a `button` */
   asChild?: boolean;
   /** Show a loading spinner and disable the button */
   isLoading?: boolean;
@@ -61,10 +63,9 @@ function Button({
   asChild = false,
   isLoading = false,
   children,
+  render,
   ...props
-}: React.ComponentProps<"button"> & ButtonProps) {
-  const Comp: React.ElementType = asChild ? Slot.Root : "button";
-
+}: ButtonProps) {
   // If loading, ensure button is disabled
   const mergedDisabled = Boolean(props.disabled) || Boolean(isLoading);
 
@@ -77,18 +78,25 @@ function Button({
     children
   );
 
-  return (
-    <Comp
-      data-slot="button"
-      data-variant={variant}
-      data-size={size}
-      className={cn(buttonVariants({ variant, size, className }))}
-      disabled={mergedDisabled}
-      {...props}
-    >
-      {content}
-    </Comp>
-  );
+  const renderProp = asChild ? (children as React.ReactElement) : render;
+
+  return useRender({
+    defaultTagName: "button",
+    render: renderProp,
+    props: mergeProps<"button">(
+      {
+        "data-slot": "button",
+        "data-variant": variant,
+        "data-size": size,
+        className: cn(buttonVariants({ variant, size, className })),
+        disabled: mergedDisabled,
+        children: asChild ? undefined : content,
+        // useRender forces type="button"; a native button defaults to submit
+        ...(renderProp ? null : { type: "submit" }),
+      } as React.ComponentProps<"button">,
+      props,
+    ),
+  });
 }
 
 export { Button, buttonVariants };

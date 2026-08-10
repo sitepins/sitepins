@@ -67,7 +67,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 
 export default function RepoManager({ canUpdate }: { canUpdate?: boolean }) {
   const params = useParams();

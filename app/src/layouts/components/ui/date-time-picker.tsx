@@ -88,7 +88,8 @@ export function DateTimePicker({
     updateTime(hours, newMinutes, !isAM);
   };
 
-  const handleAMPMToggle = (value: string) => {
+  const handleAMPMToggle = (groupValue: string[]) => {
+    const value = groupValue[0];
     if (value === "am" || value === "pm") {
       updateTime(hours, minutes, value === "pm");
     }
@@ -177,20 +178,19 @@ export function DateTimePicker({
               <div className="ml-2 grid gap-1">
                 <Label className="text-xs">AM/PM</Label>
                 <ToggleGroup
-                  type="single"
-                  value={isAM ? "am" : "pm"}
+                  value={[isAM ? "am" : "pm"]}
                   onValueChange={handleAMPMToggle}
                   className="flex"
                 >
                   <ToggleGroupItem
                     value="am"
-                    className="data-[state=on]:bg-primary data-[state=off]:bg-muted data-[state=on]:text-primary-foreground size-9 rounded-lg! rounded-r-none! px-2 text-xs"
+                    className="data-pressed:bg-primary not-data-pressed:bg-muted data-pressed:text-primary-foreground size-9 rounded-lg! rounded-r-none! px-2 text-xs"
                   >
                     AM
                   </ToggleGroupItem>
                   <ToggleGroupItem
                     value="pm"
-                    className="data-[state=on]:bg-primary data-[state=off]:bg-muted data-[state=on]:text-primary-foreground size-9 rounded-lg! rounded-l-none! px-2 text-xs"
+                    className="data-pressed:bg-primary not-data-pressed:bg-muted data-pressed:text-primary-foreground size-9 rounded-lg! rounded-l-none! px-2 text-xs"
                   >
                     PM
                   </ToggleGroupItem>

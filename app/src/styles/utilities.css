@@ -1,12 +1,3 @@
-.moving-border {
-  background: radial-gradient(
-    circle,
-    rgba(255, 98, 138, 1) 14%,
-    rgba(161, 68, 255, 0.8) 51%,
-    rgba(255, 98, 138, 0) 100%
-  );
-}
-
 /* bg colors */
 .bg-stripes {
   background-size: 7.07px 7.07px;
@@ -52,4 +43,23 @@
 
 .animate-shimmer {
   animation: shimmer 1.4s ease-in-out infinite;
+}
+
+/* accordion animations */
+@keyframes accordion-panel-down {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--accordion-panel-height);
+  }
+}
+
+@keyframes accordion-panel-up {
+  from {
+    height: var(--accordion-panel-height);
+  }
+  to {
+    height: 0;
+  }
 }

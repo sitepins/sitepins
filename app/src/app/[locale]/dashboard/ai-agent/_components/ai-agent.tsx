@@ -25,7 +25,7 @@ import { aiProviders } from "@/lib/constant";
 import { Eye, EyeOff, Trash } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { ChangeEvent, useMemo, useState } from "react";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 
 // --- Types ---
 type TAICredential = {

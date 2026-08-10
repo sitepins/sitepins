@@ -2,7 +2,7 @@
 
 import { useEditorRef } from "platejs/react";
 import { ComponentProps, useEffect } from "react";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 import { BaseSnippetBlock, SnippetTheme } from "../common/base-block-node";
 import { EditableTagLine } from "../common/editable-tag-line";
 import { parseJsxString } from "./jsx-parser";

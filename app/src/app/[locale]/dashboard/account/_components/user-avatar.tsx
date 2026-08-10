@@ -13,7 +13,7 @@ import { IS_DEMO } from "@/lib/constant";
 import { BetterFetchError } from "better-auth/client";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 import { useTranslations } from "next-intl";
 
 export default function UserAvatar({ auth }: { auth: Session }) {

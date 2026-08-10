@@ -9,16 +9,13 @@ import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils/cn";
 import { type VariantProps, cva } from "class-variance-authority";
 import { ChevronDown } from "lucide-react";
-import {
-  Toolbar as ToolbarPrimitive,
-  Tooltip as TooltipPrimitive,
-} from "radix-ui";
+import { Toggle as TogglePrimitive } from "@base-ui/react/toggle";
+import { ToggleGroup as ToggleGroupPrimitive } from "@base-ui/react/toggle-group";
+import { Toolbar as ToolbarPrimitive } from "@base-ui/react/toolbar";
+import { Tooltip as TooltipPrimitive } from "@base-ui/react/tooltip";
 import * as React from "react";
 
-export function Toolbar({
-  className,
-  ...props
-}: React.ComponentProps<typeof ToolbarPrimitive.Root>) {
+export function Toolbar({ className, ...props }: ToolbarPrimitive.Root.Props) {
   return (
     <ToolbarPrimitive.Root
       className={cn(
@@ -33,9 +30,9 @@ export function Toolbar({
 export function ToolbarToggleGroup({
   className,
   ...props
-}: React.ComponentProps<typeof ToolbarPrimitive.ToolbarToggleGroup>) {
+}: ToggleGroupPrimitive.Props) {
   return (
-    <ToolbarPrimitive.ToolbarToggleGroup
+    <ToggleGroupPrimitive
       className={cn("flex items-center", className)}
       {...props}
     />
@@ -45,7 +42,7 @@ export function ToolbarToggleGroup({
 export function ToolbarLink({
   className,
   ...props
-}: React.ComponentProps<typeof ToolbarPrimitive.Link>) {
+}: ToolbarPrimitive.Link.Props) {
   return (
     <ToolbarPrimitive.Link
       className={cn("font-medium underline underline-offset-4", className)}
@@ -57,7 +54,7 @@ export function ToolbarLink({
 export function ToolbarSeparator({
   className,
   ...props
-}: React.ComponentProps<typeof ToolbarPrimitive.Separator>) {
+}: ToolbarPrimitive.Separator.Props) {
   return (
     <ToolbarPrimitive.Separator
       className={cn(
@@ -123,9 +120,10 @@ type ToolbarButtonProps = {
   showArrow?: boolean;
 } & Omit<
   React.ComponentPropsWithoutRef<typeof ToolbarToggleItem>,
-  "asChild" | "value"
-> &
-  VariantProps<typeof toolbarButtonVariants>;
+  "asChild" | "value" | "render" | "style" | "className"
+> & { className?: string; style?: React.CSSProperties } & VariantProps<
+    typeof toolbarButtonVariants
+  >;
 
 export const ToolbarButton = withTooltip(function ToolbarButton({
   children,
@@ -138,7 +136,7 @@ export const ToolbarButton = withTooltip(function ToolbarButton({
   ...props
 }: ToolbarButtonProps) {
   return typeof pressed === "boolean" ? (
-    <ToolbarToggleGroup disabled={props.disabled} value="single" type="single">
+    <ToolbarToggleGroup disabled={props.disabled} value={["single"]}>
       <ToolbarToggleItem
         className={cn(
           toolbarButtonVariants({
@@ -257,10 +255,9 @@ export function ToolbarToggleItem({
   size = "sm",
   variant,
   ...props
-}: React.ComponentProps<typeof ToolbarPrimitive.ToggleItem> &
-  VariantProps<typeof toolbarButtonVariants>) {
+}: TogglePrimitive.Props & VariantProps<typeof toolbarButtonVariants>) {
   return (
-    <ToolbarPrimitive.ToggleItem
+    <TogglePrimitive
       className={cn(toolbarButtonVariants({ size, variant }), className)}
       {...props}
     />
@@ -343,22 +340,27 @@ function TooltipContent({
   // CHANGE
   sideOffset = 4,
   ...props
-}: React.ComponentProps<typeof TooltipPrimitive.Content>) {
+}: TooltipPrimitive.Popup.Props &
+  Pick<TooltipPrimitive.Positioner.Props, "sideOffset">) {
   return (
     <TooltipPrimitive.Portal>
-      <TooltipPrimitive.Content
-        className={cn(
-          "bg-primary text-primary-foreground z-50 w-fit origin-(--radix-tooltip-content-transform-origin) rounded-md px-3 py-1.5 text-xs text-balance",
-          className,
-        )}
-        data-slot="tooltip-content"
+      <TooltipPrimitive.Positioner
         sideOffset={sideOffset}
-        {...props}
+        className="isolate z-50"
       >
-        {children}
-        {/* CHANGE */}
-        {/* <TooltipPrimitive.Arrow className="z-50 size-2.5 translate-y-[calc(-50%_-_2px)] rotate-45 rounded-[2px] bg-primary fill-primary" /> */}
-      </TooltipPrimitive.Content>
+        <TooltipPrimitive.Popup
+          className={cn(
+            "bg-primary text-primary-foreground z-50 w-fit origin-(--transform-origin) rounded-md px-3 py-1.5 text-xs text-balance",
+            className,
+          )}
+          data-slot="tooltip-content"
+          {...props}
+        >
+          {children}
+          {/* CHANGE */}
+          {/* <TooltipPrimitive.Arrow className="z-50 size-2.5 translate-y-[calc(-50%_-_2px)] rotate-45 rounded-[2px] bg-primary fill-primary" /> */}
+        </TooltipPrimitive.Popup>
+      </TooltipPrimitive.Positioner>
     </TooltipPrimitive.Portal>
   );
 }

@@ -9,7 +9,7 @@ import { useUpdateGitLabFilesMutation } from "@/redux/features/gitlab";
 import { EAction, EProjectLogType } from "@/redux/features/project-log/type";
 import { TFiles } from "@/types";
 import { useTranslations } from "next-intl";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 
 type Config = {
   owner?: string;

@@ -24,7 +24,7 @@ import { TOrg } from "@/redux/features/orgs/type";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTransition } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 import { z } from "zod/v4";
 import { useTranslations } from "next-intl";
 

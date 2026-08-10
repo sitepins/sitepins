@@ -23,7 +23,7 @@ import { REGEXP_ONLY_DIGITS } from "input-otp";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 import * as z from "zod/v4";
 
 function OTPGroupField({ index }: { index: number }) {

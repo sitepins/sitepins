@@ -35,7 +35,7 @@ import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
 import { Dispatch, SetStateAction, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 import { FileForm, FolderForm, HeadingForm } from "./arrange-site-forms";
 import ArrangementItem from "./arrange-site-list";
 import ArrangeSiteSkeleton from "./arrange-site-skeleton";

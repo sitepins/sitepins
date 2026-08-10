@@ -87,7 +87,6 @@
     "next-themes": "^0.4.6",
     "octokit": "^5.0.5",
     "platejs": "53.3.3",
-    "radix-ui": "^1.6.7",
     "react": "19.2.8",
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",
@@ -103,19 +102,16 @@
     "remark-math": "^6.0.0",
     "remark-parse": "^11.0.0",
     "socket.io-client": "^4.8.3",
-    "sonner": "^2.0.8",
     "tailwind-merge": "^3.6.0",
     "unified": "^11.0.5",
     "unist-util-visit": "^5.1.0",
     "validate-color": "^2.2.4",
-    "vaul": "^1.1.2",
     "yaml": "^2.9.0",
     "zod": "^4.4.3"
   },
   "devDependencies": {
     "@octokit/types": "^17.0.0",
     "@shikijs/monaco": "^4.4.2",
-    "vitest": "^4.1.10",
     "@tailwindcss/forms": "^0.5.11",
     "@tailwindcss/postcss": "^4.3.3",
     "@tailwindcss/typography": "^0.5.20",
@@ -140,6 +136,7 @@
     "shiki": "^4.4.2",
     "tailwindcss": "^4.3.3",
     "tw-animate-css": "^1.4.0",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.10"
   }
 }

@@ -58,7 +58,7 @@ import path from "path";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 import * as z from "zod/v4";
 import { SchemaBuilder } from "../../../_components/schema-builder";
 import SchemaSkeleton from "./schema-skeleton";

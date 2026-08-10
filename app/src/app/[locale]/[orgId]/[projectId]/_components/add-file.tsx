@@ -39,7 +39,7 @@ import { useParams, usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 import * as z from "zod/v4";
 import CreateSchema from "./create-schema";
 import { convertToFormData } from "./schema-form-converter";

@@ -197,7 +197,7 @@ export default function SeoAnalysis({
         {categories.map((category) => {
           const IconComponent = category.icon;
           return (
-            <Accordion key={category.id} type="single" collapsible>
+            <Accordion key={category.id}>
               <AccordionItem
                 value={category.id}
                 className={`border-border rounded-lg border ${category.borderColor} ${category.bgColor} px-4 last:border-b`}

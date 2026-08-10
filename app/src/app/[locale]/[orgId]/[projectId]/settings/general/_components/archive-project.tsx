@@ -22,7 +22,7 @@ import {
 import { IS_DEMO } from "@/lib/constant";
 import { useUpdateProjectStatusMutation } from "@/redux/features/project/project-api";
 import { useState } from "react";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 import { useTranslations } from "next-intl";
 
 export default function ArchiveProject({

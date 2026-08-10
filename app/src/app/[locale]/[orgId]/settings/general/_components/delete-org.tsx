@@ -25,7 +25,7 @@ import { useDeleteOrgMutation } from "@/redux/features/orgs/org-api";
 import { Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 import { useTranslations } from "next-intl";
 
 export default function DeleteOrg({

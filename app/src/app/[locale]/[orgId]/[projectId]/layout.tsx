@@ -250,10 +250,8 @@ export default function Layout(
                     >
                       <li>
                         <Accordion
-                          defaultValue="config"
+                          defaultValue={["config"]}
                           className={cn("relative")}
-                          type="single"
-                          collapsible
                         >
                           <AccordionItem value="config" className="border-0">
                             <Link
@@ -340,11 +338,7 @@ export default function Layout(
                   {!isArchived && canAccessProFeatures && (
                     <ul className="tree bg-background rounded pr-2 [--tree-spacing:2rem]">
                       <li>
-                        <Accordion
-                          className={cn("relative")}
-                          type="single"
-                          collapsible
-                        >
+                        <Accordion className={cn("relative")}>
                           <AccordionItem value="code" className="border-0">
                             <AccordionTrigger
                               className={cn(
@@ -399,11 +393,7 @@ export default function Layout(
                   {!isArchived && config.configs?.length > 0 && (
                     <ul className="tree bg-background rounded pr-2 [--tree-spacing:2rem]">
                       <li>
-                        <Accordion
-                          className={cn("relative")}
-                          type="single"
-                          collapsible
-                        >
+                        <Accordion className={cn("relative")}>
                           <AccordionItem value="config" className="border-0">
                             <Link
                               className={cn(

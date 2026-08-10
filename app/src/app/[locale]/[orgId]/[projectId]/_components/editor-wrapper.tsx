@@ -21,7 +21,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { memo, useCallback, useEffect, useRef, useState } from "react";
 import type { Socket } from "socket.io-client";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 import CommitModal from "./commit-modal";
 import EditorHeader from "./editor-header";
 import PreventNavigation from "./prevent-navigation";

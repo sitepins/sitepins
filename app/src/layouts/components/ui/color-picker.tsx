@@ -339,9 +339,9 @@ const HueSlider = ({
           value={[h]}
           max={360}
           step={1}
-          className="rounded **:[[role=slider]]:h-4 **:[[role=slider]]:w-4"
+          className="rounded **:data-[slot=slider-thumb]:size-4"
           rangeClass="bg-transparent"
-          onValueChange={([newH]) => onUpdate(newH, s, l)}
+          onValueChange={(v) => onUpdate(Array.isArray(v) ? v[0] : v, s, l)}
           trackStyle={{
             backgroundImage: `linear-gradient(to right, 
             hsl(0, 100%, 50%), hsl(60, 100%, 50%), hsl(120, 100%, 50%), 
@@ -417,19 +417,19 @@ export function ColorPicker({ color = "#000000", onChange }: ColorPickerProps) {
             <TabsList className="h-9 w-full">
               <TabsTrigger
                 value="hex"
-                className="data-[state=active]:bg-background dark:data-[state=active]:bg-input/30 data-[state=active]:text-text h-full"
+                className="data-active:bg-background dark:data-active:bg-input/30 data-active:text-text h-full"
               >
                 Hex
               </TabsTrigger>
               <TabsTrigger
                 value="rgba"
-                className="data-[state=active]:bg-background dark:data-[state=active]:bg-input/30 data-[state=active]:text-text h-full"
+                className="data-active:bg-background dark:data-active:bg-input/30 data-active:text-text h-full"
               >
                 RGBA
               </TabsTrigger>
               <TabsTrigger
                 value="hsla"
-                className="data-[state=active]:bg-background dark:data-[state=active]:bg-input/30 data-[state=active]:text-text h-full"
+                className="data-active:bg-background dark:data-active:bg-input/30 data-active:text-text h-full"
               >
                 HSLA
               </TabsTrigger>

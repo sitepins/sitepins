@@ -72,7 +72,7 @@ export default function ResponsiveEditorLayout({
           <TabsList className="border-border mb-4 flex h-8 w-full gap-x-2 overflow-hidden rounded-md border sm:h-9">
             <TabsTrigger value="frontmatter" asChild>
               <Button
-                className="data-[state=active]:bg-primary bg-secondary text-secondary-foreground hover:bg-secondary/80 hover:text-foreground h-full flex-1 rounded-sm border-none shadow-none data-[state=active]:text-white! data-[state=active]:shadow-sm"
+                className="data-active:bg-primary bg-secondary text-secondary-foreground hover:bg-secondary/80 hover:text-foreground h-full flex-1 rounded-sm border-none shadow-none data-active:text-white! data-active:shadow-sm"
                 size="sm"
               >
                 <Tag className="mr-2 size-4 text-current" />
@@ -81,7 +81,7 @@ export default function ResponsiveEditorLayout({
             </TabsTrigger>
             <TabsTrigger value="content" asChild>
               <Button
-                className="data-[state=active]:bg-primary bg-secondary text-secondary-foreground hover:bg-secondary/80 hover:text-foreground h-full flex-1 rounded-sm border-none shadow-none data-[state=active]:text-white! data-[state=active]:shadow-sm"
+                className="data-active:bg-primary bg-secondary text-secondary-foreground hover:bg-secondary/80 hover:text-foreground h-full flex-1 rounded-sm border-none shadow-none data-active:text-white! data-active:shadow-sm"
                 size="sm"
               >
                 <Text className="mr-2 size-4 text-current" />

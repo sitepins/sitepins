@@ -11,7 +11,7 @@ import { IS_DEMO } from "@/lib/constant";
 import { useUpdateProjectMutation } from "@/redux/features/project/project-api";
 import { TProject } from "@/redux/features/project/type";
 import { useTranslations } from "next-intl";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 
 export default function ProjectAvatar(
   project: TProject & { canUpdate?: boolean },

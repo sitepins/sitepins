@@ -18,6 +18,7 @@ export const useAllInstallationRepos = (override?: {
   provider?: string;
   token?: string;
   search?: string;
+  skip?: boolean;
 }): {
   repositories: TGitRepo[];
   isLoading: boolean;
@@ -46,6 +47,7 @@ export const useAllInstallationRepos = (override?: {
       // GET /user/installations requires a GitHub App user access token.
       // Classic PATs and OAuth App tokens return 401 — skip if no user token.
       skip:
+        override?.skip ||
         !config.token ||
         !isGitHubProvider(config.provider) ||
         !config.currentLoginUserToken,
@@ -218,9 +220,10 @@ export const useAllInstallationRepos = (override?: {
     const active = { current: true };
 
     if (
-      (isGitHubProvider(config.provider) &&
+      !override?.skip &&
+      ((isGitHubProvider(config.provider) &&
         installationsData?.installations?.length) ||
-      (isGitLabProvider(config.provider) && config.token)
+        (isGitLabProvider(config.provider) && config.token))
     ) {
       // fetchAllRepos sets loading/error state synchronously before its first await
       // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -233,7 +236,13 @@ export const useAllInstallationRepos = (override?: {
       active.current = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [installationsData, config.provider, config.token, override?.search]);
+  }, [
+    installationsData,
+    config.provider,
+    config.token,
+    override?.search,
+    override?.skip,
+  ]);
 
   return {
     repositories,

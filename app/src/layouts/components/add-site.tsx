@@ -49,6 +49,7 @@ import { authClient } from "@/lib/auth/auth-client";
 import { getPlanLimits } from "@/lib/limits";
 import { cn } from "@/lib/utils/cn";
 import { isDemoUrl } from "@/lib/utils/demo-urls";
+import { IS_DEMO } from "@/lib/constant";
 import { errorMessage } from "@/lib/utils/error";
 import {
   isGitHubProvider,
@@ -181,6 +182,7 @@ export default function AddSite({
     provider,
     token: selectedProvider?.accessToken,
     search: debouncedSearchQuery,
+    skip: IS_DEMO,
   });
 
   useEffect(() => {
@@ -196,7 +198,7 @@ export default function AddSite({
       repo: repository?.split("/")[1] ?? "",
     },
     {
-      skip: !repository || !isGitHubProvider(provider),
+      skip: IS_DEMO || !repository || !isGitHubProvider(provider),
       refetchOnMountOrArgChange: true,
     },
   );
@@ -210,7 +212,7 @@ export default function AddSite({
         token: selectedProvider?.accessToken,
       },
       {
-        skip: !repository || !isGitLabProvider(provider),
+        skip: IS_DEMO || !repository || !isGitLabProvider(provider),
         refetchOnMountOrArgChange: true,
       },
     );

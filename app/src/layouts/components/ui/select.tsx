@@ -8,6 +8,10 @@ import * as React from "react";
 type ItemRegistry = {
   register: (value: unknown, label: React.ReactNode) => void;
   unregister: (value: unknown) => void;
+  /** Merge without notifying — safe to call during render */
+  seed: (entries: Map<unknown, React.ReactNode>) => void;
+  /** Notify subscribers if a seed changed anything */
+  flush: () => void;
   subscribe: (listener: () => void) => () => void;
   getSnapshot: () => Map<unknown, React.ReactNode>;
 };
@@ -45,18 +49,34 @@ function extractItemsFromChildren(
 function useItemRegistry(initialChildren?: React.ReactNode) {
   const [registry] = React.useState<ItemRegistry>(() => {
     let items = extractItemsFromChildren(initialChildren);
+    let dirty = false;
     const listeners = new Set<() => void>();
+    const emit = () => listeners.forEach((l) => l());
+    const set = (value: unknown, label: React.ReactNode) => {
+      if (items.get(value) === label) return false;
+      items = new Map(items).set(value, label);
+      return true;
+    };
+
     return {
       register(value: unknown, label: React.ReactNode) {
-        if (items.get(value) === label) return;
-        items = new Map(items).set(value, label);
-        listeners.forEach((l) => l());
+        if (set(value, label)) emit();
       },
       unregister(value: unknown) {
         if (!items.has(value)) return;
         items = new Map(items);
         items.delete(value);
-        listeners.forEach((l) => l());
+        emit();
+      },
+      seed(entries: Map<unknown, React.ReactNode>) {
+        entries.forEach((label, value) => {
+          if (set(value, label)) dirty = true;
+        });
+      },
+      flush() {
+        if (!dirty) return;
+        dirty = false;
+        emit();
       },
       subscribe(listener: () => void) {
         listeners.add(listener);
@@ -70,13 +90,15 @@ function useItemRegistry(initialChildren?: React.ReactNode) {
     };
   });
 
+  // Seeding during render must not notify; that would be a setState on
+  // SelectValue while Select is still rendering.
   React.useMemo(() => {
-    if (initialChildren) {
-      const extracted = extractItemsFromChildren(initialChildren);
-      extracted.forEach((label, val) => {
-        registry.register(val, label);
-      });
-    }
+    if (initialChildren)
+      registry.seed(extractItemsFromChildren(initialChildren));
+  }, [initialChildren, registry]);
+
+  React.useEffect(() => {
+    registry.flush();
   }, [initialChildren, registry]);
 
   return registry;

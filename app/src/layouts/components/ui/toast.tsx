@@ -58,7 +58,7 @@ const toast = Object.assign(
       add(title, "info", options),
     loading: (title: React.ReactNode, options?: ToastOptions) =>
       add(title, "loading", options),
-    dismiss: (id: string) => toastManager.close(id),
+    dismiss: (id?: string) => toastManager.close(id),
     promise: toastManager.promise,
     add: toastManager.add,
     update: toastManager.update,

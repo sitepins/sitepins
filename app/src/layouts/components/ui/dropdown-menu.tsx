@@ -20,8 +20,37 @@ type PositionerProps = Pick<
   | "sticky"
 >;
 
-function DropdownMenu({ ...props }: DropdownMenuPrimitive.Root.Props) {
-  return <DropdownMenuPrimitive.Root data-slot="dropdown-menu" {...props} />;
+type CloseAutoFocusHandler = (event: { preventDefault: () => void }) => void;
+
+const DropdownMenuCloseFocusContext = React.createContext<React.RefObject<
+  CloseAutoFocusHandler | undefined
+> | null>(null);
+
+function DropdownMenu({
+  onOpenChangeComplete,
+  children,
+  ...props
+}: DropdownMenuPrimitive.Root.Props) {
+  const closeAutoFocus = React.useRef<CloseAutoFocusHandler | undefined>(
+    undefined,
+  );
+
+  const handleOpenChangeComplete = (open: boolean) => {
+    onOpenChangeComplete?.(open);
+    if (!open) closeAutoFocus.current?.({ preventDefault: () => {} });
+  };
+
+  return (
+    <DropdownMenuCloseFocusContext.Provider value={closeAutoFocus}>
+      <DropdownMenuPrimitive.Root
+        data-slot="dropdown-menu"
+        onOpenChangeComplete={handleOpenChangeComplete}
+        {...props}
+      >
+        {children}
+      </DropdownMenuPrimitive.Root>
+    </DropdownMenuCloseFocusContext.Provider>
+  );
 }
 
 function DropdownMenuPortal({ ...props }: DropdownMenuPrimitive.Portal.Props) {
@@ -60,8 +89,15 @@ function DropdownMenuContent({
   ...props
 }: DropdownMenuPrimitive.Popup.Props &
   PositionerProps & {
-    onCloseAutoFocus?: (event: { preventDefault: () => void }) => void;
+    onCloseAutoFocus?: CloseAutoFocusHandler;
   }) {
+  const closeAutoFocusRef = React.useContext(DropdownMenuCloseFocusContext);
+  // Not cleared on unmount: the popup unmounts before onOpenChangeComplete runs.
+  React.useEffect(() => {
+    if (!closeAutoFocusRef) return;
+    closeAutoFocusRef.current = onCloseAutoFocus;
+  }, [closeAutoFocusRef, onCloseAutoFocus]);
+
   return (
     <DropdownMenuPrimitive.Portal>
       <DropdownMenuPrimitive.Positioner

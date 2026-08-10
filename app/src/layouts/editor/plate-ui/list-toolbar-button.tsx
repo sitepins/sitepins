@@ -33,7 +33,7 @@ export function BulletedListToolbarButton() {
         });
         editor.tf.focus();
       }}
-      data-state={pressed ? "on" : "off"}
+      pressed={pressed}
     >
       <List className="size-4" />
     </ToolbarButton>
@@ -66,7 +66,7 @@ export function NumberedListToolbarButton() {
         });
         editor.tf.focus();
       }}
-      data-state={pressed ? "on" : "off"}
+      pressed={pressed}
     >
       <ListOrdered className="size-4" />
     </ToolbarButton>

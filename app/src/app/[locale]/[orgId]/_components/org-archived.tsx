@@ -40,7 +40,13 @@ export default function OrgArchived({ variant = "banner" }: Props) {
           <p className="text-muted-foreground mb-8 text-lg">
             {tOrgArchived("desc_full")}
           </p>
-          <Button asChild variant="outline" size="lg" className="gap-2">
+          <Button
+            asChild
+            nativeButton={false}
+            variant="outline"
+            size="lg"
+            className="gap-2"
+          >
             <Link href={`/${params.orgId}/settings`}>
               <Settings className="size-4" />
               {tOrgArchived("org_settings")}

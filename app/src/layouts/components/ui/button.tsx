@@ -1,6 +1,5 @@
 import { cn } from "@/lib/utils/cn";
-import { mergeProps } from "@base-ui/react/merge-props";
-import { useRender } from "@base-ui/react/use-render";
+import { Button as ButtonPrimitive } from "@base-ui/react/button";
 import { cva, type VariantProps } from "class-variance-authority";
 import { Loader2 } from "lucide-react";
 import * as React from "react";
@@ -47,9 +46,7 @@ const buttonVariants = cva(
 );
 
 export interface ButtonProps
-  extends
-    useRender.ComponentProps<"button">,
-    VariantProps<typeof buttonVariants> {
+  extends ButtonPrimitive.Props, VariantProps<typeof buttonVariants> {
   /** Render the single child element instead of a `button` */
   asChild?: boolean;
   /** Show a loading spinner and disable the button */
@@ -64,11 +61,10 @@ function Button({
   isLoading = false,
   children,
   render,
+  disabled,
+  type,
   ...props
 }: ButtonProps) {
-  // If loading, ensure button is disabled
-  const mergedDisabled = Boolean(props.disabled) || Boolean(isLoading);
-
   const content = isLoading ? (
     <>
       {children}
@@ -80,23 +76,25 @@ function Button({
 
   const renderProp = asChild ? (children as React.ReactElement) : render;
 
-  return useRender({
-    defaultTagName: "button",
-    render: renderProp,
-    props: mergeProps<"button">(
-      {
-        "data-slot": "button",
-        "data-variant": variant,
-        "data-size": size,
-        className: cn(buttonVariants({ variant, size, className })),
-        disabled: mergedDisabled,
-        children: asChild ? undefined : content,
-        // useRender forces type="button"; a native button defaults to submit
-        ...(renderProp ? null : { type: "submit" }),
-      } as React.ComponentProps<"button">,
-      props,
-    ),
-  });
+  return (
+    <ButtonPrimitive
+      data-slot="button"
+      data-variant={variant}
+      data-size={size}
+      className={cn(buttonVariants({ variant, size, className }))}
+      disabled={Boolean(disabled) || isLoading}
+      render={renderProp}
+      // Base UI forces type="button"; a native button defaults to submit
+      {...(type !== undefined
+        ? { type }
+        : renderProp
+          ? null
+          : { type: "submit" as const })}
+      {...props}
+    >
+      {asChild ? undefined : content}
+    </ButtonPrimitive>
+  );
 }
 
 export { Button, buttonVariants };

@@ -41,7 +41,7 @@ import { useRouter } from "next/navigation";
 import path from "path";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 import PresenceAvatars from "../../../_components/presence-avatars";
 import PreventNavigation from "../../../_components/prevent-navigation";
 import PreviewButton from "../../../_components/preview-button";

@@ -5,7 +5,7 @@ import {
   inferAdditionalFields,
 } from "better-auth/client/plugins";
 import { BetterFetchOption, createAuthClient } from "better-auth/react";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 
 const customSignupClient = () => {
   return {

@@ -27,7 +27,7 @@ import { useTranslations } from "next-intl";
 import path from "path";
 import { useState } from "react";
 import { useSelector } from "react-redux";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 
 export default function MediaRename({
   filePath,

@@ -1,6 +1,7 @@
 import { cn } from "@/lib/utils/cn";
+import { mergeProps } from "@base-ui/react/merge-props";
+import { useRender } from "@base-ui/react/use-render";
 import { ChevronRight, MoreHorizontal } from "lucide-react";
-import { Slot } from "radix-ui";
 import * as React from "react";
 
 function Breadcrumb({ ...props }: React.ComponentProps<"nav">) {
@@ -33,19 +34,24 @@ function BreadcrumbItem({ className, ...props }: React.ComponentProps<"li">) {
 function BreadcrumbLink({
   asChild,
   className,
+  children,
+  render,
   ...props
-}: React.ComponentProps<"a"> & {
+}: useRender.ComponentProps<"a"> & {
   asChild?: boolean;
 }) {
-  const Comp: React.ElementType = asChild ? Slot.Root : "a";
-
-  return (
-    <Comp
-      data-slot="breadcrumb-link"
-      className={cn("hover:text-foreground transition-colors", className)}
-      {...props}
-    />
-  );
+  return useRender({
+    defaultTagName: "a",
+    render: asChild ? (children as React.ReactElement) : render,
+    props: mergeProps<"a">(
+      {
+        "data-slot": "breadcrumb-link",
+        className: cn("hover:text-foreground transition-colors", className),
+        children: asChild ? undefined : children,
+      } as React.ComponentProps<"a">,
+      props,
+    ),
+  });
 }
 
 function BreadcrumbPage({ className, ...props }: React.ComponentProps<"span">) {

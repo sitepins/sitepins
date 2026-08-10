@@ -11,7 +11,7 @@ import { usePathname } from "next/navigation";
 import { TElement } from "platejs";
 import { Plate, usePlateEditor } from "platejs/react";
 import { useEffect, useRef } from "react";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 import { AiUpgrade } from "./plate-ui/ai-upgrade";
 import { Editor, EditorContainer } from "./plate-ui/editor";
 import { EditorKit, MyEditor } from "./plugins/editor-kit";

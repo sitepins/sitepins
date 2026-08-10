@@ -29,7 +29,7 @@ import { TMember } from "@/redux/features/orgs/type";
 import { EllipsisVertical } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 
 const role: { admin: string; editor: string } = {
   admin: "editor",

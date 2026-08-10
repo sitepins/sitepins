@@ -41,10 +41,8 @@ export function FolderAccordion({
   return (
     <Accordion
       className={cn("relative", className)}
-      type="single"
-      collapsible
-      value={value}
-      onValueChange={setValue}
+      value={value ? [value] : []}
+      onValueChange={(next) => setValue((next[0] as string) ?? "")}
     >
       <AccordionItem value={`${index}`} className="border-0">
         {triggerWrapperClassName !== undefined ? (

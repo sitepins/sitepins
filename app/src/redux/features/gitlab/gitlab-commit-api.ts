@@ -11,7 +11,7 @@ import {
 import { pathToDir } from "@/lib/utils/path-to-dir";
 import { RootState } from "@/redux/store";
 import path from "path";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 import { updateConfig } from "../config/slice";
 import { getGitProviderAdapter } from "../git/provider-adapter";
 import {

@@ -2,40 +2,104 @@
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils/cn";
+import { Dialog as DialogPrimitive } from "@base-ui/react/dialog";
 import { XIcon } from "lucide-react";
-import { Dialog as DialogPrimitive } from "radix-ui";
 import * as React from "react";
 
+type DismissHandler = (event: { preventDefault: () => void }) => void;
+
+// Base UI moves dismissal interception to Root.onOpenChange; Content registers
+// its radix-style handlers here so call sites keep working.
+type DismissHandlers = {
+  onEscapeKeyDown?: DismissHandler;
+  onPointerDownOutside?: DismissHandler;
+  onInteractOutside?: DismissHandler;
+};
+
+const DialogDismissContext =
+  React.createContext<React.RefObject<DismissHandlers> | null>(null);
+
 function Dialog({
+  onOpenChange,
+  children,
   ...props
-}: React.ComponentProps<typeof DialogPrimitive.Root>) {
-  return <DialogPrimitive.Root data-slot="dialog" {...props} />;
+}: DialogPrimitive.Root.Props) {
+  const handlers = React.useRef<DismissHandlers>({});
+
+  const handleOpenChange: DialogPrimitive.Root.Props["onOpenChange"] = (
+    open,
+    eventDetails,
+  ) => {
+    if (!open) {
+      const { reason } = eventDetails;
+      const event = { preventDefault: () => eventDetails.cancel() };
+      if (reason === "escape-key") handlers.current.onEscapeKeyDown?.(event);
+      if (reason === "outside-press") {
+        handlers.current.onPointerDownOutside?.(event);
+        handlers.current.onInteractOutside?.(event);
+      }
+      if (eventDetails.isCanceled) return;
+    }
+    onOpenChange?.(open, eventDetails);
+  };
+
+  return (
+    <DialogDismissContext.Provider value={handlers}>
+      <DialogPrimitive.Root
+        data-slot="dialog"
+        onOpenChange={handleOpenChange}
+        {...props}
+      >
+        {children}
+      </DialogPrimitive.Root>
+    </DialogDismissContext.Provider>
+  );
 }
 
 function DialogTrigger({
+  asChild,
+  children,
+  render,
   ...props
-}: React.ComponentProps<typeof DialogPrimitive.Trigger>) {
-  return <DialogPrimitive.Trigger data-slot="dialog-trigger" {...props} />;
+}: DialogPrimitive.Trigger.Props & { asChild?: boolean }) {
+  return (
+    <DialogPrimitive.Trigger
+      data-slot="dialog-trigger"
+      render={asChild ? (children as React.ReactElement) : render}
+      {...props}
+    >
+      {asChild ? undefined : children}
+    </DialogPrimitive.Trigger>
+  );
 }
 
-function DialogPortal({
-  ...props
-}: React.ComponentProps<typeof DialogPrimitive.Portal>) {
+function DialogPortal({ ...props }: DialogPrimitive.Portal.Props) {
   return <DialogPrimitive.Portal data-slot="dialog-portal" {...props} />;
 }
 
 function DialogClose({
+  asChild,
+  children,
+  render,
   ...props
-}: React.ComponentProps<typeof DialogPrimitive.Close>) {
-  return <DialogPrimitive.Close data-slot="dialog-close" {...props} />;
+}: DialogPrimitive.Close.Props & { asChild?: boolean }) {
+  return (
+    <DialogPrimitive.Close
+      data-slot="dialog-close"
+      render={asChild ? (children as React.ReactElement) : render}
+      {...props}
+    >
+      {asChild ? undefined : children}
+    </DialogPrimitive.Close>
+  );
 }
 
 function DialogOverlay({
   className,
   ...props
-}: React.ComponentProps<typeof DialogPrimitive.Overlay>) {
+}: DialogPrimitive.Backdrop.Props) {
   return (
-    <DialogPrimitive.Overlay
+    <DialogPrimitive.Backdrop
       data-slot="dialog-overlay"
       className={cn(
         "data-open:animate-in data-closed:animate-out data-closed:fade-out-0 data-open:fade-in-0 fixed inset-0 isolate z-50 bg-black/10 duration-100 supports-backdrop-filter:backdrop-blur-xs",
@@ -50,39 +114,44 @@ function DialogContent({
   className,
   children,
   showCloseButton = true,
-  disableClose = false,
-  onInteractOutside,
   onEscapeKeyDown,
+  onPointerDownOutside,
+  onInteractOutside,
+  onOpenAutoFocus,
   ...props
-}: React.ComponentProps<typeof DialogPrimitive.Content> & {
+}: DialogPrimitive.Popup.Props & {
   showCloseButton?: boolean;
-  disableClose?: boolean;
+  onEscapeKeyDown?: DismissHandler;
+  onPointerDownOutside?: DismissHandler;
+  onInteractOutside?: DismissHandler;
+  onOpenAutoFocus?: DismissHandler;
 }) {
+  const dismissHandlersRef = React.useContext(DialogDismissContext);
+  React.useEffect(() => {
+    if (!dismissHandlersRef) return;
+    dismissHandlersRef.current = {
+      onEscapeKeyDown,
+      onPointerDownOutside,
+      onInteractOutside,
+    };
+  }, [
+    dismissHandlersRef,
+    onEscapeKeyDown,
+    onPointerDownOutside,
+    onInteractOutside,
+  ]);
+
   return (
     <DialogPortal>
       <DialogOverlay />
-      <DialogPrimitive.Content
+      <DialogPrimitive.Popup
         data-slot="dialog-content"
         className={cn(
           "bg-background data-open:animate-in data-closed:animate-out data-closed:fade-out-0 data-open:fade-in-0 data-closed:zoom-out-95 data-open:zoom-in-95 ring-foreground/10 fixed top-1/2 left-1/2 z-50 grid w-full max-w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 gap-4 rounded-xl p-4 text-sm ring-1 duration-100 outline-none sm:max-w-sm md:max-w-2xl md:p-6",
           className,
         )}
-        onInteractOutside={(e) => {
-          if (disableClose) {
-            e.preventDefault();
-          }
-          onInteractOutside?.(e);
-        }}
-        onEscapeKeyDown={(e) => {
-          if (disableClose) {
-            e.preventDefault();
-          }
-          onEscapeKeyDown?.(e);
-        }}
-        onCloseAutoFocus={(e) => {
-          e.preventDefault();
-          document.body.style.pointerEvents = "auto";
-        }}
+        finalFocus={false}
+        initialFocus={onOpenAutoFocus ? false : undefined}
         onKeyDown={(e) => {
           e.stopPropagation();
         }}
@@ -90,19 +159,21 @@ function DialogContent({
       >
         {children}
         {showCloseButton && (
-          <DialogPrimitive.Close data-slot="dialog-close" asChild>
-            <Button
-              variant="ghost"
-              className="absolute top-2 right-2"
-              size="icon"
-              disabled={disableClose}
-            >
-              <XIcon />
-              <span className="sr-only">Close</span>
-            </Button>
+          <DialogPrimitive.Close
+            data-slot="dialog-close"
+            render={
+              <Button
+                variant="ghost"
+                className="absolute top-2 right-2"
+                size="icon"
+              />
+            }
+          >
+            <XIcon />
+            <span className="sr-only">Close</span>
           </DialogPrimitive.Close>
         )}
-      </DialogPrimitive.Content>
+      </DialogPrimitive.Popup>
     </DialogPortal>
   );
 }
@@ -136,18 +207,15 @@ function DialogFooter({
     >
       {children}
       {showCloseButton && (
-        <DialogPrimitive.Close asChild>
-          <Button variant="outline">Close</Button>
+        <DialogPrimitive.Close render={<Button variant="outline" />}>
+          Close
         </DialogPrimitive.Close>
       )}
     </div>
   );
 }
 
-function DialogTitle({
-  className,
-  ...props
-}: React.ComponentProps<typeof DialogPrimitive.Title>) {
+function DialogTitle({ className, ...props }: DialogPrimitive.Title.Props) {
   return (
     <DialogPrimitive.Title
       data-slot="dialog-title"
@@ -160,7 +228,7 @@ function DialogTitle({
 function DialogDescription({
   className,
   ...props
-}: React.ComponentProps<typeof DialogPrimitive.Description>) {
+}: DialogPrimitive.Description.Props) {
   return (
     <DialogPrimitive.Description
       data-slot="dialog-description"

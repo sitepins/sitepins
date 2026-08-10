@@ -16,7 +16,7 @@ import {
 } from "@/redux/features/user-preference/user-preference-api";
 import { Bot, User } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 import { CoAuthorPreferenceSkeleton } from "./coauthor-preference-skeleton";
 
 type CoAuthorPreferenceProps = {

@@ -26,14 +26,14 @@ export function BulletedListToolbarButton() {
   return (
     <ToolbarButton
       tooltip="Bullet List"
-      className="data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
+      className="data-pressed:bg-primary data-pressed:text-primary-foreground"
       onClick={() => {
         toggleList(editor, {
           listStyleType: ListStyleType.Disc,
         });
         editor.tf.focus();
       }}
-      data-state={pressed ? "on" : "off"}
+      pressed={pressed}
     >
       <List className="size-4" />
     </ToolbarButton>
@@ -59,14 +59,14 @@ export function NumberedListToolbarButton() {
   return (
     <ToolbarButton
       tooltip="Num List"
-      className="data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
+      className="data-pressed:bg-primary data-pressed:text-primary-foreground"
       onClick={() => {
         toggleList(editor, {
           listStyleType: ListStyleType.Decimal,
         });
         editor.tf.focus();
       }}
-      data-state={pressed ? "on" : "off"}
+      pressed={pressed}
     >
       <ListOrdered className="size-4" />
     </ToolbarButton>

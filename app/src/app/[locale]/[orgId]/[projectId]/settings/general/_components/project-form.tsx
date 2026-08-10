@@ -25,7 +25,7 @@ import { TProject } from "@/redux/features/project/type";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import { Controller, useForm } from "react-hook-form";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 import { z } from "zod/v4";
 
 export default function ProjectForm(

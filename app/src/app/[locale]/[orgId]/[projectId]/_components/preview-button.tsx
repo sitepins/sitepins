@@ -30,7 +30,7 @@ import {
 } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { RefObject, useCallback, useEffect, useRef, useState } from "react";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 
 type PreviewButtonProps = {
   repository: string;

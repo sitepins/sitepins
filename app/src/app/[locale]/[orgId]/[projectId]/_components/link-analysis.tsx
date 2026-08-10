@@ -60,7 +60,7 @@ export default function LinkAnalysis({
   const tEditorSeo = useTranslations("editor.seo");
 
   return (
-    <Accordion type="single" collapsible>
+    <Accordion>
       <AccordionItem
         value="content-analysis"
         className="border-border rounded-lg border px-4 last:border-b"

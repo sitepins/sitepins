@@ -13,7 +13,7 @@ import { newPasswordSchema } from "@/lib/validate";
 import { useSetPasswordMutation } from "@/redux/features/user/user-api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { BetterFetchError } from "better-auth/react";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 // loader handled by shared Button
 import { Button } from "@/components/ui/button";
 import {

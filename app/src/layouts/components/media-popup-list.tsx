@@ -43,7 +43,7 @@ import {
 } from "react";
 import { useDropzone } from "react-dropzone";
 import { useSelector } from "react-redux";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 import MediaConflictHandler from "./media-conflict-handler";
 import { MediaUploadPreview } from "./media-upload-preview";
 import SafeImage from "./safe-image";

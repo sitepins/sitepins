@@ -13,7 +13,7 @@ export default function ContentAnalysis({ content }: { content: string }) {
   const wordCount = content?.split(" ").length;
 
   return (
-    <Accordion type="single" collapsible>
+    <Accordion>
       <AccordionItem
         value="content-analysis"
         className="border-border rounded-lg border px-4 last:border-b"

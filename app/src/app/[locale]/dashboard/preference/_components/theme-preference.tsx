@@ -17,7 +17,7 @@ import {
 import { Monitor, Moon, Sun } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useTheme } from "next-themes";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 import { ThemePreferenceSkeleton } from "./theme-preference-skeleton";
 
 type ThemePreferenceProps = {
@@ -48,7 +48,7 @@ export default function ThemePreference({ userId }: ThemePreferenceProps) {
   }
 
   const optionClass = cn(
-    "border-muted bg-popover hover:bg-primary/5 peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/10 flex cursor-pointer flex-col items-center justify-between rounded-xl border-2 p-4 transition-all",
+    "border-muted bg-popover hover:bg-primary/5 peer-data-checked:border-primary peer-data-checked:bg-primary/10 flex cursor-pointer flex-col items-center justify-between rounded-xl border-2 p-4 transition-all",
   );
 
   return (

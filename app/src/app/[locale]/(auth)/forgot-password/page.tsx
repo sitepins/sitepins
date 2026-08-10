@@ -7,7 +7,7 @@ import { BetterFetchError } from "better-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 import { useTranslations } from "next-intl";
 import { z } from "zod/v4";
 import ForgotPasswordView from "./_components/forget-pass";

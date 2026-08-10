@@ -29,7 +29,7 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import path from "path";
 import { useState } from "react";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 
 export default function ConfigActions({
   pathname,

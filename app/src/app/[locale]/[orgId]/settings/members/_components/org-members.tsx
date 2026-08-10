@@ -54,7 +54,7 @@ import { Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
 import _Link from "next/link";
 import { Controller, useForm } from "react-hook-form";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 import { z } from "zod";
 import MemberActions from "./org-member-actions";
 

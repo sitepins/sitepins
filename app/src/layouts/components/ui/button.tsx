@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils/cn";
+import { Button as ButtonPrimitive } from "@base-ui/react/button";
 import { cva, type VariantProps } from "class-variance-authority";
 import { Loader2 } from "lucide-react";
-import { Slot } from "radix-ui";
 import * as React from "react";
 
 const buttonVariants = cva(
@@ -46,9 +46,8 @@ const buttonVariants = cva(
 );
 
 export interface ButtonProps
-  extends
-    React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof buttonVariants> {
+  extends ButtonPrimitive.Props, VariantProps<typeof buttonVariants> {
+  /** Render the single child element instead of a `button` */
   asChild?: boolean;
   /** Show a loading spinner and disable the button */
   isLoading?: boolean;
@@ -61,13 +60,11 @@ function Button({
   asChild = false,
   isLoading = false,
   children,
+  render,
+  disabled,
+  type,
   ...props
-}: React.ComponentProps<"button"> & ButtonProps) {
-  const Comp: React.ElementType = asChild ? Slot.Root : "button";
-
-  // If loading, ensure button is disabled
-  const mergedDisabled = Boolean(props.disabled) || Boolean(isLoading);
-
+}: ButtonProps) {
   const content = isLoading ? (
     <>
       {children}
@@ -77,17 +74,26 @@ function Button({
     children
   );
 
+  const renderProp = asChild ? (children as React.ReactElement) : render;
+
   return (
-    <Comp
+    <ButtonPrimitive
       data-slot="button"
       data-variant={variant}
       data-size={size}
       className={cn(buttonVariants({ variant, size, className }))}
-      disabled={mergedDisabled}
+      disabled={Boolean(disabled) || isLoading}
+      render={renderProp}
+      // Base UI forces type="button"; a native button defaults to submit
+      {...(type !== undefined
+        ? { type }
+        : renderProp
+          ? null
+          : { type: "submit" as const })}
       {...props}
     >
-      {content}
-    </Comp>
+      {asChild ? undefined : content}
+    </ButtonPrimitive>
   );
 }
 

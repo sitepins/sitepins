@@ -20,7 +20,7 @@ import {
 import { Globe } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useTransition } from "react";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 import { LanguagePreferenceSkeleton } from "./language-preference-skeleton";
 
 export default function LanguagePreference({ userId }: { userId: string }) {
@@ -85,12 +85,12 @@ export default function LanguagePreference({ userId }: { userId: string }) {
               <Label
                 htmlFor={lang.code}
                 className={cn(
-                  "border-muted bg-popover hover:bg-primary/5 peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/10 flex cursor-pointer items-center gap-2 rounded-xl border-2 p-4 transition-all",
+                  "border-muted bg-popover hover:bg-primary/5 peer-data-checked:border-primary peer-data-checked:bg-primary/10 flex cursor-pointer items-center gap-2 rounded-xl border-2 p-4 transition-all",
                 )}
               >
                 <div
                   className={cn(
-                    "bg-muted text-muted-foreground peer-data-[state=checked]:bg-primary peer-data-[state=checked]:text-primary-foreground flex h-9 w-9 items-center justify-center rounded-lg border transition-colors",
+                    "bg-muted text-muted-foreground peer-data-checked:bg-primary peer-data-checked:text-primary-foreground flex h-9 w-9 items-center justify-center rounded-lg border transition-colors",
                   )}
                 >
                   <Globe className="h-5 w-5" />

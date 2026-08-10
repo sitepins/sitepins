@@ -19,7 +19,7 @@ import {
 import { useParams } from "next/navigation";
 import type { Socket } from "socket.io-client";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 
 type CommitData = {
   path: string;

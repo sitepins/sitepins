@@ -12,7 +12,7 @@ import { useUpdateOrgMutation } from "@/redux/features/orgs/org-api";
 import { TOrg } from "@/redux/features/orgs/type";
 import { useTranslations } from "next-intl";
 import { useTransition } from "react";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 
 export default function OrgAvatar(org: TOrg & { canUpdate?: boolean }) {
   const { org_name, org_image, org_id } = org;

@@ -1,8 +1,8 @@
 "use client";
 
-import { useTranslations } from "next-intl";
 import AddOrg from "@/components/add-org";
 import Avatar from "@/components/avatar";
+import { PlanLabel } from "@/components/plan-label";
 import { Button } from "@/components/ui/button";
 import {
   Command,
@@ -18,17 +18,17 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { PlanLabel } from "@/components/plan-label";
 import { UpgradeDialog } from "@/components/upgrade-dialog";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { useOrgId } from "@/hooks/use-org-id";
 import { authClient } from "@/lib/auth/auth-client";
 import { getPlanLimits } from "@/lib/limits";
 import { cn } from "@/lib/utils/cn";
-import { selectCurrentPackage } from "@/redux/features/plan/slice";
 import type { TOrg } from "@/redux/features/orgs/type";
+import { selectCurrentPackage } from "@/redux/features/plan/slice";
 import { useAppSelector } from "@/redux/store";
 import { ChevronsUpDown, Plus } from "lucide-react";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
@@ -62,7 +62,7 @@ export default function OrgSwitcher({
 
   // Check if user can add new org based on their package limit
   const canAddOrg = useMemo(() => {
-    if (!currentPackage || !userId) return false;
+    if (!userId) return false;
     const limit = getPlanLimits(currentPackage).org_limit;
     const ownOrgs =
       orgs?.filter(

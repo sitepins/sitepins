@@ -9,7 +9,7 @@ import { ArrowLeft, Eye, EyeOff, Plus, Trash2 } from "lucide-react";
 import { Reorder } from "motion/react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 import {
   CreateSchemaAddField,
   SortableFieldItem,

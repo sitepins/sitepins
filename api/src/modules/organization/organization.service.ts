@@ -100,6 +100,27 @@ const getOrganizationsByUserService = async (userId: string) => {
     },
   ]);
 
+  if (orgs.length === 0) {
+    const user = await User.findOne({ user_id: userId });
+    if (user) {
+      try {
+        const orgOwnerName = user.full_name
+          ? user.full_name.split(" ")[0]
+          : "User";
+        const orgName = `${orgOwnerName}'s Org`;
+        await createOrganizationService({
+          owner: user.user_id,
+          org_name: orgName,
+          email: user.email,
+          default: true,
+        });
+        return getOrganizationsByUserService(userId);
+      } catch (err) {
+        logger.error("Failed to auto-create default org for user", err);
+      }
+    }
+  }
+
   for (const org of orgs) {
     decryptOrgSandboxToken(org);
     const owner = org.ownerData?.[0];

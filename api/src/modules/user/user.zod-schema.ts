@@ -33,10 +33,5 @@ export const registerSchema = z.object({
         "Password must include at least one special character (e.g. !, @, #, $).",
     }),
 
-  subscribed: z.boolean({
-    error: (issue) =>
-      issue.input === undefined
-        ? "Please specify your subscription preference."
-        : "Subscription status must be true or false.",
-  }),
+  subscribed: z.boolean().default(false),
 });

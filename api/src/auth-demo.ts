@@ -66,8 +66,9 @@ export const authDemo = betterAuth({
       },
       subscribed: {
         type: "boolean",
-        required: true,
+        required: false,
         input: true,
+        defaultValue: false,
       },
       country: {
         type: "string",

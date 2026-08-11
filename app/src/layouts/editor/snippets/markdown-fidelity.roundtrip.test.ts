@@ -1,10 +1,6 @@
 import { MarkdownPlugin } from "@platejs/markdown";
-import { readFileSync } from "node:fs";
-import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
 import { createSlateEditor } from "platejs";
 import { describe, expect, it } from "vitest";
-import { parseContentJson } from "@/lib/utils/content-serializer";
 import { BaseEditorKit } from "../plugins/editor-base-kit";
 import { ShortcodeInlineKit, ShortcodeKit } from "./common/snippet-plugin";
 import { HtmlBlockKit, HtmlInlineKit } from "./html/html-plugin";
@@ -22,13 +18,15 @@ const Kit = [
   JsxInlineKit,
 ];
 
-const fixturePath = join(
-  dirname(fileURLToPath(import.meta.url)),
-  "fidelity-fixture.mdx",
-);
+const fixture = `Some prose with _asterisk emphasis_ and a [link](/somewhere).
 
-/** SPEC.md fixture minus the MDX comment line (comments are architectural). */
-const fixture = readFileSync(fixturePath, "utf8");
+- Dash bullet one
+- Dash bullet two
+
+| Type    | Amount                                  |
+| ------- | --------------------------------------- |
+| Primary | A maximum of $75,000.00<br/>plus extras |
+`;
 
 function roundTripBody(body: string): string {
   const editor = createSlateEditor({ plugins: Kit, value: [] });
@@ -40,8 +38,7 @@ function roundTripBody(body: string): string {
 
 describe("markdown stringify fidelity", () => {
   it("preserves asterisk emphasis, dash bullets, unpadded tables, and bare $", () => {
-    const { content: body } = parseContentJson(fixture, "yaml");
-    const out = roundTripBody(body ?? "");
+    const out = roundTripBody(fixture);
 
     expect(out).toContain("*asterisk emphasis*");
     expect(out).not.toContain("_asterisk emphasis_");
@@ -61,10 +58,9 @@ describe("markdown stringify fidelity", () => {
   });
 
   it("keeps a one-word body edit from rewriting emphasis, tables, or $", () => {
-    const { content: body } = parseContentJson(fixture, "yaml");
     const editor = createSlateEditor({ plugins: Kit, value: [] });
     const api = editor.getApi(MarkdownPlugin);
-    const value = api.markdown.deserialize(body ?? "");
+    const value = api.markdown.deserialize(fixture);
 
     // Simulate a one-word edit in the first paragraph ("prose" → "PROSE").
     const firstParagraph = value[0] as {

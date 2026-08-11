@@ -12,3 +12,6 @@ export const KEY_JSX_INLINE = "jsx_inline";
 
 export const KEY_HTML_BLOCK = "html_block";
 export const KEY_HTML_INLINE = "html_inline";
+
+export const KEY_MDX_COMMENT = "mdx_comment";
+export const KEY_MDX_COMMENT_INLINE = "mdx_comment_inline";

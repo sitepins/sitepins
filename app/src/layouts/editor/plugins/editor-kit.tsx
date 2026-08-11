@@ -8,6 +8,10 @@ import {
 } from "../snippets/common/snippet-plugin";
 import { HtmlBlockKit, HtmlInlineKit } from "../snippets/html/html-plugin";
 import { JsxBlockKit, JsxInlineKit } from "../snippets/jsx/jsx-plugin";
+import {
+  MdxCommentInlineKit,
+  MdxCommentKit,
+} from "../snippets/mdx-comment/mdx-comment-plugin";
 import { AIKit } from "./ai-kit";
 import { AlignKit } from "./align-kit";
 import { AutoformatKit } from "./autoformat-kit";
@@ -79,6 +83,8 @@ export const EditorKit = [
   JsxInlineKit,
   ShortcodeKit,
   ShortcodeInlineKit,
+  MdxCommentKit,
+  MdxCommentInlineKit,
 
   // UI Plugin
   ...BlockPlaceholderKit,

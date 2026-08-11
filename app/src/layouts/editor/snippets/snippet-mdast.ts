@@ -57,6 +57,25 @@ export interface JsxNode extends Parent {
 }
 
 /**
+ * An MDX comment, captured verbatim from the source.
+ *
+ * A leaf: the braces make it opaque to markdown, so nothing inside is parsed.
+ * `value` is the raw slice including both delimiters, which is what the
+ * stringifier writes back — see `remarkMdxComment`.
+ */
+export interface MdxCommentNode extends Node {
+  /**
+   * Block and inline are separate types rather than one type carrying a flag:
+   * Plate keys its deserialize rules off the mdast type, and extra properties
+   * do not survive the trip. An inline node that reaches the root as a block
+   * is then deleted outright by Slate normalisation.
+   */
+  type: "mdx_comment" | "mdx_comment_inline";
+  value: string;
+  data?: Data;
+}
+
+/**
  * Both custom kinds are registered as block *and* phrasing content: mid-pass
  * the tree legitimately holds a block shortcode inside a paragraph, which the
  * lifting passes then hoist out.
@@ -66,17 +85,21 @@ declare module "mdast" {
     shortcode: ShortcodeNode;
     jsx_block: JsxNode;
     jsx_inline: JsxNode;
+    mdx_comment: MdxCommentNode;
+    mdx_comment_inline: MdxCommentNode;
   }
 
   interface BlockContentMap {
     shortcode: ShortcodeNode;
     jsx_block: JsxNode;
+    mdx_comment: MdxCommentNode;
   }
 
   interface PhrasingContentMap {
     shortcode: ShortcodeNode;
     jsx_block: JsxNode;
     jsx_inline: JsxNode;
+    mdx_comment_inline: MdxCommentNode;
   }
 
   interface Data {

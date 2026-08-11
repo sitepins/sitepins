@@ -10,6 +10,8 @@ import { hugoSerializationRules } from "../snippets/hugo/hugo-serialization";
 import { remarkHugo } from "../snippets/hugo/hugo-transformer";
 import { jsxSerializationRules } from "../snippets/jsx/jsx-serialization";
 import { remarkJsx } from "../snippets/jsx/jsx-transformer";
+import { mdxCommentSerializationRules } from "../snippets/mdx-comment/mdx-comment-serialization";
+import { remarkMdxComment } from "../snippets/mdx-comment/mdx-comment-transformer";
 
 /**
  * remark-math with single-dollar text math off so currency like `$75` is not
@@ -38,6 +40,7 @@ export const MarkdownKit = [
       // Remark plugins process the markdown AST
       // Order matters: process custom syntax before standard markdown
       remarkPlugins: [
+        remarkMdxComment, // Capture MDX comments before anything reads inside them
         remarkHtml, // Detect and preserve HTML elements
         remarkJsx, // Detect JSX components
         remarkHugo, // Detect Hugo shortcodes
@@ -62,6 +65,9 @@ export const MarkdownKit = [
 
         // JSX components (block and inline)
         ...jsxSerializationRules,
+
+        // MDX comments (block and inline)
+        ...mdxCommentSerializationRules,
 
         // Images
         ...imageSerializationRules,

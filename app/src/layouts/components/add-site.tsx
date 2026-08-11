@@ -39,6 +39,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { UpgradeCta } from "@/components/upgrade-cta";
 import { UpgradeDialog } from "@/components/upgrade-dialog";
 import { useDebounce } from "@/hooks/use-debounce";
 import { useDialog } from "@/hooks/use-dialog";
@@ -51,13 +52,13 @@ import { cn } from "@/lib/utils/cn";
 import { isDemoUrl } from "@/lib/utils/demo-urls";
 import { IS_DEMO } from "@/lib/constant";
 import { errorMessage } from "@/lib/utils/error";
+import { isSiteCreationPlanLimitError } from "@/lib/utils/site-creation-error";
 import {
   isGitHubProvider,
   isGitLabProvider,
   TGitProvider,
 } from "@/lib/utils/provider-checker";
 import { projectSchema } from "@/lib/validate";
-import { AxiosBaseQueryError } from "@/redux/features/api-slice";
 import { useGetGitHubBranchesQuery as useGitHubBranches } from "@/redux/features/github";
 import { useGetGitLabBranchesQuery } from "@/redux/features/gitlab/gitlab-api";
 import { useGetOrgQuery, useGetOrgsQuery } from "@/redux/features/orgs/org-api";
@@ -148,6 +149,7 @@ export default function AddSite({
   const [showAddOrg, setShowAddOrg] = useState(false);
   const [showUpgradeOrg, setShowUpgradeOrg] = useState(false);
   const [repoOpen, setRepoOpen] = useState(false);
+  const [creationError, setCreationError] = useState<string | null>(null);
   const formRef = useRef<HTMLFormElement>(null);
   const projectForm = useForm<z.infer<typeof projectSchema>>({
     resolver: zodResolver(projectSchema),
@@ -230,8 +232,7 @@ export default function AddSite({
     );
   }, [branches, projectForm]);
 
-  const [addProject, { isLoading: isProjectAdding, error, isError }] =
-    useAddProjectMutation();
+  const [addProject, { isLoading: isProjectAdding }] = useAddProjectMutation();
 
   const [step, setStep] = useState<"selection" | "form">("selection");
 
@@ -239,6 +240,7 @@ export default function AddSite({
   useEffect(() => {
     if (!isOpen) {
       setStep("selection");
+      setCreationError(null);
       projectForm.reset();
     }
   }, [isOpen, projectForm]);
@@ -458,6 +460,7 @@ export default function AddSite({
               onSubmit={projectForm.handleSubmit(async (data) => {
                 try {
                   if (!orgId) return;
+                  setCreationError(null);
                   if (data.visibility === "private") {
                     if (!org) return;
                     const ownerArray = org.ownerData || [];
@@ -473,7 +476,7 @@ export default function AddSite({
                       privateCount >=
                       getPlanLimits(active_package).org_private_site_limit
                     ) {
-                      toast.error(tAddSite("private_site_limit_reached"));
+                      setCreationError(tAddSite("private_site_limit_reached"));
                       return;
                     }
                   }
@@ -489,7 +492,7 @@ export default function AddSite({
                   toast.success(tAddSite("project_created_success"));
                   router.push(`/org-${org_id}/${project_id}`);
                 } catch (error) {
-                  toast.error(
+                  setCreationError(
                     errorMessage(error) || tAddSite("something_went_wrong"),
                   );
                 }
@@ -771,11 +774,16 @@ export default function AddSite({
               </FieldGroup>
 
               <FormError
-                message={(error as AxiosBaseQueryError)?.data.message}
-                isError={isError}
-                error={(error as AxiosBaseQueryError)?.data?.errorMessage ?? []}
-                data={null}
+                message={creationError ?? undefined}
+                isError={Boolean(creationError)}
+                error={null}
+                onReset={() => setCreationError(null)}
               />
+              {creationError && isSiteCreationPlanLimitError(creationError) && (
+                <div className="mt-2">
+                  <UpgradeCta labelKey="private_sites" size="sm" />
+                </div>
+              )}
             </form>
           )}
 

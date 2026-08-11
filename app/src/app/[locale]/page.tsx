@@ -22,8 +22,8 @@ export default function ProtectedRootPage() {
       // Orgs API failed — session is stale/invalid. Sign out to clear the bad cookie.
       authClient.signOut().finally(() => router.replace("/login"));
     } else if (orgs && orgs.length === 0) {
-      // User has 0 organizations — redirect to onboarding in cloud, or dashboard in core
-      const target = onboardingEnabled ? "/onboarding" : "/dashboard/account";
+      // User has 0 organizations — redirect to onboarding in cloud, or root
+      const target = onboardingEnabled ? "/onboarding" : "/";
       router.replace(target);
     }
   }, [isLoading, isError, prefixedOrgId, orgs, router]);

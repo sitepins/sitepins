@@ -195,6 +195,6 @@ Contributions are welcome. See [CONTRIBUTING.md](https://github.com/sitepins/sit
 
 If Sitepins saves you a round of content edits, [**star the repo**](https://github.com/sitepins/sitepins) so more people find it.
 
-[Website](https://sitepins.com) · [Docs](https://docs.sitepins.com) · [Demo](https://demo.sitepins.com) · [Twitter](https://x.com/sitepinscms)
+[Website](https://sitepins.com) · [Docs](https://docs.sitepins.com) · [Demo](https://demo.sitepins.com) · [X (Twitter)](https://x.com/sitepinscms) · [Join Discord Community](https://discord.gg/UDhCe68qy)
 
 </div>

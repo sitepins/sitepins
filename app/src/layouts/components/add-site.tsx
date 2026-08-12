@@ -150,6 +150,7 @@ export default function AddSite({
   const [showUpgradeOrg, setShowUpgradeOrg] = useState(false);
   const [repoOpen, setRepoOpen] = useState(false);
   const [creationError, setCreationError] = useState<string | null>(null);
+  const [isPlanLimitError, setIsPlanLimitError] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
   const projectForm = useForm<z.infer<typeof projectSchema>>({
     resolver: zodResolver(projectSchema),
@@ -241,6 +242,7 @@ export default function AddSite({
     if (!isOpen) {
       setStep("selection");
       setCreationError(null);
+      setIsPlanLimitError(false);
       projectForm.reset();
     }
   }, [isOpen, projectForm]);
@@ -461,6 +463,7 @@ export default function AddSite({
                 try {
                   if (!orgId) return;
                   setCreationError(null);
+                  setIsPlanLimitError(false);
                   if (data.visibility === "private") {
                     if (!org) return;
                     const ownerArray = org.ownerData || [];
@@ -477,6 +480,7 @@ export default function AddSite({
                       getPlanLimits(active_package).org_private_site_limit
                     ) {
                       setCreationError(tAddSite("private_site_limit_reached"));
+                      setIsPlanLimitError(true);
                       return;
                     }
                   }
@@ -492,8 +496,13 @@ export default function AddSite({
                   toast.success(tAddSite("project_created_success"));
                   router.push(`/org-${org_id}/${project_id}`);
                 } catch (error) {
-                  setCreationError(
-                    errorMessage(error) || tAddSite("something_went_wrong"),
+                  // Server messages are English regardless of UI locale, so
+                  // matching against them here is safe — unlike matching
+                  // against the translated string set in the branch above.
+                  const message = errorMessage(error);
+                  setCreationError(message || tAddSite("something_went_wrong"));
+                  setIsPlanLimitError(
+                    Boolean(message && isSiteCreationPlanLimitError(message)),
                   );
                 }
               })}
@@ -777,9 +786,12 @@ export default function AddSite({
                 message={creationError ?? undefined}
                 isError={Boolean(creationError)}
                 error={null}
-                onReset={() => setCreationError(null)}
+                onReset={() => {
+                  setCreationError(null);
+                  setIsPlanLimitError(false);
+                }}
               />
-              {creationError && isSiteCreationPlanLimitError(creationError) && (
+              {isPlanLimitError && (
                 <div className="mt-2">
                   <UpgradeCta labelKey="private_sites" size="sm" />
                 </div>

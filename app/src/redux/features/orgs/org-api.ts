@@ -21,6 +21,15 @@ export const orgApi = api.injectEndpoints({
       providesTags: (result, error, id) => [{ type: "Org" as const, id }],
     }),
 
+    // Recover a missing mandatory default organization for the session user.
+    ensureDefaultOrg: builder.mutation<TOrg, void>({
+      query: () => ({
+        method: "POST",
+        url: "/organization/ensure-default",
+      }),
+      invalidatesTags: ["Orgs"],
+    }),
+
     // Add new organization
     addOrg: builder.mutation<TOrg, Partial<TOrg>>({
       query: (orgData) => ({
@@ -119,6 +128,7 @@ export const orgApi = api.injectEndpoints({
 export const {
   useGetOrgsQuery,
   useGetOrgQuery,
+  useEnsureDefaultOrgMutation,
   useAddOrgMutation,
   useAddMemberMutation,
   useUpdateMemberRoleMutation,

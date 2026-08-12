@@ -1,14 +1,16 @@
-import { checkOrder } from "@/lib/entitlements";
+import {
+  decorateProject,
+  runProjectMutationGuard,
+} from "@/lib/extensionGuards";
 import { paginationHelpers } from "@/lib/paginationHelper";
 import { escapeRegex } from "@/lib/regexEscape";
 import { deleteFile } from "@/lib/s3-utils";
 import { TPagination } from "@/types";
-import { PipelineStage } from "mongoose";
 import type { QueryFilter, UpdateQuery } from "mongoose";
-import { Organization } from "../organization/organization.model";
+import { PipelineStage } from "mongoose";
+import { ProjectContent } from "../project-content/project-content.model";
 import { ProjectLog } from "../project-log/project-log.model";
 import { ProjectPreview } from "../project-preview/project-preview.model";
-import { ProjectContent } from "../project-content/project-content.model";
 import { Project } from "./project.model";
 import { TProjectFilterOptions, TProjectType } from "./project.type";
 
@@ -201,18 +203,7 @@ const getSingleProjectService = async ({
     return null;
   }
 
-  const owner = singleProject.ownerData?.[0];
-
-  if (owner?.user_id) {
-    const { currentPackage } = await checkOrder(owner.user_id);
-
-    singleProject.ownerData[0] = {
-      ...owner,
-      active_package: currentPackage,
-    };
-  }
-
-  return singleProject;
+  return decorateProject(singleProject);
 };
 
 // get project by org id
@@ -314,34 +305,15 @@ const updateProjectVisibilityService = async ({
     throw new Error("Project not found");
   }
 
-  let status = project.status;
-
-  // Check limits if switching to private
-  if (visibility === "private" && project.visibility !== "private") {
-    let planOwnerId = project.user_id;
-    if (project.org_id) {
-      const org = await Organization.findOne({ org_id: project.org_id });
-      if (org) planOwnerId = org.owner;
-    }
-
-    const { limits } = await checkOrder(planOwnerId);
-    const limit = limits.org_private_site_limit;
-
-    const privateProjectCount = await Project.countDocuments({
-      org_id: project.org_id,
-      visibility: "private",
-      status: "active",
-      project_id: { $ne: project_id }, // Exclude current project
-    });
-
-    if (privateProjectCount >= limit) {
-      status = "archived";
-    }
-  }
+  await runProjectMutationGuard({
+    type: "visibility",
+    projectId: project_id,
+    visibility,
+  });
 
   return await Project.findOneAndUpdate(
     { project_id },
-    { visibility, status },
+    { visibility },
     { returnDocument: "after" },
   );
 };
@@ -359,41 +331,11 @@ const updateProjectStatusService = async ({
     throw new Error("Project not found");
   }
 
-  if (status === "active" && project.status !== "active") {
-    let planOwnerId = project.user_id;
-    if (project.org_id) {
-      const org = await Organization.findOne({ org_id: project.org_id });
-      if (org) planOwnerId = org.owner;
-    }
-    const { limits } = await checkOrder(planOwnerId);
-
-    if (project.visibility === "private") {
-      const activePrivateProjects = await Project.countDocuments({
-        org_id: project.org_id,
-        visibility: "private",
-        status: "active",
-        project_id: { $ne: project_id },
-      });
-
-      if (activePrivateProjects >= limits.org_private_site_limit) {
-        throw new Error(
-          `You have reached the maximum number of active private projects (${limits.org_private_site_limit}) for your current plan.`,
-        );
-      }
-    }
-
-    const activeProjects = await Project.countDocuments({
-      org_id: project.org_id,
-      status: "active",
-      project_id: { $ne: project_id },
-    });
-
-    if (activeProjects >= limits.org_site_limit) {
-      throw new Error(
-        `You have reached the maximum number of active projects (${limits.org_site_limit}) for your current plan.`,
-      );
-    }
-  }
+  await runProjectMutationGuard({
+    type: "status",
+    projectId: project_id,
+    status,
+  });
 
   return await Project.findOneAndUpdate(
     { project_id },

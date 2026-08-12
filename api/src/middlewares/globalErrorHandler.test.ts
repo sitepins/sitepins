@@ -28,7 +28,7 @@ describe("globalErrorHandler message disclosure", () => {
     for (const msg of [
       "Project already exist",
       "Site name already exist",
-      "You have reached the maximum number of active projects (3) for your current plan.",
+      "A project operation could not be completed.",
       "Invalid member role. Allowed roles: admin, editor.",
     ]) {
       const { body } = run(Error(msg));

@@ -1,44 +1,6 @@
 import { TAuthUser } from "@/types";
-import { TPlanLimits, UNLIMITED } from "@/config/limits";
-import { PackageId } from "@/config/plans";
 import type { ClientSession } from "mongoose";
 import { logger } from "@/lib/logger";
-
-export type { TPlanLimits };
-
-export type Entitlements = {
-  currentPackage: PackageId | null;
-  limits: TPlanLimits;
-};
-
-export type EntitlementsProvider = (userId: string) => Promise<Entitlements>;
-
-// Self-hosted default: every feature unlocked, no limits.
-// A hosted deployment can replace this with a billing-backed provider
-// via setEntitlementsProvider().
-let entitlementsProvider: EntitlementsProvider = async () => ({
-  currentPackage: null,
-  limits: UNLIMITED,
-});
-
-export const setEntitlementsProvider = (provider: EntitlementsProvider) => {
-  entitlementsProvider = provider;
-};
-
-export const checkOrder = (userId: string): Promise<Entitlements> =>
-  entitlementsProvider(userId);
-
-// Re-applies plan limits after a plan change (archiving excess orgs/projects).
-// No-op by default; a billing extension registers the real enforcer.
-type PlanEnforcer = (userId: string) => Promise<void>;
-
-let planEnforcer: PlanEnforcer = async () => {};
-
-export const setPlanEnforcer = (enforcer: PlanEnforcer) => {
-  planEnforcer = enforcer;
-};
-
-export const enforcePlanLimits = (userId: string) => planEnforcer(userId);
 
 // Extensions register hooks here to clean up (or archive) their own
 // collections when a user account is deleted.

@@ -1,5 +1,4 @@
 import { describe, expect, it, vi } from "vitest";
-import { UNLIMITED } from "@/config/limits";
 import type { ClientSession } from "mongoose";
 
 // entitlements holds module-level registries — re-import a fresh copy per
@@ -8,49 +7,6 @@ async function freshEntitlements() {
   vi.resetModules();
   return import("./entitlements.js");
 }
-
-describe("entitlements provider", () => {
-  it("defaults to no package with unlimited limits (self-hosted)", async () => {
-    const { checkOrder } = await freshEntitlements();
-    const result = await checkOrder("any-user");
-    expect(result.currentPackage).toBeNull();
-    expect(result.limits).toEqual(UNLIMITED);
-    expect(result.limits.org_limit).toBe(Infinity);
-    expect(result.limits.org_site_limit).toBe(Infinity);
-  });
-
-  it("uses a registered provider instead of the default", async () => {
-    const { checkOrder, setEntitlementsProvider } = await freshEntitlements();
-    const paidLimits = {
-      org_limit: 1,
-      org_site_limit: 3,
-      org_private_site_limit: 1,
-      org_member_limit: 1,
-    };
-    setEntitlementsProvider(async () => ({
-      currentPackage: "some-plan",
-      limits: paidLimits,
-    }));
-    const result = await checkOrder("user-1");
-    expect(result.currentPackage).toBe("some-plan");
-    expect(result.limits).toEqual(paidLimits);
-  });
-});
-
-describe("plan enforcer", () => {
-  it("is a no-op by default", async () => {
-    const { enforcePlanLimits } = await freshEntitlements();
-    await expect(enforcePlanLimits("user-1")).resolves.toBeUndefined();
-  });
-
-  it("runs a registered enforcer", async () => {
-    const { enforcePlanLimits, setPlanEnforcer } = await freshEntitlements();
-    const enforcer = vi.fn(async () => {});
-    setPlanEnforcer(enforcer);
-    await enforcePlanLimits("user-1");
-    expect(enforcer).toHaveBeenCalledWith("user-1");
-  });
-});
 
 describe("user deletion hooks", () => {
   it("runs all hooks in registration order with the full context", async () => {

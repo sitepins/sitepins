@@ -36,22 +36,24 @@ export function useOrgId(orgs: TOrg[] = []): UseOrgIdReturn {
       return normalizedOrgId;
     }
 
-    const allOrgs = orgs || [];
+    // Archived organizations remain visible in management screens but cannot
+    // be a current workspace or a redirect target.
+    const activeOrgs = (orgs || []).filter((org) => org.status !== "archived");
 
     // If there's a stored org id AND the user has access to that org, use it
-    if (storedOrgId && allOrgs.some((org) => org.org_id === storedOrgId)) {
+    if (storedOrgId && activeOrgs.some((org) => org.org_id === storedOrgId)) {
       return storedOrgId;
     }
 
     // Otherwise, fall back to the user's default org
     // This handles cases where the stored org id is invalid or the user lost access
-    const defaultOrg = allOrgs.find((org) => org.default);
+    const defaultOrg = activeOrgs.find((org) => org.default);
     if (defaultOrg) {
       return defaultOrg.org_id;
     }
 
     // If no default org, use the first available org
-    return allOrgs[0]?.org_id;
+    return activeOrgs[0]?.org_id;
   }, [normalizedOrgId, orgs, storedOrgId]);
 
   const prefixedOrgId = useMemo(() => {

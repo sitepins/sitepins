@@ -60,6 +60,25 @@ const createOrganizationController = catchAsync(
   },
 );
 
+// Ensure the session user has the mandatory default organization. This is
+// intentionally separate from normal organization creation, which is subject
+// to the paid organization limit.
+const ensureDefaultOrganizationController = catchAsync(
+  async (req: Request, res: Response) => {
+    const organizationData =
+      await organizationService.ensureDefaultOrganizationService(
+        requireUserId(req),
+      );
+
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: "default organization ensured successfully",
+      result: organizationData,
+    });
+  },
+);
+
 // Update organization
 const updateOrganizationController = catchAsync(
   async (req: Request, res: Response) => {
@@ -190,6 +209,7 @@ const deleteOrganizationController = catchAsync(
 export const organizationController = {
   getOrganizationsByUserController,
   createOrganizationController,
+  ensureDefaultOrganizationController,
   addMemberController,
   removeMemberController,
   updateRoleController,

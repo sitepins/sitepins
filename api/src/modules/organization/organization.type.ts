@@ -17,7 +17,6 @@ export type TOrgOwnerData = {
   email?: string;
   image?: string;
   full_name?: string;
-  active_package?: unknown;
 };
 
 export type TOrganizationType = {

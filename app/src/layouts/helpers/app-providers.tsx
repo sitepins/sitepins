@@ -7,7 +7,6 @@ import { PartneroCustomerSync } from "@/helpers/partnero-customer-sync";
 import TwSizeIndicator from "@/helpers/tw-size-indicator";
 import { ThemeProvider } from "next-themes";
 import React from "react";
-import LimitChecker from "./limit-checker";
 import PostHogProvider from "./posthog-provider";
 import { RtkProviders } from "./rtk-provider";
 
@@ -28,10 +27,7 @@ export function AppProviders({ children }: AppProvidersProps) {
           <TwSizeIndicator />
           <RtkProviders>
             <CookieConsent />
-            <PostHogProvider>
-              <LimitChecker />
-              {children}
-            </PostHogProvider>
+            <PostHogProvider>{children}</PostHogProvider>
           </RtkProviders>
         </TooltipProvider>
         <Toaster />

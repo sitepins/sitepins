@@ -1,7 +1,7 @@
 import { ENUM_ROLE, ENUM_ROLE_ORG } from "@/enums/roles";
 import { authMiddleware } from "@/middlewares/authMiddleware";
+import { runRequestGuard } from "@/lib/extensionGuards";
 import { moveProjectMiddleware } from "@/middlewares/moveProjectMiddleware";
-import { projectLimit } from "@/middlewares/projectLimit";
 import { projectMiddleware } from "@/middlewares/projectMiddleware";
 import express from "express";
 import { projectController } from "./project.controller";
@@ -59,7 +59,7 @@ projectRouter.post(
   "/create",
   authMiddleware.verifyAuth(ENUM_ROLE.ADMIN, ENUM_ROLE.USER),
   projectMiddleware(ENUM_ROLE_ORG.OWNER, ENUM_ROLE_ORG.ADMIN), // CREATE PROJECT IS ONLY FOR OWNER AND ADMIN
-  projectLimit,
+  runRequestGuard("project:create"),
   projectController.createProjectController,
 );
 

@@ -48,11 +48,4 @@ userRouter.delete(
   userController.deleteUserController,
 );
 
-// check limits
-userRouter.post(
-  "/check-limits",
-  authMiddleware.verifyAuth(ENUM_ROLE.USER, ENUM_ROLE.ADMIN),
-  userController.checkLimitsController,
-);
-
 export default userRouter;

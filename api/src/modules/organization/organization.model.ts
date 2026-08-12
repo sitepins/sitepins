@@ -61,6 +61,17 @@ const organizationSchema = new mongoose.Schema<TOrganizationType>(
   },
 );
 
+// At most one default org per owner. Scoped to default:true via the partial
+// filter so a user can still have any number of non-default orgs.
+organizationSchema.index(
+  { owner: 1 },
+  {
+    name: "owner_default_unique",
+    unique: true,
+    partialFilterExpression: { default: true },
+  },
+);
+
 export const Organization = model<TOrganizationType>(
   "organization",
   organizationSchema,

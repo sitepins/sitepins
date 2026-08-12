@@ -6,7 +6,7 @@ import {
 } from "@/lib/brevoConfig";
 import { requireUser } from "@/lib/requireUser";
 import { sendMail } from "@/lib/mailer";
-import { enforcePlanLimits, runUserDeletionHooks } from "@/lib/entitlements";
+import { runUserDeletionHooks } from "@/lib/entitlements";
 import { fromNodeHeaders } from "better-auth/node";
 import { Request } from "express";
 import mongoose from "mongoose";
@@ -187,17 +187,10 @@ const deleteUserService = async (reason: string, req: Request) => {
   }
 };
 
-// check limits
-const checkLimitsService = async (userId: string) => {
-  await enforcePlanLimits(userId);
-  return { success: true, message: "Limits enforced successfully" };
-};
-
 export const userService = {
   getSingleUserService,
   setPasswordService,
   updateUserCountryService,
   updateUserEmailService,
   deleteUserService,
-  checkLimitsService,
 };

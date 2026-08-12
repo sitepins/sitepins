@@ -1,6 +1,6 @@
 import { ENUM_ROLE_ORG } from "@/enums/roles";
 import { decrypt, encrypt } from "@/lib/encrypt";
-import { checkOrder } from "@/lib/entitlements";
+import { decorateOrganization } from "@/lib/extensionGuards";
 import { sendMail } from "@/lib/mailer";
 import { nanoId } from "@/lib/nanoId";
 import { assertAssignableRole } from "@/lib/orgRoles";
@@ -100,37 +100,9 @@ const getOrganizationsByUserService = async (userId: string) => {
     },
   ]);
 
-  if (orgs.length === 0) {
-    const user = await User.findOne({ user_id: userId });
-    if (user) {
-      try {
-        const orgOwnerName = user.full_name
-          ? user.full_name.split(" ")[0]
-          : "User";
-        const orgName = `${orgOwnerName}'s Org`;
-        await createOrganizationService({
-          owner: user.user_id,
-          org_name: orgName,
-          email: user.email,
-          default: true,
-        });
-        return getOrganizationsByUserService(userId);
-      } catch (err) {
-        logger.error("Failed to auto-create default org for user", err);
-      }
-    }
-  }
-
-  for (const org of orgs) {
-    decryptOrgSandboxToken(org);
-    const owner = org.ownerData?.[0];
-    if (owner?.user_id) {
-      const { currentPackage } = await checkOrder(owner.user_id);
-      org.ownerData[0] = {
-        ...owner,
-        active_package: currentPackage,
-      };
-    }
+  for (let index = 0; index < orgs.length; index += 1) {
+    decryptOrgSandboxToken(orgs[index]);
+    orgs[index] = await decorateOrganization(orgs[index]);
   }
 
   return orgs;
@@ -243,18 +215,7 @@ const getOrganizationService = async ({
 
   decryptOrgSandboxToken(singleOrg);
 
-  const owner = singleOrg.ownerData?.[0];
-
-  if (owner?.user_id) {
-    const { currentPackage } = await checkOrder(owner.user_id);
-
-    singleOrg.ownerData[0] = {
-      ...owner,
-      active_package: currentPackage,
-    };
-  }
-
-  return singleOrg;
+  return decorateOrganization(singleOrg);
 };
 
 // create organization
@@ -300,6 +261,59 @@ const createOrganizationService = async ({
   const newData = new Organization(organizationData);
   const insertedOrganization = await newData.save();
   return insertedOrganization;
+};
+
+const isDuplicateKeyError = (error: unknown): error is { code: number } =>
+  typeof error === "object" &&
+  error !== null &&
+  "code" in error &&
+  (error as { code?: unknown }).code === 11000;
+
+/**
+ * Return a user's default organization, creating it when a previous auth hook
+ * did not finish. The partial unique index on `owner` + `default: true` makes
+ * concurrent calls safe; the losing caller simply reads the winning document.
+ */
+const ensureDefaultOrganizationService = async (userId: string) => {
+  const existingDefaultOrg = await Organization.findOne({
+    owner: userId,
+    default: true,
+  });
+
+  if (existingDefaultOrg) {
+    return existingDefaultOrg;
+  }
+
+  const user = await User.findOne({ user_id: userId });
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  const orgOwnerName = user.full_name?.split(" ")[0] || "User";
+
+  try {
+    return await createOrganizationService({
+      owner: user.user_id,
+      org_name: `${orgOwnerName}'s Org`,
+      email: user.email,
+      default: true,
+    });
+  } catch (error) {
+    if (!isDuplicateKeyError(error)) {
+      throw error;
+    }
+
+    const concurrentDefaultOrg = await Organization.findOne({
+      owner: userId,
+      default: true,
+    });
+
+    if (concurrentDefaultOrg) {
+      return concurrentDefaultOrg;
+    }
+
+    throw error;
+  }
 };
 
 //  team member operations
@@ -592,21 +606,8 @@ const updateOrganizationStatusService = async ({
     throw new Error("Organization not found");
   }
 
-  if (status === "active" && organization.status !== "active") {
-    const { limits } = await checkOrder(organization.owner);
-    const limit = limits.org_limit;
-
-    const activeOrgCount = await Organization.countDocuments({
-      owner: organization.owner,
-      status: "active",
-      org_id: { $ne: org_id },
-    });
-
-    if (activeOrgCount >= limit) {
-      throw new Error(
-        `You have reached the maximum number of active organizations (${limit}) for your current plan.`,
-      );
-    }
+  if (status === "archived" && organization.default) {
+    throw new Error("Default organization cannot be archived");
   }
 
   return await Organization.findOneAndUpdate(
@@ -652,6 +653,7 @@ export const organizationService = {
   getOrganizationsByUserService,
   getOrganizationService,
   createOrganizationService,
+  ensureDefaultOrganizationService,
   updateOrganizationService,
   addTeamMemberService,
   updateRoleService,

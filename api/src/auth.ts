@@ -130,16 +130,9 @@ export const auth = betterAuth({
         after: async (user) => {
           // Initialize default organization for new user
           try {
-            const orgOwnerName = (user.full_name as string)
-              ? (user.full_name as string).split(" ")[0]
-              : "User";
-            const orgName = `${orgOwnerName}'s Org`;
-            await organizationService.createOrganizationService({
-              owner: user.user_id as string,
-              org_name: orgName,
-              email: user.email,
-              default: true,
-            });
+            await organizationService.ensureDefaultOrganizationService(
+              user.user_id as string,
+            );
           } catch (error) {
             logger.error("Failed to create default organization", error);
           }
@@ -226,16 +219,9 @@ export const auth = betterAuth({
           ) {
             // Initialize a organization
             try {
-              const orgOwnerName = (user.full_name as string)
-                ? (user.full_name as string).split(" ")[0]
-                : "User";
-              const orgName = `${orgOwnerName}'s Org`;
-              await organizationService.createOrganizationService({
-                owner: user.user_id as string,
-                org_name: orgName,
-                email: user.email,
-                default: true,
-              });
+              await organizationService.ensureDefaultOrganizationService(
+                user.user_id as string,
+              );
             } catch (error) {
               logger.error("Failed to create default organization", error);
             }

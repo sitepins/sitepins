@@ -1,7 +1,6 @@
 import { ENUM_PERMISSIONS, ENUM_ROLE } from "@/enums/roles";
 import { authMiddleware } from "@/middlewares/authMiddleware";
-import { memberLimit } from "@/middlewares/memberLimit";
-import { orgLimit } from "@/middlewares/orgLimit";
+import { runRequestGuard } from "@/lib/extensionGuards";
 import orgMiddleware from "@/middlewares/orgMiddleware";
 import express from "express";
 import { organizationController } from "./organization.controller";
@@ -27,8 +26,16 @@ organizationRouter.get(
 organizationRouter.post(
   "/",
   authMiddleware.verifyAuth(ENUM_ROLE.ADMIN, ENUM_ROLE.USER),
-  orgLimit,
+  runRequestGuard("organization:create"),
   organizationController.createOrganizationController,
+);
+
+// The first organization is required for a usable account, so this recovery
+// endpoint deliberately bypasses optional hosted-product policy hooks.
+organizationRouter.post(
+  "/ensure-default",
+  authMiddleware.verifyAuth(ENUM_ROLE.ADMIN, ENUM_ROLE.USER),
+  organizationController.ensureDefaultOrganizationController,
 );
 
 // add member
@@ -36,7 +43,7 @@ organizationRouter.patch(
   "/member/:org_id",
   authMiddleware.verifyAuth(ENUM_ROLE.USER),
   orgMiddleware(ENUM_PERMISSIONS.MANAGE_MEMBERS),
-  memberLimit,
+  runRequestGuard("organization:member:add"),
   organizationController.addMemberController,
 );
 

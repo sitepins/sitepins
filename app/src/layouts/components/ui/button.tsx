@@ -63,6 +63,7 @@ function Button({
   render,
   disabled,
   type,
+  nativeButton,
   ...props
 }: ButtonProps) {
   const content = isLoading ? (
@@ -84,6 +85,12 @@ function Button({
       className={cn(buttonVariants({ variant, size, className }))}
       disabled={Boolean(disabled) || isLoading}
       render={renderProp}
+      nativeButton={
+        nativeButton ??
+        (renderProp
+          ? React.isValidElement(renderProp) && renderProp.type === "button"
+          : undefined)
+      }
       // Base UI forces type="button"; a native button defaults to submit
       {...(type !== undefined
         ? { type }

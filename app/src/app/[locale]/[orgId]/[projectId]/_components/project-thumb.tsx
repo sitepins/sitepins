@@ -91,11 +91,11 @@ export function ProjectThumb({ project }: ProjectThumbProps) {
 
   return (
     <div className="border-border relative w-full overflow-hidden rounded-md border">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={imageUrl}
         alt={`OG image of ${project?.project_name}`}
         className="w-full object-contain"
-        // a URL that resolves but won't render is as good as no image
         onError={() => setImageUrl(null)}
       />
     </div>

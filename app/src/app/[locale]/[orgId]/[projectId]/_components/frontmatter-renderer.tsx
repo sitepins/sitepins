@@ -1,14 +1,3 @@
-import { logger } from "@/lib/logger";
-import {
-  arrayAt,
-  asNode,
-  idOf,
-  arrayValue,
-  isWrappedValue,
-  stringValue,
-  unwrapValue,
-  type TMutableNode,
-} from "@/lib/utils/frontmatter-value";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -33,16 +22,22 @@ import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { deepClone } from "@/editor/utils/plate-utils";
+import { logger } from "@/lib/logger";
 import { cn } from "@/lib/utils/cn";
 import { ISODate } from "@/lib/utils/date-format";
+import {
+  arrayAt,
+  arrayValue,
+  asNode,
+  idOf,
+  isWrappedValue,
+  stringValue,
+  unwrapValue,
+  type TMutableNode,
+} from "@/lib/utils/frontmatter-value";
 import { Template } from "@/lib/utils/schema-helpers";
 import { plainify } from "@/lib/utils/text-converter";
 import { TField, TState } from "@/types";
-import { Description, PreviewLabel } from "./frontmatter-field-label";
-import {
-  ReferenceDropdown,
-  ReferenceMultiSelect,
-} from "./frontmatter-reference-field";
 import { Copy, PenLine, Plus, Trash2, Undo2 } from "lucide-react";
 import { AnimatePresence, Reorder, Variants, motion } from "motion/react";
 import { useTranslations } from "next-intl";
@@ -54,6 +49,11 @@ import {
   useRef,
   useState,
 } from "react";
+import { Description, PreviewLabel } from "./frontmatter-field-label";
+import {
+  ReferenceDropdown,
+  ReferenceMultiSelect,
+} from "./frontmatter-reference-field";
 import ListItem from "./list-item";
 import MediaPreview from "./media-preview";
 
@@ -857,9 +857,9 @@ export default function FrontmatterRenderer({
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.3 }}
-                  className="border-border relative overflow-hidden rounded-lg border ps-0"
+                  className="border-primary/50 relative overflow-hidden rounded-lg border ps-0"
                 >
-                  <div className="bg-light relative mb-4 flex items-center justify-between px-4 py-2">
+                  <div className="bg-primary/5 border-primary/20 relative mb-4 flex items-center justify-between border-b px-4 py-2">
                     <Breadcrumb>
                       <BreadcrumbList className="m-0 p-0">
                         {breadcrumb.map((crumb, index) => {

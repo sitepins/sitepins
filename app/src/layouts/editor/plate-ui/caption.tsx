@@ -43,15 +43,20 @@ export function CaptionTextarea(
   props: React.ComponentProps<typeof CaptionTextareaPrimitive>,
 ) {
   return (
-    <CaptionTextareaPrimitive
-      {...props}
-      className={cn(
-        props.className,
-        "focus:ring-border mt-2 w-full resize-none rounded-sm border-none bg-inherit px-3 py-1 font-[inherit] text-inherit",
-        "focus:outline-none focus:placeholder:opacity-0",
-        "print:placeholder:text-transparent",
-      )}
-    />
+    <div className="border-border/60 bg-muted/30 focus-within:border-border/60 mt-2 flex items-start gap-1.5 rounded-md border border-dashed px-2 py-1">
+      <span className="text-muted-foreground/70 mt-0.5 shrink-0 font-mono text-[10px] font-semibold tracking-wider uppercase select-none">
+        Alt
+      </span>
+      <CaptionTextareaPrimitive
+        {...props}
+        className={cn(
+          props.className,
+          "text-muted-foreground w-full resize-none border-none bg-transparent px-0 py-0 text-xs italic",
+          "focus:ring-0 focus:outline-none focus:placeholder:opacity-0",
+          "print:placeholder:text-transparent",
+        )}
+      />
+    </div>
   );
 }
 

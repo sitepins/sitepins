@@ -84,13 +84,13 @@ export const getFooterAccountMenu = (locale?: string) => {
 export const getUserDashboardMenu = (locale?: string) => {
   const tMenu = resolveMenuTranslations(locale);
   return [
-    ...getCloudDashboardPrimaryItems(locale),
     {
       name: tMenu.user_dashboard.account,
       tKey: "account",
       icon: UserCog,
       href: "/dashboard/account",
     },
+    ...getCloudDashboardPrimaryItems(locale),
     {
       name: tMenu.user_dashboard.preferences,
       tKey: "preferences",

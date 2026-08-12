@@ -21,9 +21,9 @@ export default function FormError({
   onReset,
 }: FormErrorProps) {
   const derivedErrors = useMemo<TError[]>(() => {
-    if (Array.isArray(errors)) return errors;
+    if (Array.isArray(errors) && errors.length > 0) return errors;
 
-    if (errors && typeof errors === "object") {
+    if (errors && typeof errors === "object" && !Array.isArray(errors)) {
       const err = errors as BetterFetchError;
       return [
         {
@@ -61,7 +61,7 @@ export default function FormError({
           className="relative flex items-center space-x-2 text-sm font-semibold"
         >
           <TriangleAlert />
-          <span className="flex-1">{err.message}</span>
+          <span className="flex-1 text-pretty break-words">{err.message}</span>
           <div>
             <Button
               type="button"

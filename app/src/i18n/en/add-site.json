@@ -31,7 +31,7 @@
     "back": "Back",
     "create_site": "Create Site",
     "limit_reached": "Limit Reached",
-    "private_site_limit_reached": "Private site limit reached",
+    "private_site_limit_reached": "Private site limit reached. Upgrade your plan to create more private sites.",
     "project_created_success": "Project created successfully",
     "something_went_wrong": "Something went wrong!"
   }

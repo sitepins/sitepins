@@ -20,7 +20,9 @@ import { cn } from "@/lib/utils/cn";
 import { isDemoUrl } from "@/lib/utils/demo-urls";
 import { slugify } from "@/lib/utils/text-converter";
 import { selectConfig } from "@/redux/features/config/slice";
+import { TProjectLogQuery } from "@/redux/features/project-log/type";
 import { useUpdateProjectMutation } from "@/redux/features/project/project-api";
+import { TProject } from "@/redux/features/project/type";
 import {
   CheckCircle2,
   ChevronRight,
@@ -28,8 +30,6 @@ import {
   ExternalLink,
   Rocket,
 } from "lucide-react";
-import { TProjectLogQuery } from "@/redux/features/project-log/type";
-import { TProject } from "@/redux/features/project/type";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useState } from "react";
@@ -39,10 +39,12 @@ import { ConfigForm } from "../settings/configure/_components/site-config-form";
 export default function ProjectSetupSteps({
   project,
   projectLogQuery,
+  isSiteConfigLoading,
   refetchRepo,
 }: {
   project?: TProject;
   projectLogQuery: TProjectLogQuery;
+  isSiteConfigLoading: boolean;
   refetchRepo: () => void;
 }) {
   const tProjectSetupSteps = useTranslations("project.setup-steps");
@@ -129,6 +131,10 @@ export default function ProjectSetupSteps({
 
   const completedCount = steps.filter((s) => s.completed).length;
   const progress = (completedCount / steps.length) * 100;
+
+  if (projectLogQuery.isLoading || isSiteConfigLoading) {
+    return null;
+  }
 
   if (completedCount === steps.length) {
     return null;

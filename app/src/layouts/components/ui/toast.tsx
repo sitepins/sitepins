@@ -119,7 +119,7 @@ function ToastContent({ className, ...props }: ToastPrimitive.Content.Props) {
     <ToastPrimitive.Content
       data-slot="toast-content"
       className={cn(
-        "flex h-full items-center gap-3 overflow-hidden p-4 transition-opacity duration-250 data-behind:opacity-0 data-expanded:opacity-100",
+        "group-data-[type=success]/toast:text-success-foreground! group-data-[type=error]/toast:text-destructive-foreground! group-data-[type=info]/toast:text-accent-foreground! group-data-[type=warning]/toast:text-warning-foreground! flex h-full items-center gap-3 overflow-hidden p-4 transition-opacity duration-250 data-behind:opacity-0 data-expanded:opacity-100",
         className,
       )}
       {...props}
@@ -131,7 +131,10 @@ function ToastTitle({ className, ...props }: ToastPrimitive.Title.Props) {
   return (
     <ToastPrimitive.Title
       data-slot="toast-title"
-      className={cn("text-sm font-medium", className)}
+      className={cn(
+        "group-data-[type=success]/toast:text-success-foreground! group-data-[type=error]/toast:text-destructive-foreground! group-data-[type=info]/toast:text-accent-foreground! group-data-[type=warning]/toast:text-warning-foreground! text-sm font-medium",
+        className,
+      )}
       {...props}
     />
   );
@@ -145,7 +148,7 @@ function ToastDescription({
     <ToastPrimitive.Description
       data-slot="toast-description"
       className={cn(
-        "group-data-[type=default]/toast:text-muted-foreground text-sm opacity-90",
+        "group-data-[type=default]/toast:text-muted-foreground group-data-[type=success]/toast:text-success-foreground! group-data-[type=error]/toast:text-destructive-foreground! group-data-[type=info]/toast:text-accent-foreground! group-data-[type=warning]/toast:text-warning-foreground! text-sm opacity-90",
         className,
       )}
       {...props}

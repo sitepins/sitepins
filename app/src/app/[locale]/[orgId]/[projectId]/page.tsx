@@ -1,9 +1,8 @@
 "use client";
 
 import Container from "@/components/container";
+import { useGitProvider } from "@/hooks/use-git-provider";
 import { isDemoUrl } from "@/lib/utils/demo-urls";
-import { treeItemsOf } from "@/lib/utils/tree-items";
-import { toRepoInfoView } from "@/redux/features/git/repo-info";
 import detectFramework, {
   refineFrameworkFromPackageJson,
 } from "@/lib/utils/framework-detector";
@@ -11,7 +10,9 @@ import {
   isGitHubProvider,
   isGitLabProvider,
 } from "@/lib/utils/provider-checker";
+import { treeItemsOf } from "@/lib/utils/tree-items";
 import { selectConfig } from "@/redux/features/config/slice";
+import { toRepoInfoView } from "@/redux/features/git/repo-info";
 import {
   useGetGitHubContentQuery,
   useGetGitHubRepoQuery,
@@ -45,6 +46,7 @@ export default function Project(
 ) {
   const params = use(props.params);
   const config = useSelector(selectConfig);
+  const { useGitSiteConfig } = useGitProvider();
 
   const orgIdSafe = params?.orgId
     ? params.orgId.startsWith("org-")
@@ -285,6 +287,11 @@ export default function Project(
   const projectLogQuery = useGetProjectLogQuery(project?.project_id ?? "", {
     skip: !project?.project_id,
   });
+  const { isLoading: isSiteConfigLoading, isFetching: isSiteConfigFetching } =
+    useGitSiteConfig({
+      framework: project?.generator || undefined,
+      skip: !project || !config.token,
+    });
 
   if (!config.token || isProjectLoading) {
     return <ProjectOverviewSkeleton />;
@@ -309,6 +316,7 @@ export default function Project(
           <ProjectSetupSteps
             project={project}
             projectLogQuery={projectLogQuery}
+            isSiteConfigLoading={isSiteConfigLoading || isSiteConfigFetching}
             refetchRepo={() => {}}
           />
           {config.content && <SidebarTriggerMobile />}

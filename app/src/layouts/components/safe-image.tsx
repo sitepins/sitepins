@@ -132,6 +132,7 @@ const SafeImage = forwardRef<HTMLImageElement, SafeImageProps>(
 
     return (
       <div ref={containerRef} className="relative h-full w-full">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           {...props}
           ref={imageRef}

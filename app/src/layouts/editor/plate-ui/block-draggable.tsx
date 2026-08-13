@@ -29,7 +29,7 @@ const UNDRAGGABLE_KEYS = [KEYS.column, KEYS.tr, KEYS.td];
 export const BlockDraggable: RenderNodeWrapper = (props) => {
   const { editor, element, path } = props;
 
-  const enabled = React.useMemo(() => {
+  const isEnabled = React.useMemo(() => {
     if (editor.dom.readOnly) return false;
 
     if (path.length === 1 && !isType(editor, element, UNDRAGGABLE_KEYS)) {
@@ -63,9 +63,11 @@ export const BlockDraggable: RenderNodeWrapper = (props) => {
     return false;
   }, [editor, element, path]);
 
-  if (!enabled) return;
+  if (!isEnabled) return;
 
-  return (props) => <Draggable {...props} />;
+  return Object.assign((p: PlateElementProps) => <Draggable {...p} />, {
+    displayName: "DraggableComponent",
+  });
 };
 
 function Draggable(props: PlateElementProps) {
@@ -362,7 +364,11 @@ const DropLine = React.memo(function DropLine({
   );
 });
 
-const safeToDOMNode = (editor: PlateEditor, node: any): HTMLElement | null => {
+const safeToDOMNode = (
+  editor: PlateEditor,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  node: any,
+): HTMLElement | null => {
   try {
     return editor.api.toDOMNode(node) ?? null;
   } catch {

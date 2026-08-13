@@ -32,7 +32,10 @@ export default function RootLayout({
               const from = safeInternalPath(
                 new URLSearchParams(window.location.search).get("from"),
               );
-              window.location.href = `/onboarding?from=${encodeURIComponent(from)}`;
+              window.location.href = new URL(
+                `/onboarding?from=${encodeURIComponent(from)}`,
+                window.location.origin,
+              ).toString();
             },
             onError: (error) => {
               logger.error("Sign-in failed", error);

@@ -30,7 +30,8 @@ export function useDeploymentStatusPollingInterval(
         timerRef.current = null;
       }
       // setStopForNoStatus(false) is a no-op when already false; React bails out.
-      setStopForNoStatus(false);
+      // Deferred to avoid synchronous setState within an effect.
+      setTimeout(() => setStopForNoStatus(false), 0);
     }
 
     return () => {

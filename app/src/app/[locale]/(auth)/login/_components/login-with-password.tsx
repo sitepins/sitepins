@@ -78,7 +78,10 @@ export default function LoginWithPassword({
           );
           const onboardingRedirect = `/onboarding?from=${encodeURIComponent(redirectTo)}`;
           // Use window.location.href for full page navigation to bypass any router interception
-          window.location.href = onboardingRedirect;
+          window.location.href = new URL(
+            onboardingRedirect,
+            window.location.origin,
+          ).toString();
         },
         onError: (ctx) => {
           if (ctx.error.status === 403) {

@@ -864,6 +864,18 @@ export function remarkHugo(this: Processor, options: ShortcodeOptions = {}) {
         }
         return true;
       });
+
+      visit(tree, "paragraph", (pNode: Parent) => {
+        if (!pNode.children || pNode.children.length === 0) return;
+        const lastChild = pNode.children[pNode.children.length - 1] as Text;
+        if (
+          lastChild &&
+          lastChild.type === "text" &&
+          typeof lastChild.value === "string"
+        ) {
+          lastChild.value = lastChild.value.replace(/[\r\n]+$/, "");
+        }
+      });
     }
   }
 

@@ -48,7 +48,7 @@ export function MediaUploadPreview({
             {description || tMedia("preview_desc")}
           </AlertDialogDescription>
         </AlertDialogHeader>
-        <div className="bg-stripes flex max-h-[60vh] min-h-[200px] w-full items-center justify-center overflow-hidden rounded-lg">
+        <div className="bg-stripes flex max-h-[60vh] min-h-50 w-full items-center justify-center overflow-hidden rounded-lg">
           {previewSrc && (
             <>
               {isVideo ? (
@@ -58,6 +58,7 @@ export function MediaUploadPreview({
                   controls
                 />
               ) : (
+                // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={previewSrc}
                   alt={tMedia("preview_image")}

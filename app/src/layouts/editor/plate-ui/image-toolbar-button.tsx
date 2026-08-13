@@ -28,7 +28,7 @@ export const ImageToolbarButton = (
         embedImage(url);
       }}
       className="invisible absolute top-1/2 left-1/2 z-30 -translate-x-1/2 -translate-y-1/2 cursor-pointer opacity-0 transition-opacity duration-300 group-hover:visible group-hover:opacity-100"
-      onChangeHandler={(e: any) => {
+      onChangeHandler={(e: React.ChangeEvent<HTMLInputElement>) => {
         const src = e.target.value;
         embedImage(src);
       }}

@@ -72,7 +72,9 @@ export function MediaToolbar({
   const element = useElement<TImageElement>();
   const { props: buttonProps } = useRemoveNodeButton({ element });
 
-  const handleReplaceImage = (e: any) => {
+  const handleReplaceImage = (
+    e: React.ChangeEvent<HTMLInputElement> | string,
+  ) => {
     const src = typeof e === "string" ? e : e.target.value;
     const path = editor.api.findPath(element);
     if (!path) return toast.error(tEditorToolbar("reset_image_error"));

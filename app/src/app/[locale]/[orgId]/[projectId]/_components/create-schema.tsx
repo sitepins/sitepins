@@ -398,7 +398,9 @@ export default function CreateSchema({
   useEffect(() => {
     if (isSuccess && response?.data) {
       const data = response.data;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const template = convertSchema(data, (response as any).comments);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const cleaned = cleanTemplateData(template as any);
       setTemplate(cleaned);
       setInitialTemplate(JSON.stringify(cleaned));
@@ -407,7 +409,9 @@ export default function CreateSchema({
       }
       createSchemaForm.setValue(
         "fileType",
-        path.parse(selectedFile).ext.replace(".", "") as any,
+        path.parse(selectedFile).ext.replace(".", "") as z.infer<
+          typeof createSchema
+        >["fileType"],
       );
     }
   }, [isSuccess, isLoading, response, createSchemaForm, selectedFile, schema]);
@@ -535,6 +539,7 @@ export default function CreateSchema({
                 return;
               }
 
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               const processedTemplate = processTemplateForSave(template as any);
 
               const schemaCreatePromise = isGitLabProvider(config.provider)
@@ -622,7 +627,9 @@ export default function CreateSchema({
               const firstKey = Object.keys(err || {})[0];
               if (firstKey) {
                 try {
-                  createSchemaForm.setFocus(firstKey as any);
+                  createSchemaForm.setFocus(
+                    firstKey as keyof z.infer<typeof createSchema>,
+                  );
                 } catch {
                   // ignore focus errors
                 }
@@ -684,6 +691,7 @@ export default function CreateSchema({
               <div className="flex h-full min-h-0 w-full flex-1 overflow-hidden">
                 <SchemaBuilder
                   value={template as Template[]}
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
                   onChange={setTemplate as any}
                 />
               </div>

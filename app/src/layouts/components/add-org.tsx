@@ -97,7 +97,10 @@ export default function AddOrg({
                   if (onSuccess) {
                     onSuccess(res);
                   } else {
-                    window.location.href = `/org-${res.org_id}`;
+                    window.location.href = new URL(
+                      `/org-${res.org_id}`,
+                      window.location.origin,
+                    ).toString();
                   }
                 });
             })}

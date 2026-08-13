@@ -60,12 +60,14 @@ export function useGitAuth({
         currentSelectedProvider?.accessToken !== selectedProvider?.accessToken;
 
       if (tokenChanged) {
-        setTokenChanged(true);
-        setPrevProvider(providers);
-        setClicked(false);
-        if (isClicked) {
-          onSuccess(selectedProvider!);
-        }
+        setTimeout(() => {
+          setTokenChanged(true);
+          setPrevProvider(providers);
+          setClicked(false);
+          if (isClicked) {
+            onSuccess(selectedProvider!);
+          }
+        }, 0);
       }
     }
   }, [

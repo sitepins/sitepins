@@ -104,6 +104,11 @@ export const getTypeIcon = (type: string) => {
   }
 };
 
+export const renderTypeIcon = (type: string, className?: string) => {
+  const Icon = getTypeIcon(type);
+  return <Icon className={className} />;
+};
+
 export function SortableFieldItem({
   item,
   isActive,
@@ -116,7 +121,6 @@ export function SortableFieldItem({
   const tCommon = useTranslations("common");
   const y = useMotionValue(0);
   const dragControls = useDragControls();
-  const Icon = getTypeIcon(item.type);
 
   return (
     <Reorder.Item
@@ -155,7 +159,7 @@ export function SortableFieldItem({
 
         <div className="flex min-w-0 flex-1 items-center gap-2">
           <div className="bg-muted/40 border-border/40 flex size-8 shrink-0 items-center justify-center rounded-lg border">
-            <Icon className="text-muted-foreground/80 size-4" />
+            {renderTypeIcon(item.type, "text-muted-foreground/80 size-4")}
           </div>
 
           <div className="ml-1 min-w-0 flex-1 text-start select-none">

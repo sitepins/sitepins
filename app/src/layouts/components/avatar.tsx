@@ -21,6 +21,7 @@ export default function Avatar(props: Props) {
     const { src, preview, site_url, alt, ...rest } = props;
     const source = src?.startsWith("http") ? src : `${BUCKET_URL}/${src}`;
     return (
+      // eslint-disable-next-line @next/next/no-img-element
       <img
         src={preview ? src : !src ? getFaviconUrl(site_url) : source}
         alt={alt ?? ""}

@@ -78,6 +78,7 @@ export default function ProjectIcon({
     );
   } else if (faviconUrl && faviconUrl !== failedFaviconUrl) {
     icon = (
+      // eslint-disable-next-line @next/next/no-img-element
       <img
         className={styles.favicon}
         src={faviconUrl}

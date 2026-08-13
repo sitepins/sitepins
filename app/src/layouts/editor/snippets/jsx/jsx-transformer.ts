@@ -15,7 +15,7 @@ import type {
 } from "mdast-util-to-markdown";
 import { toMarkdown } from "mdast-util-to-markdown";
 import remarkParse from "remark-parse";
-import { type Processor, unified } from "unified";
+import { unified, type Processor } from "unified";
 import type { Node } from "unist";
 import { visit } from "unist-util-visit";
 import { remarkHtml } from "../html/html-transformer";
@@ -265,6 +265,9 @@ function transformJsxTree(tree: Root) {
             });
           }
           currentParagraphChildren = [];
+        }
+        if (child.type === "html" && child.data) {
+          child.data.isInlineHtml = false;
         }
         newNodes.push(child);
       } else {
@@ -652,12 +655,24 @@ function transformJsxTree(tree: Root) {
     });
   }
 
-  // Final pass: Upgrade root-level jsx_inline to jsx_block
+  // Final pass: Upgrade root-level jsx_inline to jsx_block and trim trailing newlines in paragraphs
   if (tree.type === "root" && tree.children) {
     tree.children.forEach((node) => {
       if (node.type === "jsx_inline") {
         node.type = "jsx_block";
         if (node.data) node.data.hName = "jsx_block";
+      }
+    });
+
+    visit(tree, "paragraph", (pNode: Parents) => {
+      if (!pNode.children || pNode.children.length === 0) return;
+      const lastChild = pNode.children[pNode.children.length - 1] as Text;
+      if (
+        lastChild &&
+        lastChild.type === "text" &&
+        typeof lastChild.value === "string"
+      ) {
+        lastChild.value = lastChild.value.replace(/[\r\n]+$/, "");
       }
     });
   }

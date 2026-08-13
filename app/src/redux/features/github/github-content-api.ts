@@ -138,7 +138,8 @@ export const githubContentApi = githubApi.injectEndpoints({
     }),
 
     getGitHubContent: builder.query<
-      Record<string, any>,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      any,
       TGitHubOption<"GET /repos/{owner}/{repo}/contents/{path}"> & {
         config?: TConfig;
       }
@@ -154,13 +155,8 @@ export const githubContentApi = githubApi.injectEndpoints({
         },
         { type: "GitHubContent" }, // Add general tag for easier invalidation
       ],
-      async transformResponse(
-        baseQueryReturnValue: TGitHubContentEntry | TGitHubContentEntry[],
-        _meta,
-        arg: TGitHubOption<"GET /repos/{owner}/{repo}/contents/{path}"> & {
-          config: TConfig;
-        },
-      ) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      async transformResponse(baseQueryReturnValue: any, _meta: any, arg: any) {
         if (Array.isArray(baseQueryReturnValue)) {
           // Increased limit from 200 to 500 to support date sorting for larger media folders
           if (baseQueryReturnValue.length > 500) {

@@ -101,12 +101,16 @@ export default function DeleteProject({
                           typeof window !== "undefined" &&
                           window.location.pathname !== "/"
                         ) {
-                          window.location.assign("/");
+                          window.location.assign(
+                            new URL("/", window.location.origin).toString(),
+                          );
                         }
                       }, 500);
                     } catch {
                       if (typeof window !== "undefined")
-                        window.location.assign("/");
+                        window.location.assign(
+                          new URL("/", window.location.origin).toString(),
+                        );
                     }
                   } catch (error) {
                     toast.error(

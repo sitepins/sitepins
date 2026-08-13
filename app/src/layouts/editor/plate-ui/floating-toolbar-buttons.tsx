@@ -18,11 +18,15 @@ import { TurnIntoToolbarButton } from "./turn-into-toolbar-button";
 export function FloatingToolbarButtons() {
   const tEditorToolbar = useTranslations("editor.toolbar");
   const readOnly = useEditorReadOnly();
-  const isRootBlock = useEditorSelector((editor: any) => {
-    if (!editor.selection) return false;
-    const blockEntry = editor.api.block({ at: editor.selection });
-    return blockEntry ? blockEntry[1].length === 1 : false;
-  }, []);
+  const isRootBlock = useEditorSelector(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (editor: any) => {
+      if (!editor.selection) return false;
+      const blockEntry = editor.api.block({ at: editor.selection });
+      return blockEntry ? blockEntry[1].length === 1 : false;
+    },
+    [],
+  );
 
   return (
     <>

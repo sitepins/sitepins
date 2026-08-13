@@ -169,6 +169,7 @@ function CodeDrawingPreviewArea({
       >
         {loading && <div className="text-muted-foreground">Loading...</div>}
         {!loading && image && (
+          /* eslint-disable-next-line @next/next/no-img-element */
           <img
             src={image}
             alt="Code drawing"

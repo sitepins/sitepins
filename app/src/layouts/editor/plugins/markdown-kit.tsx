@@ -1,4 +1,13 @@
-import { MarkdownPlugin } from "@platejs/markdown";
+import {
+  convertNodesDeserialize,
+  convertNodesSerialize,
+  MarkdownPlugin,
+  type DeserializeMdOptions,
+  type MdDecoration,
+  type MdLink,
+  type SerializeMdOptions,
+} from "@platejs/markdown";
+import { KEYS, type Descendant } from "platejs";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import type { Processor } from "unified";
@@ -27,6 +36,33 @@ function remarkGfmNoTableAlign(this: Processor) {
   remarkGfm.call(this, { tablePipeAlign: false });
 }
 
+const linkSerializationRules = {
+  [KEYS.link]: {
+    deserialize: (
+      mdastNode: MdLink,
+      deco: MdDecoration,
+      options: DeserializeMdOptions,
+    ) => ({
+      children: convertNodesDeserialize(mdastNode.children, deco, options),
+      title: mdastNode.title ?? undefined,
+      type: KEYS.link,
+      url: mdastNode.url,
+    }),
+    serialize: (
+      slateNode: { children: Descendant[]; title?: string; url: string },
+      options: SerializeMdOptions,
+    ): MdLink => ({
+      children: convertNodesSerialize(
+        slateNode.children,
+        options,
+      ) as MdLink["children"],
+      title: slateNode.title ?? null,
+      type: "link" as const,
+      url: slateNode.url,
+    }),
+  },
+};
+
 /**
  * Markdown plugin configuration for the rich text editor
  *
@@ -53,10 +89,17 @@ export const MarkdownKit = [
       remarkStringifyOptions: {
         emphasis: "*",
         bullet: "-",
+        // Preserve `---` thematic breaks; default is `*` which outputs `***`.
+        rule: "-",
+        // Prevent links whose text equals the URL from collapsing to bare
+        // auto-links (e.g. `[http://x](http://x)` → `http://x`).
+        resourceLink: true,
       },
 
       // Serialization rules define how to convert between Slate and markdown
       rules: {
+        ...linkSerializationRules,
+
         // HTML snippets (block and inline)
         ...htmlSerializationRules,
 

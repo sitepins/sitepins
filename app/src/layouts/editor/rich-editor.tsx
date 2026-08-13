@@ -1,7 +1,8 @@
-import { logger } from "@/lib/logger";
+import { toast } from "@/components/ui/toast";
 import { useDebouncedCallback } from "@/hooks/use-debounce-callback";
 import useMounted from "@/hooks/use-mounted";
 import { authClient } from "@/lib/auth/auth-client";
+import { logger } from "@/lib/logger";
 import { setCursorOffset, setRawMode } from "@/redux/features/config/slice";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { MarkdownPlugin } from "@platejs/markdown";
@@ -11,7 +12,6 @@ import { usePathname } from "next/navigation";
 import { TElement } from "platejs";
 import { Plate, usePlateEditor } from "platejs/react";
 import { useEffect, useRef } from "react";
-import { toast } from "@/components/ui/toast";
 import { AiUpgrade } from "./plate-ui/ai-upgrade";
 import { Editor, EditorContainer } from "./plate-ui/editor";
 import { EditorKit, MyEditor } from "./plugins/editor-kit";
@@ -46,6 +46,13 @@ const colors = [
 
 const getColor = () => {
   return colors[Math.floor(Math.random() * colors.length)];
+};
+
+type TSlateNode = {
+  type?: string;
+  text?: string;
+  children?: TSlateNode[];
+  [key: string]: unknown;
 };
 
 export const RichEditor = ({
@@ -88,11 +95,12 @@ export const RichEditor = ({
         document_id: pathname,
       }),
     ],
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     value: (editorRef: any) => {
       try {
         const plateContent = editorRef
           .getApi(MarkdownPlugin)
-          .markdown.deserialize(markdownContent);
+          .markdown.deserialize(markdownContent, { withoutMdx: true });
         return plateContent.length > 0
           ? plateContent
           : [
@@ -112,7 +120,6 @@ export const RichEditor = ({
         ];
       }
     },
-    // skipInitialization: true,
   });
 
   useEffect(() => {
@@ -122,7 +129,7 @@ export const RichEditor = ({
     const documentId = pathname || "";
     const initialValue = editor
       .getApi(MarkdownPlugin)
-      .markdown.deserialize(markdownContent);
+      .markdown.deserialize(markdownContent, { withoutMdx: true });
 
     // Initialize Yjs connection, sync document, and set initial editor state
     editor.getApi(YjsPlugin).yjs.init({
@@ -160,11 +167,11 @@ export const RichEditor = ({
     try {
       const nodesWithMarker = editor
         .getApi(MarkdownPlugin)
-        .markdown.deserialize(mdWithMarker);
+        .markdown.deserialize(mdWithMarker, { withoutMdx: true });
 
       const cleanNodes = editor
         .getApi(MarkdownPlugin)
-        .markdown.deserialize(markdownContent);
+        .markdown.deserialize(markdownContent, { withoutMdx: true });
 
       const newChildren =
         cleanNodes.length > 0
@@ -182,14 +189,18 @@ export const RichEditor = ({
           editor.tf.removeNodes({ at: [i] });
         }
         // Insert new nodes
-        newChildren.forEach((node: any, i: number) => {
-          editor.tf.insertNodes(node, { at: [i] });
+        newChildren.forEach((node: TSlateNode, i: number) => {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          editor.tf.insertNodes(node as any, { at: [i] });
         });
       });
 
       // 3. Find marker in the nodes-with-marker tree
       let markerOffset = 0;
-      const findMarker = (nodes: any[], path: number[]): number[] | null => {
+      const findMarker = (
+        nodes: TSlateNode[],
+        path: number[],
+      ): number[] | null => {
         for (let i = 0; i < nodes.length; i++) {
           const node = nodes[i];
           const currentPath = [...path, i];
@@ -211,7 +222,9 @@ export const RichEditor = ({
       let isValidPath = false;
       if (markerPath) {
         isValidPath = true;
-        let currentNode: any = { children: editor.children };
+        let currentNode: TSlateNode | undefined = {
+          children: editor.children as TSlateNode[],
+        };
         for (const index of markerPath) {
           // Guard: leaf text nodes have no .children; stop traversal here
           if (!currentNode || !currentNode.children) {
@@ -285,7 +298,7 @@ export const RichEditor = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isRawMode]);
 
-  const recursiveFilter = (nodes: any[]): any[] => {
+  const recursiveFilter = (nodes: TSlateNode[]): TSlateNode[] => {
     return nodes
       .filter((n) => n.type !== "slash_input")
       .map((n) =>
@@ -296,20 +309,20 @@ export const RichEditor = ({
   const onSerialize = useDebouncedCallback(
     (editor: MyEditor, value: TElement[]) => {
       // 1. Recursively remove internal nodes like slash_input
-      const filteredValue = recursiveFilter(value);
+      const filteredValue = recursiveFilter(value as TSlateNode[]);
 
       // 2. Clean up "spacer" paragraphs
-      const cleanValue = filteredValue.filter((node: any) => {
+      const cleanValue = filteredValue.filter((node: TSlateNode) => {
         if (node.type === "p" || node.type === "paragraph") {
           // If the paragraph has ANY non-text children (like JSX inlines or images),
           // we MUST keep it even if its text content appears empty.
           const hasNonTextChildren = (node.children || []).some(
-            (c: any) => !c.text && c.type !== "text",
+            (c: TSlateNode) => !c.text && c.type !== "text",
           );
           if (hasNonTextChildren) return true;
 
           const text = (node.children || [])
-            .map((c: any) => c.text || "")
+            .map((c: TSlateNode) => c.text || "")
             .join("");
           // Only strip if it's pure text AND that text is just whitespace/ZWSP.
           return (
@@ -321,7 +334,8 @@ export const RichEditor = ({
 
       const mdContent = editor
         .getApi(MarkdownPlugin)
-        .markdown.serialize({ value: cleanValue }) as string;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        .markdown.serialize({ value: cleanValue as any }) as string;
 
       // Strip the cursor marker if it somehow leaked in
       const cleanMd = mdContent.replaceAll(CURSOR_MARKER, "");
@@ -340,7 +354,7 @@ export const RichEditor = ({
       const { selection } = editor;
 
       // 2. Find the node at the selection path in the clone
-      let targetNode: any = { children: childrenClone };
+      let targetNode: TSlateNode | null = { children: childrenClone };
       const path = selection.focus.path;
 
       // Traverse to the parent of the text node
@@ -372,7 +386,8 @@ export const RichEditor = ({
 
         // 5. Serialize the clone
         const mdWithMarker = editor.getApi(MarkdownPlugin).markdown.serialize({
-          value: filteredClone,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          value: filteredClone as any,
         }) as string;
 
         const markerOffset = mdWithMarker.indexOf(marker);

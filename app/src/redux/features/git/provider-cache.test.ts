@@ -160,7 +160,7 @@ describe("updateDirectoryCache", () => {
 
     const data = githubContentApi.endpoints.getGitHubContent.select(
       args as never,
-    )(store.getState()).data as { path: string }[];
+    )(store.getState()).data as unknown as { path: string }[];
     expect(data.map((f) => f.path)).toEqual(["content/b.md"]);
   });
 

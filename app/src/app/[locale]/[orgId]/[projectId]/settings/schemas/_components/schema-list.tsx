@@ -66,6 +66,7 @@ import SchemaSkeleton from "./schema-skeleton";
 type SchemaFile = {
   name: string; // filename without extension
   path: string; // full path including .sitepins/schema/
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data?: any;
 };
 
@@ -471,6 +472,7 @@ function SchemaEditDialog({
   }
 
   const handleUpdateSchema = async (data: z.infer<typeof createSchema>) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const processedTemplate = processTemplateForSave(template as any);
 
     try {
@@ -648,6 +650,7 @@ function SchemaEditDialog({
               const firstKey = Object.keys(err || {})[0];
               if (firstKey) {
                 try {
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
                   schemaForm.setFocus(firstKey as any);
                 } catch {
                   // ignore focus errors
@@ -686,6 +689,7 @@ function SchemaEditDialog({
               <div className="flex h-full min-h-0 w-full flex-1 overflow-hidden">
                 <SchemaBuilder
                   value={template as Template[]}
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
                   onChange={setTemplate as any}
                 />
               </div>

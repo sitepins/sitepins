@@ -216,7 +216,7 @@ export function AIMenu() {
     api.aiChat.stop();
 
     // remove when you implement the route /api/ai/command
-    (chat as any)._abortFakeStream();
+    (chat as unknown as { _abortFakeStream: () => void })._abortFakeStream();
   });
 
   const isLoading = status === "streaming" || status === "submitted";
@@ -242,7 +242,9 @@ export function AIMenu() {
       if (block) {
         const domNode = editor.api.toDOMNode(block[0]);
         if (domNode) {
-          setAnchorRect(domNode.getBoundingClientRect());
+          setTimeout(() => {
+            setAnchorRect(domNode.getBoundingClientRect());
+          }, 0);
         }
       }
     }
@@ -705,6 +707,7 @@ export const AIMenuItems = ({
     const stateItems: Record<
       EditorChatState,
       {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         items: any[];
         heading?: string;
       }[]

@@ -811,9 +811,13 @@ function TableFloatingToolbar({
 
   React.useEffect(() => {
     if (!isExpandedSelectionPending) {
-      setIsExpandedSelectionToolbarReady(false);
+      const timer = window.setTimeout(() => {
+        setIsExpandedSelectionToolbarReady(false);
+      }, 0);
 
-      return;
+      return () => {
+        window.clearTimeout(timer);
+      };
     }
 
     const timeoutId = window.setTimeout(() => {
@@ -1071,7 +1075,7 @@ function useTableCellPresentation(element: TTableCellElement) {
   };
 }
 
-function RowDragHandle({ dragRef }: { dragRef: React.Ref<any> }) {
+function RowDragHandle({ dragRef }: { dragRef: React.Ref<HTMLButtonElement> }) {
   const editor = useEditorRef();
   const element = useElement();
 

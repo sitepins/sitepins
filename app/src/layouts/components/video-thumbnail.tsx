@@ -105,6 +105,7 @@ const VideoThumbnail = forwardRef<HTMLImageElement, Props>(
     }, [thumb, isFetching, error]);
 
     return (
+      // eslint-disable-next-line @next/next/no-img-element
       <img
         ref={ref}
         src={imageSrc}

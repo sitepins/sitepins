@@ -7,6 +7,7 @@ export function isActiveNode(editor: PlateEditor, type: NodeKey): boolean {
   return !!editor.selection && editor.api.some({ match: { type } });
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function assignUniqueId(input: any): any {
   // Handle null or undefined
   if (input === null || input === undefined) {
@@ -33,6 +34,7 @@ export function assignUniqueId(input: any): any {
   if (typeof source === "object") {
     return Object.keys(source).reduce(
       (acc, key) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const value = (source as any)[key];
 
         if (value instanceof Date) {
@@ -72,6 +74,7 @@ export function assignUniqueId(input: any): any {
           },
         };
       },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       {} as Record<string, any>,
     );
   }
@@ -83,6 +86,7 @@ export function assignUniqueId(input: any): any {
   };
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function revertToOriginal(input: any): any {
   if (input === null || input === undefined) {
     return input;
@@ -122,6 +126,7 @@ export function revertToOriginal(input: any): any {
         acc[key] = revertToOriginal(value);
         return acc;
       },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       {} as Record<string, any>,
     );
   }
@@ -166,6 +171,7 @@ export function deepClone<T>(obj: T): T {
     const cloned = {} as T;
     for (const key in obj) {
       if (Object.prototype.hasOwnProperty.call(obj, key)) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (cloned as any)[key] = deepClone((obj as any)[key]);
       }
     }
@@ -221,7 +227,7 @@ const composeRefs =
   };
 
 export const useComposedRef = <T>(...refs: PossibleRef<T>[]) => {
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  // eslint-disable-next-line
   return React.useCallback(composeRefs(...refs), refs);
 };
 //--don't modify---//

@@ -59,6 +59,7 @@ export function LoadImage({
 
   return (
     <figure className="group relative m-0 max-w-96" contentEditable={false}>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={imgSrc}
         onError={() => setFailedSrc(resolvedSrc)}

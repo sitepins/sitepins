@@ -46,6 +46,7 @@ export const ImageElement = (props: PlateElementProps<TImageElement>) => {
             <Badge className="absolute top-2 left-2" variant="success">
               Pasted
             </Badge>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={
                 hasError

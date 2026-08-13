@@ -110,7 +110,10 @@ export function InlineEquationElement(
 
   React.useEffect(() => {
     if (selected && isCollapsed) {
-      setOpen(true);
+      const timer = setTimeout(() => {
+        setOpen(true);
+      }, 0);
+      return () => clearTimeout(timer);
     }
   }, [selected, isCollapsed]);
 

@@ -278,7 +278,8 @@ export const gitlabContentApi = gitlabApi.injectEndpoints({
      * Get GitLab file content
      */
     getGitLabContent: builder.query<
-      Record<string, unknown>,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      any,
       {
         id: string | number;
         file_path: string;

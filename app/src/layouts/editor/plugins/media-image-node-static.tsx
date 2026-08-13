@@ -12,15 +12,19 @@ export function ImageElementStatic(
     <SlateElement {...props} className="py-2.5">
       <figure className="group relative m-0 inline-block" style={{ width }}>
         <div
-          className="relative max-w-full min-w-[92px]"
+          className="relative max-w-full min-w-23"
           style={{ textAlign: align }}
         >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             className={cn(
               "w-full max-w-full cursor-default object-cover px-0",
               "rounded-sm",
             )}
-            alt={(props.attributes as any).alt}
+            alt={
+              (props.attributes as Record<string, unknown>)?.alt as
+                string | undefined
+            }
             src={url}
           />
           {caption && (

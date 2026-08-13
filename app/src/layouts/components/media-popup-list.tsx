@@ -71,6 +71,7 @@ import { Separator } from "./ui/separator";
 type Props = {
   path: string;
   name: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onChangeHandler: any;
   triggerButton?: React.ReactNode;
   ref?: React.RefObject<HTMLButtonElement | null>;
@@ -89,6 +90,7 @@ const RenderFolderOrFiles = ({
 }: {
   files: TFiles[];
   name: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onChangeHandler?: any;
   path: string;
   onClose: (open: boolean) => void;
@@ -400,13 +402,17 @@ const MediaPopupList = ({
 
   useEffect(() => {
     if (debouncedSearch && files.length > 0) {
-      setLoading(true);
       const timeoutId = setTimeout(() => {
-        setLoading(false);
-      }, 100);
+        setLoading(true);
+        const innerTimeout = setTimeout(() => {
+          setLoading(false);
+        }, 100);
+        return () => clearTimeout(innerTimeout);
+      }, 0);
       return () => clearTimeout(timeoutId);
     } else {
-      setLoading(false);
+      const id = setTimeout(() => setLoading(false), 0);
+      return () => clearTimeout(id);
     }
   }, [debouncedSearch, files]);
 

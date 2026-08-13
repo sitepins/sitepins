@@ -241,9 +241,14 @@ export default function PreviewButton({
 
   useEffect(() => {
     if (!previewUrl) return;
-    checkStale();
+    const timer = setTimeout(() => {
+      checkStale();
+    }, 0);
     window.addEventListener("focus", checkStale);
-    return () => window.removeEventListener("focus", checkStale);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener("focus", checkStale);
+    };
   }, [previewUrl, checkStale]);
 
   // ── Heartbeat + 45-min expiry ─────────────────────────────────────────

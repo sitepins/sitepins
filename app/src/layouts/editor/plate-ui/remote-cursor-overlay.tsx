@@ -23,11 +23,12 @@ export function RemoteCursorOverlay() {
 }
 
 function RemoteCursorOverlayContent() {
-  const containerRef: any = useEditorContainerRef();
+  const containerRef = useEditorContainerRef();
   const valueVersion = useValueVersion();
   const [cursors, refresh] = useRemoteCursorOverlayPositions<CursorData>({
-    containerRef,
+    containerRef: containerRef as React.RefObject<HTMLDivElement>,
   });
+  // eslint-disable-next-line react-hooks/refs
   const scrollTop = containerRef.current?.scrollTop ?? 0;
 
   React.useEffect(() => {
@@ -36,6 +37,7 @@ function RemoteCursorOverlayContent() {
 
   const normalizedCursors = React.useMemo(
     () =>
+      // eslint-disable-next-line react-hooks/refs
       cursors.map((cursor) => ({
         ...cursor,
         caretPosition: cursor.caretPosition

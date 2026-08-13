@@ -219,6 +219,7 @@ export function BucketImageUpload({
           </AlertDialogHeader>
           <div className="bg-stripes rounded-lg">
             {previewSrc && (
+              // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={previewSrc}
                 alt="Preview"

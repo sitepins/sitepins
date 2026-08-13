@@ -1,11 +1,11 @@
 "use client";
 
 import { createPlatePlugin } from "platejs/react";
+import { KEY_JSX_BLOCK, KEY_JSX_INLINE } from "../snippet-keys";
 import { JsxBlockElement } from "./jsx-block-node";
 import { JsxInlineElement } from "./jsx-inline-node";
 
 export { KEY_JSX_BLOCK, KEY_JSX_INLINE } from "../snippet-keys";
-import { KEY_JSX_BLOCK, KEY_JSX_INLINE } from "../snippet-keys";
 
 export const JsxBlockKit = createPlatePlugin({
   key: KEY_JSX_BLOCK,
@@ -13,7 +13,7 @@ export const JsxBlockKit = createPlatePlugin({
     isElement: true,
     isInline: false,
     isVoid: false,
-    isContainer: false,
+    isContainer: true,
     component: JsxBlockElement,
   },
   rules: {

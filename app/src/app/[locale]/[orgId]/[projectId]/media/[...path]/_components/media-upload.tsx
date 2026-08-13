@@ -85,6 +85,7 @@ export default function MediaUpload({
 
   const [previewDialog, setPreviewDialog] = useState(false);
   const [pendingFiles, setPendingFiles] = useState<File[]>([]);
+  const [images, setImages] = useState<TImage[]>([]);
 
   useEffect(() => {
     if (onPreviewOpenChange) {
@@ -152,7 +153,6 @@ export default function MediaUpload({
     return isVideoFile(file) ? MAX_VIDEO_SIZE : MAX_SIZE;
   };
 
-  const [images, setImages] = useState<TImage[]>([]);
   const {
     getRootProps,
     getInputProps,
@@ -479,6 +479,7 @@ export default function MediaUpload({
                             : "aspect-square",
                         )}
                       >
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
                           src={preview}
                           alt={tMedia("preview_image")}

@@ -4,7 +4,17 @@ import YAML from "yaml";
 
 export type format = "json" | "toml" | "yaml";
 
-function deepSyncYaml(node: any, data: any) {
+type YamlAstNode = {
+  type?: string;
+  items?: (YamlAstNode & { key?: YamlAstNode | { value?: string } | string })[];
+  set: (key: unknown, val: unknown) => void;
+  add: (val: unknown) => void;
+  get: (key: unknown, keepScalar?: boolean) => YamlAstNode | null;
+  delete: (key: unknown) => void;
+  value?: unknown;
+};
+
+function deepSyncYaml(node: YamlAstNode, data: unknown) {
   if (!node || data === undefined) {
     return;
   }
@@ -17,14 +27,14 @@ function deepSyncYaml(node: any, data: any) {
     if (!Array.isArray(data)) return;
 
     // Remove extra items
-    while (node.items.length > data.length) {
+    while (node.items && node.items.length > data.length) {
       node.items.pop();
     }
 
     // Update/Add items
     for (let i = 0; i < data.length; i++) {
       const val = data[i];
-      const existingItem = node.items[i];
+      const existingItem = node.items?.[i];
 
       if (existingItem) {
         const isExistingMap =
@@ -48,8 +58,16 @@ function deepSyncYaml(node: any, data: any) {
   let existingKeys: string[] = [];
   if (node.items) {
     existingKeys = node.items
-      .map((i: any) => i.key && (i.key.value || i.key))
-      .filter(Boolean);
+      .map(
+        (i) =>
+          i.key &&
+          (typeof i.key === "string"
+            ? i.key
+            : "value" in i.key
+              ? i.key.value
+              : null),
+      )
+      .filter(Boolean) as string[];
   }
 
   const newKeys =
@@ -64,7 +82,7 @@ function deepSyncYaml(node: any, data: any) {
 
   // Add/Update keys
   for (const key of newKeys) {
-    const val = data[key];
+    const val = (data as Record<string, unknown>)[key];
     const existingNode = node.get(key, true);
 
     const isExistingMap =
@@ -95,7 +113,7 @@ function deepSyncYaml(node: any, data: any) {
   }
 }
 
-function syncYaml(doc: any, data: any) {
+function syncYaml(doc: { contents?: unknown }, data: unknown) {
   if (!doc.contents) {
     doc.contents = data;
     return;
@@ -104,11 +122,11 @@ function syncYaml(doc: any, data: any) {
     doc.contents = data;
     return;
   }
-  deepSyncYaml(doc.contents, data);
+  deepSyncYaml(doc.contents as YamlAstNode, data);
 }
 
-function flatten(obj: any, prefix: string[] = []): Record<string, any> {
-  const result: Record<string, any> = {};
+function flatten(obj: unknown, prefix: string[] = []): Record<string, unknown> {
+  const result: Record<string, unknown> = {};
   if (obj === null || obj === undefined) return result;
 
   if (Array.isArray(obj)) {
@@ -125,7 +143,7 @@ function flatten(obj: any, prefix: string[] = []): Record<string, any> {
   return result;
 }
 
-function patchToml(originalContent: string, data: any): string {
+function patchToml(originalContent: string, data: unknown): string {
   const lines = originalContent.split("\n");
   let currentPath: string[] = [];
   const pathMap = new Map<string, number>(); // path string -> line index
@@ -207,7 +225,7 @@ export function contentFormatter({
   startWith,
   originalContent,
 }: {
-  data: { [key: string]: any };
+  data: Record<string, unknown>;
   page_content: string;
   format: format;
   startWith?: string;
@@ -608,7 +626,7 @@ export const parseContentJson = (content: string, format: format) => {
 
     if (!hasYamlFences && /^\s*[^#\n\r][^:\n]+:\s+/m.test(content)) {
       try {
-        const data = YAML.parse(content) as any;
+        const data = YAML.parse(content) as Record<string, unknown>;
         return { data: data || {}, content: null, comments };
       } catch {
         const { data, content: page_content } = matter(content);

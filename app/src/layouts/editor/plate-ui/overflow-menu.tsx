@@ -8,7 +8,7 @@ import { Icons } from "./icons";
 import { ToolbarButton } from "./toolbar";
 
 type OverflowMenuProps = {
-  [key: string]: any;
+  [key: string]: unknown;
   children: React.ReactNode[];
 };
 export default function OverflowMenu({

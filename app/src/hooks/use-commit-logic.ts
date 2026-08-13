@@ -285,7 +285,8 @@ export function useCommitLogic({
           (draft) => {
             draft.commitDate = new Date().toString();
             draft.data = {
-              ...revertToOriginal(getProcessedStateData()!),
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              ...(revertToOriginal(getProcessedStateData()!) as any),
               draft: isDraft,
             };
             draft.content = pageContent;
@@ -399,7 +400,11 @@ export function useCommitLogic({
         path: filePath,
         content: contentFormatter({
           data: shouldAddDraft
-            ? { ...revertToOriginal(getProcessedStateData()), draft: isDraft }
+            ? {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                ...(revertToOriginal(getProcessedStateData()) as any),
+                draft: isDraft,
+              }
             : revertToOriginal(getProcessedStateData()),
           page_content: pageContent || "",
           format: fmType,

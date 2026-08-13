@@ -767,7 +767,8 @@ export const githubCommitApi = githubApi.injectEndpoints({
                       path: file.path,
                       parser: true,
                     },
-                    () => undefined as unknown as GhContentDirectory,
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    () => undefined as any,
                   ),
                 );
               } catch {}

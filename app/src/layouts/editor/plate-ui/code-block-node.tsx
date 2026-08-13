@@ -13,7 +13,12 @@ import {
 } from "@/components/ui/combobox";
 import { formatCodeBlock, isLangSupported } from "@platejs/code-block";
 import { BracesIcon, CheckIcon, CopyIcon, Eye, EyeOff } from "lucide-react";
-import { type TCodeBlockElement, type TCodeSyntaxLeaf, NodeApi } from "platejs";
+import {
+  type TCodeBlockElement,
+  type TCodeSyntaxLeaf,
+  type TElement,
+  NodeApi,
+} from "platejs";
 import {
   type PlateElementProps,
   type PlateLeafProps,
@@ -54,7 +59,7 @@ export function CodeBlockElement(props: PlateElementProps<TCodeBlockElement>) {
               ...element,
               data: {
                 code: element.children
-                  .map((child) => NodeApi.string(child as any))
+                  .map((child) => NodeApi.string(child as unknown as TElement))
                   .join("\n"),
                 drawingType: "Mermaid",
                 drawingMode: "Image",

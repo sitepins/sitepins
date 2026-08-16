@@ -2,7 +2,10 @@
 
 import { NavLink } from "@/components/nav-link";
 import SidebarProfileSetting from "@/components/sidebar-profile-setting";
-import { SidebarUpgrade } from "@/components/sidebar-upgrade";
+import {
+  SidebarAnnouncement,
+  SidebarUpgrade,
+} from "@/components/sidebar-upgrade";
 import { TrialBanner } from "@/components/trial-banner";
 import { SheetClose } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils/cn";
@@ -190,6 +193,7 @@ type SidebarUserMenuProps = {
 export function SidebarUserMenu({ orgs: _orgs = [] }: SidebarUserMenuProps) {
   return (
     <div className="flex flex-col gap-2">
+      <SidebarAnnouncement />
       <SidebarProfileSetting />
       <SidebarUpgrade />
     </div>

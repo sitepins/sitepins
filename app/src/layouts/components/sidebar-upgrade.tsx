@@ -7,3 +7,7 @@
 export function SidebarUpgrade() {
   return null;
 }
+
+export function SidebarAnnouncement() {
+  return null;
+}

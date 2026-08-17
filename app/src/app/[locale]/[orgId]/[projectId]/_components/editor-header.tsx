@@ -1,5 +1,3 @@
-import { useGitProvider } from "@/hooks/use-git-provider";
-import { commitStatusState } from "@/redux/features/git/provider-adapter";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -28,6 +26,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useDeploymentStatusPollingInterval } from "@/hooks/use-deployment-status-polling";
+import { useGitProvider } from "@/hooks/use-git-provider";
 import { useOwnerPlan } from "@/hooks/use-owner-plan";
 import { usePresence } from "@/hooks/use-presence";
 import { useVercelIntegration } from "@/hooks/use-vercel-integration";
@@ -38,6 +37,7 @@ import {
   isDisplayableDeploymentStatus,
 } from "@/lib/utils/deployment-status";
 import { selectConfig } from "@/redux/features/config/slice";
+import { commitStatusState } from "@/redux/features/git/provider-adapter";
 import { useAppSelector } from "@/redux/store";
 import {
   ArrowLeft,
@@ -195,15 +195,10 @@ export default function EditorHeader({
   };
 
   const isSaveDisabled = !hasChanges || isSavingDraft || pending;
-  const isDraftDisabled = pending || (isDraft && !hasChanges);
-  const isPublishDisabled = pending || (!isDraft && !hasChanges);
 
-  const _isMainButtonDisabled =
-    actionType === "save"
-      ? isSaveDisabled
-      : actionType === "draft"
-        ? isDraftDisabled
-        : isPublishDisabled;
+  const isDraftDisabled = pending || (isDraft && !hasChanges && !hasSavedDraft);
+  const isPublishDisabled =
+    pending || (!isDraft && !hasChanges && !hasSavedDraft);
 
   const effectiveActionType: "save" | "draft" | "publish" =
     (!isDbDraftLoaded || !canUseDraftSave) && actionType === "save"

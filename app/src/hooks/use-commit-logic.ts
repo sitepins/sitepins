@@ -1,25 +1,26 @@
-import { useAddLog } from "@/hooks/use-add-log";
+import { toast } from "@/components/ui/toast";
 import { MdxSnippet } from "@/editor/utils/plate-types";
 import { revertToOriginal } from "@/editor/utils/plate-utils";
+import { useAddLog } from "@/hooks/use-add-log";
 import { useGitProvider } from "@/hooks/use-git-provider";
 import { useImages } from "@/hooks/use-images";
 import { authClient } from "@/lib/auth/auth-client";
 import { contentFormatter, format } from "@/lib/utils/content-serializer";
+import {
+  arrayValue,
+  isWrappedValue,
+  recordValue,
+  unwrapValue,
+} from "@/lib/utils/frontmatter-value";
 import { getLogType } from "@/lib/utils/project-log-type-detector";
 import { selectConfig } from "@/redux/features/config/slice";
 import { EAction } from "@/redux/features/project-log/type";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
-import { TField, TState } from "@/types";
+import { TField, TFrontmatterData, TState } from "@/types";
 import { useTranslations } from "next-intl";
-import {
-  arrayValue,
-  recordValue,
-  unwrapValue,
-} from "@/lib/utils/frontmatter-value";
 import { useParams } from "next/navigation";
-import type { Socket } from "socket.io-client";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { toast } from "@/components/ui/toast";
+import type { Socket } from "socket.io-client";
 
 type CommitData = {
   path: string;
@@ -136,6 +137,30 @@ function checkRequiredFields(
   return emptyFields;
 }
 
+// Stamp current date fields in the data based on the schema. This is used to ensure that fields marked with `alwaysUseCurrentDate` are updated to the current date when committing.
+export function stampCurrentDateFields(
+  data: TFrontmatterData,
+  schema: TField[],
+): TFrontmatterData {
+  const processedData = { ...data };
+
+  schema?.forEach((field) => {
+    if (
+      field?.type?.toLowerCase() === "date" &&
+      field?.alwaysUseCurrentDate === true
+    ) {
+      const current = processedData[field.name];
+      if (current) {
+        processedData[field.name] = isWrappedValue(current)
+          ? { ...current, value: new Date().toISOString() }
+          : new Date().toISOString();
+      }
+    }
+  });
+
+  return processedData;
+}
+
 export function useCommitLogic({
   socket,
   state,
@@ -223,24 +248,7 @@ export function useCommitLogic({
   const getProcessedStateData = useCallback(() => {
     if (!state?.data) return state?.data;
 
-    const processedData = { ...state.data };
-
-    schema?.forEach((field) => {
-      if (
-        field?.type?.toLowerCase() === "date" &&
-        field?.alwaysUseCurrentDate === true
-      ) {
-        const current = processedData[field.name];
-        if (current) {
-          processedData[field.name] = {
-            ...(recordValue(current) ?? {}),
-            value: new Date().toISOString(),
-          };
-        }
-      }
-    });
-
-    return processedData;
+    return stampCurrentDateFields(state.data, schema);
   }, [state?.data, schema]);
 
   const commitToProvider = useCallback(

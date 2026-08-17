@@ -5,13 +5,22 @@ import { stampCurrentDateFields } from "./use-commit-logic";
 // The `alwaysUseCurrentDate` stamping, extracted from the hook so it can be
 // exercised without a renderer. `getProcessedStateData` is exactly this call.
 
+const field = (overrides: Partial<TField> = {}): TField => ({
+  name: "title",
+  label: "Title",
+  type: "string",
+  value: "",
+  ...overrides,
+});
+
 const dateField = (overrides: Partial<TField> = {}): TField =>
-  ({
+  field({
     name: "date",
+    label: "Date",
     type: "Date",
     alwaysUseCurrentDate: true,
     ...overrides,
-  }) as TField;
+  });
 
 describe("stampCurrentDateFields", () => {
   it("stamps a raw date value as a raw ISO string", () => {
@@ -53,7 +62,7 @@ describe("stampCurrentDateFields", () => {
   it("leaves non-date fields untouched", () => {
     const result = stampCurrentDateFields(
       { title: "Hello", date: "2026-08-17" },
-      [dateField(), { name: "title", type: "String" } as TField],
+      [dateField(), field({ name: "title" })],
     );
 
     expect(result.title).toBe("Hello");
@@ -89,24 +98,24 @@ describe("stampCurrentDateFields", () => {
     };
 
     const schema = [
-      { name: "title", type: "String" },
-      { name: "draft", type: "boolean" },
+      field({ name: "title" }),
+      field({ name: "draft", type: "boolean" }),
       dateField(),
-      {
+      field({
         name: "seo",
         type: "object",
         fields: [
-          { name: "metaTitle", type: "String" },
-          { name: "tags", type: "Array" },
+          field({ name: "metaTitle" }),
+          field({ name: "tags", type: "Array" }),
         ],
-      },
-      {
+      }),
+      field({
         name: "authors",
         type: "Array",
-        fields: [{ name: "name", type: "String" }],
-      },
-      { name: "gallery", type: "gallery" },
-    ] as TField[];
+        fields: [field({ name: "name" })],
+      }),
+      field({ name: "gallery", type: "gallery" }),
+    ];
 
     const result = stampCurrentDateFields(data, schema);
 

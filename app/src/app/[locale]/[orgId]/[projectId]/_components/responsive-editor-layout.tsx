@@ -29,6 +29,7 @@ type ResponsiveEditorLayoutProps = {
   onUpdateMarkdown: (content: string) => void;
   markdownContent: string;
   onUpdateContentRef: (content: string) => void;
+  seoSidebarOpen?: boolean;
 };
 
 export default function ResponsiveEditorLayout({
@@ -40,6 +41,7 @@ export default function ResponsiveEditorLayout({
   markdownContent,
   onUpdateMarkdown,
   onUpdateContentRef,
+  seoSidebarOpen = false,
 }: ResponsiveEditorLayoutProps) {
   const tEditorTabs = useTranslations("editor.tabs");
   const isMobile = useMediaQuery("(max-width: 1535px)");
@@ -129,7 +131,9 @@ export default function ResponsiveEditorLayout({
 
   if (fullscreen) {
     return (
-      <div className="h-[calc(100svh-70px)] p-5">
+      <div
+        className={`h-[calc(100svh-70px)] transition-[margin] duration-300 ${seoSidebarOpen ? "2xl:mr-105" : ""}`}
+      >
         <ContentEditor
           markdownContent={markdownContent}
           onUpdateMarkdown={onUpdateMarkdown}
@@ -142,7 +146,9 @@ export default function ResponsiveEditorLayout({
   }
 
   return (
-    <div className="h-[calc(100svh-70px)] overflow-y-hidden">
+    <div
+      className={`h-[calc(100svh-70px)] overflow-y-hidden transition-[margin] duration-300 ${seoSidebarOpen ? "2xl:mr-105" : ""}`}
+    >
       <ResizablePanelGroup className="h-full" orientation="horizontal">
         <ResizablePanel minSize="30%" defaultSize="40%" className="">
           <div className="h-full overflow-y-auto p-5">
@@ -156,7 +162,7 @@ export default function ResponsiveEditorLayout({
         </ResizablePanel>
         <ResizableHandle withHandle />
         <ResizablePanel minSize="30%" defaultSize="60%">
-          <div className="h-full p-5">
+          <div className="h-full">
             <ContentEditor
               markdownContent={markdownContent}
               onUpdateMarkdown={onUpdateMarkdown}

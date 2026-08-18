@@ -5,7 +5,6 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { UpgradeDialog } from "@/components/upgrade-dialog";
 import {
   getSeoStatus,
@@ -16,12 +15,18 @@ import { TField } from "@/types";
 import {
   AlertTriangle,
   CheckCircle,
+  Info,
   Lock,
   MinusCircle,
   XCircle,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 // Team+ (SEO Insights) checks, in display order. Rows come from
 // validateSeoInsights and are only populated for Pro+ plans; otherwise the
@@ -67,6 +72,7 @@ const BASE_LABEL_KEYS: Record<string, string> = {
 
 type Row = {
   key: string;
+  metricKey: string;
   name: string;
   status: TSeoStatus;
   valid?: boolean;
@@ -74,6 +80,73 @@ type Row = {
   length?: number;
   percentage?: number;
   tip?: string;
+};
+
+const METRIC_EXPLANATION_KEYS: Record<string, string> = {
+  content: "content",
+  alttext: "alt_text",
+  slug: "slug",
+  metatitle: "meta_title",
+  title: "meta_title",
+  metadescription: "meta_description",
+  description: "meta_description",
+  metadesc: "meta_description",
+  keywords: "keywords",
+  opengraph: "open_graph",
+  canonicalurl: "canonical_url",
+  structureddata: "structured_data",
+  robots: "robots",
+  lastupdated: "last_updated",
+  date: "last_updated",
+  updatedat: "last_updated",
+  modifiedat: "last_updated",
+  lastmodified: "last_updated",
+  datemodified: "last_updated",
+  dateupdated: "last_updated",
+  readability: "readability",
+  sentencelength: "sentence_length",
+  paragraphlength: "paragraph_length",
+  passivevoice: "passive_voice",
+  transitionwords: "transition_words",
+  repeatedsentencestart: "repeated_sentence_start",
+  emdashoveruse: "em_dash_overuse",
+  headingstructure: "heading_structure",
+  subheadingdistribution: "subheading_distribution",
+  tocpresent: "toc_present",
+  mediacount: "media_count",
+  sluglength: "slug_length",
+  keywordfirstparagraph: "keyword_first_paragraph",
+  keyphraseintitle: "keyphrase_in_title",
+  keyphraseindescription: "keyphrase_in_description",
+  keyphraseinslug: "keyphrase_in_slug",
+  keyphraseinsubheadings: "keyphrase_in_subheadings",
+  keyphraseinalt: "keyphrase_in_alt",
+  titlehasnumber: "title_has_number",
+  titlepowerword: "title_power_word",
+  titlesentiment: "title_sentiment",
+};
+
+const getMetricExplanationKey = (key: string) => {
+  const normalized = key.replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
+  const exactMatch = METRIC_EXPLANATION_KEYS[normalized];
+
+  if (exactMatch) return exactMatch;
+  if (normalized.includes("title")) return "meta_title";
+  if (normalized.includes("description") || normalized.includes("desc")) {
+    return "meta_description";
+  }
+  if (normalized.includes("keyword") || normalized.includes("tag")) {
+    return "keywords";
+  }
+  if (
+    normalized.includes("updated") ||
+    normalized.includes("modified") ||
+    normalized === "date"
+  ) {
+    return "last_updated";
+  }
+
+  return "general";
 };
 
 export default function SeoAnalysis({
@@ -96,6 +169,7 @@ export default function SeoAnalysis({
     const labelKey = BASE_LABEL_KEYS[key];
     return {
       key: `base-${key || index}`,
+      metricKey: key,
       name:
         schema.find((field) => field.name === key)?.label ||
         (labelKey ? tEditorSeo(`base_labels.${labelKey}`) : key),
@@ -109,6 +183,7 @@ export default function SeoAnalysis({
     (key) => insightsResults[key],
   ).map((key) => ({
     key: `insight-${key}`,
+    metricKey: key,
     name: tEditorSeo(`insights.labels.${key}`),
     ...insightsResults[key],
     status: getSeoStatus(insightsResults[key]),
@@ -169,16 +244,6 @@ export default function SeoAnalysis({
     },
   ];
 
-  const getStatusIcon = (status: TSeoStatus) => {
-    if (status === "pass")
-      return <CheckCircle className="text-success size-4" />;
-    if (status === "fail")
-      return <XCircle className="text-destructive size-4" />;
-    if (status === "na")
-      return <MinusCircle className="text-muted-foreground size-4" />;
-    return <AlertTriangle className="text-warning size-4" />;
-  };
-
   const getProgressBarColor = (status: TSeoStatus) => {
     if (status === "pass") return "bg-success";
     if (status === "fail") return "bg-destructive";
@@ -187,12 +252,8 @@ export default function SeoAnalysis({
   };
 
   return (
-    <Card className="border-border bg-background max-w-sm border p-4 shadow-sm transition-shadow hover:shadow-md">
-      <CardHeader className="px-0 pt-0 pb-1">
-        <CardTitle className="flex items-center gap-2 text-sm font-normal">
-          <span>{tEditorSeo("analysis_summary")}</span>
-        </CardTitle>
-      </CardHeader>
+    <div className="space-y-3">
+      <h3 className="text-sm font-normal">{tEditorSeo("analysis_summary")}</h3>
       <div className="space-y-2">
         {categories.map((category) => {
           const IconComponent = category.icon;
@@ -200,9 +261,11 @@ export default function SeoAnalysis({
             <Accordion key={category.id}>
               <AccordionItem
                 value={category.id}
-                className={`border-border rounded-lg border ${category.borderColor} ${category.bgColor} px-4 last:border-b`}
+                className={`overflow-hidden rounded-lg border ${category.borderColor} last:border-b`}
               >
-                <AccordionTrigger className="text-sm font-medium hover:no-underline">
+                <AccordionTrigger
+                  className={`rounded-none px-4 py-3 text-sm font-medium hover:no-underline ${category.bgColor} aria-expanded:border-b-0`}
+                >
                   <div className="flex w-full items-center justify-between gap-3">
                     <IconComponent className={`size-4 ${category.iconColor}`} />
                     <span>{category.title}</span>
@@ -214,19 +277,37 @@ export default function SeoAnalysis({
                     </Badge>
                   </div>
                 </AccordionTrigger>
-                <AccordionContent>
-                  <div className="space-y-3 pb-1">
+                <AccordionContent className="bg-background/40 px-4 pt-4">
+                  <div className="space-y-4 pb-1">
                     {category.results.map((result, index) => (
                       <div
                         key={result.key || `result-${index}`}
-                        className="bg-card border-border rounded-md border p-3 shadow-sm"
+                        className="border-border/60 border-t pt-4 first:border-t-0 first:pt-0"
                       >
-                        <div className="mb-2 flex items-start justify-between">
-                          <div className="flex min-w-0 items-center gap-2">
-                            {getStatusIcon(result.status)}
-                            <span className="text-card-foreground truncate text-sm font-medium">
+                        <div className="mb-2">
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="text-card-foreground text-sm font-medium">
                               {result.name}
                             </span>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <button
+                                  type="button"
+                                  aria-label={tEditorSeo("view_explanation")}
+                                  className="text-muted-foreground hover:text-foreground inline-flex size-6 shrink-0 items-center justify-center rounded-md transition-colors"
+                                >
+                                  <Info className="size-3.5" />
+                                </button>
+                              </TooltipTrigger>
+                              <TooltipContent
+                                side="left"
+                                className="max-w-64 text-left"
+                              >
+                                {tEditorSeo(
+                                  `explanations.${getMetricExplanationKey(result.metricKey)}`,
+                                )}
+                              </TooltipContent>
+                            </Tooltip>
                           </div>
                         </div>
 
@@ -235,7 +316,7 @@ export default function SeoAnalysis({
                             <span className="text-muted-foreground text-xs font-medium">
                               {tEditorSeo("current")}
                             </span>
-                            <div className="bg-muted/50 text-card-foreground wrap-break-words mt-1 rounded-md p-2 text-xs">
+                            <div className="text-card-foreground wrap-break-words mt-1 text-xs">
                               {result.value instanceof Date
                                 ? result.value.toLocaleDateString()
                                 : String(result.value)}
@@ -266,11 +347,11 @@ export default function SeoAnalysis({
                         )}
 
                         {result.tip && (
-                          <div className="bg-muted/40 text-muted-foreground border-l-border rounded-md border-l-2 p-2 text-xs">
-                            <span className="font-medium">
-                              💡 {tEditorSeo("recommendation")}
+                          <div className="text-muted-foreground border-border/60 mt-3 border-l-2 pl-3 text-xs">
+                            <span className="font-medium not-italic">
+                              {tEditorSeo("recommendation")}
                             </span>
-                            <p className="wrap-break-words mt-1">
+                            <p className="wrap-break-words mt-1 leading-relaxed italic">
                               {result.tip}
                             </p>
                           </div>
@@ -321,6 +402,6 @@ export default function SeoAnalysis({
           </>
         )}
       </div>
-    </Card>
+    </div>
   );
 }

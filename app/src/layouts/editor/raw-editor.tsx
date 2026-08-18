@@ -12,13 +12,13 @@ import {
   updateConfig,
 } from "@/redux/features/config/slice";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
+import type { OnMount } from "@monaco-editor/react";
 import { Expand, Maximize } from "lucide-react";
-import { useTheme } from "next-themes";
 import { useTranslations } from "next-intl";
+import { useTheme } from "next-themes";
 import dynamic from "next/dynamic";
 import { useEffect, useRef } from "react";
 import { RichTextType } from "./utils/plate-types";
-import type { OnMount } from "@monaco-editor/react";
 
 // Configure Monaco AMD loader to a compatible CDN version
 configureMonacoLoader();
@@ -70,9 +70,13 @@ export const RawEditor = ({
   }, 500);
 
   return (
-    <div className="relative flex h-fit flex-col rounded">
-      <div className="scrollbar-hide bg-background/95 supports-backdrop-blur:bg-background/60 border-border @container/toolbar sticky top-0 left-0 z-50 flex min-h-10 w-full max-w-full items-stretch justify-between overflow-x-auto rounded-t-lg border border-b p-1 backdrop-blur-sm">
-        <div className="ml-auto flex items-stretch self-stretch">
+    <div
+      className={`raw-markdown-editor [&_.monaco-editor-background]:bg-background! [&_.monaco-editor_.margin]:bg-background! [&_.monaco-editor_.overflow-guard]:bg-background! [&_.monaco-editor]:bg-background! relative flex h-fit flex-col rounded ${isMobile ? "" : "pt-4 lg:pt-6"}`}
+    >
+      <div
+        className={`scrollbar-hide bg-background/95 supports-backdrop-blur:bg-background/60 border-border @container/toolbar sticky top-0 left-0 z-50 flex min-h-10 w-auto items-stretch justify-between overflow-x-auto rounded-lg border p-1 ${isMobile ? "" : "mx-4 lg:mx-6"}`}
+      >
+        <div className="mr-1.5 ml-auto flex items-stretch self-stretch">
           <button
             className={cn(
               "hover:bg-muted hover:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 aria-checked:bg-primary aria-checked:text-primary-foreground aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
@@ -119,7 +123,7 @@ export const RawEditor = ({
         </div>
       </div>
       <div
-        className={`border-border relative rounded-t-none border border-t-0 p-4 lg:p-6 ${isMobile ? "h-[calc(100vh-215px)]" : "h-[calc(100vh-152px)]"}`}
+        className={`relative px-0 pt-4 ${isMobile ? "" : "lg:pt-6"} ${isMobile ? "h-[calc(100vh-215px)]" : "h-[calc(100vh-152px)]"}`}
       >
         <MonacoEditor
           key="raw-editor"
@@ -181,10 +185,10 @@ export const RawEditor = ({
             folding: !isSmallMobile,
             lineNumbers: isSmallMobile ? "off" : "on",
             scrollbar: {
-              verticalScrollbarSize: isSmallMobile ? 0 : 14,
-              horizontalScrollbarSize: isSmallMobile ? 0 : 14,
-              vertical: isSmallMobile ? "hidden" : "auto",
-              horizontal: isSmallMobile ? "hidden" : "auto",
+              verticalScrollbarSize: 0,
+              horizontalScrollbarSize: 0,
+              vertical: "hidden",
+              horizontal: "hidden",
             },
             placeholder: tEditorRaw("placeholder"),
           }}

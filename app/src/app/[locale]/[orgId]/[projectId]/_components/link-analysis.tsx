@@ -77,7 +77,7 @@ export default function LinkAnalysis({
           <div className="space-y-2 pb-4">
             <p className="flex items-center justify-between text-sm font-medium">
               <span>{tEditorSeo("total_links")}</span>
-              <span className="bg-light rounded-md px-2 py-1">
+              <span className="text-muted-foreground bg-muted/50 rounded-md px-2 py-1">
                 {totalLinks}
               </span>
             </p>

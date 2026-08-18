@@ -8,6 +8,7 @@ import { revertToOriginal } from "@/editor/utils/plate-utils";
 import { useDebounce } from "@/hooks/use-debounce";
 import { useHydrated } from "@/hooks/use-hydrated";
 import { useOwnerPlan } from "@/hooks/use-owner-plan";
+import { stringValue } from "@/lib/utils/frontmatter-value";
 import {
   getSeoScore,
   KEYWORD_KEYS,
@@ -20,7 +21,6 @@ import { useGetProjectQuery } from "@/redux/features/project/project-api";
 import { TField, TState } from "@/types";
 import { ChartSpline } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
-import { stringValue } from "@/lib/utils/frontmatter-value";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
 import {
@@ -45,6 +45,8 @@ export default function SeoSetting({
   content,
   onSlugChange,
   resetKey,
+  isSidebarOpen,
+  onSidebarOpenChange,
 }: {
   schema: TField[];
   data: TState["data"];
@@ -52,6 +54,8 @@ export default function SeoSetting({
   content: string;
   onSlugChange?: (newSlug: string) => void;
   resetKey?: number;
+  isSidebarOpen: boolean;
+  onSidebarOpenChange: (open: boolean) => void;
 }) {
   const tEditorSeo = useTranslations("editor.seo");
   const {
@@ -74,7 +78,6 @@ export default function SeoSetting({
 
   const baseUrl = site?.site_url ?? "";
 
-  const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [showUpgradeOrg, setShowUpgradeOrg] = useState(false);
   const [focusKeyword, setFocusKeyword] = useState("");
   const hydrated = useHydrated();
@@ -307,7 +310,7 @@ export default function SeoSetting({
             size={"lg"}
             variant={"outline"}
             type="button"
-            aria-label={tEditorSeo("title")}
+            aria-label="SEO"
             onClick={() => setShowUpgradeOrg(true)}
           >
             <span className="hidden sm:inline-block">SEO</span>
@@ -325,8 +328,8 @@ export default function SeoSetting({
           size={"lg"}
           variant={"outline"}
           type="button"
-          aria-label={tEditorSeo("title")}
-          onClick={() => setSidebarOpen(!isSidebarOpen)}
+          aria-label="SEO"
+          onClick={() => onSidebarOpenChange(!isSidebarOpen)}
         >
           <span className="hidden sm:inline-block">SEO</span>
           <ChartSpline className="size-4 sm:hidden" strokeWidth={1.5} />
@@ -338,64 +341,74 @@ export default function SeoSetting({
         createPortal(
           <AnimatePresence>
             {isSidebarOpen && (
-              <motion.div
-                key="seo-sidebar"
-                initial={{ x: "100%" }}
-                animate={{ x: 0 }}
-                exit={{ x: "100%" }}
-                transition={{ type: "spring", bounce: 0, duration: 0.3 }}
-                className="bg-background border-border fixed top-17.25 right-0 z-50 h-[calc(100svh-67px)] w-full max-w-105 border-l shadow-lg"
-              >
-                <div className="h-full space-y-4 overflow-y-auto p-5">
-                  <h5 className="mb-5 block text-lg font-semibold">
-                    {tEditorSeo("title")}
-                  </h5>
-                  {canAccessProPlusFeatures && (
-                    <div className="space-y-1.5">
-                      <Label htmlFor="seo-focus-keyword">
-                        {tEditorSeo("focus_keyword_label")}
-                      </Label>
-                      <Input
-                        id="seo-focus-keyword"
-                        value={focusKeyword}
-                        autoComplete="off"
-                        placeholder={tEditorSeo("focus_keyword_placeholder")}
-                        onChange={(e) =>
-                          handleFocusKeywordChange(e.target.value)
-                        }
-                      />
-                      <p className="text-muted-foreground text-xs">
-                        {tEditorSeo("focus_keyword_help")}
-                      </p>
-                    </div>
-                  )}
-                  <SearchPreview
-                    title={metaTitle}
-                    description={metaDescription}
-                    date={formattedDate}
-                  />
-                  <FrontmatterRenderer
-                    schema={displaySchema}
-                    data={displayData}
-                    setData={handleSetData}
-                    strictMode={true}
-                  />
-                  <ContentAnalysis content={content} />
-                  <LinkAnalysis
-                    totalLinks={seoInsights?.linkQuality?.total ?? 0}
-                    internalLinks={seoInsights?.internalLinks?.length ?? 0}
-                    externalLinks={seoInsights?.externalLinks?.length ?? 0}
-                  />
-                  <SeoAnalysis
-                    results={results}
-                    schema={schema}
-                    insightsResults={
-                      canAccessProPlusFeatures ? insightsResults : {}
-                    }
-                    canAccessInsights={canAccessProPlusFeatures}
-                  />
-                </div>
-              </motion.div>
+              <>
+                <motion.button
+                  key="seo-backdrop"
+                  type="button"
+                  aria-label={tEditorSeo("close_overlay")}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                  onClick={() => onSidebarOpenChange(false)}
+                  className="bg-background/20 fixed top-17.25 right-0 bottom-0 left-0 z-60 cursor-pointer backdrop-blur-sm xl:left-70 2xl:hidden"
+                />
+                <motion.div
+                  key="seo-sidebar"
+                  initial={{ x: "100%" }}
+                  animate={{ x: 0 }}
+                  exit={{ x: "100%" }}
+                  transition={{ type: "spring", bounce: 0, duration: 0.3 }}
+                  className="bg-light border-border fixed top-17.25 right-0 z-70 h-[calc(100svh-67px)] w-full max-w-105 border-l shadow-lg 2xl:shadow-none"
+                >
+                  <div className="h-full space-y-4 overflow-y-auto p-5">
+                    <SearchPreview
+                      title={metaTitle}
+                      description={metaDescription}
+                      date={formattedDate}
+                    />
+                    <FrontmatterRenderer
+                      schema={displaySchema}
+                      data={displayData}
+                      setData={handleSetData}
+                      strictMode={true}
+                    />
+                    <ContentAnalysis content={content} />
+                    <LinkAnalysis
+                      totalLinks={seoInsights?.linkQuality?.total ?? 0}
+                      internalLinks={seoInsights?.internalLinks?.length ?? 0}
+                      externalLinks={seoInsights?.externalLinks?.length ?? 0}
+                    />
+                    {canAccessProPlusFeatures && (
+                      <div className="space-y-1.5">
+                        <Label htmlFor="seo-focus-keyword">
+                          {tEditorSeo("focus_keyword_label")}
+                        </Label>
+                        <Input
+                          id="seo-focus-keyword"
+                          value={focusKeyword}
+                          autoComplete="off"
+                          placeholder={tEditorSeo("focus_keyword_placeholder")}
+                          onChange={(e) =>
+                            handleFocusKeywordChange(e.target.value)
+                          }
+                        />
+                        <p className="text-muted-foreground text-xs">
+                          {tEditorSeo("focus_keyword_help")}
+                        </p>
+                      </div>
+                    )}
+                    <SeoAnalysis
+                      results={results}
+                      schema={schema}
+                      insightsResults={
+                        canAccessProPlusFeatures ? insightsResults : {}
+                      }
+                      canAccessInsights={canAccessProPlusFeatures}
+                    />
+                  </div>
+                </motion.div>
+              </>
             )}
           </AnimatePresence>,
           portalContainer,

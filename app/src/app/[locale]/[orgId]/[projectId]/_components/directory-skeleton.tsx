@@ -17,7 +17,11 @@ export default function DirectorySkeleton({
   isCodePath,
 }: DirectorySkeletonProps) {
   return (
-    <Container fullWidth>
+    <Container
+      fullWidth
+      className="space-y-0"
+      wrapperClassName="p-4 md:px-6 md:py-5 lg:px-8 lg:py-6"
+    >
       {/* Action Bar Skeleton */}
       <div className="flex flex-col gap-y-3 md:flex-row md:items-center md:space-x-2">
         <div className="flex-1">
@@ -29,7 +33,7 @@ export default function DirectorySkeleton({
         </div>
       </div>
 
-      <div className="mt-4 space-y-4">
+      <div className="mt-3 space-y-3">
         {/* Header Skeleton */}
         <div className="border-border bg-light rounded-lg border">
           <Table>

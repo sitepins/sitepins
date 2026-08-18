@@ -325,7 +325,11 @@ export default function DirectoryView({
   const paginatedFiles = sortedFiles.slice(startIndex, endIndex);
 
   return (
-    <Container fullWidth className="space-y-0">
+    <Container
+      fullWidth
+      className="space-y-0"
+      wrapperClassName="p-4 md:px-6 md:py-5 lg:px-8 lg:py-6"
+    >
       <div className="flex flex-col gap-y-3 md:flex-row md:items-center md:space-x-2">
         <Search className="flex-1" />
         <div className="flex w-full items-center gap-x-2 md:w-auto">
@@ -355,10 +359,10 @@ export default function DirectoryView({
           )}
         </div>
       </div>
-      <div className="mt-4 flex-1">
+      <div className="mt-3 flex-1">
         <div
           className={cn(
-            "space-y-4",
+            "space-y-3",
             !sortedFiles.length && "h-full max-h-[calc(100%-64px)]",
           )}
         >

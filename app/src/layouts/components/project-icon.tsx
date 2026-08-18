@@ -34,6 +34,14 @@ const VARIANTS = {
     favicon: "size-5 rounded object-cover",
     fallback: "size-5 rounded text-[10px]",
   },
+  // SEO search preview project identity.
+  preview: {
+    size: 32,
+    wrapper: "",
+    image: "size-8 rounded-full object-cover",
+    favicon: "size-8 rounded-full object-cover",
+    fallback: "size-8 rounded-full text-sm",
+  },
 } as const;
 
 type ProjectIconProps = {

@@ -421,10 +421,10 @@ export const RichEditor = ({
         editor={editor}
       >
         <EditorContainer
-          className={`border-border relative rounded border border-t-0 ${isMobile ? "h-[calc(100vh-170px)]" : "h-[calc(100vh-110px)]"}`}
+          className={`relative ${isMobile ? "" : "p-4 lg:p-6"} ${isMobile ? "h-[calc(100vh-170px)]" : "h-[calc(100vh-110px)]"}`}
         >
           <Editor
-            className={`relative min-h-[calc(100%-42px)] p-4 pb-20 lg:p-6`}
+            className={`relative min-h-[calc(100%-42px)] px-0 ${isMobile ? "pt-4" : "pt-4 lg:pt-6"} pb-20`}
             variant="none"
             placeholder={tEditorRich("placeholder")}
           />

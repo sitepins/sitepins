@@ -1,7 +1,7 @@
 "use client";
 
-import Avatar from "@/components/avatar";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
+import ProjectIcon from "@/layouts/components/project-icon";
 import { useGetProjectQuery } from "@/redux/features/project/project-api";
 import { SearchIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -40,7 +40,7 @@ export default function SearchPreview({
   const pageSlug = lastSegment ? ` › ${lastSegment}` : "";
 
   return (
-    <Card className="border-border bg-background max-w-sm border p-4 shadow-sm transition-shadow hover:shadow-md">
+    <Card className="bg-background max-w-sm rounded p-4">
       <CardHeader className="px-0 pt-0 pb-2">
         <CardTitle className="flex items-center gap-2 text-sm font-normal">
           <SearchIcon className="size-4" />
@@ -50,15 +50,12 @@ export default function SearchPreview({
       <div className="space-y-2">
         {/* Project Info: Avatar and Name */}
         <div className="mb-4 flex items-center gap-2">
-          <div className="size-6 flex-none">
-            <Avatar
-              email=""
-              site_url={site_url}
-              src={project_image!}
-              alt={project_name || ""}
-              width={30}
-              height={30}
-              className="rounded-full object-cover"
+          <div className="size-8 flex-none">
+            <ProjectIcon
+              variant="preview"
+              projectName={project_name}
+              projectImage={project_image}
+              siteUrl={site_url}
             />
           </div>
           <div className="flex min-w-0 flex-col">

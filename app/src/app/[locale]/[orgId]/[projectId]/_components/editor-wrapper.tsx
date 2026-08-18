@@ -314,6 +314,7 @@ const EditorWrapper: React.FC<EditorWrapperProps> = memo(
     ]);
 
     const [resetKey, setResetKey] = useState(0);
+    const [isSeoSidebarOpen, setIsSeoSidebarOpen] = useState(false);
 
     const handleReset = useCallback(() => {
       isResettingRef.current = true;
@@ -360,6 +361,8 @@ const EditorWrapper: React.FC<EditorWrapperProps> = memo(
                 content={markdownContent}
                 onSlugChange={onSlugChange}
                 resetKey={resetKey}
+                isSidebarOpen={isSeoSidebarOpen}
+                onSidebarOpenChange={setIsSeoSidebarOpen}
               />
             )}
           </EditorHeader>
@@ -374,6 +377,7 @@ const EditorWrapper: React.FC<EditorWrapperProps> = memo(
             onUpdateMarkdown={onUpdateMarkdown}
             markdownContent={markdownContent}
             onUpdateContentRef={onUpdateContentRef}
+            seoSidebarOpen={isSeoSidebarOpen}
           />
         </div>
 

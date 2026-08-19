@@ -234,6 +234,7 @@
       "internal_links": "Interne Links",
       "external_links": "Externe Links",
       "analysis_summary": "Optimierungsstatus",
+      "content_insights": "Content-Einblicke",
       "score_label": "SEO-Score: {score} von 100",
       "good_results": "Gute Ergebnisse",
       "improvements": "Verbesserungen",
@@ -336,7 +337,7 @@
       },
       "focus_keyword_label": "Ziel-Keyword",
       "focus_keyword_placeholder": "z. B. Static-Site-Generator",
-      "focus_keyword_help": "Dient zur Bewertung der Keyword-Platzierung. Mehrere durch Kommas trennen. Leer: Es werden deine Tags verwendet.",
+      "focus_keyword_help": "Gib das wichtigste Keyword ein, für das diese Seite ranken soll. Mehrere Keywords durch Kommas trennen. Ist das Feld leer, werden deine Tags verwendet.",
       "insights": {
         "teaser": "Schalte {count} weitere SEO-Prüfungen frei",
         "teaser_scored": "Bereits in deinem SEO-Score berücksichtigt.",

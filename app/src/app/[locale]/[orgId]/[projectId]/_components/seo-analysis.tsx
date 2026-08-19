@@ -5,6 +5,13 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { UpgradeDialog } from "@/components/upgrade-dialog";
 import {
   getSeoStatus,
@@ -22,11 +29,6 @@ import {
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 
 // Team+ (SEO Insights) checks, in display order. Rows come from
 // validateSeoInsights and are only populated for Pro+ plans; otherwise the
@@ -154,11 +156,15 @@ export default function SeoAnalysis({
   schema,
   insightsResults = {},
   canAccessInsights = true,
+  focusKeyword,
+  onFocusKeywordChange,
 }: {
   results: TSeoResults;
   schema: TField[];
   insightsResults?: TSeoResults;
   canAccessInsights?: boolean;
+  focusKeyword?: string;
+  onFocusKeywordChange?: (value: string) => void;
 }) {
   const tEditorSeo = useTranslations("editor.seo");
   const [showUpgrade, setShowUpgrade] = useState(false);
@@ -238,8 +244,8 @@ export default function SeoAnalysis({
       count: notApplicable.length,
       icon: MinusCircle,
       iconColor: "text-muted-foreground",
-      bgColor: "bg-muted/40",
-      borderColor: "border-border",
+      bgColor: "bg-neutral-200/60 dark:bg-muted/40",
+      borderColor: "border-neutral-300 dark:border-border",
       results: notApplicable,
     },
   ];
@@ -252,8 +258,38 @@ export default function SeoAnalysis({
   };
 
   return (
-    <div className="space-y-3">
+    <div className="mt-8 space-y-3">
       <h3 className="text-sm font-normal">{tEditorSeo("analysis_summary")}</h3>
+      {focusKeyword !== undefined && onFocusKeywordChange && (
+        <div className="border-border dark:bg-background bg-background/50 rounded-lg border p-3">
+          <div className="mb-1.5 flex items-center justify-between">
+            <Label htmlFor="seo-focus-keyword">
+              {tEditorSeo("focus_keyword_label")}
+            </Label>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  type="button"
+                  aria-label={tEditorSeo("view_explanation")}
+                  className="text-muted-foreground hover:text-foreground -mt-1 inline-flex size-4 items-center justify-center rounded-md transition-colors"
+                >
+                  <Info className="size-4" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="left" className="max-w-64 text-left">
+                {tEditorSeo("focus_keyword_help")}
+              </TooltipContent>
+            </Tooltip>
+          </div>
+          <Input
+            id="seo-focus-keyword"
+            value={focusKeyword}
+            autoComplete="off"
+            placeholder={tEditorSeo("focus_keyword_placeholder")}
+            onChange={(e) => onFocusKeywordChange(e.target.value)}
+          />
+        </div>
+      )}
       <div className="space-y-2">
         {categories.map((category) => {
           const IconComponent = category.icon;
@@ -261,7 +297,7 @@ export default function SeoAnalysis({
             <Accordion key={category.id}>
               <AccordionItem
                 value={category.id}
-                className={`overflow-hidden rounded-lg border ${category.borderColor} last:border-b`}
+                className={`overflow-hidden rounded-lg border ${category.borderColor} last:border-b ${category.id === "not-applicable" ? "dark:bg-muted/40 bg-neutral-200/60" : ""}`}
               >
                 <AccordionTrigger
                   className={`rounded-none px-4 py-3 text-sm font-medium hover:no-underline ${category.bgColor} aria-expanded:border-b-0`}

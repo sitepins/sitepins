@@ -1,8 +1,6 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { UpgradeDialog } from "@/components/upgrade-dialog";
 import { revertToOriginal } from "@/editor/utils/plate-utils";
 import { useDebounce } from "@/hooks/use-debounce";
@@ -361,7 +359,7 @@ export default function SeoSetting({
                   transition={{ type: "spring", bounce: 0, duration: 0.3 }}
                   className="bg-light border-border fixed top-17.25 right-0 z-70 h-[calc(100svh-67px)] w-full max-w-105 border-l shadow-lg 2xl:shadow-none"
                 >
-                  <div className="h-full space-y-4 overflow-y-auto p-5">
+                  <div className="dark:[&_input]:bg-input/30 dark:[&_textarea]:bg-input/30 h-full space-y-4 overflow-y-auto p-5 [&_input]:bg-white [&_textarea]:bg-white">
                     <SearchPreview
                       title={metaTitle}
                       description={metaDescription}
@@ -373,31 +371,6 @@ export default function SeoSetting({
                       setData={handleSetData}
                       strictMode={true}
                     />
-                    <ContentAnalysis content={content} />
-                    <LinkAnalysis
-                      totalLinks={seoInsights?.linkQuality?.total ?? 0}
-                      internalLinks={seoInsights?.internalLinks?.length ?? 0}
-                      externalLinks={seoInsights?.externalLinks?.length ?? 0}
-                    />
-                    {canAccessProPlusFeatures && (
-                      <div className="space-y-1.5">
-                        <Label htmlFor="seo-focus-keyword">
-                          {tEditorSeo("focus_keyword_label")}
-                        </Label>
-                        <Input
-                          id="seo-focus-keyword"
-                          value={focusKeyword}
-                          autoComplete="off"
-                          placeholder={tEditorSeo("focus_keyword_placeholder")}
-                          onChange={(e) =>
-                            handleFocusKeywordChange(e.target.value)
-                          }
-                        />
-                        <p className="text-muted-foreground text-xs">
-                          {tEditorSeo("focus_keyword_help")}
-                        </p>
-                      </div>
-                    )}
                     <SeoAnalysis
                       results={results}
                       schema={schema}
@@ -405,7 +378,26 @@ export default function SeoSetting({
                         canAccessProPlusFeatures ? insightsResults : {}
                       }
                       canAccessInsights={canAccessProPlusFeatures}
+                      focusKeyword={
+                        canAccessProPlusFeatures ? focusKeyword : undefined
+                      }
+                      onFocusKeywordChange={
+                        canAccessProPlusFeatures
+                          ? handleFocusKeywordChange
+                          : undefined
+                      }
                     />
+                    <div className="mt-8 space-y-3">
+                      <h3 className="text-sm font-normal">
+                        {tEditorSeo("content_insights")}
+                      </h3>
+                      <ContentAnalysis content={content} />
+                      <LinkAnalysis
+                        totalLinks={seoInsights?.linkQuality?.total ?? 0}
+                        internalLinks={seoInsights?.internalLinks?.length ?? 0}
+                        externalLinks={seoInsights?.externalLinks?.length ?? 0}
+                      />
+                    </div>
                   </div>
                 </motion.div>
               </>

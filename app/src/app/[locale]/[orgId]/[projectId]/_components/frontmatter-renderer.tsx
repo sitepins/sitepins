@@ -937,6 +937,7 @@ export default function FrontmatterRenderer({
 
                   <DateTimePicker
                     date={dateValue}
+                    className="dark:bg-input/30 h-10 bg-white"
                     setDate={(date: Date | undefined) => {
                       handleUpdateData(
                         generateName({

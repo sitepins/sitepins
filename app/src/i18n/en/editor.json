@@ -234,6 +234,7 @@
       "internal_links": "Internal Links",
       "external_links": "External Links",
       "analysis_summary": "Optimization Status",
+      "content_insights": "Content Insights",
       "score_label": "SEO score: {score} out of 100",
       "good_results": "Good Results",
       "improvements": "Improvements",
@@ -336,7 +337,7 @@
       },
       "focus_keyword_label": "Target Keyword",
       "focus_keyword_placeholder": "e.g. static site generator",
-      "focus_keyword_help": "Used to grade keyword placement. Separate multiple with commas. Falls back to your tags when empty.",
+      "focus_keyword_help": "Enter the main keyword this page should rank for. Separate multiple keywords with commas. If empty, your tags are used instead.",
       "insights": {
         "teaser": "Unlock {count} more SEO checks",
         "teaser_scored": "Already counted in your SEO score.",

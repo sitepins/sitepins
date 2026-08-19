@@ -234,6 +234,7 @@
       "internal_links": "Tautan Internal",
       "external_links": "Tautan Eksternal",
       "analysis_summary": "Status Optimasi",
+      "content_insights": "Wawasan Konten",
       "score_label": "Skor SEO: {score} dari 100",
       "good_results": "Hasil Bagus",
       "improvements": "Perbaikan",
@@ -336,7 +337,7 @@
       },
       "focus_keyword_label": "Kata Kunci Target",
       "focus_keyword_placeholder": "mis. generator situs statis",
-      "focus_keyword_help": "Dipakai untuk menilai penempatan kata kunci. Pisahkan beberapa dengan koma. Jika kosong, tag Anda yang dipakai.",
+      "focus_keyword_help": "Masukkan kata kunci utama yang ingin Anda gunakan untuk memposisikan halaman ini. Pisahkan beberapa kata kunci dengan koma. Jika kosong, tag Anda akan digunakan.",
       "insights": {
         "teaser": "Buka {count} pemeriksaan SEO lagi",
         "teaser_scored": "Sudah dihitung dalam skor SEO Anda.",

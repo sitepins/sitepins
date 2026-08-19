@@ -234,6 +234,7 @@
       "internal_links": "内部链接",
       "external_links": "外部链接",
       "analysis_summary": "优化状态",
+      "content_insights": "内容洞察",
       "score_label": "SEO 评分：{score}/100",
       "good_results": "良好结果",
       "improvements": "有待改进",
@@ -336,7 +337,7 @@
       },
       "focus_keyword_label": "目标关键词",
       "focus_keyword_placeholder": "例如:静态站点生成器",
-      "focus_keyword_help": "用于评估关键词布局。多个关键词用逗号分隔。留空时使用你的标签。",
+      "focus_keyword_help": "输入你希望此页面获得排名的主要关键词。多个关键词请用逗号分隔。留空时将使用你的标签。",
       "insights": {
         "teaser": "再解锁 {count} 项 SEO 检查",
         "teaser_scored": "已计入你的 SEO 评分。",

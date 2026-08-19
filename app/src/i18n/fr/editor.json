@@ -234,6 +234,7 @@
       "internal_links": "Liens internes",
       "external_links": "Liens externes",
       "analysis_summary": "État de l’optimisation",
+      "content_insights": "Aperçus du contenu",
       "score_label": "Score SEO : {score} sur 100",
       "good_results": "Bons résultats",
       "improvements": "Améliorations",
@@ -336,7 +337,7 @@
       },
       "focus_keyword_label": "Mot-clé Cible",
       "focus_keyword_placeholder": "ex. générateur de site statique",
-      "focus_keyword_help": "Sert à évaluer le placement du mot-clé. Séparez-en plusieurs par des virgules. Vos tags sont utilisés si le champ est vide.",
+      "focus_keyword_help": "Saisissez le mot-clé principal pour lequel cette page doit être bien classée. Séparez plusieurs mots-clés par des virgules. Si le champ est vide, vos tags seront utilisés.",
       "insights": {
         "teaser": "Débloquez {count} vérifications SEO de plus",
         "teaser_scored": "Déjà pris en compte dans votre score SEO.",

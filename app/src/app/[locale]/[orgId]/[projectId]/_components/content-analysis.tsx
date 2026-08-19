@@ -16,7 +16,7 @@ export default function ContentAnalysis({ content }: { content: string }) {
     <Accordion>
       <AccordionItem
         value="content-analysis"
-        className="border-border rounded-lg border px-4 last:border-b"
+        className="border-border rounded-lg border bg-white px-4 last:border-b dark:bg-transparent"
       >
         <AccordionTrigger className="text-sm font-normal hover:no-underline">
           <div className="flex items-center">

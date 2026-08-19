@@ -234,6 +234,7 @@
       "internal_links": "Links Internos",
       "external_links": "Links Externos",
       "analysis_summary": "Status de Otimização",
+      "content_insights": "Insights de Conteúdo",
       "score_label": "Pontuação de SEO: {score} de 100",
       "good_results": "Bons Resultados",
       "improvements": "Melhorias",
@@ -336,7 +337,7 @@
       },
       "focus_keyword_label": "Palavra-chave Alvo",
       "focus_keyword_placeholder": "ex. gerador de sites estáticos",
-      "focus_keyword_help": "Usada para avaliar o posicionamento da palavra-chave. Separe várias com vírgulas. Se vazio, usa suas tags.",
+      "focus_keyword_help": "Insira a principal palavra-chave para a qual esta página deve ranquear. Separe várias palavras-chave por vírgulas. Se ficar vazio, suas tags serão usadas.",
       "insights": {
         "teaser": "Desbloqueie mais {count} verificações de SEO",
         "teaser_scored": "Já contabilizado na sua pontuação de SEO.",

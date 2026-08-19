@@ -234,6 +234,7 @@
       "internal_links": "Liên kết nội bộ",
       "external_links": "Liên kết ngoài",
       "analysis_summary": "Trạng thái tối ưu hóa",
+      "content_insights": "Thông tin chi tiết nội dung",
       "score_label": "Điểm SEO: {score} trên 100",
       "good_results": "Kết Quả Tốt",
       "improvements": "Cải tiến",
@@ -336,7 +337,7 @@
       },
       "focus_keyword_label": "Từ Khóa Mục Tiêu",
       "focus_keyword_placeholder": "ví dụ: trình tạo trang tĩnh",
-      "focus_keyword_help": "Dùng để chấm điểm vị trí từ khóa. Nhiều từ khóa cách nhau bằng dấu phẩy. Để trống sẽ dùng thẻ tag của bạn.",
+      "focus_keyword_help": "Nhập từ khóa chính mà bạn muốn trang này được xếp hạng. Phân tách nhiều từ khóa bằng dấu phẩy. Nếu để trống, hệ thống sẽ dùng các thẻ tag của bạn.",
       "insights": {
         "teaser": "Mở khóa thêm {count} kiểm tra SEO",
         "teaser_scored": "Đã được tính vào điểm SEO của bạn.",

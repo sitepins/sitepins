@@ -234,6 +234,7 @@
       "internal_links": "内部リンク",
       "external_links": "外部リンク",
       "analysis_summary": "最適化ステータス",
+      "content_insights": "コンテンツインサイト",
       "score_label": "SEOスコア: 100点中{score}点",
       "good_results": "良好な結果",
       "improvements": "改善点",
@@ -336,7 +337,7 @@
       },
       "focus_keyword_label": "ターゲットキーワード",
       "focus_keyword_placeholder": "例:静的サイトジェネレーター",
-      "focus_keyword_help": "キーワードの配置を評価するために使用します。複数はカンマ区切り。空の場合はタグが使われます。",
+      "focus_keyword_help": "このページで上位表示を目指す主なキーワードを入力してください。複数の場合はカンマで区切ります。空欄の場合はタグが使用されます。",
       "insights": {
         "teaser": "さらに{count}件のSEOチェックを解除",
         "teaser_scored": "SEOスコアにはすでに反映されています。",

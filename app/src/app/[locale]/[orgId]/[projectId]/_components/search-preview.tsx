@@ -70,18 +70,14 @@ export default function SearchPreview({
         </div>
 
         {/* Title */}
-        <h3 className="line-clamp-1 cursor-pointer text-base leading-tight font-medium hover:underline">
+        <h3 className="line-clamp-1 cursor-pointer text-base leading-tight font-medium text-[#1A0DAB] hover:underline dark:text-[#99C3FF]">
           {title || "Page Title"}
         </h3>
 
         {/* Date and description */}
-        <div className="text-[14px] leading-[1.58] text-[#bdc1c6]">
-          {date && (
-            <span className="text-muted-foreground mr-1 font-normal">
-              {date} —{" "}
-            </span>
-          )}
+        <div className="text-sm leading-5 text-[#5f6368] dark:text-[#bdc1c6]">
           <p>
+            {date && <span className="mr-1 font-normal">{date} —</span>}{" "}
             {description
               ? description.length > 160
                 ? `${description.substring(0, 160)}...`

@@ -337,7 +337,7 @@
       },
       "focus_keyword_label": "Target Keyword",
       "focus_keyword_placeholder": "e.g. static site generator",
-      "focus_keyword_help": "Enter the main keyword this page should rank for. Separate multiple keywords with commas. If empty, your tags are used instead.",
+      "focus_keyword_help": "Enter the main keyword for this page. If you leave it empty, categories are checked first, then tags. Separate multiple keywords with commas.",
       "insights": {
         "teaser": "Unlock {count} more SEO checks",
         "teaser_scored": "Already counted in your SEO score.",

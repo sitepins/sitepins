@@ -337,7 +337,7 @@
       },
       "focus_keyword_label": "Từ Khóa Mục Tiêu",
       "focus_keyword_placeholder": "ví dụ: trình tạo trang tĩnh",
-      "focus_keyword_help": "Nhập từ khóa chính mà bạn muốn trang này được xếp hạng. Phân tách nhiều từ khóa bằng dấu phẩy. Nếu để trống, hệ thống sẽ dùng các thẻ tag của bạn.",
+      "focus_keyword_help": "Nhập từ khóa chính cho trang này. Nếu để trống, hệ thống sẽ dùng danh mục trước, sau đó mới dùng thẻ tag. Phân tách nhiều từ khóa bằng dấu phẩy.",
       "insights": {
         "teaser": "Mở khóa thêm {count} kiểm tra SEO",
         "teaser_scored": "Đã được tính vào điểm SEO của bạn.",

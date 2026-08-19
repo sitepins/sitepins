@@ -67,6 +67,32 @@ describe("validateSeoInsights", () => {
       );
       expect(results.keyword_first_paragraph.valid).toBe(false);
     });
+
+    it("uses categories before tags when no focus keyword is set", () => {
+      const { results } = validateSeoInsights(
+        { categories: ["apple"], tags: ["banana"] },
+        "This post is about apple orchards.\n\nMore text below.",
+      );
+      expect(results.keyword_first_paragraph.valid).toBe(true);
+    });
+
+    it("falls back to tags when categories are missing", () => {
+      const { results } = validateSeoInsights(
+        { tags: ["apple"] },
+        "This post is about apple orchards.\n\nMore text below.",
+      );
+      expect(results.keyword_first_paragraph.valid).toBe(true);
+    });
+
+    it("prefers an explicit focus keyword over categories and tags", () => {
+      const { results } = validateSeoInsights(
+        { categories: ["apple"], tags: ["banana"] },
+        "This post is about banana bread.\n\nMore text below.",
+        undefined,
+        "banana",
+      );
+      expect(results.keyword_first_paragraph.valid).toBe(true);
+    });
   });
 
   describe("paragraph_length", () => {

@@ -337,7 +337,7 @@
       },
       "focus_keyword_label": "Ziel-Keyword",
       "focus_keyword_placeholder": "z. B. Static-Site-Generator",
-      "focus_keyword_help": "Gib das wichtigste Keyword ein, für das diese Seite ranken soll. Mehrere Keywords durch Kommas trennen. Ist das Feld leer, werden deine Tags verwendet.",
+      "focus_keyword_help": "Gib das wichtigste Keyword für diese Seite ein. Wenn das Feld leer bleibt, werden zuerst Kategorien und danach Tags verwendet. Mehrere Keywords durch Kommas trennen.",
       "insights": {
         "teaser": "Schalte {count} weitere SEO-Prüfungen frei",
         "teaser_scored": "Bereits in deinem SEO-Score berücksichtigt.",

@@ -337,7 +337,7 @@
       },
       "focus_keyword_label": "Palabra Clave Objetivo",
       "focus_keyword_placeholder": "p. ej. generador de sitios estáticos",
-      "focus_keyword_help": "Introduce la palabra clave principal por la que quieres posicionar esta página. Separa varias palabras clave con comas. Si está vacío, se usarán tus etiquetas.",
+      "focus_keyword_help": "Introduce la palabra clave principal de esta página. Si lo dejas vacío, se usarán primero las categorías y después las etiquetas. Separa varias palabras clave con comas.",
       "insights": {
         "teaser": "Desbloquea {count} comprobaciones SEO más",
         "teaser_scored": "Ya se incluyen en tu puntuación SEO.",

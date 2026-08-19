@@ -58,6 +58,13 @@ export const KEYWORD_KEYS = [
   "search-tags",
 ];
 
+export const CATEGORY_KEYS = [
+  "categories",
+  "category",
+  "Categories",
+  "Category",
+];
+
 /**
  * Outcome of a single check. `na` means the check does not apply to this
  * entry (no images to caption, no keyphrase set, no body to read) and is
@@ -926,6 +933,11 @@ export function validateSeoInsights(
   // keyphrase comes through as a single string.
   const frontmatterKeywords = toKeywordList(keywords);
 
+  const categoryKeyUsed = resolveKey(entry, CATEGORY_KEYS);
+  const categories = toKeywordList(
+    unwrap(categoryKeyUsed ? entry[categoryKeyUsed] : undefined),
+  );
+
   const explicitKeywords = (focusKeyword ?? "")
     .split(",")
     .map((k) => k.trim())
@@ -933,7 +945,9 @@ export function validateSeoInsights(
 
   const keywordList: string[] = explicitKeywords.length
     ? explicitKeywords
-    : frontmatterKeywords;
+    : categories.length
+      ? categories
+      : frontmatterKeywords;
 
   const paragraphs = getParagraphs(markdownContent).map(stripMarkdownSyntax);
   const introText = (paragraphs[0] || "").toLowerCase();

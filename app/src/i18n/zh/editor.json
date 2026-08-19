@@ -337,7 +337,7 @@
       },
       "focus_keyword_label": "目标关键词",
       "focus_keyword_placeholder": "例如:静态站点生成器",
-      "focus_keyword_help": "输入你希望此页面获得排名的主要关键词。多个关键词请用逗号分隔。留空时将使用你的标签。",
+      "focus_keyword_help": "输入此页面的主要关键词。留空时会先使用分类，没有分类再使用标签。多个关键词请用逗号分隔。",
       "insights": {
         "teaser": "再解锁 {count} 项 SEO 检查",
         "teaser_scored": "已计入你的 SEO 评分。",

@@ -337,7 +337,7 @@
       },
       "focus_keyword_label": "Kata Kunci Target",
       "focus_keyword_placeholder": "mis. generator situs statis",
-      "focus_keyword_help": "Masukkan kata kunci utama yang ingin Anda gunakan untuk memposisikan halaman ini. Pisahkan beberapa kata kunci dengan koma. Jika kosong, tag Anda akan digunakan.",
+      "focus_keyword_help": "Masukkan kata kunci utama untuk halaman ini. Jika dikosongkan, kategori akan digunakan terlebih dahulu, lalu tag. Pisahkan beberapa kata kunci dengan koma.",
       "insights": {
         "teaser": "Buka {count} pemeriksaan SEO lagi",
         "teaser_scored": "Sudah dihitung dalam skor SEO Anda.",

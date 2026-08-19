@@ -337,7 +337,7 @@
       },
       "focus_keyword_label": "Mot-clé Cible",
       "focus_keyword_placeholder": "ex. générateur de site statique",
-      "focus_keyword_help": "Saisissez le mot-clé principal pour lequel cette page doit être bien classée. Séparez plusieurs mots-clés par des virgules. Si le champ est vide, vos tags seront utilisés.",
+      "focus_keyword_help": "Saisissez le mot-clé principal de cette page. Si le champ est vide, les catégories sont utilisées en premier, puis les tags. Séparez plusieurs mots-clés par des virgules.",
       "insights": {
         "teaser": "Débloquez {count} vérifications SEO de plus",
         "teaser_scored": "Déjà pris en compte dans votre score SEO.",

@@ -337,7 +337,7 @@
       },
       "focus_keyword_label": "타겟 키워드",
       "focus_keyword_placeholder": "예: 정적 사이트 생성기",
-      "focus_keyword_help": "이 페이지가 검색 결과에서 순위를 얻고자 하는 주요 키워드를 입력하세요. 여러 키워드는 쉼표로 구분합니다. 비워 두면 태그가 대신 사용됩니다.",
+      "focus_keyword_help": "이 페이지의 주요 키워드를 입력하세요. 비워 두면 먼저 카테고리를 사용하고, 없으면 태그를 사용합니다. 여러 키워드는 쉼표로 구분합니다.",
       "insights": {
         "teaser": "SEO 검사 {count}개를 추가로 잠금 해제하세요",
         "teaser_scored": "이미 SEO 점수에 반영되어 있습니다.",

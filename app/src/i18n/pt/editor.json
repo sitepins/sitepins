@@ -337,7 +337,7 @@
       },
       "focus_keyword_label": "Palavra-chave Alvo",
       "focus_keyword_placeholder": "ex. gerador de sites estáticos",
-      "focus_keyword_help": "Insira a principal palavra-chave para a qual esta página deve ranquear. Separe várias palavras-chave por vírgulas. Se ficar vazio, suas tags serão usadas.",
+      "focus_keyword_help": "Insira a principal palavra-chave desta página. Se ficar vazio, as categorias serão usadas primeiro e depois as tags. Separe várias palavras-chave por vírgulas.",
       "insights": {
         "teaser": "Desbloqueie mais {count} verificações de SEO",
         "teaser_scored": "Já contabilizado na sua pontuação de SEO.",

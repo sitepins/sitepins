@@ -8,20 +8,24 @@
     "name": "中文 (简体)"
   },
   {
-    "code": "ja",
-    "name": "日本語"
+    "code": "hi",
+    "name": "हिन्दी"
   },
   {
-    "code": "de",
-    "name": "Deutsch"
+    "code": "es",
+    "name": "Español"
   },
   {
     "code": "fr",
     "name": "Français"
   },
   {
-    "code": "es",
-    "name": "Español"
+    "code": "ar",
+    "name": "العربية"
+  },
+  {
+    "code": "bn",
+    "name": "বাংলা"
   },
   {
     "code": "pt",
@@ -32,23 +36,27 @@
     "name": "Русский"
   },
   {
-    "code": "ko",
-    "name": "한국어"
-  },
-  {
     "code": "id",
     "name": "Bahasa Indonesia"
   },
   {
-    "code": "ar",
-    "name": "العربية"
+    "code": "de",
+    "name": "Deutsch"
+  },
+  {
+    "code": "ja",
+    "name": "日本語"
   },
   {
     "code": "vi",
     "name": "Tiếng Việt"
   },
   {
-    "code": "bn",
-    "name": "বাংলা"
+    "code": "ko",
+    "name": "한국어"
+  },
+  {
+    "code": "it",
+    "name": "Italiano"
   }
 ]

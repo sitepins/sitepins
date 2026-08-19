@@ -1,0 +1,247 @@
+{
+  "search": {
+    "placeholder": "Cerca impostazioni, organizzazioni, prezzi...",
+    "groupLabels": {
+      "organizations": "Organizzazioni",
+      "preferences": "Preferenze",
+      "organization_settings": "Impostazioni organizzazione",
+      "ai_agent": "Agente IA",
+      "support_updates": "Supporto e aggiornamenti",
+      "account": "Account",
+      "files": "File"
+    },
+    "controls": {
+      "navigate": "Naviga",
+      "select": "Seleziona",
+      "close": "Chiudi"
+    },
+    "org_keywords": [
+      "org",
+      "organizzazione",
+      "cambia",
+      "area di lavoro",
+      "team",
+      "workspace"
+    ],
+    "items": {
+      "display-picture": {
+        "label": "Foto profilo",
+        "href": "/dashboard/account/#display-picture",
+        "keywords": [
+          "visualizzazione",
+          "profilo",
+          "utente",
+          "account",
+          "foto",
+          "immagine",
+          "avatar",
+          "cambia",
+          "carica",
+          "aggiorna",
+          "modifica"
+        ]
+      },
+      "display-name": {
+        "label": "Aggiorna nome visualizzato",
+        "href": "/dashboard/account/#display-name",
+        "keywords": [
+          "nome visualizzato",
+          "nome",
+          "nome profilo",
+          "nome pubblico",
+          "username",
+          "nickname",
+          "nome account",
+          "cambia nome",
+          "aggiorna nome",
+          "modifica nome",
+          "rinomina",
+          "identità",
+          "informazioni personali"
+        ]
+      },
+      "change-password": {
+        "label": "Modifica password",
+        "href": "/dashboard/account/#change-password",
+        "keywords": [
+          "cambia password",
+          "aggiorna password",
+          "modifica password",
+          "nuova password",
+          "password attuale",
+          "reimposta password",
+          "password",
+          "sicurezza",
+          "credenziali",
+          "sicurezza account"
+        ]
+      },
+      "set-password": {
+        "label": "Imposta password",
+        "href": "/dashboard/account/#set-password",
+        "keywords": [
+          "imposta password",
+          "crea password",
+          "aggiungi password",
+          "password",
+          "sicurezza",
+          "credenziali",
+          "sicurezza account"
+        ]
+      },
+      "newsletter": {
+        "label": "Iscrizione alla newsletter",
+        "href": "/dashboard/account/#newsletter",
+        "keywords": [
+          "newsletter",
+          "iscrizione",
+          "iscriviti",
+          "annulla iscrizione",
+          "notifiche email",
+          "email di marketing",
+          "aggiornamenti",
+          "mailing list"
+        ]
+      },
+      "language": {
+        "label": "Lingua",
+        "href": "/dashboard/preference#language",
+        "keywords": [
+          "lingua",
+          "locale",
+          "regione",
+          "cambia lingua",
+          "imposta lingua",
+          "lingua app",
+          "lingua interfaccia",
+          "localizzazione",
+          "i18n",
+          "traduzione",
+          "preferenze"
+        ]
+      },
+      "theme": {
+        "label": "Tema",
+        "href": "/dashboard/preference#theme",
+        "keywords": [
+          "tema",
+          "modalità scura",
+          "modalità chiara",
+          "tema scuro",
+          "tema chiaro",
+          "tema di sistema",
+          "aspetto",
+          "schema colori",
+          "modalità notte",
+          "preferenze"
+        ]
+      },
+      "coauthor": {
+        "label": "Preferenza di co-autorialità",
+        "href": "/dashboard/preference#coauthor",
+        "keywords": [
+          "coautore",
+          "co-autore",
+          "autore",
+          "preferenza autore",
+          "impersona",
+          "mostra come",
+          "autore predefinito",
+          "autore contenuto",
+          "preferenze"
+        ]
+      },
+      "ai-agent": {
+        "label": "Impostazioni Agente IA",
+        "href": "/dashboard/ai-agent",
+        "keywords": [
+          "ia",
+          "copilot",
+          "agente ia",
+          "intelligenza artificiale",
+          "assistente",
+          "bot",
+          "automazione",
+          "smart",
+          "machine learning",
+          "impostazioni",
+          "configurazione"
+        ]
+      },
+      "discord-support": {
+        "label": "Community Discord",
+        "href": "https://discord.com/invite/KrpvHfqcNA",
+        "target": "_blank",
+        "keywords": [
+          "supporto",
+          "aiuto",
+          "discord",
+          "community",
+          "chat",
+          "contatto",
+          "problema",
+          "bug",
+          "domanda",
+          "assistenza"
+        ]
+      },
+      "updates-feedback": {
+        "label": "Aggiornamenti e feedback",
+        "href": "https://updates.sitepins.com/",
+        "target": "_blank",
+        "keywords": [
+          "aggiornamenti",
+          "feedback",
+          "richiesta funzionalità",
+          "tracciamento",
+          "changelog",
+          "nuove funzionalità",
+          "roadmap",
+          "novità"
+        ]
+      },
+      "org-general": {
+        "label": "Impostazioni generali",
+        "href": "/{orgId}/settings/general",
+        "keywords": [
+          "generale",
+          "organizzazione",
+          "impostazioni",
+          "nome",
+          "archivia",
+          "elimina",
+          "org"
+        ]
+      },
+      "org-members": {
+        "label": "Membri",
+        "href": "/{orgId}/settings/members",
+        "keywords": [
+          "membri",
+          "team",
+          "invita",
+          "utenti",
+          "ruoli",
+          "permessi",
+          "organizzazione"
+        ]
+      },
+      "org-sandbox": {
+        "label": "Impostazioni sandbox",
+        "href": "/{orgId}/settings/sandbox",
+        "keywords": [
+          "sandbox",
+          "vercel",
+          "integrazione",
+          "connetti",
+          "distribuzione",
+          "anteprima",
+          "pubblica",
+          "deploy",
+          "live",
+          "build"
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,282 @@
+{
+  "project-settings": {
+    "general": {
+      "form": {
+        "title": "Impostazioni progetto",
+        "description": "Aggiorna le informazioni del tuo progetto.",
+        "demo_error": "Questo è un sito demo, non puoi aggiornarlo",
+        "success": "Sito aggiornato con successo",
+        "site_name": "Nome sito",
+        "website": "Sito web (opzionale)"
+      },
+      "archive": {
+        "restore_title": "Ripristina progetto",
+        "restore_desc": "Il progetto è attualmente archiviato. Deve essere prima ripristinato per apportare qualsiasi modifica.",
+        "archive_title": "Archivia progetto",
+        "archive_desc": "Il progetto verrà archiviato. Verrà nascosto dall'elenco dei progetti ma potrà essere ripristinato in seguito.",
+        "restore_btn": "Ripristina progetto",
+        "archive_btn": "Archivia progetto",
+        "archive_confirm_title": "Archiviare questo progetto?",
+        "restore_confirm_title": "Ripristinare questo progetto?",
+        "archive_confirm_desc": "Questo progetto verrà archiviato. Verrà nascosto dall'elenco dei progetti ma potrà essere ripristinato in seguito.",
+        "restore_confirm_desc": "Questo progetto verrà ripristinato. Sarà visibile nell'elenco dei progetti e potrà essere aggiornato.",
+        "demo_error": "Questa funzionalità non è disponibile nella demo",
+        "archive_success": "Progetto archiviato con successo",
+        "restore_success": "Progetto ripristinato con successo",
+        "error": "Qualcosa è andato storto"
+      },
+      "delete": {
+        "title": "Elimina progetto",
+        "description": "Il progetto verrà eliminato definitivamente. Questa azione è irreversibile e non può essere annullata.",
+        "warning": "Questo progetto verrà eliminato definitivamente. Questa azione è irreversibile e non può essere annullata. Tutti i dati associati a questo progetto andranno persi.",
+        "delete_btn": "Elimina progetto",
+        "confirm_title": "Sei assolutamente sicuro?",
+        "confirm_desc": "Questa azione non può essere annullata. Questo eliminerà definitivamente.",
+        "placeholder": "digita CONFIRM per confermare",
+        "demo_error": "Non puoi eliminare progetti in modalità demo.",
+        "success": "Il progetto è stato eliminato con successo.",
+        "error": "Qualcosa è andato storto",
+        "error_suffix": "Non sei autorizzato a eliminare questo progetto.",
+        "error_generic": "Qualcosa è andato storto"
+      },
+      "move": {
+        "title": "Sposta progetto",
+        "description": "Sposta questo progetto in un'altra organizzazione a cui appartieni.",
+        "current_org": "Organizzazione attuale",
+        "destination": "Destinazione",
+        "loading_orgs": "Caricamento organizzazioni...",
+        "no_orgs": "Nessun'altra organizzazione disponibile.",
+        "placeholder": "Seleziona destinazione",
+        "move_btn": "Sposta progetto",
+        "confirm_title": "Conferma spostamento",
+        "confirm_desc": "Sposta questo progetto in",
+        "confirm_move_btn": "Sposta progetto",
+        "error_select": "Seleziona un'organizzazione",
+        "success": "Progetto spostato con successo",
+        "error": "Spostamento del progetto non riuscito"
+      },
+      "avatar": {
+        "title": "Miniatura del progetto",
+        "description": "Rendi unica l'immagine del tuo sito aggiungendo una foto.",
+        "demo_error": "Questo è un sito demo, non puoi aggiornarlo",
+        "success": "Sito aggiornato con successo"
+      }
+    },
+    "git": {
+      "repo": {
+        "title": "Repository Git",
+        "description_connected": "Il tuo progetto è attualmente connesso a un repository.",
+        "description_disconnected": "Connetti il tuo progetto a un repository Git per gestire i tuoi contenuti.",
+        "connected_at": "Connesso {time}",
+        "provider_label": "Seleziona provider",
+        "select_provider_placeholder": "Seleziona un provider",
+        "select_repo_label": "Repository",
+        "select_repo_placeholder": "Seleziona un repository",
+        "no_repo_found": "Nessun repository trovato",
+        "please_wait": "Attendere prego...",
+        "cant_see_repo": "Non vedi il tuo repository qui?",
+        "configure_on": "Configura su {provider}",
+        "branch_label": "Ramo (Branch)",
+        "choose_branch_placeholder": "Scegli un ramo",
+        "disconnect_btn": "Disconnetti",
+        "disconnect_confirm_title": "Sei assolutamente sicuro?",
+        "disconnect_confirm_desc": "Questa azione disconnetterà il repository da Sitepins. Puoi sempre riconnetterlo in seguito.",
+        "connect_repo_btn": "Connetti repository",
+        "error_missing_info": "Informazioni sul progetto o sull'organizzazione mancanti",
+        "success_disconnect": "Repository disconnesso con successo",
+        "error_disconnect": "Impossibile disconnettere il repository",
+        "error_no_repo_branch": "Seleziona un repository e un branch",
+        "success_connect": "Repository connesso con successo",
+        "error_connect": "Impossibile connettere il repository"
+      },
+      "branch": {
+        "title": "Gestione rami (Branch)",
+        "description": "Gestisci il ramo utilizzato per i contenuti del tuo progetto",
+        "current_branch_label": "Ramo attuale",
+        "select_branch_label": "Seleziona ramo",
+        "loading_branches": "Caricamento rami in corso...",
+        "placeholder": "Seleziona un ramo",
+        "branches_label": "Rami",
+        "change_branch_btn": "Cambia ramo",
+        "update_branch_btn": "Aggiorna ramo",
+        "success_message": "Ramo aggiornato con successo!",
+        "error_missing_info": "Informazioni sul progetto o sull'organizzazione mancanti",
+        "error_no_repo": "Nessun repository connesso",
+        "error_generic": "Impossibile aggiornare il ramo"
+      }
+    },
+    "schemas": {
+      "title": "Gestione schemi",
+      "description": "Gestisci gli schemi dei contenuti per il tuo progetto",
+      "no_schemas_found": "Nessuno schema trovato",
+      "create_first_schema": "Crea il tuo primo schema navigando in una cartella di contenuti",
+      "fields_count": "{count, plural, =1 {# campo} other {# campi}}",
+      "edit_dialog_title": "Modifica schema",
+      "edit_dialog_description": "Modifica i campi del tuo schema e le loro proprietà",
+      "schema_name_label": "Nome schema",
+      "update_btn": "Aggiorna schema",
+      "success_update": "Schema aggiornato con successo!",
+      "error_update": "Errore durante l'aggiornamento dello schema",
+      "success_delete": "Schema eliminato con successo!",
+      "error_delete": "Errore durante l'eliminazione dello schema",
+      "error_validation": "Correggi i campi evidenziati e riprova."
+    },
+    "snippets": {
+      "title": "Gestione snippet",
+      "description": "Gestisci snippet di codice per il tuo progetto",
+      "add_btn": "Aggiungi snippet",
+      "no_snippets_found": "Nessuno snippet trovato",
+      "create_first_snippet": "Crea il tuo primo snippet per iniziare",
+      "used_in": "Utilizzato in: {schemas}",
+      "no_schemas_linked": "Nessuno schema collegato",
+      "edit_dialog_title": "Modifica snippet",
+      "create_dialog_title": "Crea snippet",
+      "dialog_description": "Configura le proprietà dello snippet di codice",
+      "success_created": "Snippet creato con successo!",
+      "success_updated": "Snippet aggiornato con successo!",
+      "error_save": "Errore durante il salvataggio dello snippet",
+      "success_deleted": "Snippet eliminato con successo!",
+      "error_delete": "Errore durante l'eliminazione dello snippet",
+      "label_field": "Etichetta",
+      "label_placeholder": "Etichetta snippet",
+      "schemas_field": "Schemi applicabili",
+      "select_schemas_placeholder": "Seleziona schemi",
+      "no_schemas_found_in_combobox": "Nessuno schema trovato.",
+      "code_field": "Codice",
+      "delete_confirm_title": "Elimina snippet",
+      "delete_confirm_desc": "Sei sicuro di voler eliminare questo snippet? Questa azione non può essere annullata.",
+      "update_btn": "Aggiorna snippet",
+      "create_btn": "Crea snippet"
+    },
+    "arrangement": {
+      "title": "Disposizione barra laterale",
+      "description": "Personalizza la struttura e il layout dei tuoi contenuti",
+      "features": {
+        "virtual_folders": {
+          "title": "Cartelle virtuali",
+          "desc": "Non modificherà il tuo repository"
+        },
+        "visual_headings": {
+          "title": "Intestazioni visive",
+          "desc": "Organizza le sezioni"
+        },
+        "drag_and_drop": {
+          "title": "Trascina e rilascia",
+          "desc": "Riordina istantaneamente"
+        },
+        "glob_patterns": {
+          "title": "Pattern Glob",
+          "desc": "Filtra facilmente i file"
+        }
+      },
+      "no_arrangements": "Nessuna disposizione presente",
+      "get_started": "Inizia aggiungendo una cartella, un file o un'intestazione per personalizzare il layout della barra laterale.",
+      "add_item_btn": "+ Aggiungi nuovo elemento",
+      "edit_dialog_title": "Modifica elemento disposizione",
+      "add_dialog_title": "Aggiungi nuovo elemento disposizione",
+      "edit_dialog_desc": "Aggiorna i dettagli del tuo elemento di disposizione.",
+      "add_dialog_desc": "Configura il tuo nuovo elemento di disposizione.",
+      "select_type_label": "Seleziona un tipo:",
+      "select_type_placeholder": "Seleziona un tipo",
+      "type_options": {
+        "file": "File",
+        "heading": "Intestazione",
+        "folder": "Cartella",
+        "video": "Video",
+        "preview_image": "Anteprima immagine"
+      },
+      "rename_file": "Rinomina file",
+      "rename_successful": "File rinominato con successo in {name}",
+      "error_renaming": "Si è verificato un errore durante la ridenominazione del file. Riprova.",
+      "success_update": "Disposizione aggiornata con successo",
+      "file_form": {
+        "select_file": "Seleziona file",
+        "placeholder": "Seleziona file",
+        "no_items": "Nessun elemento trovato.",
+        "name_label": "Nome",
+        "name_placeholder": "index"
+      },
+      "folder_form": {
+        "select_folder": "Seleziona cartella",
+        "placeholder": "Seleziona cartella",
+        "no_items": "Nessun elemento trovato.",
+        "group_name_label": "Nome gruppo",
+        "group_name_placeholder": "elenco blog",
+        "include_label": "Includi",
+        "include_placeholder": "*.md",
+        "exclude_label": "Escludi",
+        "exclude_placeholder": "*index.md"
+      },
+      "heading_form": {
+        "name_label": "Nome",
+        "placeholder": "Intestazione"
+      },
+      "errors": {
+        "name_min_length": "Il nome deve contenere almeno 2 caratteri.",
+        "heading_min_length": "L'intestazione deve contenere almeno 2 caratteri.",
+        "name_exists": "Il nome del gruppo esiste già.",
+        "heading_exists": "L'intestazione esiste già."
+      },
+      "delete_confirm_title": "Sei assolutamente sicuro?",
+      "continue_btn": "Continua"
+    },
+    "configure": {
+      "commit": {
+        "title": "Configurazione commit",
+        "description": "Determina come vengono gestiti i messaggi di commit quando salvi le modifiche",
+        "custom_commit_label": "Messaggi di commit personalizzati",
+        "custom_commit_desc": "Abilita questa opzione per scrivere i tuoi messaggi di commit al salvataggio. Quando è attiva, puoi fornire un messaggio personalizzato; altrimenti, Sitepins ne genererà automaticamente uno per te.",
+        "save_btn": "Salva modifiche",
+        "success_update": "Impostazioni della finestra di commit aggiornate con successo",
+        "error_update": "Impossibile aggiornare le impostazioni"
+      },
+      "project": {
+        "title": "Modifica configurazione progetto",
+        "description": "Configura le impostazioni del tuo progetto. Fai clic su Salva per applicare le modifiche.",
+        "steps": {
+          "content": "Contenuto",
+          "media": "File multimediali",
+          "public": "Pubblico",
+          "configs": "Configurazioni"
+        },
+        "form": {
+          "content_label": "Cartella contenuti",
+          "content_placeholder": "Seleziona la tua cartella dei contenuti",
+          "media_label": "Cartella multimediale",
+          "media_placeholder": "Seleziona la tua cartella multimediale (immagini)",
+          "public_label": "Cartella pubblica",
+          "public_placeholder": "Seleziona la tua cartella pubblica",
+          "config_label": "Configurazioni del sito (opzionale)",
+          "config_placeholder": "Seleziona il tuo file di configurazione",
+          "suggested": "Suggerito:",
+          "no_results": "Nessun risultato trovato.",
+          "suggestions": {
+            "content": "dove sono archiviati i tuoi file markdown",
+            "media": "dove sono archiviati i tuoi file multimediali",
+            "public": "dove sono archiviati i tuoi file pubblici",
+            "config": "dove sono archiviati i tuoi file di configurazione"
+          }
+        },
+        "buttons": {
+          "finish": "Completa configurazione",
+          "update": "Aggiorna configurazione"
+        },
+        "help": {
+          "text": "Hai bisogno di aiuto con la configurazione?",
+          "contact_us": "Contattaci"
+        },
+        "status": {
+          "success_create": "File di configurazione creato con successo",
+          "success_update": "File di configurazione aggiornato con successo",
+          "error_update": "Impossibile aggiornare le impostazioni",
+          "not_configured": "Non configurato",
+          "none": "Nessuno"
+        },
+        "summary": {
+          "title": "Configurazione progetto",
+          "description": "Panoramica rapida della configurazione attuale"
+        }
+      }
+    }
+  }
+}

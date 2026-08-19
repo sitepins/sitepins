@@ -1,0 +1,35 @@
+{
+  "provider-install": {
+    "authenticating_aria": "Autenticazione in corso",
+    "request_title": "Richiesta di installazione inviata",
+    "auth_title": "Autenticazione con {provider}",
+    "request_description": "Una richiesta di installazione è stata inviata al proprietario dell'organizzazione. Riceverà una notifica e potrà approvare l'accesso ai repository.",
+    "auth_description": "Stiamo completando l'autenticazione con {provider}. Questa finestra si chiuderà automaticamente al termine.",
+    "manual_close_hint": "Se questa finestra non si chiude, puoi chiuderla manualmente in sicurezza.",
+    "providers": {
+      "github": "GitHub",
+      "gitlab": "GitLab"
+    },
+    "github_integration": {
+      "title": "Collega il tuo account GitHub",
+      "description": "Sitepins ha bisogno dell'accesso per creare rami e sincronizzare i contenuti per i tuoi progetti.",
+      "allow_all_repos": "Selezionerò tutti i repository",
+      "connect_btn": "Connetti con GitHub",
+      "grant_access_link": "Non concederò l'accesso a tutti i repository",
+      "selective_title": "Accesso selettivo ai repository",
+      "selective_desc1": "Se scegli l'accesso selettivo ai repository, non potremo creare automaticamente repository per te.",
+      "selective_desc2": "Nessun problema! Puoi comunque iniziare manualmente seguendo questi passaggi:",
+      "step_download": "Scarica manualmente il modello.",
+      "step_fork": "Esegui manualmente il fork del repository.",
+      "step_push": "Invia (push) il codice sorgente al tuo repository GitHub.",
+      "step_go_to": "Vai a Sitepins",
+      "step_new_site": "Fai clic sul pulsante + Nuovo sito in alto a destra.",
+      "step_grant_access": "Seleziona GitHub e concedi l'accesso al tuo repository.",
+      "step_grant_forked": "Seleziona GitHub e concedi l'accesso solo al repository di cui hai eseguito il fork.",
+      "step_final": "Compila i dettagli necessari e premi Crea sito.",
+      "revoke_access": "L'accesso può essere revocato in qualsiasi momento nelle impostazioni di GitHub",
+      "watch_tutorial": "Guarda un breve tutorial",
+      "close": "Chiudi"
+    }
+  }
+}

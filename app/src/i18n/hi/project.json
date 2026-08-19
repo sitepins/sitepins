@@ -1,0 +1,131 @@
+{
+  "project": {
+    "activity": {
+      "recent_file_changes": "हाल के फ़ाइल परिवर्तन",
+      "latest_activity": "आपके या आपकी टीम द्वारा नवीनतम गतिविधि",
+      "updated": "अपडेट किया गया",
+      "created": "निर्मित",
+      "deleted": "हटाया गया",
+      "renamed": "नाम बदला गया",
+      "duplicated": "डुप्लिकेट किया गया",
+      "no_more": "और नहीं है",
+      "load_more": "और लोड करें"
+    },
+    "branching": {
+      "incoming_request": "आने वाला {provider} अनुरोध",
+      "merge": "मर्ज करें",
+      "details": "विवरण",
+      "changes_detected": "परिवर्तनों का पता चला",
+      "view_request": "अनुरोध देखें",
+      "create_request": "{provider} अनुरोध बनाएं",
+      "title": "शीर्षक",
+      "description_optional": "विवरण (वैकल्पिक)",
+      "placeholder_title": "सुविधा शीर्षक",
+      "placeholder_description": "अपने परिवर्तनों का वर्णन करें...",
+      "merge_into": "{head} को {base} में मर्ज करें",
+      "merge_description": "{head} से परिवर्तनों को {base} में मर्ज करें",
+      "success_created": "{type} सफलतापूर्वक बनाया गया!",
+      "success_merged": "{branch} सफलतापूर्वक मर्ज किया गया!",
+      "error_create": "{type} बनाने में विफल",
+      "error_merge": "मर्ज करने में विफल",
+      "permission_error_title": "GitHub ऐप अनुमति त्रुटि",
+      "permission_error_description": "आपके GitHub ऐप को 'Pull requests: Write' अनुमति की आवश्यकता है। कृपया अपनी GitHub सेटिंग्स में नई अनुमतियां स्वीकार करें।",
+      "review": "समीक्षा करें",
+      "switcher": {
+        "placeholder": "शाखा खोजें...",
+        "no_results": "कोई शाखा नहीं मिली।",
+        "default": "डिफ़ॉल्ट",
+        "create_new": "नई शाखा बनाएं"
+      },
+      "create": {
+        "title": "नई शाखा बनाएं",
+        "desc": "<branch>{branchName}</branch> से एक नई शाखा बनाएं",
+        "label": "शाखा का नाम",
+        "placeholder": "उदा. staging",
+        "submit": "शाखा बनाएं",
+        "error": {
+          "required": "शाखा का नाम आवश्यक है",
+          "sha": "आधार शाखा SHA नहीं मिल सका",
+          "failed": "नई शाखा बनाने में विफल"
+        },
+        "success": "शाखा {name} सफलतापूर्वक बनाई गई!"
+      },
+      "status": {
+        "on_default": "आप डिफ़ॉल्ट शाखा पर हैं: {branch}",
+        "ahead": "{branch} {base} से आगे है।"
+      }
+    },
+    "git": {
+      "recent_activities": "हाल की Git गतिविधियां",
+      "recent_commits": "आपकी रिपॉजिटरी में हाल के कमिट",
+      "revert": "रिवर्ट करें (Revert)",
+      "reset": "रीसेट करें (Reset)",
+      "commit": "कमिट करें",
+      "restore_version": "संस्करण पुनर्स्थापित करें",
+      "undo_commit": "कमिट पूर्ववत करें",
+      "admin_only": "केवल व्यवस्थापक और मालिक ही यह क्रिया कर सकते हैं",
+      "restore_title": "इस संस्करण में पुनर्स्थापित करें",
+      "restore_description_github": "यह ठीक उस स्थिति में वापस चला जाएगा जैसी आपकी साइट इस समय दिख रही थी। इस संस्करण के बाद किए गए कोई भी परिवर्तन हटा दिए जाएंगे।",
+      "restore_description_gitlab": "यह आपकी साइट को बिल्कुल उसी तरह वापस लाएगा जैसा वह इस समय दिख रही थी। ऐसा करने के लिए हम एक नया अपडेट बनाएंगे, ताकि आपका इतिहास सुरक्षित रहे।",
+      "restore_warning_github": "⚠️ चेतावनी: यह एक स्थायी परिवर्तन है। इस शाखा से सभी नए अपडेट हटा दिए जाएंगे। केवल तभी उपयोग करें जब आप हाल के काम को पूरी तरह से छोड़ना चाहते हों।",
+      "restore_warning_gitlab": "✓ यह सुरक्षित है। आपका हाल का काम हटाया नहीं जाएगा; हम बस इस पुराने संस्करण के आधार पर एक नया संस्करण बनाते हैं।",
+      "undo_title": "यह कमिट पूर्ववत करें",
+      "undo_description": "यह एक नया अपडेट बनाएगा जो इस विशिष्ट संस्करण में बदले गए सभी परिवर्तनों को उलट देगा।",
+      "undo_warning": "✓ यह सुरक्षित है! हम आपके इतिहास में एक नया संस्करण जोड़ेंगे जो इन विशिष्ट परिवर्तनों को रद्द कर देगा, बाकी सब कुछ बरकरार रखेगा।",
+      "feedback": {
+        "reset_success": "शाखा सफलतापूर्वक {sha} पर रीसेट हो गई!",
+        "revert_success": "कमिट रिवर्ट किया गया! नया कमिट: {sha}",
+        "revert_failed": "रिवर्ट करने में विफल"
+      },
+      "actions": {
+        "restoring": "पुनर्स्थापित किया जा रहा है",
+        "undoing": "पूर्ववत किया जा रहा है",
+        "confirm_restore": "पुनर्स्थापना की पुष्टि करें",
+        "confirm_undo": "पूर्ववत करने की पुष्टि करें"
+      },
+      "commit_messages": {
+        "add_file": "{name} जोड़ें",
+        "rename_file": "फ़ाइल {name} का नाम बदलें",
+        "delete_file": "फ़ाइल {name} हटाएं",
+        "duplicate_file": "फ़ाइल {name} डुप्लिकेट करें",
+        "create_schema": "स्कीमा {name} बनाएं",
+        "update_schema": "स्कीमा {name} अपडेट करें",
+        "delete_schema": "स्कीमा {name} हटाएं",
+        "update_config": "साइट कॉन्फ़िगरेशन अपडेट करें"
+      }
+    },
+    "setup-steps": {
+      "getting_started": "शुरुआत करना",
+      "description": "Sitepins सेट अप करने और अपनी पहली सामग्री प्रकाशित करने के लिए इन चरणों को पूरा करें",
+      "progress": "प्रगति",
+      "progress_count": "{total} में से {completed}",
+      "steps": {
+        "add_site": {
+          "title": "नई साइट जोड़ें",
+          "description": "आपकी साइट बन गई है और कॉन्फ़िगरेशन के लिए तैयार है"
+        },
+        "configure_project": {
+          "title": "प्रोजेक्ट कॉन्फ़िगर करें",
+          "description": "अपनी रिपॉजिटरी संरचना सेट करें (सामग्री फ़ोल्डर, मीडिया रूट, आदि)"
+        },
+        "publish_content": {
+          "title": "पहली सामग्री प्रकाशित करें",
+          "description": "बाएं पैनल से अपनी पहली सामग्री प्रकाशित करें"
+        },
+        "deploy_site": {
+          "title": "साइट परिनियोजित (Deploy) करें",
+          "description": "पहली बार अपनी साइट को Vercel पर परिनियोजित करें"
+        }
+      },
+      "edit_config": "प्रोजेक्ट कॉन्फ़िगरेशन संपादित करें",
+      "deploy_to_vercel": "Vercel पर डिप्लॉय करें",
+      "login_signup": "लॉगिन या साइनअप",
+      "create_account": "एक खाता बनाएं",
+      "deploy_repo": "अपनी रिपॉजिटरी डिप्लॉय करें",
+      "one_click": "एक क्लिक के साथ",
+      "or": "या",
+      "already_deployed": "पहले से डिप्लॉय है? URL अभी डालें",
+      "vercel_host": "अपनी साइट होस्ट करने के लिए Vercel पर"
+    }
+  }
+}

@@ -1,0 +1,149 @@
+{
+  "dashboard": {
+    "preference": {
+      "title": "Preferenze",
+      "coauthor": {
+        "title": "Co-autorialità Git",
+        "description": "Scegli quale identità utilizzare per le azioni sul repository.",
+        "as_you": "Agisci come te",
+        "as_you_desc": "Il bot utilizzerà la tua identità personale per commit, branch e pull request, attribuendoti il merito per le modifiche.",
+        "as_you_fallback": "Ripristina automaticamente il bot se i permessi personali sono insufficienti a completare le attività.",
+        "as_bot": "Agisci come bot",
+        "as_bot_desc": "Tutte le azioni del repository saranno attribuite al bot di sistema. Ciò garantisce una tracciabilità coerente ed è consigliato per flussi di lavoro automatizzati.",
+        "updated": "Preferenza di co-autorialità aggiornata",
+        "error": "Impossibile aggiornare la preferenza di impersonificazione"
+      },
+      "language": {
+        "title": "Lingua",
+        "description": "Scegli la lingua preferita per l'interfaccia. Le modifiche si applicano immediatamente.",
+        "label": "Lingua dell'interfaccia"
+      },
+      "theme": {
+        "title": "Tema",
+        "description": "Scegli il tema di colori preferito.",
+        "updated_success": "Tema aggiornato con successo",
+        "updated_failed": "Impossibile aggiornare il tema"
+      }
+    },
+    "account": {
+      "title": "Account",
+      "profile": {
+        "title": "Aggiorna nome visualizzato",
+        "description": "Questo è il nome che verrà visualizzato sul tuo profilo.",
+        "full_name": "Nome e cognome",
+        "submit": "Aggiorna account",
+        "success": "Dati utente aggiornati con successo",
+        "error": "Aggiornamento non riuscito, riprova",
+        "demo_error": "Questa azione è disabilitata in modalità demo."
+      },
+      "password": {
+        "title": "Modifica password",
+        "description": "Aggiorna regolarmente la tua password per proteggere il tuo account da accessi non autorizzati.",
+        "current_password": "Password attuale",
+        "new_password": "Nuova password",
+        "submit": "Aggiorna password",
+        "success": "Password aggiornata con successo",
+        "error": "Aggiornamento non riuscito, riprova"
+      },
+      "set_password": {
+        "title": "Imposta password",
+        "description": "Hai effettuato l'accesso con un provider social. Crea una password per abilitare ulteriori opzioni di sicurezza e metodi di accesso alternativi.",
+        "new_password": "Nuova password",
+        "submit": "Aggiungi password",
+        "success": "Password aggiunta con successo",
+        "error": "Qualcosa è andato storto! Riprova più tardi"
+      },
+      "avatar": {
+        "title": "Aggiorna foto profilo",
+        "description": "Rendi professionale la tua area di lavoro aggiungendo una foto.",
+        "success": "Dati utente aggiornati con successo",
+        "error": "Aggiornamento non riuscito, riprova"
+      },
+      "newsletter": {
+        "title": "Iscrizione alla newsletter",
+        "description": "Invieremo email occasionali su nuove funzionalità, aggiornamenti e offerte. Puoi annullare l'iscrizione in qualsiasi momento.",
+        "label": "Ricevi la newsletter e gli aggiornamenti sui prodotti",
+        "submit": "Salva preferenze",
+        "success_sub": "Iscrizione alla newsletter completata con successo",
+        "success_unsub": "Disiscrizione dalla newsletter completata con successo",
+        "error": "Aggiornamento non riuscito, riprova"
+      },
+      "delete": {
+        "title": "Elimina account",
+        "description": "Avviso: Questa azione non può essere annullata. Questo eliminerà definitivamente il tuo account e rimuoverà tutti i tuoi dati dai nostri server.",
+        "confirm_label": "Digita <strong>DELETE</strong> per confermare",
+        "confirm_placeholder": "Digita DELETE qui",
+        "button": "Elimina account",
+        "reason_title": "Qual è il motivo principale per cui elimini il tuo account?",
+        "other_reason_label": "Altro motivo (massimo 200 caratteri)",
+        "other_reason_placeholder": "Raccontaci di più (massimo 200 caratteri)",
+        "reasons": {
+          "complex": "Troppo complesso o difficile da usare",
+          "not_work": "Non ha funzionato per il mio sito web",
+          "poor_design": "Design o esperienza utente scadenti",
+          "bugs": "Troppi bug",
+          "missing_features": "Mancano funzionalità di cui ho bisogno",
+          "better_alternative": "Ho trovato un'alternativa migliore",
+          "other": "Altro"
+        },
+        "feedback": {
+          "demo_disabled": "L'eliminazione dell'account è disabilitata in modalità demo.",
+          "success": "Account eliminato con successo",
+          "error": "Riprova più tardi."
+        }
+      }
+    },
+    "ai_agent": {
+      "title": "Agente IA",
+      "description": "Configura il tuo provider IA per abilitare suggerimenti intelligenti sui contenuti e funzionalità di completamento automatico.",
+      "provider_label": "Provider",
+      "provider_placeholder": "Seleziona provider",
+      "model_label": "Modello",
+      "model_placeholder": "Seleziona modello",
+      "api_key_label": "Chiave API",
+      "api_key_placeholder": "Inserisci la tua chiave API",
+      "show": "Mostra",
+      "hide": "Nascondi",
+      "copilot_title": "Suggerimento di completamento automatico",
+      "copilot_description": "Suggerisce un completamento automatico per la riga corrente mentre digiti nell'editor.",
+      "delete_key": "Elimina chiave",
+      "save_changes": "Salva modifiche",
+      "save_success": "Impostazioni salvate con successo",
+      "save_error": "Qualcosa è andato storto!",
+      "security_title": "Avviso di sicurezza importante",
+      "security1": "Noi **non memorizziamo la tua chiave API** nel nostro database per garantire la tua privacy e rispettare le policy di sicurezza.",
+      "security2": "La tua chiave viene memorizzata solo localmente nel tuo browser. Se cambi o cancelli i dati del browser, la chiave andrà persa.",
+      "security3": "Conserva la tua chiave API in modo sicuro e accessibile a te, poiché non possiamo recuperarla per te.",
+      "custom_model": "Inserisci manualmente",
+      "custom_model_input_label": "ID modello",
+      "custom_model_input_placeholder": "Inserisci ID modello personalizzato",
+      "find_model_id": "Trova il tuo ID modello"
+    },
+    "sidebar": {
+      "back": "Indietro"
+    },
+    "site_url_unavailable": "URL del sito non disponibile",
+    "og_image_unavailable": "Immagine OG non disponibile",
+    "website": "Sito web",
+    "edit_website": "Modifica sito web",
+    "build_status": "Stato compilazione",
+    "last_updated": "Ultimo aggiornamento",
+    "source": "Sorgente",
+    "recently": "di recente",
+    "last_updated_by": "{distance} fa da {author}",
+    "switcher": {
+      "default_site": "Seleziona sito",
+      "search": "Cerca...",
+      "not_found": "Nessun progetto trovato.",
+      "add_new": "Aggiungi nuovo sito"
+    },
+    "archived_project": {
+      "title": "Progetto archiviato",
+      "description": "Questo progetto è stato archiviato e la maggior parte delle funzionalità è disabilitata. Puoi comunque accedere alle impostazioni del progetto per ripristinarlo o modificarne lo stato.",
+      "open_settings": "Apri impostazioni"
+    },
+    "project_overview": {
+      "preview_alt": "Anteprima live di {name}"
+    }
+  }
+}

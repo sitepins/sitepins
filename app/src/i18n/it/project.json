@@ -1,0 +1,131 @@
+{
+  "project": {
+    "activity": {
+      "recent_file_changes": "Modifiche recenti ai file",
+      "latest_activity": "Ultime attività tue o del tuo team",
+      "updated": "Aggiornato",
+      "created": "Creato",
+      "deleted": "Eliminato",
+      "renamed": "Rinominato",
+      "duplicated": "Duplicato",
+      "no_more": "Nessun altro elemento",
+      "load_more": "Carica altro"
+    },
+    "branching": {
+      "incoming_request": "Richiesta {provider} in arrivo",
+      "merge": "Unisci (Merge)",
+      "details": "Dettagli",
+      "changes_detected": "Modifiche rilevate",
+      "view_request": "Visualizza richiesta",
+      "create_request": "Crea richiesta {provider}",
+      "title": "Titolo",
+      "description_optional": "Descrizione (Opzionale)",
+      "placeholder_title": "Titolo della funzionalità",
+      "placeholder_description": "Descrivi le tue modifiche...",
+      "merge_into": "Unisci {head} in {base}",
+      "merge_description": "Unisci le modifiche da {head} in {base}",
+      "success_created": "{type} creata con successo!",
+      "success_merged": "Unione di {branch} completata con successo!",
+      "error_create": "Impossibile creare {type}",
+      "error_merge": "Unione non riuscita",
+      "permission_error_title": "Errore permessi app GitHub",
+      "permission_error_description": "La tua app GitHub richiede l'autorizzazione 'Pull requests: Write'. Accetta i nuovi permessi nelle impostazioni di GitHub.",
+      "review": "Revisione",
+      "switcher": {
+        "placeholder": "Cerca ramo...",
+        "no_results": "Nessun ramo trovato.",
+        "default": "predefinito",
+        "create_new": "Crea nuovo ramo"
+      },
+      "create": {
+        "title": "Crea nuovo ramo",
+        "desc": "Crea un nuovo ramo da <branch>{branchName}</branch>",
+        "label": "Nome del ramo",
+        "placeholder": "es. staging",
+        "submit": "Crea ramo",
+        "error": {
+          "required": "Il nome del ramo è obbligatorio",
+          "sha": "Impossibile trovare lo SHA del ramo di base",
+          "failed": "Impossibile creare il nuovo ramo"
+        },
+        "success": "Ramo {name} creato con successo!"
+      },
+      "status": {
+        "on_default": "Ti trovi sul ramo predefinito: {branch}",
+        "ahead": "{branch} è più avanti rispetto a {base}."
+      }
+    },
+    "git": {
+      "recent_activities": "Attività Git recenti",
+      "recent_commits": "Commit recenti nel tuo repository",
+      "revert": "Ripristina (Revert)",
+      "reset": "Reimposta (Reset)",
+      "commit": "Commit",
+      "restore_version": "Ripristina versione",
+      "undo_commit": "Annulla commit",
+      "admin_only": "Solo gli amministratori e i proprietari possono eseguire questa azione",
+      "restore_title": "Ripristina a questa versione",
+      "restore_description_github": "Questo riporterà il sito esattamente a come appariva in questo momento. Tutte le modifiche apportate dopo questa versione verranno rimosse.",
+      "restore_description_gitlab": "Questo riporterà il tuo sito esattamente a come appariva in questo momento. Creeremo un nuovo aggiornamento per farlo accadere, così la cronologia rimarrà al sicuro.",
+      "restore_warning_github": "⚠️ Avviso: Questa è una modifica permanente. Tutti gli aggiornamenti più recenti verranno eliminati da questo ramo. Usalo solo se desideri scartare completamente il lavoro recente.",
+      "restore_warning_gitlab": "✓ Questo è sicuro. Il tuo lavoro recente non verrà eliminato; creeremo solo una nuova versione basata su questa precedente.",
+      "undo_title": "Annulla questo commit",
+      "undo_description": "Questo creerà un nuovo aggiornamento che invertirà tutto ciò che è stato modificato in questa versione specifica.",
+      "undo_warning": "✓ Questo è sicuro! Aggiungeremo una nuova versione alla tua cronologia che annulla queste modifiche specifiche, mantenendo intatto tutto il resto.",
+      "feedback": {
+        "reset_success": "Ramo reimpostato a {sha} con successo!",
+        "revert_success": "Commit annullato! Nuovo commit: {sha}",
+        "revert_failed": "Impossibile annullare il commit"
+      },
+      "actions": {
+        "restoring": "Ripristino in corso",
+        "undoing": "Annullamento in corso",
+        "confirm_restore": "Conferma ripristino",
+        "confirm_undo": "Conferma annullamento"
+      },
+      "commit_messages": {
+        "add_file": "Aggiungi {name}",
+        "rename_file": "Rinomina file {name}",
+        "delete_file": "Elimina file {name}",
+        "duplicate_file": "Duplica file {name}",
+        "create_schema": "Crea schema {name}",
+        "update_schema": "Aggiorna schema {name}",
+        "delete_schema": "Elimina schema {name}",
+        "update_config": "Aggiorna configurazioni del sito"
+      }
+    },
+    "setup-steps": {
+      "getting_started": "Primi passi",
+      "description": "Completa questi passaggi per configurare Sitepins e pubblicare i tuoi primi contenuti",
+      "progress": "Avanzamento",
+      "progress_count": "{completed} di {total}",
+      "steps": {
+        "add_site": {
+          "title": "Aggiungi nuovo sito",
+          "description": "Il tuo sito è stato creato ed è pronto per la configurazione"
+        },
+        "configure_project": {
+          "title": "Configura progetto",
+          "description": "Configura la struttura del tuo repository (Cartella contenuti, Radice media, ecc.)"
+        },
+        "publish_content": {
+          "title": "Pubblica primo contenuto",
+          "description": "Pubblica il tuo primo contenuto dal pannello di sinistra"
+        },
+        "deploy_site": {
+          "title": "Distribuisci sito",
+          "description": "Distribuisci il tuo sito su Vercel per la prima volta"
+        }
+      },
+      "edit_config": "Modifica configurazione progetto",
+      "deploy_to_vercel": "Distribuisci su Vercel",
+      "login_signup": "Accedi o Registrati",
+      "create_account": "Crea un account",
+      "deploy_repo": "Distribuisci il tuo repository",
+      "one_click": "con un solo clic",
+      "or": "O",
+      "already_deployed": "Già distribuito? Inserisci l'URL ora",
+      "vercel_host": "su Vercel per ospitare il tuo sito"
+    }
+  }
+}

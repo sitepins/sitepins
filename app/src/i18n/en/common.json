@@ -87,7 +87,7 @@
       "draft_saved_error": "Failed to save draft",
       "draft_success": "Draft saved successfully",
       "publish_success": "Published successfully",
-      "fetch_failed": "Failed to fetch some files. Please try again.",
+      "fetch_failed": "Failed to fetch files. Please try again.",
       "invalid_path": "Folder path is invalid.",
       "missing_context": "Repository context is missing. Please reload and try again.",
       "unable_to_locate": "Unable to locate files for this folder. Please refresh and try again.",
@@ -116,7 +116,7 @@
     "search_sites_placeholder": "Search Sites...",
     "prevent_navigation": {
       "title": "Save Changes Before Closing?",
-      "description": "You have unsaved changes. If you continue without saving, these changes will be lost.",
+      "description": "You have unsaved changes. If you leave without saving, your changes will be lost.",
       "stay": "Stay",
       "leave": "Leave",
       "browser_prompt": "You have unsaved changes. Are you sure you want to leave?"

@@ -4,15 +4,15 @@
       "footer_account": {
         "account": "الحساب",
         "updates": "التحديثات",
-        "support": "الدعم",
-        "ai_agent": "وكيل منظمة العفو الدولية",
+        "support": "الدعم الفني",
+        "ai_agent": "وكيل الذكاء الاصطناعي",
         "preferences": "التفضيلات"
       },
       "user_dashboard": {
         "overview": "نظرة عامة",
         "account": "الحساب",
         "preferences": "التفضيلات",
-        "ai_agent": "وكيل منظمة العفو الدولية"
+        "ai_agent": "وكيل الذكاء الاصطناعي"
       },
       "org_dashboard": {
         "websites": "المواقع الإلكترونية",
@@ -21,34 +21,34 @@
       "org_settings": {
         "general": "عام",
         "members": "الأعضاء",
-        "sandbox": "رمل"
+        "sandbox": "بيئة الاختبار"
       },
       "project_dashboard": {
         "overview": "نظرة عامة",
-        "media": "وسائل الإعلام",
+        "media": "الوسائط",
         "settings": "الإعدادات"
       },
       "project_settings": {
         "general": "عام",
-        "configure": "تكوين",
-        "git": "بوابة",
+        "configure": "التكوين",
+        "git": "Git",
         "schemas": "المخططات",
-        "snippets": "مقتطفات",
+        "snippets": "المقتطفات البرمجية",
         "arrangement": "الترتيب"
       }
     },
     "sidebar": {
       "open_menu": "فتح القائمة",
-      "code": "الكود",
-      "config": "التكوين",
+      "code": "الرمز البرمجي",
+      "config": "الإعدادات",
       "actions": {
         "close": "إغلاق"
       },
       "sidebar_trigger_mobile": {
         "title": "قائمة المحتوى",
-        "description": "شاهد جميع ملفات المحتوى الخاصة بك من الشريط الجانبي",
-        "message": "هل تبحث عن المحتوى الخاص بك؟ افتح الشريط الجانبي لرؤية جميع الملفات.",
-        "open_sidebar": "افتح الشريط الجانبي"
+        "description": "عرض جميع ملفات المحتوى من الشريط الجانبي",
+        "message": "هل تبحث عن المحتوى؟ افتح الشريط الجانبي لعرض جميع الملفات.",
+        "open_sidebar": "فتح الشريط الجانبي"
       }
     }
   }

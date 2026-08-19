@@ -4,15 +4,15 @@
       "footer_account": {
         "account": "Konto",
         "updates": "Neuigkeiten",
-        "support": "Support",
-        "ai_agent": "KI-Agent",
+        "support": "Hilfe & Support",
+        "ai_agent": "KI-Assistent",
         "preferences": "Einstellungen"
       },
       "user_dashboard": {
         "overview": "Übersicht",
         "account": "Konto",
         "preferences": "Einstellungen",
-        "ai_agent": "KI-Agent"
+        "ai_agent": "KI-Assistent"
       },
       "org_dashboard": {
         "websites": "Websites",
@@ -30,9 +30,9 @@
       },
       "project_settings": {
         "general": "Allgemein",
-        "configure": "Konfigurieren",
+        "configure": "Konfiguration",
         "git": "Git",
-        "schemas": "Schemata",
+        "schemas": "Schemas",
         "snippets": "Snippets",
         "arrangement": "Anordnung"
       }
@@ -40,14 +40,14 @@
     "sidebar": {
       "open_menu": "Menü öffnen",
       "code": "Code",
-      "config": "Konfiguration",
+      "config": "Konfig",
       "actions": {
         "close": "Schließen"
       },
       "sidebar_trigger_mobile": {
-        "title": "Inhaltsliste",
-        "description": "Alle deine Inhaltsdateien in der Seitenleiste anzeigen",
-        "message": "Suchst du deine Inhalte? Öffne die Seitenleiste, um alle Dateien zu sehen.",
+        "title": "Inhaltsübersicht",
+        "description": "Alle Inhaltsdateien in der Seitenleiste anzeigen",
+        "message": "Suchen Sie Ihre Inhalte? Öffnen Sie die Seitenleiste, um alle Dateien zu sehen.",
         "open_sidebar": "Seitenleiste öffnen"
       }
     }

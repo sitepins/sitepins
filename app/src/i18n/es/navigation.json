@@ -3,16 +3,16 @@
     "menu": {
       "footer_account": {
         "account": "Cuenta",
-        "updates": "Actualizaciones",
+        "updates": "Novedades",
         "support": "Soporte",
-        "ai_agent": "Agente de IA",
+        "ai_agent": "Agente IA",
         "preferences": "Preferencias"
       },
       "user_dashboard": {
-        "overview": "Descripción general",
+        "overview": "Vista general",
         "account": "Cuenta",
         "preferences": "Preferencias",
-        "ai_agent": "Agente de IA"
+        "ai_agent": "Agente IA"
       },
       "org_dashboard": {
         "websites": "Sitios web",
@@ -24,29 +24,29 @@
         "sandbox": "Sandbox"
       },
       "project_dashboard": {
-        "overview": "Descripción general",
-        "media": "Medios",
+        "overview": "Vista general",
+        "media": "Multimedia",
         "settings": "Configuración"
       },
       "project_settings": {
         "general": "General",
-        "configure": "Configurar",
+        "configure": "Configuración",
         "git": "Git",
         "schemas": "Esquemas",
         "snippets": "Fragmentos",
-        "arrangement": "Disposición"
+        "arrangement": "Organización"
       }
     },
     "sidebar": {
       "open_menu": "Abrir menú",
       "code": "Código",
-      "config": "Configuración",
+      "config": "Config",
       "actions": {
         "close": "Cerrar"
       },
       "sidebar_trigger_mobile": {
-        "title": "Lista de Contenido",
-        "description": "Ver todos tus archivos de contenido desde la barra lateral",
+        "title": "Lista de contenido",
+        "description": "Ver todos los archivos de contenido desde la barra lateral",
         "message": "¿Buscas tu contenido? Abre la barra lateral para ver todos los archivos.",
         "open_sidebar": "Abrir barra lateral"
       }

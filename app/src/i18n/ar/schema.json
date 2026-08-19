@@ -1,79 +1,79 @@
 {
   "schema": {
     "types": {
-      "string": "سلسلة",
-      "number": "رقم",
-      "boolean": "منطقية",
-      "media": "وسائل الإعلام",
-      "gallery": "معرض",
-      "array": "صفيف",
-      "date": "التاريخ",
-      "object": "كائن"
+      "string": "نص (String)",
+      "number": "رقم (Number)",
+      "boolean": "قيمة منطقية (Boolean)",
+      "media": "وسائط (Media)",
+      "gallery": "معرض صور (Gallery)",
+      "array": "مصفوفة (Array)",
+      "date": "تاريخ (Date)",
+      "object": "كائن (Object)"
     },
     "fields": {
-      "label": "التسمية",
-      "name": "الاسم",
+      "label": "التسمية التوضيحية",
+      "name": "اسم الحقل التخزيني",
       "type": "نوع الحقل",
       "placeholder": {
         "type": "اختر النوع",
-        "label": "على سبيل المثال، العنوان",
-        "name": "auto_generated"
+        "label": "مثال: العنوان",
+        "name": "يتم التوليد تلقائياً"
       },
       "description": "الوصف",
       "default_value": "القيمة الافتراضية",
       "boolean": {
-        "true": "صحيح",
-        "false": "خطأ"
+        "true": "صحيح (True)",
+        "false": "خطأ (False)"
       },
       "input_style": {
         "label": "نمط الإدخال",
         "placeholder": "اختر نمط الإدخال",
         "options": {
-          "standard_text": "مربع نص قياسي",
-          "standard_table": "الجدول القياسي",
-          "dropdown": "اختيار القائمة المنسدلة",
-          "multi_dropdown": "القائمة المنسدلة متعددة التحديد"
+          "standard_text": "مربع نص عادي",
+          "standard_table": "جدول قياسي",
+          "dropdown": "قائمة منسدلة",
+          "multi_dropdown": "قائمة منسدلة متعددة الاختيار"
         }
       }
     },
     "configuration": {
-      "title": "التكوين الميداني",
+      "title": "إعدادات الحقل",
       "dropdown": {
-        "title": "تكوين القائمة المنسدلة",
-        "multi_title": "تكوين متعدد التحديد",
-        "source": "المصدر",
+        "title": "إعدادات القائمة المنسدلة",
+        "multi_title": "إعدادات التحديد المتعدد",
+        "source": "مصدر البيانات",
         "source_placeholder": "اختر المصدر",
         "sources": {
-          "static": "الخيارات الثابتة",
-          "folder": "الملفات من المجلد",
-          "file": "البيانات من الملف"
+          "static": "خيارات ثابتة",
+          "folder": "ملفات من مجلد",
+          "file": "بيانات من ملف"
         },
         "static": {
           "placeholder": "أدخل قيمة الخيار"
         },
         "folder": {
           "path": "مسار المجلد",
-          "path_placeholder": "حدد مجلدًا",
-          "display_field": "حقل العرض (مفتاح المادة الأمامية)",
-          "field_placeholder": "على سبيل المثال العنوان (الافتراضي لاسم الملف)",
-          "loading_fields": "جارٍ تحميل الحقول...",
+          "path_placeholder": "اختر مجلداً",
+          "display_field": "حقل العرض (مفتاح Frontmatter)",
+          "field_placeholder": "مثال: title (الافتراضي اسم الملف)",
+          "loading_fields": "جاري تحميل الحقول...",
           "default_field": "اسم الملف (افتراضي)",
-          "include_pattern": "تضمين النمط (الكرة الأرضية)",
-          "include_placeholder": "على سبيل المثال *.MD",
-          "exclude_pattern": "استبعاد النمط (الكرة الأرضية)",
-          "exclude_placeholder": "على سبيل المثال مؤشر.MD"
+          "include_pattern": "نمط التضمين (Glob)",
+          "include_placeholder": "مثال: *.md",
+          "exclude_pattern": "نمط الاستبعاد (Glob)",
+          "exclude_placeholder": "مثال: index.md"
         },
         "file": {
           "path": "مسار الملف (JSON/YAML/TOML)",
-          "path_placeholder": "حدد ملفًا",
-          "data_key": "مفتاح البيانات (الحقل المراد استخراجه)",
-          "key_placeholder": "على سبيل المثال الفئات أو الاسم",
-          "default_key": "استخراج الملف/المصفوفة بأكملها"
+          "path_placeholder": "اختر ملفاً",
+          "data_key": "مفتاح البيانات (الحقل المستخرج)",
+          "key_placeholder": "مثال: categories أو name",
+          "default_key": "استخراج الملف/المصفوفة بالكامل"
         }
       }
     },
     "array": {
-      "label": "مجموعة من",
+      "label": "مصفوفة من نوع",
       "placeholder": "اختر النوع الفرعي"
     },
     "nested": {
@@ -84,32 +84,32 @@
       "default_value": "القيمة الافتراضية",
       "mode_placeholder": "اختر الوضع",
       "static": "تاريخ محدد",
-      "dynamic": "التاريخ الحالي (مباشر)",
+      "dynamic": "تاريخ اليوم (ديناميكي)",
       "empty": "فارغ",
-      "select_initial": "حدد التاريخ الأولي",
+      "select_initial": "اختر التاريخ الأولي",
       "today": "اليوم"
     },
     "actions": {
       "add_option": "إضافة خيار",
       "add_field": "إضافة حقل",
       "update_field": "تحديث الحقل",
-      "enter_option": "أدخل الخيار",
+      "enter_option": "أدخل خياراً",
       "include": "تضمين",
       "ignore": "تجاهل"
     },
     "builder": {
       "add_new_field": "إضافة حقل جديد",
       "configure_properties": "تكوين خصائص الحقل الجديد",
-      "field_settings": "إعدادات المجال",
+      "field_settings": "إعدادات الحقل",
       "required": "مطلوب",
-      "show": "عرض",
+      "show": "إظهار",
       "hide": "إخفاء",
       "no_field_selected": "لم يتم تحديد أي حقل",
-      "select_to_edit": "حدد حقلاً من القائمة لتحرير إعداداته",
-      "no_fields": "لا توجد حقول بعد",
-      "add_first_field": "أضف حقلك الأول أدناه",
+      "select_to_edit": "اختر حقلاً من القائمة لتعديل إعداداته",
+      "no_fields": "لا توجد حقول حتى الآن",
+      "add_first_field": "أضف أول حقل لك بالأسفل",
       "back_to_fields": "العودة إلى الحقول",
-      "field_count": "{count, plural, =0 {0 حقول} one {1 حقل} other {# حقول}}"
+      "field_count": "{count, plural, =0 {0 حقول} one {حقل واحد} other {# حقول}}"
     },
     "errors": {
       "name_required": "اسم الحقل مطلوب",

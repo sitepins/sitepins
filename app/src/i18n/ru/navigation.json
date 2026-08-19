@@ -2,7 +2,7 @@
   "navigation": {
     "menu": {
       "footer_account": {
-        "account": "Учётная запись",
+        "account": "Аккаунт",
         "updates": "Обновления",
         "support": "Поддержка",
         "ai_agent": "ИИ-агент",
@@ -10,7 +10,7 @@
       },
       "user_dashboard": {
         "overview": "Обзор",
-        "account": "Учётная запись",
+        "account": "Аккаунт",
         "preferences": "Настройки",
         "ai_agent": "ИИ-агент"
       },
@@ -19,35 +19,35 @@
         "settings": "Настройки"
       },
       "org_settings": {
-        "general": "Основное",
+        "general": "Основные",
         "members": "Участники",
         "sandbox": "Песочница"
       },
       "project_dashboard": {
         "overview": "Обзор",
-        "media": "Медиа",
+        "media": "Медиафайлы",
         "settings": "Настройки"
       },
       "project_settings": {
-        "general": "Основное",
+        "general": "Основные",
         "configure": "Конфигурация",
         "git": "Git",
         "schemas": "Схемы",
-        "snippets": "Сниппеты",
-        "arrangement": "Компоновка"
+        "snippets": "Фрагменты",
+        "arrangement": "Расположение"
       }
     },
     "sidebar": {
       "open_menu": "Открыть меню",
       "code": "Код",
-      "config": "Конфигурация",
+      "config": "Конфиг",
       "actions": {
         "close": "Закрыть"
       },
       "sidebar_trigger_mobile": {
         "title": "Список контента",
-        "description": "Просмотрите все файлы контента из боковой панели",
-        "message": "Ищете контент? Откройте боковую панель для просмотра всех файлов.",
+        "description": "Просматривайте файлы контента на боковой панели",
+        "message": "Ищете контент? Откройте боковую панель, чтобы увидеть все файлы.",
         "open_sidebar": "Открыть боковую панель"
       }
     }

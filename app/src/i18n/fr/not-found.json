@@ -1,7 +1,7 @@
 {
   "not-found": {
-    "not_found": "Page introuvable",
-    "not_found_description": "La page que vous recherchez n'existe pas.",
-    "go_home": "Aller à l'accueil"
+    "not_found": "Page non trouvée",
+    "not_found_description": "La page que vous recherchez n'existe pas ou a été déplacée.",
+    "go_home": "Retour à l'accueil"
   }
 }

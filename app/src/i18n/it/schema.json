@@ -2,17 +2,17 @@
   "schema": {
     "types": {
       "string": "Testo (String)",
-      "number": "Numero",
-      "boolean": "Booleano",
-      "media": "File multimediale",
-      "gallery": "Galleria",
-      "array": "Array (Elenco)",
-      "date": "Data",
-      "object": "Oggetto"
+      "number": "Numero (Number)",
+      "boolean": "Booleano (Boolean)",
+      "media": "Media",
+      "gallery": "Galleria (Gallery)",
+      "array": "Array",
+      "date": "Data (Date)",
+      "object": "Oggetto (Object)"
     },
     "fields": {
-      "label": "Etichetta",
-      "name": "Nome",
+      "label": "Etichetta (Label)",
+      "name": "Nome campo",
       "type": "Tipo di campo",
       "placeholder": {
         "type": "Scegli tipo",
@@ -22,8 +22,8 @@
       "description": "Descrizione",
       "default_value": "Valore predefinito",
       "boolean": {
-        "true": "Vero",
-        "false": "Falso"
+        "true": "Vero (True)",
+        "false": "Falso (False)"
       },
       "input_style": {
         "label": "Stile di input",
@@ -31,7 +31,7 @@
         "options": {
           "standard_text": "Casella di testo standard",
           "standard_table": "Tabella standard",
-          "dropdown": "Selezione a discesa",
+          "dropdown": "Menu a discesa",
           "multi_dropdown": "Menu a discesa a selezione multipla"
         }
       }
@@ -41,39 +41,39 @@
       "dropdown": {
         "title": "Configurazione menu a discesa",
         "multi_title": "Configurazione selezione multipla",
-        "source": "Sorgente",
-        "source_placeholder": "Scegli sorgente",
+        "source": "Origine dati",
+        "source_placeholder": "Scegli origine",
         "sources": {
           "static": "Opzioni statiche",
           "folder": "File da cartella",
           "file": "Dati da file"
         },
         "static": {
-          "placeholder": "Inserisci valore opzione"
+          "placeholder": "Inserisci il valore dell'opzione"
         },
         "folder": {
           "path": "Percorso cartella",
           "path_placeholder": "Seleziona una cartella",
-          "display_field": "Campo di visualizzazione (Chiave Frontmatter)",
-          "field_placeholder": "es. title (predefinito: nome file)",
-          "loading_fields": "Caricamento campi in corso...",
-          "default_field": "filename (predefinito)",
-          "include_pattern": "Pattern di inclusione (Glob)",
+          "display_field": "Campo di visualizzazione (chiave Frontmatter)",
+          "field_placeholder": "es. title (predefinito nome file)",
+          "loading_fields": "Caricamento campi...",
+          "default_field": "nome file (predefinito)",
+          "include_pattern": "Modello di inclusione (Glob)",
           "include_placeholder": "es. *.md",
-          "exclude_pattern": "Pattern di esclusione (Glob)",
+          "exclude_pattern": "Modello di esclusione (Glob)",
           "exclude_placeholder": "es. index.md"
         },
         "file": {
           "path": "Percorso file (JSON/YAML/TOML)",
           "path_placeholder": "Seleziona un file",
-          "data_key": "Chiave dati (Campo da estrarre)",
+          "data_key": "Chiave dati (campo da estrarre)",
           "key_placeholder": "es. categories o name",
           "default_key": "Estrai l'intero file/array"
         }
       }
     },
     "array": {
-      "label": "Array di",
+      "label": "Array di tipo",
       "placeholder": "Scegli sottotipo"
     },
     "nested": {
@@ -84,7 +84,7 @@
       "default_value": "Valore predefinito",
       "mode_placeholder": "Scegli modalità",
       "static": "Data fissa",
-      "dynamic": "Data corrente (Live)",
+      "dynamic": "Data corrente (dinamica)",
       "empty": "Vuoto",
       "select_initial": "Seleziona data iniziale",
       "today": "Oggi"
@@ -99,14 +99,14 @@
     },
     "builder": {
       "add_new_field": "Aggiungi nuovo campo",
-      "configure_properties": "Configura le proprietà del nuovo campo",
+      "configure_properties": "Configura le proprietà del campo",
       "field_settings": "Impostazioni campo",
       "required": "Obbligatorio",
       "show": "Mostra",
       "hide": "Nascondi",
       "no_field_selected": "Nessun campo selezionato",
       "select_to_edit": "Seleziona un campo dall'elenco per modificarne le impostazioni",
-      "no_fields": "Nessun campo ancora presente",
+      "no_fields": "Nessun campo presente",
       "add_first_field": "Aggiungi il tuo primo campo qui sotto",
       "back_to_fields": "Torna ai campi",
       "field_count": "{count, plural, =0 {0 campi} one {1 campo} other {# campi}}"

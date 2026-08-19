@@ -4,50 +4,50 @@
       "footer_account": {
         "account": "Akun",
         "updates": "Pembaruan",
-        "support": "Dukungan",
+        "support": "Bantuan",
         "ai_agent": "Agen AI",
         "preferences": "Preferensi"
       },
       "user_dashboard": {
-        "overview": "Ikhtisar",
+        "overview": "Ringkasan",
         "account": "Akun",
         "preferences": "Preferensi",
         "ai_agent": "Agen AI"
       },
       "org_dashboard": {
-        "websites": "Situs web",
+        "websites": "Situs Web",
         "settings": "Pengaturan"
       },
       "org_settings": {
         "general": "Umum",
         "members": "Anggota",
-        "sandbox": "Kotak Pasir"
+        "sandbox": "Sandbox"
       },
       "project_dashboard": {
-        "overview": "Ikhtisar",
+        "overview": "Ringkasan",
         "media": "Media",
         "settings": "Pengaturan"
       },
       "project_settings": {
         "general": "Umum",
-        "configure": "Konfigurasikan",
+        "configure": "Konfigurasi",
         "git": "Git",
         "schemas": "Skema",
-        "snippets": "Cuplikan",
-        "arrangement": "Pengaturan"
+        "snippets": "Cuplikan Kode",
+        "arrangement": "Tata Letak"
       }
     },
     "sidebar": {
       "open_menu": "Buka menu",
       "code": "Kode",
-      "config": "Konfigurasi",
+      "config": "Konfig",
       "actions": {
-        "close": "Menutup"
+        "close": "Tutup"
       },
       "sidebar_trigger_mobile": {
-        "title": "Daftar Isi",
-        "description": "Lihat semua file konten Anda dari sidebar",
-        "message": "Mencari Konten Anda? Buka sidebar untuk melihat semua file.",
+        "title": "Daftar Konten",
+        "description": "Lihat semua file konten dari bilah sisi",
+        "message": "Mencari konten Anda? Buka bilah sisi untuk melihat semua file.",
         "open_sidebar": "Buka bilah sisi"
       }
     }

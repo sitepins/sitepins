@@ -3,7 +3,7 @@
     "menu": {
       "footer_account": {
         "account": "Account",
-        "updates": "Aggiornamenti",
+        "updates": "Novità",
         "support": "Supporto",
         "ai_agent": "Agente IA",
         "preferences": "Preferenze"
@@ -30,7 +30,7 @@
       },
       "project_settings": {
         "general": "Generale",
-        "configure": "Configura",
+        "configure": "Configurazione",
         "git": "Git",
         "schemas": "Schemi",
         "snippets": "Snippet",
@@ -40,13 +40,13 @@
     "sidebar": {
       "open_menu": "Apri menu",
       "code": "Codice",
-      "config": "Configurazione",
+      "config": "Config",
       "actions": {
         "close": "Chiudi"
       },
       "sidebar_trigger_mobile": {
         "title": "Elenco contenuti",
-        "description": "Visualizza tutti i tuoi file di contenuto dalla barra laterale",
+        "description": "Visualizza tutti i file di contenuto dalla barra laterale",
         "message": "Cerchi i tuoi contenuti? Apri la barra laterale per vedere tutti i file.",
         "open_sidebar": "Apri barra laterale"
       }

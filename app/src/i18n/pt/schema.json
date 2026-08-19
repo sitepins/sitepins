@@ -1,79 +1,79 @@
 {
   "schema": {
     "types": {
-      "string": "Texto",
-      "number": "Número",
-      "boolean": "Booleano",
-      "media": "Mídia",
-      "gallery": "Galeria",
-      "array": "Matriz",
-      "date": "Data",
-      "object": "Objeto"
+      "string": "Texto (String)",
+      "number": "Número (Number)",
+      "boolean": "Booleano (Boolean)",
+      "media": "Mídia (Media)",
+      "gallery": "Galeria (Gallery)",
+      "array": "Lista (Array)",
+      "date": "Data (Date)",
+      "object": "Objeto (Object)"
     },
     "fields": {
-      "label": "Rótulo",
-      "name": "Nome",
-      "type": "Tipo de Campo",
+      "label": "Rótulo (Label)",
+      "name": "Nome do campo",
+      "type": "Tipo de campo",
       "placeholder": {
         "type": "Escolha o tipo",
-        "label": "ex., Título",
-        "name": "auto_generated"
+        "label": "ex: Título",
+        "name": "gerado_automaticamente"
       },
       "description": "Descrição",
-      "default_value": "Valor Padrão",
+      "default_value": "Valor padrão",
       "boolean": {
-        "true": "Verdadeiro",
-        "false": "Falso"
+        "true": "Verdadeiro (True)",
+        "false": "Falso (False)"
       },
       "input_style": {
-        "label": "Estilo de Entrada",
+        "label": "Estilo de entrada",
         "placeholder": "Escolha o estilo de entrada",
         "options": {
-          "standard_text": "Caixa de Texto Padrão",
-          "standard_table": "Tabela Padrão",
-          "dropdown": "Seleção em Dropdown",
-          "multi_dropdown": "Dropdown Multi-seleção"
+          "standard_text": "Caixa de texto padrão",
+          "standard_table": "Tabela padrão",
+          "dropdown": "Menu suspenso",
+          "multi_dropdown": "Menu suspenso de seleção múltipla"
         }
       }
     },
     "configuration": {
-      "title": "Configuração de Campo",
+      "title": "Configuração do campo",
       "dropdown": {
-        "title": "Configuração de Dropdown",
-        "multi_title": "Configuração Multi-seleção",
-        "source": "Fonte",
+        "title": "Configuração de menu suspenso",
+        "multi_title": "Configuração de seleção múltipla",
+        "source": "Fonte de dados",
         "source_placeholder": "Escolha a fonte",
         "sources": {
-          "static": "Opções Estáticas",
-          "folder": "Arquivos da Pasta",
-          "file": "Dados do Arquivo"
+          "static": "Opções estáticas",
+          "folder": "Arquivos de uma pasta",
+          "file": "Dados de um arquivo"
         },
         "static": {
-          "placeholder": "Insira o valor da opção"
+          "placeholder": "Digite o valor da opção"
         },
         "folder": {
-          "path": "Caminho da Pasta",
+          "path": "Caminho da pasta",
           "path_placeholder": "Selecione uma pasta",
-          "display_field": "Campo de Exibição (Chave Frontmatter)",
-          "field_placeholder": "ex. título (padrão para nome do arquivo)",
+          "display_field": "Campo de exibição (chave Frontmatter)",
+          "field_placeholder": "ex: title (padrão nome do arquivo)",
           "loading_fields": "Carregando campos...",
           "default_field": "nome do arquivo (padrão)",
-          "include_pattern": "Incluir Padrão (Glob)",
-          "include_placeholder": "ex. *.md",
-          "exclude_pattern": "Excluir Padrão (Glob)",
-          "exclude_placeholder": "ex. index.md"
+          "include_pattern": "Padrão de inclusão (Glob)",
+          "include_placeholder": "ex: *.md",
+          "exclude_pattern": "Padrão de exclusão (Glob)",
+          "exclude_placeholder": "ex: index.md"
         },
         "file": {
-          "path": "Caminho do Arquivo (JSON/YAML/TOML)",
+          "path": "Caminho do arquivo (JSON/YAML/TOML)",
           "path_placeholder": "Selecione um arquivo",
-          "data_key": "Chave de Dados (Campo a Extrair)",
-          "key_placeholder": "ex. categorias ou nome",
-          "default_key": "Extrair arquivo/matriz inteira"
+          "data_key": "Chave de dados (campo a extrair)",
+          "key_placeholder": "ex: categories ou name",
+          "default_key": "Extrair arquivo/array completo"
         }
       }
     },
     "array": {
-      "label": "Matriz de",
+      "label": "Lista de tipo",
       "placeholder": "Escolha o subtipo"
     },
     "nested": {
@@ -81,39 +81,39 @@
       "add_button": "Adicionar campo aninhado"
     },
     "date": {
-      "default_value": "Valor Padrão",
+      "default_value": "Valor padrão",
       "mode_placeholder": "Escolha o modo",
-      "static": "Data Fixa",
-      "dynamic": "Data Atual (Ao Vivo)",
+      "static": "Data fixa",
+      "dynamic": "Data atual (dinâmica)",
       "empty": "Vazio",
-      "select_initial": "Selecionar Data Inicial",
+      "select_initial": "Selecionar data inicial",
       "today": "Hoje"
     },
     "actions": {
-      "add_option": "Adicionar Opção",
-      "add_field": "Adicionar Campo",
-      "update_field": "Atualizar Campo",
-      "enter_option": "Insira a opção",
+      "add_option": "Adicionar opção",
+      "add_field": "Adicionar campo",
+      "update_field": "Atualizar campo",
+      "enter_option": "Digite a opção",
       "include": "Incluir",
       "ignore": "Ignorar"
     },
     "builder": {
-      "add_new_field": "Adicionar Novo Campo",
-      "configure_properties": "Configure as propriedades do novo campo",
-      "field_settings": "Configurações de Campo",
-      "required": "Requerido",
-      "show": "Mostrar",
+      "add_new_field": "Adicionar novo campo",
+      "configure_properties": "Configurar propriedades do campo",
+      "field_settings": "Configurações do campo",
+      "required": "Obrigatório",
+      "show": "Exibir",
       "hide": "Ocultar",
       "no_field_selected": "Nenhum campo selecionado",
       "select_to_edit": "Selecione um campo da lista para editar suas configurações",
-      "no_fields": "Nenhum campo ainda",
+      "no_fields": "Nenhum campo cadastrado ainda",
       "add_first_field": "Adicione seu primeiro campo abaixo",
-      "back_to_fields": "Voltar para campos",
+      "back_to_fields": "Voltar aos campos",
       "field_count": "{count, plural, =0 {0 campos} one {1 campo} other {# campos}}"
     },
     "errors": {
       "name_required": "O nome do campo é obrigatório",
-      "name_exists": "O nome do campo já existe"
+      "name_exists": "Já existe um campo com este nome"
     }
   }
 }

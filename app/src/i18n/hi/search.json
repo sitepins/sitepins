@@ -5,8 +5,8 @@
       "organizations": "संगठन",
       "preferences": "प्राथमिकताएं",
       "organization_settings": "संगठन सेटिंग्स",
-      "ai_agent": "AI एजेंट",
-      "support_updates": "सपोर्ट और अपडेट",
+      "ai_agent": "एआई एजेंट",
+      "support_updates": "सहायता और अपडेट्स",
       "account": "खाता",
       "files": "फ़ाइलें"
     },
@@ -16,48 +16,71 @@
       "close": "बंद करें"
     },
     "org_keywords": [
-      "org",
       "संगठन",
-      "बदलें",
       "वर्कस्पेस",
       "टीम",
-      "कार्यक्षेत्र"
+      "बदलें",
+      "org",
+      "workspace",
+      "organization",
+      "switch",
+      "team"
     ],
     "items": {
       "display-picture": {
-        "label": "प्रोफ़ाइल चित्र",
+        "label": "प्रोफ़ाइल फ़ोटो",
         "href": "/dashboard/account/#display-picture",
         "keywords": [
-          "प्रदर्शन",
+          "फ़ोटो",
           "प्रोफ़ाइल",
           "उपयोगकर्ता",
           "खाता",
-          "फ़ोटो",
           "चित्र",
-          "छवि",
           "अवतार",
           "बदलें",
           "अपलोड",
           "अपडेट",
-          "संपादित"
+          "display",
+          "profile",
+          "user",
+          "account",
+          "photo",
+          "picture",
+          "image",
+          "avatar",
+          "change",
+          "upload",
+          "update",
+          "edit"
         ]
       },
       "display-name": {
-        "label": "प्रदर्शन नाम अपडेट करें",
+        "label": "प्रदर्शित नाम अपडेट करें",
         "href": "/dashboard/account/#display-name",
         "keywords": [
-          "प्रदर्शन नाम",
+          "प्रदर्शित नाम",
           "नाम",
           "प्रोफ़ाइल नाम",
-          "सार्वजनिक नाम",
           "यूज़रनेम",
-          "स्क्रीन नाम",
-          "उपनाम",
-          "खाते का नाम",
           "नाम बदलें",
-          "नाम अपडेट करें",
           "पहचान",
-          "व्यक्तिगत जानकारी"
+          "display name",
+          "name",
+          "profile name",
+          "public name",
+          "username",
+          "screen name",
+          "nickname",
+          "account name",
+          "change name",
+          "update name",
+          "edit name",
+          "rename",
+          "change display name",
+          "update display name",
+          "edit display name",
+          "identity",
+          "personal information"
         ]
       },
       "change-password": {
@@ -65,15 +88,21 @@
         "href": "/dashboard/account/#change-password",
         "keywords": [
           "पासवर्ड बदलें",
-          "पासवर्ड अपडेट करें",
-          "पासवर्ड संपादित करें",
           "नया पासवर्ड",
-          "वर्तमान पासवर्ड",
-          "पासवर्ड रीसेट करें",
-          "पासवर्ड",
+          "पासवर्ड रीसेट",
           "सुरक्षा",
-          "क्रेडेंशियल",
-          "खाता सुरक्षा"
+          "खाता सुरक्षा",
+          "change password",
+          "update password",
+          "edit password",
+          "new password",
+          "current password",
+          "reset password",
+          "password",
+          "security",
+          "credentials",
+          "login credentials",
+          "account security"
         ]
       },
       "set-password": {
@@ -83,10 +112,14 @@
           "पासवर्ड सेट करें",
           "पासवर्ड बनाएं",
           "पासवर्ड जोड़ें",
-          "पासवर्ड",
           "सुरक्षा",
-          "क्रेडेंशियल",
-          "खाता सुरक्षा"
+          "set password",
+          "create password",
+          "add password",
+          "password",
+          "security",
+          "credentials",
+          "account security"
         ]
       },
       "newsletter": {
@@ -95,13 +128,20 @@
         "keywords": [
           "न्यूज़लेटर",
           "सदस्यता",
-          "सब्सक्राइब",
           "अनसब्सक्राइब",
-          "ईमेल सदस्यता",
-          "ईमेल सूचनाएं",
-          "मार्केटिंग ईमेल",
-          "अपडेट",
-          "मेलिंग सूची"
+          "ईमेल अपडेट्स",
+          "सूचनाएं",
+          "newsletter",
+          "subscription",
+          "subscribe",
+          "unsubscribe",
+          "email subscription",
+          "email notifications",
+          "marketing emails",
+          "updates",
+          "email updates",
+          "notifications",
+          "mailing list"
         ]
       },
       "language": {
@@ -109,16 +149,22 @@
         "href": "/dashboard/preference#language",
         "keywords": [
           "भाषा",
-          "लोकेल",
           "क्षेत्र",
           "भाषा बदलें",
-          "भाषा सेट करें",
           "ऐप भाषा",
           "इंटरफ़ेस भाषा",
-          "स्थानीयकरण",
-          "i18n",
           "अनुवाद",
-          "प्राथमिकताएं"
+          "language",
+          "locale",
+          "region",
+          "change language",
+          "set language",
+          "app language",
+          "interface language",
+          "localization",
+          "i18n",
+          "translation",
+          "preferences"
         ]
       },
       "theme": {
@@ -129,13 +175,21 @@
           "डार्क मोड",
           "लाइट मोड",
           "डार्क थीम",
-          "लाइट थीम",
           "सिस्टम थीम",
-          "दिखावट",
-          "रंग योजना",
-          "रंग मोड",
-          "रात मोड",
-          "प्राथमिकताएं"
+          "रंग",
+          "theme",
+          "dark mode",
+          "light mode",
+          "dark theme",
+          "light theme",
+          "system theme",
+          "appearance",
+          "color scheme",
+          "color mode",
+          "night mode",
+          "display theme",
+          "ui theme",
+          "preferences"
         ]
       },
       "coauthor": {
@@ -143,30 +197,47 @@
         "href": "/dashboard/preference#coauthor",
         "keywords": [
           "सह-लेखक",
-          "सह लेखक",
           "लेखक",
-          "लेखक प्राथमिकता",
-          "दिखाएं",
           "डिफ़ॉल्ट लेखक",
+          "पोस्ट लेखक",
           "सामग्री लेखक",
-          "प्राथमिकताएं"
+          "coauthor",
+          "co-author",
+          "co author",
+          "author preference",
+          "pin author",
+          "impersonate",
+          "show as",
+          "default author",
+          "article author",
+          "post author",
+          "content author",
+          "preferences"
         ]
       },
       "ai-agent": {
-        "label": "AI एजेंट सेटिंग्स",
+        "label": "एआई एजेंट सेटिंग्स",
         "href": "/dashboard/ai-agent",
         "keywords": [
-          "ai",
-          "कोपायलट",
-          "ai एजेंट",
-          "कृत्रिम बुद्धिमत्ता",
-          "सहायक",
+          "एआई",
+          "को-पायलट",
+          "एआई एजेंट",
+          "आर्टिफिशियल इंटेलिजेंस",
+          "असिस्टेंट",
           "बॉट",
           "स्वचालन",
-          "स्मार्ट",
-          "मशीन लर्निंग",
-          "सेटिंग्स",
-          "कॉन्फ़िगरेशन"
+          "ai",
+          "copilot",
+          "ai agent",
+          "artificial intelligence",
+          "assistant",
+          "bot",
+          "automation",
+          "smart",
+          "machine learning",
+          "features",
+          "settings",
+          "configuration"
         ]
       },
       "discord-support": {
@@ -174,31 +245,45 @@
         "href": "https://discord.com/invite/KrpvHfqcNA",
         "target": "_blank",
         "keywords": [
-          "सपोर्ट",
+          "सहायता",
           "मदद",
           "डिस्कॉर्ड",
-          "समुदाय",
+          "कम्युनिटी",
           "चैट",
           "संपर्क",
-          "मुद्दा",
-          "बग",
-          "प्रश्न",
-          "सहायता"
+          "सवाल",
+          "support",
+          "help",
+          "discord",
+          "community",
+          "chat",
+          "contact",
+          "talk to us",
+          "issue",
+          "bug",
+          "question",
+          "need help"
         ]
       },
       "updates-feedback": {
-        "label": "अपडेट और फीडबैक",
+        "label": "अपडेट और प्रतिक्रिया",
         "href": "https://updates.sitepins.com/",
         "target": "_blank",
         "keywords": [
           "अपडेट",
-          "फीडबैक",
+          "प्रतिक्रिया",
           "सुविधा अनुरोध",
-          "ट्रैकिंग",
           "चेंजलॉग",
-          "नई सुविधाएँ",
           "रोडमैप",
-          "क्या नया है"
+          "updates",
+          "feedback",
+          "feature request",
+          "tracking",
+          "building timeline",
+          "changelog",
+          "new features",
+          "roadmap",
+          "what's new"
         ]
       },
       "org-general": {
@@ -209,9 +294,15 @@
           "संगठन",
           "सेटिंग्स",
           "नाम",
-          "संग्रहीत",
+          "संग्रह",
           "हटाएं",
-          "संगठन"
+          "general",
+          "organization",
+          "settings",
+          "name",
+          "archive",
+          "delete",
+          "org"
         ]
       },
       "org-members": {
@@ -220,11 +311,17 @@
         "keywords": [
           "सदस्य",
           "टीम",
-          "आमंत्रित",
+          "आमंत्रित करें",
           "उपयोगकर्ता",
           "भूमिकाएं",
           "अनुमतियां",
-          "संगठन"
+          "members",
+          "team",
+          "invite",
+          "users",
+          "roles",
+          "permissions",
+          "organization"
         ]
       },
       "org-sandbox": {
@@ -235,12 +332,18 @@
           "vercel",
           "एकीकरण",
           "कनेक्ट",
-          "परिनियोजन",
-          "पूर्वावलोकन",
-          "प्रकाशित",
           "डिप्लॉय",
-          "लाइव",
-          "बिल्ड"
+          "पूर्वावलोकन",
+          "sandbox",
+          "integration",
+          "connect",
+          "deployment",
+          "development",
+          "preview",
+          "publish",
+          "deploy",
+          "live",
+          "build"
         ]
       }
     }

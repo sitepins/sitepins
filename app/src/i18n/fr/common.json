@@ -13,7 +13,7 @@
       "label": "Se déconnecter",
       "demo_disabled": "La déconnexion est désactivée en mode démo.",
       "confirm_title": "Confirmer la déconnexion",
-      "confirm_description": "Êtes-vous sûr de vouloir vous déconnecter de votre compte ?"
+      "confirm_description": "Voulez-vous vraiment vous déconnecter de votre compte ?"
     },
     "accessibility": {
       "trigger": "Ouvrir le menu d'accessibilité"
@@ -38,7 +38,7 @@
       "finish": "Terminer",
       "next": "Suivant",
       "previous": "Précédent",
-      "edit_as_code": "Modifier en tant que code",
+      "edit_as_code": "Modifier le code",
       "continue": "Continuer",
       "replace": "Remplacer",
       "confirm": "Confirmer",
@@ -49,51 +49,51 @@
       "saving": "Enregistrement...",
       "saved": "Enregistré",
       "no_results": "Aucun résultat trouvé.",
-      "error": "Une erreur s'est produite"
+      "error": "Une erreur est survenue"
     },
     "confirm": {
       "are_you_sure": "Êtes-vous sûr ?",
-      "absolutely_sure": "Êtes-vous absolument sûr ?",
+      "absolutely_sure": "En êtes-vous absolument certain ?",
       "cannot_be_undone": "Cette action est irréversible.",
-      "type_to_confirm": "tapez {confirm} pour confirmer",
-      "confirm_value": "CONFIRMER",
-      "delete_description": "Cette action est irréversible. Cela supprimera définitivement vos données de nos serveurs.",
+      "type_to_confirm": "Saisissez {confirm} pour confirmer",
+      "confirm_value": "CONFIRM",
+      "delete_description": "Cette action est irréversible. Vos données seront définitivement supprimées de nos serveurs.",
       "delete_media": "Supprimer le fichier média",
-      "delete_media_description": "Êtes-vous sûr de vouloir supprimer ce fichier ?",
-      "enter_new_name": "Entrez un nouveau nom pour le fichier.",
+      "delete_media_description": "Voulez-vous vraiment supprimer ce fichier ?",
+      "enter_new_name": "Saisissez un nouveau nom pour le fichier.",
       "duplicate_file": "Dupliquer le fichier",
-      "duplicate_file_description": "Entrez un nouveau nom pour le fichier dupliqué."
+      "duplicate_file_description": "Saisissez un nom pour la copie du fichier."
     },
     "feedback": {
       "language_updated": "Langue mise à jour avec succès",
       "language_update_failed": "Échec de la mise à jour de la langue",
       "duplicate_success": "Fichier dupliqué avec succès !",
-      "duplicate_failed": "Échec de la duplication du fichier",
+      "duplicate_failed": "Impossible de dupliquer le fichier",
       "uploaded_success": "Téléversement réussi",
       "upload_failed": "Échec du téléversement",
       "error_processing": "Erreur lors du traitement des fichiers",
       "image_deleted": "Image supprimée avec succès",
       "rename_success": "Fichier renommé avec succès",
-      "rename_failed": "Échec du renommage du fichier",
+      "rename_failed": "Impossible de renommer le fichier",
       "delete_success": "Fichier supprimé avec succès",
-      "delete_failed": "Échec de la suppression du fichier",
+      "delete_failed": "Impossible de supprimer le fichier",
       "folder_rename_success": "Dossier renommé avec succès",
-      "folder_rename_failed": "Échec du renommage du dossier",
+      "folder_rename_failed": "Impossible de renommer le dossier",
       "folder_delete_success": "Dossier supprimé avec succès",
-      "folder_delete_failed": "Échec de la suppression du dossier",
+      "folder_delete_failed": "Impossible de supprimer le dossier",
       "folder_duplicate_success": "Dossier dupliqué avec succès",
-      "folder_duplicate_failed": "Échec de la duplication du dossier",
-      "draft_success": "Brouillon enregistré avec succès",
-      "publish_success": "Publié avec succès",
-      "fetch_failed": "Échec du chargement de certains fichiers. Veuillez réessayer.",
-      "invalid_path": "Le chemin du dossier est invalide.",
-      "missing_context": "Le contexte du dépôt est manquant. Veuillez recharger et réessayer.",
-      "unable_to_locate": "Impossible de localiser les fichiers de ce dossier. Veuillez actualiser et réessayer.",
-      "demo_mode": "Cette action est désactivée en mode démo.",
+      "folder_duplicate_failed": "Impossible de dupliquer le dossier",
       "draft_saved": "Brouillon enregistré dans la base de données",
       "draft_saved_error": "Échec de l'enregistrement du brouillon",
+      "draft_success": "Brouillon enregistré avec succès",
+      "publish_success": "Publication réussie",
+      "fetch_failed": "Impossible de récupérer les fichiers. Veuillez réessayer.",
+      "invalid_path": "Le chemin du dossier est invalide.",
+      "missing_context": "Contexte du dépôt manquant. Veuillez recharger la page.",
+      "unable_to_locate": "Impossible de localiser les fichiers de ce dossier. Veuillez rafraîchir.",
+      "demo_mode": "Cette action est désactivée en mode démo.",
       "draft_discard_success": "Brouillon supprimé avec succès",
-      "draft_discard_error": "Échec de la suppression du brouillon"
+      "draft_discard_error": "Impossible d'abandonner le brouillon"
     },
     "labels": {
       "name": "Nom",
@@ -115,26 +115,26 @@
     "search_placeholder": "Rechercher...",
     "search_sites_placeholder": "Rechercher des sites...",
     "prevent_navigation": {
-      "title": "Enregistrer les modifications avant de fermer ?",
-      "description": "Vous avez des modifications non enregistrées. Si vous continuez sans enregistrer, ces modifications seront perdues.",
-      "stay": "Rester",
+      "title": "Enregistrer les modifications avant de quitter ?",
+      "description": "Vous avez des modifications non enregistrées. Elles seront perdues si vous quittez sans enregistrer.",
+      "stay": "Rester sur la page",
       "leave": "Quitter",
-      "browser_prompt": "Vous avez des modifications non enregistrées. Êtes-vous sûr de vouloir quitter ?"
+      "browser_prompt": "Vous avez des modifications non enregistrées. Voulez-vous vraiment quitter ?"
     },
     "error_page": {
-      "something_went_wrong": "Une erreur s'est produite",
+      "something_went_wrong": "Une erreur est survenue",
       "error_code": "Code d'erreur : {code}",
-      "go_home": "Retourner à l'accueil",
-      "contact_support": "Contacter le support",
+      "go_home": "Aller à l'accueil",
+      "contact_support": "Contacter l'assistance",
       "show_technical_details": "Afficher les détails techniques"
     },
     "image_upload": {
       "file_too_large": "La taille du fichier dépasse la limite de {limit} Mo.",
       "preview_title": "Aperçu de l'image",
-      "preview_desc": "Confirmez si vous souhaitez télécharger cette image.",
-      "upload": "Télécharger",
+      "preview_desc": "Confirmez l'envoi de cette image.",
+      "upload": "Téléverser",
       "delete_title": "Supprimer l'image",
-      "delete_desc": "Cela supprimera définitivement cette image. Cette action est irréversible."
+      "delete_desc": "Cette action supprimera définitivement l'image et ne peut pas être annulée."
     }
   }
 }

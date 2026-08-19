@@ -35,34 +35,34 @@
       "move": "Sposta",
       "disconnect": "Disconnetti",
       "connect": "Connetti",
-      "finish": "Fine",
+      "finish": "Completa",
       "next": "Avanti",
       "previous": "Precedente",
       "edit_as_code": "Modifica come codice",
       "continue": "Continua",
       "replace": "Sostituisci",
       "confirm": "Conferma",
-      "reset": "Ripristina"
+      "reset": "Reimposta"
     },
     "status": {
       "loading": "Caricamento...",
-      "saving": "Salvataggio...",
+      "saving": "Salvataggio in corso...",
       "saved": "Salvato",
       "no_results": "Nessun risultato trovato.",
-      "error": "Qualcosa è andato storto"
+      "error": "Si è verificato un errore"
     },
     "confirm": {
       "are_you_sure": "Sei sicuro?",
       "absolutely_sure": "Sei assolutamente sicuro?",
       "cannot_be_undone": "Questa azione non può essere annullata.",
-      "type_to_confirm": "digita {confirm} per confermare",
+      "type_to_confirm": "Digita {confirm} per confermare",
       "confirm_value": "CONFIRM",
-      "delete_description": "Questa azione non può essere annullata. Questo eliminerà definitivamente i tuoi dati dai nostri server.",
+      "delete_description": "Questa azione è irreversibile. I tuoi dati verranno rimossi permanentemente dai nostri server.",
       "delete_media": "Elimina file multimediale",
       "delete_media_description": "Sei sicuro di voler eliminare questo file?",
       "enter_new_name": "Inserisci un nuovo nome per il file.",
       "duplicate_file": "Duplica file",
-      "duplicate_file_description": "Inserisci un nuovo nome per il file duplicato."
+      "duplicate_file_description": "Inserisci un nome per la copia del file."
     },
     "feedback": {
       "language_updated": "Lingua aggiornata con successo",
@@ -87,13 +87,13 @@
       "draft_saved_error": "Impossibile salvare la bozza",
       "draft_success": "Bozza salvata con successo",
       "publish_success": "Pubblicato con successo",
-      "fetch_failed": "Impossibile recuperare alcuni file. Riprova.",
-      "invalid_path": "Il percorso della cartella non è valido.",
-      "missing_context": "Contesto del repository mancante. Ricarica e riprova.",
-      "unable_to_locate": "Impossibile individuare i file per questa cartella. Aggiorna e riprova.",
+      "fetch_failed": "Impossibile recuperare i file. Riprova.",
+      "invalid_path": "Percorso della cartella non valido.",
+      "missing_context": "Contesto del repository mancante. Ricarica la pagina.",
+      "unable_to_locate": "Impossibile trovare i file per questa cartella. Aggiorna la pagina.",
       "demo_mode": "Questa azione è disabilitata in modalità demo.",
       "draft_discard_success": "Bozza scartata con successo",
-      "draft_discard_error": "Impossibile scartare la bozza"
+      "draft_discard_error": "Impossibile eliminare la bozza"
     },
     "labels": {
       "name": "Nome",
@@ -104,7 +104,7 @@
       "fields": "Campi",
       "user": "Utente",
       "site_favicon": "Favicon del sito",
-      "or": "O"
+      "or": "Oppure"
     },
     "errors": {
       "missing_git_info": "Informazioni Git richieste mancanti",
@@ -115,26 +115,26 @@
     "search_placeholder": "Cerca...",
     "search_sites_placeholder": "Cerca siti...",
     "prevent_navigation": {
-      "title": "Salvare le modifiche prima di chiudere?",
-      "description": "Hai modifiche non salvate. Se continui senza salvare, queste modifiche andranno perse.",
-      "stay": "Rimani",
+      "title": "Salvare le modifiche prima di uscire?",
+      "description": "Ci sono modifiche non salvate. Se lasci la pagina adesso, andranno perse.",
+      "stay": "Resta qui",
       "leave": "Esci",
-      "browser_prompt": "Hai modifiche non salvate. Sei sicuro di voler uscire?"
+      "browser_prompt": "Hai modifiche non salvate. Vuoi davvero lasciare la pagina?"
     },
     "error_page": {
-      "something_went_wrong": "Qualcosa è andato storto",
-      "error_code": "Codice di errore: {code}",
-      "go_home": "Vai alla home",
-      "contact_support": "Contatta il supporto",
+      "something_went_wrong": "Si è verificato un errore",
+      "error_code": "Codice errore: {code}",
+      "go_home": "Torna alla home",
+      "contact_support": "Contatta l'assistenza",
       "show_technical_details": "Mostra dettagli tecnici"
     },
     "image_upload": {
-      "file_too_large": "La dimensione del file supera il limite di {limit}MB.",
+      "file_too_large": "La dimensione del file supera il limite di {limit} MB.",
       "preview_title": "Anteprima immagine",
       "preview_desc": "Conferma se desideri caricare questa immagine.",
       "upload": "Carica",
       "delete_title": "Rimuovi immagine",
-      "delete_desc": "Questo eliminerà definitivamente questa immagine. Questa azione non può essere annullata."
+      "delete_desc": "L'immagine verrà eliminata definitivamente. Questa azione non può essere annullata."
     }
   }
 }

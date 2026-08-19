@@ -1,23 +1,23 @@
 {
   "schema": {
     "types": {
-      "string": "स्ट्रिंग (String)",
-      "number": "नंबर (Number)",
+      "string": "टेक्स्ट (String)",
+      "number": "संख्या (Number)",
       "boolean": "बूलियन (Boolean)",
       "media": "मीडिया (Media)",
       "gallery": "गैलरी (Gallery)",
       "array": "एरे (Array)",
-      "date": "तारीख (Date)",
+      "date": "दिनांक (Date)",
       "object": "ऑब्जेक्ट (Object)"
     },
     "fields": {
       "label": "लेबल",
-      "name": "नाम",
+      "name": "फ़ील्ड नाम",
       "type": "फ़ील्ड प्रकार",
       "placeholder": {
         "type": "प्रकार चुनें",
         "label": "उदा. शीर्षक",
-        "name": "स्वतः_उत्पन्न"
+        "name": "स्वचालित_उत्पन्न"
       },
       "description": "विवरण",
       "default_value": "डिफ़ॉल्ट मान",
@@ -41,10 +41,10 @@
       "dropdown": {
         "title": "ड्रॉपडाउन कॉन्फ़िगरेशन",
         "multi_title": "मल्टी-सेलेक्ट कॉन्फ़िगरेशन",
-        "source": "स्रोत",
+        "source": "डेटा स्रोत",
         "source_placeholder": "स्रोत चुनें",
         "sources": {
-          "static": "स्थिर विकल्प (Static)",
+          "static": "स्थिर विकल्प",
           "folder": "फ़ोल्डर से फ़ाइलें",
           "file": "फ़ाइल से डेटा"
         },
@@ -52,21 +52,21 @@
           "placeholder": "विकल्प मान दर्ज करें"
         },
         "folder": {
-          "path": "फ़ोल्डर पथ",
-          "path_placeholder": "एक फ़ोल्डर चुनें",
+          "path": "फ़ोल्डर पाथ",
+          "path_placeholder": "फ़ोल्डर चुनें",
           "display_field": "प्रदर्शन फ़ील्ड (Frontmatter Key)",
           "field_placeholder": "उदा. title (डिफ़ॉल्ट फ़ाइल नाम)",
           "loading_fields": "फ़ील्ड लोड हो रहे हैं...",
           "default_field": "फ़ाइल नाम (डिफ़ॉल्ट)",
-          "include_pattern": "शामिल पैटर्न (Glob)",
+          "include_pattern": "शामिल करने का पैटर्न (Glob)",
           "include_placeholder": "उदा. *.md",
-          "exclude_pattern": "बाहर रखें पैटर्न (Glob)",
+          "exclude_pattern": "बाहर करने का पैटर्न (Glob)",
           "exclude_placeholder": "उदा. index.md"
         },
         "file": {
-          "path": "फ़ाइल पथ (JSON/YAML/TOML)",
-          "path_placeholder": "एक फ़ाइल चुनें",
-          "data_key": "डेटा कुंजी (निकालने के लिए फ़ील्ड)",
+          "path": "फ़ाइल पाथ (JSON/YAML/TOML)",
+          "path_placeholder": "फ़ाइल चुनें",
+          "data_key": "डेटा कुंजी (निकालने योग्य फ़ील्ड)",
           "key_placeholder": "उदा. categories या name",
           "default_key": "संपूर्ण फ़ाइल/एरे निकालें"
         }
@@ -74,10 +74,10 @@
     },
     "array": {
       "label": "एरे का प्रकार",
-      "placeholder": "उपप्रकार चुनें"
+      "placeholder": "उप-प्रकार चुनें"
     },
     "nested": {
-      "title": "नेस्टेड फ़ील्ड",
+      "title": "नेस्टेड फ़ील्ड्स",
       "add_button": "नेस्टेड फ़ील्ड जोड़ें"
     },
     "date": {
@@ -98,22 +98,22 @@
       "ignore": "अनदेखा करें"
     },
     "builder": {
-      "add_new_field": "नया फ़ील्ड जोड़ें",
-      "configure_properties": "नई फ़ील्ड संपत्तियों को कॉन्फ़िगर करें",
+      "add_new_field": "नई फ़ील्ड जोड़ें",
+      "configure_properties": "फ़ील्ड गुण कॉन्फ़िगर करें",
       "field_settings": "फ़ील्ड सेटिंग्स",
       "required": "आवश्यक",
       "show": "दिखाएं",
       "hide": "छिपाएं",
       "no_field_selected": "कोई फ़ील्ड चयनित नहीं है",
-      "select_to_edit": "इसकी सेटिंग्स संपादित करने के लिए सूची से एक फ़ील्ड चुनें",
-      "no_fields": "अभी तक कोई फ़ील्ड नहीं है",
-      "add_first_field": "नीचे अपना पहला फ़ील्ड जोड़ें",
-      "back_to_fields": "फ़ील्ड पर वापस जाएं",
+      "select_to_edit": "सेटिंग्स संपादित करने के लिए सूची से एक फ़ील्ड चुनें",
+      "no_fields": "अभी कोई फ़ील्ड नहीं है",
+      "add_first_field": "नीचे अपनी पहली फ़ील्ड जोड़ें",
+      "back_to_fields": "फ़ील्ड्स सूची पर वापस जाएं",
       "field_count": "{count, plural, =0 {0 फ़ील्ड} one {1 फ़ील्ड} other {# फ़ील्ड}}"
     },
     "errors": {
-      "name_required": "फ़ील्ड का नाम आवश्यक है",
-      "name_exists": "फ़ील्ड का नाम पहले से मौजूद है"
+      "name_required": "फ़ील्ड नाम आवश्यक है",
+      "name_exists": "यह फ़ील्ड नाम पहले से मौजूद है"
     }
   }
 }

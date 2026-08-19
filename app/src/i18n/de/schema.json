@@ -1,36 +1,36 @@
 {
   "schema": {
     "types": {
-      "string": "Text",
-      "number": "Zahl",
-      "boolean": "Boolesch",
-      "media": "Medien",
-      "gallery": "Galerie",
+      "string": "Text (String)",
+      "number": "Zahl (Number)",
+      "boolean": "Boolesch (Boolean)",
+      "media": "Medien (Media)",
+      "gallery": "Galerie (Gallery)",
       "array": "Array",
-      "date": "Datum",
-      "object": "Objekt"
+      "date": "Datum (Date)",
+      "object": "Objekt (Object)"
     },
     "fields": {
-      "label": "Bezeichnung",
-      "name": "Name",
+      "label": "Beschriftung (Label)",
+      "name": "Feldname",
       "type": "Feldtyp",
       "placeholder": {
         "type": "Typ auswählen",
         "label": "z. B. Titel",
-        "name": "automatisch_generiert"
+        "name": "automatisch generiert"
       },
       "description": "Beschreibung",
       "default_value": "Standardwert",
       "boolean": {
-        "true": "Wahr",
-        "false": "Falsch"
+        "true": "Wahr (True)",
+        "false": "Falsch (False)"
       },
       "input_style": {
         "label": "Eingabestil",
         "placeholder": "Eingabestil auswählen",
         "options": {
           "standard_text": "Standard-Textfeld",
-          "standard_table": "Standard-Tabelle",
+          "standard_table": "Standardtabelle",
           "dropdown": "Dropdown-Auswahl",
           "multi_dropdown": "Mehrfachauswahl-Dropdown"
         }
@@ -66,9 +66,9 @@
         "file": {
           "path": "Dateipfad (JSON/YAML/TOML)",
           "path_placeholder": "Datei auswählen",
-          "data_key": "Datenschlüssel (zu extrahierendes Feld)",
+          "data_key": "Daten-Schlüssel (Extraktionsfeld)",
           "key_placeholder": "z. B. categories oder name",
-          "default_key": "Gesamte Datei/gesamtes Array extrahieren"
+          "default_key": "Gesamte Datei / Array extrahieren"
         }
       }
     },
@@ -86,7 +86,7 @@
       "static": "Festes Datum",
       "dynamic": "Aktuelles Datum (Live)",
       "empty": "Leer",
-      "select_initial": "Anfangsdatum auswählen",
+      "select_initial": "Startdatum auswählen",
       "today": "Heute"
     },
     "actions": {
@@ -99,15 +99,15 @@
     },
     "builder": {
       "add_new_field": "Neues Feld hinzufügen",
-      "configure_properties": "Eigenschaften des neuen Feldes konfigurieren",
+      "configure_properties": "Feldeigenschaften konfigurieren",
       "field_settings": "Feldeinstellungen",
       "required": "Erforderlich",
       "show": "Anzeigen",
       "hide": "Ausblenden",
       "no_field_selected": "Kein Feld ausgewählt",
-      "select_to_edit": "Wähle ein Feld aus der Liste aus, um dessen Einstellungen zu bearbeiten",
-      "no_fields": "Noch keine Felder",
-      "add_first_field": "Füge unten dein erstes Feld hinzu",
+      "select_to_edit": "Wählen Sie ein Feld aus der Liste, um es zu bearbeiten",
+      "no_fields": "Noch keine Felder vorhanden",
+      "add_first_field": "Fügen Sie unten Ihr erstes Feld hinzu",
       "back_to_fields": "Zurück zu den Feldern",
       "field_count": "{count, plural, =0 {0 Felder} one {1 Feld} other {# Felder}}"
     },

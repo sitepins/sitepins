@@ -3,16 +3,16 @@
     "menu": {
       "footer_account": {
         "account": "खाता",
-        "updates": "अपडेट",
-        "support": "सपोर्ट",
-        "ai_agent": "AI एजेंट",
+        "updates": "अपडेट्स",
+        "support": "सहायता",
+        "ai_agent": "एआई एजेंट",
         "preferences": "प्राथमिकताएं"
       },
       "user_dashboard": {
         "overview": "अवलोकन",
         "account": "खाता",
         "preferences": "प्राथमिकताएं",
-        "ai_agent": "AI एजेंट"
+        "ai_agent": "एआई एजेंट"
       },
       "org_dashboard": {
         "websites": "वेबसाइटें",
@@ -30,7 +30,7 @@
       },
       "project_settings": {
         "general": "सामान्य",
-        "configure": "कॉन्फ़िगर करें",
+        "configure": "कॉन्फ़िगरेशन",
         "git": "Git",
         "schemas": "स्कीमा",
         "snippets": "स्निपेट्स",
@@ -45,9 +45,9 @@
         "close": "बंद करें"
       },
       "sidebar_trigger_mobile": {
-        "title": "सामग्री सूची",
-        "description": "साइडबार से अपनी सभी सामग्री फ़ाइलें देखें",
-        "message": "अपनी सामग्री खोज रहे हैं? सभी फ़ाइलें देखने के लिए साइडबार खोलें।",
+        "title": "कंटेंट सूची",
+        "description": "साइडबार से अपनी सभी कंटेंट फ़ाइलें देखें",
+        "message": "अपना कंटेंट ढूंढ रहे हैं? सभी फ़ाइलें देखने के लिए साइडबार खोलें।",
         "open_sidebar": "साइडबार खोलें"
       }
     }

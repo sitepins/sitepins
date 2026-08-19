@@ -5,18 +5,18 @@
     "archived": "Archiviert",
     "locale": "de",
     "language": "Sprache",
-    "theme": "Design",
+    "theme": "Erscheinungsbild",
     "light": "Hell",
     "dark": "Dunkel",
-    "system": "System",
+    "system": "Systemstandard",
     "logout": {
       "label": "Abmelden",
-      "demo_disabled": "Abmelden ist im Demomodus deaktiviert.",
+      "demo_disabled": "Abmelden ist im Demo-Modus deaktiviert.",
       "confirm_title": "Abmeldung bestätigen",
-      "confirm_description": "Möchtest du dich wirklich von deinem Konto abmelden?"
+      "confirm_description": "Möchten Sie sich wirklich von Ihrem Konto abmelden?"
     },
     "accessibility": {
-      "trigger": "Barrierefreiheitsmenü öffnen"
+      "trigger": "Bedienungshilfen öffnen"
     },
     "actions": {
       "save": "Speichern",
@@ -52,17 +52,17 @@
       "error": "Etwas ist schiefgelaufen"
     },
     "confirm": {
-      "are_you_sure": "Bist du sicher?",
-      "absolutely_sure": "Bist du ganz sicher?",
+      "are_you_sure": "Sind Sie sicher?",
+      "absolutely_sure": "Sind Sie ganz sicher?",
       "cannot_be_undone": "Diese Aktion kann nicht rückgängig gemacht werden.",
-      "type_to_confirm": "Gib {confirm} ein, um zu bestätigen",
+      "type_to_confirm": "Geben Sie zur Bestätigung {confirm} ein",
       "confirm_value": "CONFIRM",
-      "delete_description": "Diese Aktion kann nicht rückgängig gemacht werden. Dadurch werden deine Daten dauerhaft von unseren Servern gelöscht.",
+      "delete_description": "Diese Aktion kann nicht rückgängig gemacht werden. Ihre Daten werden dauerhaft von unseren Servern gelöscht.",
       "delete_media": "Mediendatei löschen",
-      "delete_media_description": "Möchtest du diese Datei wirklich löschen?",
-      "enter_new_name": "Gib einen neuen Namen für die Datei ein.",
+      "delete_media_description": "Möchten Sie diese Datei wirklich löschen?",
+      "enter_new_name": "Geben Sie einen neuen Namen für die Datei ein.",
       "duplicate_file": "Datei duplizieren",
-      "duplicate_file_description": "Gib einen neuen Namen für die duplizierte Datei ein."
+      "duplicate_file_description": "Geben Sie einen neuen Namen für die duplizierte Datei ein."
     },
     "feedback": {
       "language_updated": "Sprache erfolgreich aktualisiert",
@@ -70,7 +70,7 @@
       "duplicate_success": "Datei erfolgreich dupliziert!",
       "duplicate_failed": "Datei konnte nicht dupliziert werden",
       "uploaded_success": "Erfolgreich hochgeladen",
-      "upload_failed": "Hochladen fehlgeschlagen",
+      "upload_failed": "Upload fehlgeschlagen",
       "error_processing": "Fehler beim Verarbeiten der Dateien",
       "image_deleted": "Bild erfolgreich gelöscht",
       "rename_success": "Datei erfolgreich umbenannt",
@@ -83,15 +83,15 @@
       "folder_delete_failed": "Ordner konnte nicht gelöscht werden",
       "folder_duplicate_success": "Ordner erfolgreich dupliziert",
       "folder_duplicate_failed": "Ordner konnte nicht dupliziert werden",
+      "draft_saved": "Entwurf in Datenbank gespeichert",
+      "draft_saved_error": "Entwurf konnte nicht gespeichert werden",
       "draft_success": "Entwurf erfolgreich gespeichert",
       "publish_success": "Erfolgreich veröffentlicht",
-      "fetch_failed": "Einige Dateien konnten nicht geladen werden. Bitte versuche es erneut.",
-      "invalid_path": "Ordnerpfad ist ungültig.",
-      "missing_context": "Repository-Kontext fehlt. Bitte neu laden und erneut versuchen.",
-      "unable_to_locate": "Dateien für diesen Ordner konnten nicht gefunden werden. Bitte aktualisieren und erneut versuchen.",
+      "fetch_failed": "Dateien konnten nicht abgerufen werden. Bitte versuchen Sie es erneut.",
+      "invalid_path": "Der Ordnerpfad ist ungültig.",
+      "missing_context": "Repository-Kontext fehlt. Bitte laden Sie die Seite neu.",
+      "unable_to_locate": "Dateien für diesen Ordner konnten nicht gefunden werden.",
       "demo_mode": "Diese Aktion ist im Demo-Modus deaktiviert.",
-      "draft_saved": "Entwurf in der Datenbank gespeichert",
-      "draft_saved_error": "Entwurf konnte nicht gespeichert werden",
       "draft_discard_success": "Entwurf erfolgreich verworfen",
       "draft_discard_error": "Entwurf konnte nicht verworfen werden"
     },
@@ -113,13 +113,13 @@
     },
     "search": "Suchen",
     "search_placeholder": "Suchen...",
-    "search_sites_placeholder": "Websites suchen...",
+    "search_sites_placeholder": "Websites durchsuchen...",
     "prevent_navigation": {
-      "title": "Änderungen vor dem Schließen speichern?",
-      "description": "Du hast ungespeicherte Änderungen. Wenn du ohne Speichern fortfährst, gehen diese Änderungen verloren.",
-      "stay": "Bleiben",
+      "title": "Ungespeicherte Änderungen",
+      "description": "Sie haben ungespeicherte Änderungen. Wenn Sie die Seite verlassen, gehen diese verloren.",
+      "stay": "Hier bleiben",
       "leave": "Verlassen",
-      "browser_prompt": "Du hast ungespeicherte Änderungen. Möchtest du die Seite wirklich verlassen?"
+      "browser_prompt": "Sie haben ungespeicherte Änderungen. Möchten Sie die Seite wirklich verlassen?"
     },
     "error_page": {
       "something_went_wrong": "Etwas ist schiefgelaufen",
@@ -134,7 +134,7 @@
       "preview_desc": "Bestätigen Sie, ob Sie dieses Bild hochladen möchten.",
       "upload": "Hochladen",
       "delete_title": "Bild entfernen",
-      "delete_desc": "Dadurch wird dieses Bild dauerhaft gelöscht. Diese Aktion kann nicht rückgängig gemacht werden."
+      "delete_desc": "Dadurch wird das Bild unwiderruflich gelöscht. Diese Aktion kann nicht rückgängig gemacht werden."
     }
   }
 }

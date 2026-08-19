@@ -84,6 +84,26 @@ describe("i18n configuration & consistency", () => {
   });
 
   it.each(localeDirectories)(
+    "JSON files in %s define matching top-level namespace keys",
+    (locale) => {
+      for (const ns of namespaces) {
+        const filePath = path.join(I18N_DIR, locale, `${ns}.json`);
+        const content = JSON.parse(readFileSync(filePath, "utf8"));
+        if (ns === "org") {
+          expect(content).toHaveProperty("org");
+          expect(content).toHaveProperty("org-sites");
+          expect(content).toHaveProperty("org-archived");
+        } else {
+          expect(
+            content,
+            `File ${locale}/${ns}.json must have top-level key "${ns}" matching its namespace`,
+          ).toHaveProperty(ns);
+        }
+      }
+    },
+  );
+
+  it.each(localeDirectories)(
     "common.json defines correct self-referencing locale code for %s",
     (locale) => {
       const common = JSON.parse(
@@ -92,6 +112,96 @@ describe("i18n configuration & consistency", () => {
       expect(common.common.locale).toBe(locale);
     },
   );
+});
+
+describe("codebase translation lookup resolution", () => {
+  const SRC_DIR = path.resolve(__dirname, "../../");
+
+  function getFiles(dir: string): string[] {
+    const entries = readdirSync(dir, { withFileTypes: true });
+    let files: string[] = [];
+    for (const entry of entries) {
+      const res = path.resolve(dir, entry.name);
+      if (entry.isDirectory()) {
+        if (entry.name !== "node_modules" && entry.name !== ".next") {
+          files = files.concat(getFiles(res));
+        }
+      } else if (
+        (entry.name.endsWith(".tsx") || entry.name.endsWith(".ts")) &&
+        !entry.name.endsWith(".test.ts") &&
+        !entry.name.endsWith(".test.tsx")
+      ) {
+        files.push(res);
+      }
+    }
+    return files;
+  }
+
+  it("verifies all useTranslations key lookups across the codebase resolve in English messages", () => {
+    const enMessages = namespaces.reduce<Record<string, unknown>>((acc, ns) => {
+      const content = JSON.parse(
+        readFileSync(path.join(I18N_DIR, "en", `${ns}.json`), "utf8"),
+      );
+      return { ...acc, ...content };
+    }, {});
+
+    const allCodeFiles = getFiles(SRC_DIR);
+    const unresolvedLookups: string[] = [];
+
+    for (const filePath of allCodeFiles) {
+      const code = readFileSync(filePath, "utf8");
+      const useTransMatches = [
+        ...code.matchAll(
+          /const\s+(\w+)\s*=\s*useTranslations\(\s*["']([^"']+)["']\s*\)/g,
+        ),
+      ];
+
+      for (const match of useTransMatches) {
+        const varName = match[1];
+        const ns = match[2];
+
+        // Find calls like t("some_key") or t('some_key')
+        const callRegex = new RegExp(
+          `\\b${varName}\\(\\s*["']([^"']+)["']`,
+          "g",
+        );
+        const callMatches = [...code.matchAll(callRegex)];
+
+        for (const callMatch of callMatches) {
+          const key = callMatch[1];
+          // Skip escaped newlines or regex fragments that might match
+          if (key === "\\n" || key.trim() === "") continue;
+
+          const fullPath = `${ns}.${key}`.split(".");
+          let curr: unknown = enMessages;
+          let found = true;
+
+          for (const segment of fullPath) {
+            if (
+              curr &&
+              typeof curr === "object" &&
+              segment in (curr as Record<string, unknown>)
+            ) {
+              curr = (curr as Record<string, unknown>)[segment];
+            } else {
+              found = false;
+              break;
+            }
+          }
+
+          if (!found) {
+            const relPath = path.relative(SRC_DIR, filePath);
+            unresolvedLookups.push(`${relPath} -> ${ns}("${key}")`);
+          }
+        }
+      }
+    }
+
+    expect(
+      unresolvedLookups,
+      `Unresolved translation lookups found in codebase: \n${unresolvedLookups.join("\n")}`,
+    ).toEqual([]);
+  });
 });
 
 describe("i18n key completeness & parity across locales", () => {

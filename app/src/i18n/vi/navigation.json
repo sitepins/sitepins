@@ -5,49 +5,49 @@
         "account": "Tài khoản",
         "updates": "Cập nhật",
         "support": "Hỗ trợ",
-        "ai_agent": "Tác nhân AI",
+        "ai_agent": "Trợ lý AI",
         "preferences": "Tùy chọn"
       },
       "user_dashboard": {
         "overview": "Tổng quan",
         "account": "Tài khoản",
         "preferences": "Tùy chọn",
-        "ai_agent": "Tác nhân AI"
+        "ai_agent": "Trợ lý AI"
       },
       "org_dashboard": {
         "websites": "Trang web",
         "settings": "Cài đặt"
       },
       "org_settings": {
-        "general": "Chung",
+        "general": "Cài đặt chung",
         "members": "Thành viên",
-        "sandbox": "Hộp cát"
+        "sandbox": "Sandbox"
       },
       "project_dashboard": {
         "overview": "Tổng quan",
-        "media": "Truyền thông",
+        "media": "Tệp đa phương tiện",
         "settings": "Cài đặt"
       },
       "project_settings": {
-        "general": "Chung",
-        "configure": "Định cấu hình",
+        "general": "Cài đặt chung",
+        "configure": "Cấu hình",
         "git": "Git",
-        "schemas": "Lược đồ",
-        "snippets": "Đoạn trích",
+        "schemas": "Schema",
+        "snippets": "Đoạn mã mẫu",
         "arrangement": "Sắp xếp"
       }
     },
     "sidebar": {
       "open_menu": "Mở menu",
-      "code": "Mã",
+      "code": "Mã nguồn",
       "config": "Cấu hình",
       "actions": {
         "close": "Đóng"
       },
       "sidebar_trigger_mobile": {
         "title": "Danh sách nội dung",
-        "description": "Xem tất cả các tệp nội dung của bạn từ thanh bên",
-        "message": "Bạn đang tìm kiếm nội dung của mình? Mở thanh bên để xem tất cả các tập tin.",
+        "description": "Xem tất cả tệp nội dung từ thanh bên",
+        "message": "Đang tìm tệp nội dung? Mở thanh bên để xem toàn bộ danh sách.",
         "open_sidebar": "Mở thanh bên"
       }
     }

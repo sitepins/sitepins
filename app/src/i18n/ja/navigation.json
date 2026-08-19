@@ -6,16 +6,16 @@
         "updates": "アップデート",
         "support": "サポート",
         "ai_agent": "AIエージェント",
-        "preferences": "設定"
+        "preferences": "環境設定"
       },
       "user_dashboard": {
         "overview": "概要",
         "account": "アカウント",
-        "preferences": "設定",
+        "preferences": "環境設定",
         "ai_agent": "AIエージェント"
       },
       "org_dashboard": {
-        "websites": "ウェブサイト",
+        "websites": "Webサイト",
         "settings": "設定"
       },
       "org_settings": {
@@ -30,24 +30,24 @@
       },
       "project_settings": {
         "general": "一般",
-        "configure": "設定",
+        "configure": "構成",
         "git": "Git",
         "schemas": "スキーマ",
         "snippets": "スニペット",
-        "arrangement": "配置"
+        "arrangement": "並び順"
       }
     },
     "sidebar": {
       "open_menu": "メニューを開く",
       "code": "コード",
-      "config": "設定ファイル",
+      "config": "設定",
       "actions": {
         "close": "閉じる"
       },
       "sidebar_trigger_mobile": {
         "title": "コンテンツ一覧",
-        "description": "サイドバーからすべてのコンテンツファイルを確認",
-        "message": "コンテンツをお探しですか？サイドバーを開いてすべてのファイルを確認してください。",
+        "description": "サイドバーからすべてのコンテンツファイルを表示",
+        "message": "コンテンツをお探しですか？サイドバーを開いてファイル一覧を確認できます。",
         "open_sidebar": "サイドバーを開く"
       }
     }

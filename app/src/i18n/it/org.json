@@ -1,7 +1,7 @@
 {
   "org": {
     "create": {
-      "add_org_btn": "Aggiungi nuova organizzazione",
+      "add_org_btn": "Aggiungi organizzazione",
       "dialog_title": "Crea nuova organizzazione",
       "dialog_desc": "Aggiungi una nuova organizzazione al tuo account.",
       "demo_error": "Non puoi creare una nuova organizzazione in modalità demo.",
@@ -13,11 +13,11 @@
       "default_org": "Organizzazione",
       "search": "Cerca...",
       "not_found": "Nessuna organizzazione trovata.",
-      "add_new": "Aggiungi nuova organizzazione"
+      "add_new": "Aggiungi organizzazione"
     },
     "general": {
       "form": {
-        "title": "Nome dell'organizzazione",
+        "title": "Nome organizzazione",
         "description": "Aggiorna il nome della tua organizzazione",
         "update_btn": "Aggiorna organizzazione",
         "demo_error": "Non puoi aggiornare l'organizzazione in modalità demo.",
@@ -27,47 +27,47 @@
         "title_archive": "Archivia organizzazione",
         "title_restore": "Ripristina organizzazione",
         "desc_archive": "Archivia questa organizzazione: verrà rimossa dagli elenchi attivi ma potrà essere ripristinata in seguito.",
-        "desc_restore": "Questa organizzazione è archiviata e nascosta dagli elenchi attivi. Puoi ripristinarla per renderla nuovamente attiva.",
+        "desc_restore": "Questa organizzazione è archiviata. Puoi ripristinarla per renderla nuovamente attiva.",
         "archive_btn": "Archivia organizzazione",
         "restore_btn": "Ripristina organizzazione",
         "dialog_title_archive": "Archivia organizzazione",
         "dialog_title_restore": "Ripristina organizzazione",
-        "dialog_desc_archive": "L'archiviazione nasconderà l'organizzazione dagli elenchi attivi. Puoi ripristinarla in seguito se necessario.",
-        "dialog_desc_restore": "Ripristina questa organizzazione e rendila nuovamente attiva. I contenuti e le impostazioni vengono conservati.",
+        "dialog_desc_archive": "L'archiviazione nasconderà l'organizzazione dagli elenchi attivi.",
+        "dialog_desc_restore": "Ripristina questa organizzazione e rendila di nuovo attiva.",
         "success_archive": "Organizzazione archiviata con successo.",
         "success_restore": "Organizzazione ripristinata allo stato attivo.",
         "error": "Impossibile aggiornare l'organizzazione. Riprova più tardi."
       },
       "delete": {
         "title": "Elimina organizzazione",
-        "description": "L'eliminazione dell'organizzazione cancellerà definitivamente tutti i progetti, i membri e le impostazioni. Questa azione non può essere annullata.",
+        "description": "L'eliminazione dell'organizzazione cancellerà definitivamente tutti i progetti, membri e impostazioni.",
         "delete_org_btn": "Elimina organizzazione",
         "dialog_title": "Sei sicuro?",
-        "dialog_desc": "L'eliminazione dell'organizzazione cancellerà definitivamente tutti i progetti, i membri e le impostazioni. Questa azione non può essere annullata.",
-        "placeholder": "digita CONFIRM per confermare",
-        "demo_error": "Non puoi eliminare l'organizzazione demo — contattaci se desideri eliminarla",
+        "dialog_desc": "L'eliminazione dell'organizzazione comporterà la cancellazione permanente di tutti i dati.",
+        "placeholder": "Digita CONFIRM per confermare",
+        "demo_error": "Non puoi eliminare l'organizzazione demo.",
         "success": "Organizzazione eliminata con successo",
-        "error": "Qualcosa è andato storto"
+        "error": "Si è verificato un errore"
       },
       "avatar": {
-        "title": "Miniatura dell'organizzazione",
-        "description": "Rendi unica l'immagine della tua organizzazione aggiungendo una foto.",
+        "title": "Immagine dell'organizzazione",
+        "description": "Rendi unica la tua organizzazione aggiungendo un'immagine.",
         "demo_error": "Non puoi aggiornare l'organizzazione in modalità demo.",
-        "success": "Miniatura dell'organizzazione aggiornata con successo."
+        "success": "Immagine dell'organizzazione aggiornata con successo."
       }
     },
     "members": {
       "title": "Membri del team",
-      "description": "Gestisci i membri del tuo team",
+      "description": "Gestisci i membri del tuo team e i loro permessi",
       "anonymous": "Anonimo",
       "roles": {
-        "owner": "proprietario",
+        "owner": "Proprietario",
         "admin": "Amministratore",
         "editor": "Editor"
       },
       "add_member": {
         "add_member_btn": "Aggiungi membro",
-        "dialog_title": "Aggiungi membro del team",
+        "dialog_title": "Aggiungi membro al team",
         "dialog_desc": "Aggiungi un nuovo membro alla tua organizzazione.",
         "email_label": "Email",
         "email_placeholder": "Inserisci email",
@@ -82,15 +82,15 @@
         "remove_member": "Rimuovi membro",
         "make": "Rendi",
         "are_you_sure": "Sei sicuro?",
-        "delete_warning": "Questa azione non può essere annullata. Questo eliminerà definitivamente.",
-        "placeholder": "digita CONFIRM per confermare",
+        "delete_warning": "Questa azione è irreversibile e comporterà l'eliminazione definitiva.",
+        "placeholder": "Digita CONFIRM per confermare",
         "demo_error_delete": "Non puoi eliminare utenti in modalità demo.",
         "demo_error_update": "Questa funzionalità non è disponibile in modalità demo.",
-        "success_delete": "L'utente è stato eliminato con successo.",
+        "success_delete": "Utente eliminato con successo.",
         "error_delete_suffix": "Non sei autorizzato a eliminare questo utente.",
         "error_update_fn": "Funzione di aggiornamento non disponibile",
-        "success_update": "Il ruolo del membro è stato aggiornato con successo.",
-        "error_generic": "Qualcosa è andato storto"
+        "success_update": "Ruolo del membro aggiornato con successo.",
+        "error_generic": "Si è verificato un errore"
       }
     },
     "sandbox": {
@@ -101,49 +101,49 @@
       "project": "Progetto (attribuzione fatturazione)",
       "project_label": "Progetto",
       "disconnect_btn": "Disconnetti",
-      "disconnecting": "Disconnessione in corso",
+      "disconnecting": "Disconnessione in corso...",
       "token_label": "Token di accesso Vercel",
-      "token_placeholder": "Incolla il tuo token di accesso Vercel",
+      "token_placeholder": "Incolla il token di accesso Vercel",
       "create_token_link": "Crea un token di accesso Vercel",
       "step1": "Crea un token di accesso Vercel con ambito completo dell'account.",
       "step2": "Incollalo qui sotto e fai clic su Connetti.",
       "step3": "Un progetto sandbox dedicato verrà creato automaticamente sul tuo account Vercel.",
       "connect_btn": "Connetti",
-      "connecting": "Connessione in corso",
+      "connecting": "Connessione in corso...",
       "save_token_btn": "Salva token",
       "update_token_btn": "Aggiorna token",
       "cancel_btn": "Annulla",
-      "status_validating": "Convalida del token",
+      "status_validating": "Convalida del token in corso",
       "status_creating_project": "Creazione del progetto sandbox",
       "status_saving": "Salvataggio delle impostazioni",
-      "disconnect_confirm_title": "Disconnettere la sandbox Vercel?",
+      "disconnect_confirm_title": "Disconnettere la Sandbox Vercel?",
       "disconnect_confirm_desc": "Le anteprime sandbox smetteranno di funzionare per tutti i progetti in questa organizzazione.",
       "disconnect_confirm_btn": "Disconnetti",
       "disconnect_cancel_btn": "Annulla",
       "toast_token_required": "Inserisci il tuo token di accesso Vercel",
-      "toast_connect_success": "Sandbox connessa",
+      "toast_connect_success": "Sandbox connesso",
       "toast_connect_success_desc": "Le anteprime sandbox verranno ora eseguite sull'account Vercel di {username}.",
-      "toast_connect_error": "Impossibile connettere la sandbox",
-      "toast_disconnect_success": "Sandbox disconnessa",
-      "toast_disconnect_error": "Disconnessione non riuscita",
-      "no_permission": "Solo i proprietari e gli amministratori dell'organizzazione possono gestire le impostazioni sandbox.",
+      "toast_connect_error": "Impossibile connettere il sandbox",
+      "toast_disconnect_success": "Sandbox disconnesso",
+      "toast_disconnect_error": "Impossibile disconnettere",
+      "no_permission": "Solo i proprietari e gli amministratori dell'organizzazione possono gestire le impostazioni del sandbox.",
       "select_team_title": "Seleziona account Vercel",
       "personal_account": "Account personale",
       "team_label": "Team",
       "change_token": "Cambia token",
       "security_title": "Sicurezza e privacy",
-      "security0": "L'anteprima Sandbox esegue lo **script `dev`** del tuo progetto (es. `npm run dev`). Se il tuo sito non si avvia con quello script, non verrà eseguito nemmeno nella sandbox.",
-      "security1": "Il tuo token di accesso è **crittografato con AES-256-GCM** prima della memorizzazione — mai salvato in testo normale.",
-      "security2": "**Qualsiasi account Vercel funziona** — personale o team, piano gratuito Hobby o a pagamento. Le anteprime sandbox utilizzano la tua quota Vercel, non la nostra.",
-      "security3": "Il token viene utilizzato **esclusivamente** per creare un progetto sandbox dedicato e gestire le distribuzioni di anteprima. Nessun'altra azione viene eseguita sul tuo account Vercel.",
+      "security0": "Il sandbox esegue lo **script `dev`** del tuo progetto (es. `npm run dev`).",
+      "security1": "Il token di accesso viene **crittografato con AES-256-GCM** prima di essere archiviato.",
+      "security2": "**Compatibile con qualsiasi account Vercel** — personale o di team, gratuito o a pagamento.",
+      "security3": "Il token viene utilizzato **solo** per creare un progetto sandbox dedicato e gestire le anteprime.",
       "security4": "**Disconnetti in qualsiasi momento** per cancellare immediatamente il token dai nostri server.",
-      "security5": "Ogni organizzazione riceve il proprio **progetto sandbox dedicato** su Vercel, mantenendo le anteprime isolate per organizzazione e l'attribuzione dei costi chiara."
+      "security5": "Ogni organizzazione riceve un **progetto sandbox isolato** su Vercel."
     }
   },
   "org-sites": {
     "no_sites_found": "Nessun sito trovato",
     "try_adjusting": "Prova a modificare i termini di ricerca",
-    "site_name": "Nome sito",
+    "site_name": "Nome del sito",
     "repository": "Repository",
     "status": "Stato",
     "archived": "Archiviato",
@@ -153,8 +153,8 @@
   },
   "org-archived": {
     "title": "Organizzazione archiviata",
-    "desc_full": "Questa organizzazione è stata archiviata. Tutti i contenuti sono attualmente in sola lettura e la maggior parte delle funzioni di gestione è disabilitata.",
-    "desc_banner": "Questa organizzazione è attualmente archiviata e la maggior parte delle funzionalità è disabilitata.",
+    "desc_full": "Questa organizzazione è stata archiviata. Tutti i contenuti sono in sola lettura e la maggior parte delle funzioni è disabilitata.",
+    "desc_banner": "Questa organizzazione è attualmente archiviata.",
     "org_settings": "Impostazioni organizzazione",
     "view_settings": "Visualizza impostazioni"
   }

@@ -3,13 +3,13 @@
     "menu": {
       "footer_account": {
         "account": "অ্যাকাউন্ট",
-        "updates": "আপডেটসমূহ",
-        "support": "সাপোর্ট",
+        "updates": "আপডেট",
+        "support": "সহায়তা",
         "ai_agent": "এআই এজেন্ট",
         "preferences": "পছন্দসমূহ"
       },
       "user_dashboard": {
-        "overview": "সারসংক্ষেপ",
+        "overview": "ওভারভিউ",
         "account": "অ্যাকাউন্ট",
         "preferences": "পছন্দসমূহ",
         "ai_agent": "এআই এজেন্ট"
@@ -24,30 +24,30 @@
         "sandbox": "স্যান্ডবক্স"
       },
       "project_dashboard": {
-        "overview": "সারসংক্ষেপ",
+        "overview": "ওভারভিউ",
         "media": "মিডিয়া",
         "settings": "সেটিংস"
       },
       "project_settings": {
         "general": "সাধারণ",
-        "configure": "কনফিগার",
+        "configure": "কনফিগারেশন",
         "git": "Git",
         "schemas": "স্কিমা",
-        "snippets": "স্নিপেট",
-        "arrangement": "ব্যবস্থাপনা"
+        "snippets": "স্নsnippet",
+        "arrangement": "বিন্যাস"
       }
     },
     "sidebar": {
       "open_menu": "মেনু খুলুন",
       "code": "কোড",
-      "config": "কনফিগার",
+      "config": "কনফিগ",
       "actions": {
         "close": "বন্ধ করুন"
       },
       "sidebar_trigger_mobile": {
         "title": "কন্টেন্ট তালিকা",
-        "description": "সাইডবার থেকে আপনার সমস্ত কন্টেন্ট ফাইল দেখুন",
-        "message": "আপনার কন্টেন্ট খুঁজছেন? সব ফাইল দেখতে সাইডবার খুলুন।",
+        "description": "সাইডবার থেকে সব কন্টেন্ট ফাইল দেখুন",
+        "message": "কন্টেন্ট ফাইল খুঁজছেন? সব ফাইল দেখতে সাইডবারটি খুলুন।",
         "open_sidebar": "সাইডবার খুলুন"
       }
     }

@@ -6,7 +6,7 @@
       "preferences": "Preferenze",
       "organization_settings": "Impostazioni organizzazione",
       "ai_agent": "Agente IA",
-      "support_updates": "Supporto e aggiornamenti",
+      "support_updates": "Supporto e novità",
       "account": "Account",
       "files": "File"
     },
@@ -19,16 +19,18 @@
       "org",
       "organizzazione",
       "cambia",
-      "area di lavoro",
+      "spazio di lavoro",
       "team",
-      "workspace"
+      "workspace",
+      "organization",
+      "switch"
     ],
     "items": {
       "display-picture": {
         "label": "Foto profilo",
         "href": "/dashboard/account/#display-picture",
         "keywords": [
-          "visualizzazione",
+          "foto profilo",
           "profilo",
           "utente",
           "account",
@@ -37,8 +39,17 @@
           "avatar",
           "cambia",
           "carica",
-          "aggiorna",
-          "modifica"
+          "modifica",
+          "display",
+          "profile",
+          "user",
+          "photo",
+          "picture",
+          "image",
+          "change",
+          "upload",
+          "update",
+          "edit"
         ]
       },
       "display-name": {
@@ -51,29 +62,45 @@
           "nome pubblico",
           "username",
           "nickname",
-          "nome account",
           "cambia nome",
-          "aggiorna nome",
-          "modifica nome",
-          "rinomina",
           "identità",
-          "informazioni personali"
+          "display name",
+          "name",
+          "profile name",
+          "public name",
+          "screen name",
+          "account name",
+          "change name",
+          "update name",
+          "edit name",
+          "rename",
+          "change display name",
+          "update display name",
+          "edit display name",
+          "identity",
+          "personal information"
         ]
       },
       "change-password": {
-        "label": "Modifica password",
+        "label": "Cambia password",
         "href": "/dashboard/account/#change-password",
         "keywords": [
           "cambia password",
           "aggiorna password",
-          "modifica password",
           "nuova password",
-          "password attuale",
-          "reimposta password",
           "password",
           "sicurezza",
           "credenziali",
-          "sicurezza account"
+          "change password",
+          "update password",
+          "edit password",
+          "new password",
+          "current password",
+          "reset password",
+          "security",
+          "credentials",
+          "login credentials",
+          "account security"
         ]
       },
       "set-password": {
@@ -85,12 +112,16 @@
           "aggiungi password",
           "password",
           "sicurezza",
-          "credenziali",
-          "sicurezza account"
+          "set password",
+          "create password",
+          "add password",
+          "security",
+          "credentials",
+          "account security"
         ]
       },
       "newsletter": {
-        "label": "Iscrizione alla newsletter",
+        "label": "Iscrizione newsletter",
         "href": "/dashboard/account/#newsletter",
         "keywords": [
           "newsletter",
@@ -98,8 +129,16 @@
           "iscriviti",
           "annulla iscrizione",
           "notifiche email",
-          "email di marketing",
           "aggiornamenti",
+          "subscription",
+          "subscribe",
+          "unsubscribe",
+          "email subscription",
+          "email notifications",
+          "marketing emails",
+          "updates",
+          "email updates",
+          "notifications",
           "mailing list"
         ]
       },
@@ -111,13 +150,19 @@
           "locale",
           "regione",
           "cambia lingua",
-          "imposta lingua",
           "lingua app",
-          "lingua interfaccia",
           "localizzazione",
+          "preferenze",
+          "language",
+          "region",
+          "change language",
+          "set language",
+          "app language",
+          "interface language",
+          "localization",
           "i18n",
-          "traduzione",
-          "preferenze"
+          "translation",
+          "preferences"
         ]
       },
       "theme": {
@@ -125,30 +170,49 @@
         "href": "/dashboard/preference#theme",
         "keywords": [
           "tema",
-          "modalità scura",
-          "modalità chiara",
           "tema scuro",
           "tema chiaro",
+          "modalità scura",
+          "modalità chiara",
           "tema di sistema",
           "aspetto",
-          "schema colori",
-          "modalità notte",
-          "preferenze"
+          "theme",
+          "dark mode",
+          "light mode",
+          "dark theme",
+          "light theme",
+          "system theme",
+          "appearance",
+          "color scheme",
+          "color mode",
+          "night mode",
+          "display theme",
+          "ui theme",
+          "preferences"
         ]
       },
       "coauthor": {
-        "label": "Preferenza di co-autorialità",
+        "label": "Preferenza co-autore",
         "href": "/dashboard/preference#coauthor",
         "keywords": [
           "coautore",
           "co-autore",
           "autore",
-          "preferenza autore",
-          "impersona",
-          "mostra come",
           "autore predefinito",
-          "autore contenuto",
-          "preferenze"
+          "autore articolo",
+          "preferenze",
+          "coauthor",
+          "co-author",
+          "co author",
+          "author preference",
+          "pin author",
+          "impersonate",
+          "show as",
+          "default author",
+          "article author",
+          "post author",
+          "content author",
+          "preferences"
         ]
       },
       "ai-agent": {
@@ -162,10 +226,16 @@
           "assistente",
           "bot",
           "automazione",
+          "ai",
+          "ai agent",
+          "artificial intelligence",
+          "assistant",
+          "automation",
           "smart",
           "machine learning",
-          "impostazioni",
-          "configurazione"
+          "features",
+          "settings",
+          "configuration"
         ]
       },
       "discord-support": {
@@ -179,25 +249,34 @@
           "community",
           "chat",
           "contatto",
-          "problema",
-          "bug",
           "domanda",
-          "assistenza"
+          "support",
+          "help",
+          "contact",
+          "talk to us",
+          "issue",
+          "bug",
+          "question",
+          "need help"
         ]
       },
       "updates-feedback": {
-        "label": "Aggiornamenti e feedback",
+        "label": "Novità e feedback",
         "href": "https://updates.sitepins.com/",
         "target": "_blank",
         "keywords": [
-          "aggiornamenti",
+          "novità",
           "feedback",
           "richiesta funzionalità",
-          "tracciamento",
           "changelog",
-          "nuove funzionalità",
+          "nuove funzioni",
           "roadmap",
-          "novità"
+          "updates",
+          "feature request",
+          "tracking",
+          "building timeline",
+          "new features",
+          "what's new"
         ]
       },
       "org-general": {
@@ -210,6 +289,12 @@
           "nome",
           "archivia",
           "elimina",
+          "general",
+          "organization",
+          "settings",
+          "name",
+          "archive",
+          "delete",
           "org"
         ]
       },
@@ -223,7 +308,13 @@
           "utenti",
           "ruoli",
           "permessi",
-          "organizzazione"
+          "organizzazione",
+          "members",
+          "invite",
+          "users",
+          "roles",
+          "permissions",
+          "organization"
         ]
       },
       "org-sandbox": {
@@ -234,10 +325,15 @@
           "vercel",
           "integrazione",
           "connetti",
-          "distribuzione",
+          "deploy",
           "anteprima",
           "pubblica",
-          "deploy",
+          "integration",
+          "connect",
+          "deployment",
+          "development",
+          "preview",
+          "publish",
           "live",
           "build"
         ]

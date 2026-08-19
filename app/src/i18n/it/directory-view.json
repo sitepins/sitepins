@@ -12,9 +12,9 @@
     "not_found": {
       "title": "Cartella non trovata",
       "description": "La cartella richiesta \"{path}\" non esiste in questo repository.",
-      "help": "Verifica il percorso della cartella o prova a navigare dalla barra laterale."
+      "help": "Verifica il percorso della cartella o naviga dalla barra laterale."
     },
-    "empty": "Niente da mostrare qui",
+    "empty": "Nessun elemento da mostrare",
     "slug": "Slug",
     "size": "Dimensione",
     "na": "N/D",
@@ -29,20 +29,20 @@
     "commit_message": "Crea nuovo {folder}",
     "sort_files": "Ordina file",
     "sort_options": {
-      "title_asc": "Titolo - A -> Z",
-      "title_desc": "Titolo - Z -> A",
-      "name_asc": "Nome file - A -> Z",
-      "name_desc": "Nome file - Z -> A",
-      "created_new_to_old": "Creato (Dal più recente)",
-      "created_old_to_new": "Creato (Dal più vecchio)",
-      "updated_new_to_old": "Aggiornato (Dal più recente)",
-      "updated_old_to_new": "Aggiornato (Dal più vecchio)"
+      "title_asc": "Titolo (A -> Z)",
+      "title_desc": "Titolo (Z -> A)",
+      "name_asc": "Nome file (A -> Z)",
+      "name_desc": "Nome file (Z -> A)",
+      "created_new_to_old": "Data creazione (Recente -> Meno recente)",
+      "created_old_to_new": "Data creazione (Meno recente -> Recente)",
+      "updated_new_to_old": "Data modifica (Recente -> Meno recente)",
+      "updated_old_to_new": "Data modifica (Meno recente -> Recente)"
     },
     "actions": {
       "edit_in_cms": "Modifica nel CMS",
-      "duplicate_confirm": "Sei sicuro di voler duplicare {name}",
-      "rename_confirm": "Sei sicuro di voler rinominare {name}",
-      "delete_confirm": "Sei sicuro di voler eliminare {name}",
+      "duplicate_confirm": "Sei sicuro di voler duplicare {name}?",
+      "rename_confirm": "Sei sicuro di voler rinominare {name}?",
+      "delete_confirm": "Sei sicuro di voler eliminare {name}?",
       "file_renamed": "File rinominato con successo",
       "file_already_exists": "Il file esiste già",
       "file_name": "Nome file",
@@ -52,7 +52,7 @@
       "edit_schema": "Modifica schema",
       "create_schema": "Crea schema",
       "to_add_new_file": "per aggiungere un nuovo file",
-      "schema_dir_not_found": "Directory dello schema non trovata",
+      "schema_dir_not_found": "Directory degli schemi non trovata",
       "schema_created_success": "Schema creato con successo!",
       "schema_updated_success": "Schema aggiornato con successo!",
       "schema_deleted_success": "Schema eliminato con successo!",
@@ -61,8 +61,8 @@
       "choose_template_file": "Scegli un file modello",
       "select_afile": "Seleziona un file",
       "please_wait": "Attendere prego",
-      "modify_schema_desc": "Modifica i campi del tuo schema e le loro proprietà",
-      "create_schema_desc": "Crea un nuovo schema selezionando un file, la nuova pagina verrà creata in base a questo schema",
+      "modify_schema_desc": "Modifica i campi dello schema e le loro proprietà",
+      "create_schema_desc": "Crea un nuovo schema da un file per generare nuove pagine",
       "new_folder": "Nuova cartella",
       "rename_folder": "Rinomina cartella",
       "duplicate_folder": "Duplica cartella",
@@ -75,7 +75,7 @@
       "new_folder_name": "Nuovo nome cartella",
       "enter_folder_name": "Inserisci il nome della cartella",
       "please_enter_different_name": "Inserisci un nome diverso",
-      "file_list_still_loading": "L'elenco dei file è ancora in caricamento. Riprova tra qualche secondo.",
+      "file_list_still_loading": "Caricamento dell'elenco dei file in corso. Riprova tra qualche istante.",
       "folder_created_successfully": "Cartella creata con successo"
     }
   }

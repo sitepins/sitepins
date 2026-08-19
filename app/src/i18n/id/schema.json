@@ -1,29 +1,29 @@
 {
   "schema": {
     "types": {
-      "string": "Tali",
-      "number": "Nomor",
+      "string": "Teks (String)",
+      "number": "Angka (Number)",
       "boolean": "Boolean",
       "media": "Media",
-      "gallery": "Galeri",
-      "array": "Himpunan",
-      "date": "Tanggal",
-      "object": "Objek"
+      "gallery": "Galeri (Gallery)",
+      "array": "Larik (Array)",
+      "date": "Tanggal (Date)",
+      "object": "Objek (Object)"
     },
     "fields": {
       "label": "Label",
-      "name": "Nama",
-      "type": "Jenis Bidang",
+      "name": "Nama Kolom (Field)",
+      "type": "Tipe Kolom",
       "placeholder": {
-        "type": "Pilih jenis",
-        "label": "misalnya, Judul",
-        "name": "dihasilkan secara otomatis"
+        "type": "Pilih tipe",
+        "label": "contoh: Judul",
+        "name": "dibuat_otomatis"
       },
       "description": "Deskripsi",
-      "default_value": "Nilai Bawaan",
+      "default_value": "Nilai Default",
       "boolean": {
-        "true": "Benar",
-        "false": "Salah"
+        "true": "Benar (True)",
+        "false": "Salah (False)"
       },
       "input_style": {
         "label": "Gaya Masukan",
@@ -31,22 +31,22 @@
         "options": {
           "standard_text": "Kotak Teks Standar",
           "standard_table": "Tabel Standar",
-          "dropdown": "Pilihan Tarik-turun",
-          "multi_dropdown": "Dropdown multi-pilih"
+          "dropdown": "Pilihan Dropdown",
+          "multi_dropdown": "Dropdown Pilihan Ganda"
         }
       }
     },
     "configuration": {
-      "title": "Konfigurasi Bidang",
+      "title": "Konfigurasi Kolom",
       "dropdown": {
-        "title": "Konfigurasi Tarik-turun",
-        "multi_title": "Konfigurasi Multi-pilih",
-        "source": "Sumber",
+        "title": "Konfigurasi Dropdown",
+        "multi_title": "Konfigurasi Pilihan Ganda",
+        "source": "Sumber Data",
         "source_placeholder": "Pilih sumber",
         "sources": {
           "static": "Opsi Statis",
           "folder": "File dari Folder",
-          "file": "Data dari Berkas"
+          "file": "Data dari File"
         },
         "static": {
           "placeholder": "Masukkan nilai opsi"
@@ -54,66 +54,66 @@
         "folder": {
           "path": "Jalur Folder",
           "path_placeholder": "Pilih folder",
-          "display_field": "Bidang Tampilan (Tombol Frontmatter)",
-          "field_placeholder": "misalnya judul (default pada nama file)",
+          "display_field": "Kolom Tampilan (Frontmatter Key)",
+          "field_placeholder": "contoh: title (default nama file)",
           "loading_fields": "Memuat kolom...",
           "default_field": "nama file (default)",
-          "include_pattern": "Sertakan Pola (Glob)",
-          "include_placeholder": "misalnya *.md",
-          "exclude_pattern": "Kecualikan Pola (Glob)",
-          "exclude_placeholder": "misalnya indeks.md"
+          "include_pattern": "Pola Sertakan (Glob)",
+          "include_placeholder": "contoh: *.md",
+          "exclude_pattern": "Pola Kecualikan (Glob)",
+          "exclude_placeholder": "contoh: index.md"
         },
         "file": {
           "path": "Jalur File (JSON/YAML/TOML)",
-          "path_placeholder": "Pilih berkas",
-          "data_key": "Kunci Data (Bidang yang Akan Diekstrak)",
-          "key_placeholder": "misalnya kategori atau nama",
+          "path_placeholder": "Pilih file",
+          "data_key": "Kunci Data (Kolom yang Diekstrak)",
+          "key_placeholder": "contoh: categories atau name",
           "default_key": "Ekstrak seluruh file/array"
         }
       }
     },
     "array": {
-      "label": "Array",
+      "label": "Array dari tipe",
       "placeholder": "Pilih subtipe"
     },
     "nested": {
-      "title": "Bidang bersarang",
-      "add_button": "Tambahkan bidang bersarang"
+      "title": "Kolom Bersarang",
+      "add_button": "Tambah kolom bersarang"
     },
     "date": {
-      "default_value": "Nilai Bawaan",
-      "mode_placeholder": "Pilih modus",
+      "default_value": "Nilai Default",
+      "mode_placeholder": "Pilih mode",
       "static": "Tanggal Tetap",
-      "dynamic": "Tanggal Saat Ini (Langsung)",
+      "dynamic": "Tanggal Sekarang (Live)",
       "empty": "Kosong",
       "select_initial": "Pilih Tanggal Awal",
-      "today": "Hari ini"
+      "today": "Hari Ini"
     },
     "actions": {
-      "add_option": "Tambahkan Opsi",
-      "add_field": "Tambahkan Bidang",
-      "update_field": "Perbarui Bidang",
+      "add_option": "Tambah Opsi",
+      "add_field": "Tambah Kolom",
+      "update_field": "Perbarui Kolom",
       "enter_option": "Masukkan opsi",
       "include": "Sertakan",
       "ignore": "Abaikan"
     },
     "builder": {
-      "add_new_field": "Tambahkan Bidang Baru",
-      "configure_properties": "Konfigurasikan properti bidang baru",
-      "field_settings": "Pengaturan Bidang",
-      "required": "Diperlukan",
-      "show": "Tunjukkan",
+      "add_new_field": "Tambah Kolom Baru",
+      "configure_properties": "Konfigurasi properti kolom baru",
+      "field_settings": "Pengaturan Kolom",
+      "required": "Wajib",
+      "show": "Tampilkan",
       "hide": "Sembunyikan",
-      "no_field_selected": "Tidak ada bidang yang dipilih",
-      "select_to_edit": "Pilih bidang dari daftar untuk mengedit pengaturannya",
+      "no_field_selected": "Tidak ada kolom yang dipilih",
+      "select_to_edit": "Pilih kolom dari daftar untuk mengedit pengaturannya",
       "no_fields": "Belum ada kolom",
-      "add_first_field": "Tambahkan bidang pertama Anda di bawah",
-      "back_to_fields": "Kembali ke bidang",
-      "field_count": "{count, plural, =0 {0 bidang} one {1 bidang} other {# bidang}}"
+      "add_first_field": "Tambahkan kolom pertama Anda di bawah",
+      "back_to_fields": "Kembali ke daftar kolom",
+      "field_count": "{count, plural, =0 {0 kolom} one {1 kolom} other {# kolom}}"
     },
     "errors": {
-      "name_required": "Nama bidang wajib diisi",
-      "name_exists": "Nama bidang sudah ada"
+      "name_required": "Nama kolom wajib diisi",
+      "name_exists": "Nama kolom sudah ada"
     }
   }
 }

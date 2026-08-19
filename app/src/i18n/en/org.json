@@ -2,7 +2,7 @@
   "org": {
     "create": {
       "add_org_btn": "Add New Org",
-      "dialog_title": "Create New organization",
+      "dialog_title": "Create New Organization",
       "dialog_desc": "Add a new organization to your account.",
       "demo_error": "You cannot create a new organization in demo mode.",
       "success": "Organization created successfully. You can now add members.",
@@ -61,7 +61,7 @@
       "description": "Manage your team members",
       "anonymous": "Anonymous",
       "roles": {
-        "owner": "owner",
+        "owner": "Owner",
         "admin": "Admin",
         "editor": "Editor"
       },

@@ -1,29 +1,29 @@
 {
   "schema": {
     "types": {
-      "string": "Строка",
-      "number": "Число",
-      "boolean": "Логический",
-      "media": "Медиа",
-      "gallery": "Галерея",
-      "array": "Массив",
-      "date": "Дата",
-      "object": "Объект"
+      "string": "Строка (String)",
+      "number": "Число (Number)",
+      "boolean": "Логическое (Boolean)",
+      "media": "Медиа (Media)",
+      "gallery": "Галерея (Gallery)",
+      "array": "Массив (Array)",
+      "date": "Дата (Date)",
+      "object": "Объект (Object)"
     },
     "fields": {
-      "label": "Метка",
-      "name": "Имя",
+      "label": "Название (Label)",
+      "name": "Имя поля",
       "type": "Тип поля",
       "placeholder": {
         "type": "Выберите тип",
         "label": "например, Заголовок",
-        "name": "auto_generated"
+        "name": "создается_автоматически"
       },
       "description": "Описание",
       "default_value": "Значение по умолчанию",
       "boolean": {
-        "true": "Истина",
-        "false": "Ложь"
+        "true": "Истина (True)",
+        "false": "Ложь (False)"
       },
       "input_style": {
         "label": "Стиль ввода",
@@ -32,16 +32,16 @@
           "standard_text": "Стандартное текстовое поле",
           "standard_table": "Стандартная таблица",
           "dropdown": "Выпадающий список",
-          "multi_dropdown": "Множественный выбор"
+          "multi_dropdown": "Список с множественным выбором"
         }
       }
     },
     "configuration": {
       "title": "Конфигурация поля",
       "dropdown": {
-        "title": "Конфигурация выпадающего списка",
-        "multi_title": "Конфигурация множественного выбора",
-        "source": "Источник",
+        "title": "Настройка выпадающего списка",
+        "multi_title": "Настройка множественного выбора",
+        "source": "Источник данных",
         "source_placeholder": "Выберите источник",
         "sources": {
           "static": "Статические варианты",
@@ -54,10 +54,10 @@
         "folder": {
           "path": "Путь к папке",
           "path_placeholder": "Выберите папку",
-          "display_field": "Отображаемое поле (ключ frontmatter)",
-          "field_placeholder": "например, title (по умолчанию — имя файла)",
+          "display_field": "Поле для отображения (ключ Frontmatter)",
+          "field_placeholder": "например, title (по умолчанию имя файла)",
           "loading_fields": "Загрузка полей...",
-          "default_field": "filename (по умолчанию)",
+          "default_field": "имя файла (по умолчанию)",
           "include_pattern": "Шаблон включения (Glob)",
           "include_placeholder": "например, *.md",
           "exclude_pattern": "Шаблон исключения (Glob)",
@@ -66,14 +66,14 @@
         "file": {
           "path": "Путь к файлу (JSON/YAML/TOML)",
           "path_placeholder": "Выберите файл",
-          "data_key": "Ключ данных (поле для извлечения)",
+          "data_key": "Ключ данных (извлекаемое поле)",
           "key_placeholder": "например, categories или name",
           "default_key": "Извлечь весь файл/массив"
         }
       }
     },
     "array": {
-      "label": "Массив из",
+      "label": "Массив элементов типа",
       "placeholder": "Выберите подтип"
     },
     "nested": {
@@ -84,9 +84,9 @@
       "default_value": "Значение по умолчанию",
       "mode_placeholder": "Выберите режим",
       "static": "Фиксированная дата",
-      "dynamic": "Текущая дата (динамическая)",
+      "dynamic": "Текущая дата (динамически)",
       "empty": "Пусто",
-      "select_initial": "Выберите начальную дату",
+      "select_initial": "Выбрать начальную дату",
       "today": "Сегодня"
     },
     "actions": {
@@ -99,17 +99,17 @@
     },
     "builder": {
       "add_new_field": "Добавить новое поле",
-      "configure_properties": "Настройте свойства нового поля",
+      "configure_properties": "Настройте свойства поля",
       "field_settings": "Настройки поля",
-      "required": "Обязательно",
+      "required": "Обязательное",
       "show": "Показать",
       "hide": "Скрыть",
       "no_field_selected": "Поле не выбрано",
-      "select_to_edit": "Выберите поле из списка для редактирования его настроек",
+      "select_to_edit": "Выберите поле из списка для редактирования его параметров",
       "no_fields": "Полей пока нет",
-      "add_first_field": "Добавьте первое поле ниже",
+      "add_first_field": "Добавьте свое первое поле ниже",
       "back_to_fields": "Назад к полям",
-      "field_count": "{count, plural, =0 {0 полей} =1 {1 поле} =2 {# поля} =3 {# поля} =4 {# поля} other {# полей}}"
+      "field_count": "{count, plural, =0 {0 полей} one {1 поле} other {# полей}}"
     },
     "errors": {
       "name_required": "Имя поля обязательно",

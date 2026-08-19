@@ -1,7 +1,7 @@
 {
   "not-found": {
     "not_found": "Page not found",
-    "not_found_description": "The page you are looking for does not exist.",
-    "go_home": "Go home"
+    "not_found_description": "The page you are looking for doesn't exist or has been moved.",
+    "go_home": "Back to Home"
   }
 }

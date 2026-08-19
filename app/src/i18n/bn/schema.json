@@ -1,37 +1,37 @@
 {
   "schema": {
     "types": {
-      "string": "স্ট্রিং",
-      "number": "নম্বর",
-      "boolean": "বুলিয়ান",
-      "media": "মিডিয়া",
-      "gallery": "গ্যালারি",
-      "array": "অ্যারে",
-      "date": "তারিখ",
-      "object": "অবজেক্ট"
+      "string": "স্ট্রিং (String)",
+      "number": "সংখ্যা (Number)",
+      "boolean": "বুলিয়ান (Boolean)",
+      "media": "মিডিয়া (Media)",
+      "gallery": "গ্যালারি (Gallery)",
+      "array": "অ্যারে (Array)",
+      "date": "তারিখ (Date)",
+      "object": "অবজেক্ট (Object)"
     },
     "fields": {
       "label": "লেবেল",
-      "name": "নাম",
+      "name": "ফিল্ডের নাম",
       "type": "ফিল্ডের ধরন",
       "placeholder": {
-        "type": "ধরন বেছে নিন",
-        "label": "যেমন: টাইটেল",
-        "name": "auto_generated"
+        "type": "ধরন নির্বাচন করুন",
+        "label": "যেমন: Title",
+        "name": "স্বয়ংক্রিয়ভাবে তৈরি হবে"
       },
-      "description": "বর্ণনা",
-      "default_value": "ডিফল্ট ভ্যালু",
+      "description": "বিবরণ",
+      "default_value": "ডিফল্ট মান",
       "boolean": {
-        "true": "সত্য",
-        "false": "মিথ্যা"
+        "true": "সত্য (True)",
+        "false": "মিথ্যা (False)"
       },
       "input_style": {
         "label": "ইনপুট স্টাইল",
         "placeholder": "ইনপুট স্টাইল বেছে নিন",
         "options": {
-          "standard_text": "স্ট্যান্ডার্ড টেক্সটবক্স",
-          "standard_table": "স্ট্যান্ডার্ড টেবিল",
-          "dropdown": "ড্রপডাউন সিলেকশন",
+          "standard_text": "সাধারণ টেক্সটবক্স",
+          "standard_table": "সাধারণ টেবিল",
+          "dropdown": "ড্রপডাউন নির্বাচন",
           "multi_dropdown": "মাল্টি-সিলেক্ট ড্রপডাউন"
         }
       }
@@ -44,20 +44,20 @@
         "source": "উৎস",
         "source_placeholder": "উৎস বেছে নিন",
         "sources": {
-          "static": "স্ট্যাটিক অপশনসমূহ",
-          "folder": "ফোল্ডার থেকে ফাইল",
-          "file": "ফাইল থেকে ডাটা"
+          "static": "নির্দিষ্ট অপশনসমূহ",
+          "folder": "ফোল্ডারের ফাইলসমূহ",
+          "file": "ফাইলের ডেটাসমূহ"
         },
         "static": {
-          "placeholder": "অপশন ভ্যালু লিখুন"
+          "placeholder": "অপশনের মান লিখুন"
         },
         "folder": {
           "path": "ফোল্ডার পাথ",
-          "path_placeholder": "একটি ফোল্ডার নির্বাচন করুন",
+          "path_placeholder": "একটি ফোল্ডার বেছে নিন",
           "display_field": "ডিসপ্লে ফিল্ড (Frontmatter Key)",
-          "field_placeholder": "যেমন: title (ডিফল্ট হিসেবে ফাইলের নাম থাকবে)",
+          "field_placeholder": "যেমন: title (ডিফল্ট ফাইলের নাম)",
           "loading_fields": "ফিল্ড লোড হচ্ছে...",
-          "default_field": "filename (ডিফল্ট)",
+          "default_field": "ফাইলের নাম (ডিফল্ট)",
           "include_pattern": "অন্তর্ভুক্তির প্যাটার্ন (Glob)",
           "include_placeholder": "যেমন: *.md",
           "exclude_pattern": "বর্জনের প্যাটার্ন (Glob)",
@@ -65,24 +65,24 @@
         },
         "file": {
           "path": "ফাইল পাথ (JSON/YAML/TOML)",
-          "path_placeholder": "একটি ফাইল নির্বাচন করুন",
-          "data_key": "ডাটা কী (যে ফিল্ডটি এক্সট্রাক্ট করতে হবে)",
-          "key_placeholder": "যেমন: categories অথবা name",
-          "default_key": "পুরো ফাইল/অ্যারে এক্সট্রাক্ট করুন"
+          "path_placeholder": "একটি ফাইল বেছে নিন",
+          "data_key": "ডেটা কি (নির্দিষ্ট ফিল্ড)",
+          "key_placeholder": "যেমন: categories বা name",
+          "default_key": "সম্পূর্ণ ফাইল/অ্যারে এক্সট্রাক্ট করুন"
         }
       }
     },
     "array": {
-      "label": "অ্যারে অফ",
-      "placeholder": "সাব-টাইপ বেছে নিন"
+      "label": "যেটির অ্যারে",
+      "placeholder": "সাব-টাইপ নির্বাচন করুন"
     },
     "nested": {
       "title": "নেস্টেড ফিল্ডসমূহ",
       "add_button": "নেস্টেড ফিল্ড যোগ করুন"
     },
     "date": {
-      "default_value": "ডিফল্ট ভ্যালু",
-      "mode_placeholder": "মোড বেছে নিন",
+      "default_value": "ডিফল্ট মান",
+      "mode_placeholder": "মোড নির্বাচন করুন",
       "static": "নির্দিষ্ট তারিখ",
       "dynamic": "বর্তমান তারিখ (লাইভ)",
       "empty": "খালি",
@@ -99,21 +99,21 @@
     },
     "builder": {
       "add_new_field": "নতুন ফিল্ড যোগ করুন",
-      "configure_properties": "নতুন ফিল্ডের প্রপার্টি কনফিগার করুন",
+      "configure_properties": "নতুন ফিল্ডের বৈশিষ্ট্য কনফিগার করুন",
       "field_settings": "ফিল্ড সেটিংস",
-      "required": "প্রয়োজনীয় (Required)",
+      "required": "আবশ্যক",
       "show": "দেখান",
       "hide": "লুকান",
-      "no_field_selected": "কোনো ফিল্ড নির্বাচন করা হয়নি",
-      "select_to_edit": "এডিট করার জন্য তালিকা থেকে একটি ফিল্ড নির্বাচন করুন",
+      "no_field_selected": "কোনো ফিল্ড নির্বাচিত নয়",
+      "select_to_edit": "সম্পাদনা করতে তালিকা থেকে একটি ফিল্ড নির্বাচন করুন",
       "no_fields": "এখনও কোনো ফিল্ড নেই",
       "add_first_field": "নিচে আপনার প্রথম ফিল্ডটি যোগ করুন",
-      "back_to_fields": "ফিল্ড তালিকায় ফিরে যান",
-      "field_count": "{count, plural, =0 {০টি ফিল্ড} one {১টি ফিল্ড} other {#টি ফিল্ড}}"
+      "back_to_fields": "ফিল্ড তালিকায় ফিরুন",
+      "field_count": "{count, plural, =0 {0টি ফিল্ড} one {1টি ফিল্ড} other {#টি ফিল্ড}}"
     },
     "errors": {
       "name_required": "ফিল্ডের নাম আবশ্যক",
-      "name_exists": "এই নামের ফিল্ড ইতিমধ্যেই রয়েছে"
+      "name_exists": "এই নামের ফিল্ড ইতিমধ্যে বিদ্যমান"
     }
   }
 }

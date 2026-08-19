@@ -1,19 +1,19 @@
 {
   "common": {
     "settings": "Configurações",
-    "overview": "Visão Geral",
+    "overview": "Visão geral",
     "archived": "Arquivado",
     "locale": "pt",
     "language": "Idioma",
     "theme": "Tema",
     "light": "Claro",
     "dark": "Escuro",
-    "system": "Sistema",
+    "system": "Padrão do sistema",
     "logout": {
       "label": "Sair",
-      "demo_disabled": "Logout está desabilitado no modo demo.",
-      "confirm_title": "Confirmar Logout",
-      "confirm_description": "Tem certeza que deseja sair de sua conta?"
+      "demo_disabled": "O encerramento de sessão está desativado no modo de demonstração.",
+      "confirm_title": "Confirmar encerramento de sessão",
+      "confirm_description": "Tem certeza de que deseja sair da sua conta?"
     },
     "accessibility": {
       "trigger": "Abrir menu de acessibilidade"
@@ -21,7 +21,7 @@
     "actions": {
       "save": "Salvar",
       "cancel": "Cancelar",
-      "delete": "Deletar",
+      "delete": "Excluir",
       "edit": "Editar",
       "create": "Criar",
       "update": "Atualizar",
@@ -35,10 +35,10 @@
       "move": "Mover",
       "disconnect": "Desconectar",
       "connect": "Conectar",
-      "finish": "Finalizar",
-      "next": "Próximo",
-      "previous": "Anterior",
-      "edit_as_code": "Editar Como Código",
+      "finish": "Concluir",
+      "next": "Avançar",
+      "previous": "Voltar",
+      "edit_as_code": "Editar como código",
       "continue": "Continuar",
       "replace": "Substituir",
       "confirm": "Confirmar",
@@ -55,14 +55,14 @@
       "are_you_sure": "Tem certeza?",
       "absolutely_sure": "Tem certeza absoluta?",
       "cannot_be_undone": "Esta ação não pode ser desfeita.",
-      "type_to_confirm": "digite {confirm} para confirmar",
-      "confirm_value": "CONFIRMAR",
-      "delete_description": "Esta ação não pode ser desfeita. Isso irá deletar permanentemente seus dados de nossos servidores.",
-      "delete_media": "Deletar Arquivo de Mídia",
-      "delete_media_description": "Tem certeza que deseja deletar este arquivo?",
+      "type_to_confirm": "Digite {confirm} para confirmar",
+      "confirm_value": "CONFIRM",
+      "delete_description": "Esta ação é permanente e irreversível. Seus dados serão excluídos definitivamente dos nossos servidores.",
+      "delete_media": "Excluir arquivo de mídia",
+      "delete_media_description": "Tem certeza de que deseja excluir este arquivo?",
       "enter_new_name": "Digite um novo nome para o arquivo.",
-      "duplicate_file": "Duplicar Arquivo",
-      "duplicate_file_description": "Digite um novo nome para o arquivo duplicado."
+      "duplicate_file": "Duplicar arquivo",
+      "duplicate_file_description": "Digite um nome para o arquivo duplicado."
     },
     "feedback": {
       "language_updated": "Idioma atualizado com sucesso",
@@ -70,8 +70,8 @@
       "duplicate_success": "Arquivo duplicado com sucesso!",
       "duplicate_failed": "Falha ao duplicar o arquivo",
       "uploaded_success": "Enviado com sucesso",
-      "upload_failed": "Falha ao enviar",
-      "error_processing": "Erro ao processar os arquivos",
+      "upload_failed": "Falha ao enviar arquivo",
+      "error_processing": "Erro ao processar arquivos",
       "image_deleted": "Imagem excluída com sucesso",
       "rename_success": "Arquivo renomeado com sucesso",
       "rename_failed": "Falha ao renomear o arquivo",
@@ -83,15 +83,15 @@
       "folder_delete_failed": "Falha ao excluir a pasta",
       "folder_duplicate_success": "Pasta duplicada com sucesso",
       "folder_duplicate_failed": "Falha ao duplicar a pasta",
+      "draft_saved": "Rascunho salvo no banco de dados",
+      "draft_saved_error": "Falha ao salvar rascunho",
       "draft_success": "Rascunho salvo com sucesso",
       "publish_success": "Publicado com sucesso",
-      "fetch_failed": "Falha ao buscar alguns arquivos. Por favor, tente novamente.",
+      "fetch_failed": "Falha ao carregar alguns arquivos. Tente novamente.",
       "invalid_path": "O caminho da pasta é inválido.",
-      "missing_context": "Faltando contexto do repositório. Por favor, recarregue e tente novamente.",
-      "unable_to_locate": "Não foi possível localizar os arquivos desta pasta. Por favor, atualize e tente novamente.",
+      "missing_context": "Contexto do repositório ausente. Recarregue a página e tente novamente.",
+      "unable_to_locate": "Não foi possível localizar os arquivos desta pasta. Atualize a página.",
       "demo_mode": "Esta ação está desativada no modo de demonstração.",
-      "draft_saved": "Rascunho salvo no banco de dados",
-      "draft_saved_error": "Falha ao salvar o rascunho",
       "draft_discard_success": "Rascunho descartado com sucesso",
       "draft_discard_error": "Falha ao descartar rascunho"
     },
@@ -103,38 +103,38 @@
       "required": "Obrigatório",
       "fields": "Campos",
       "user": "Usuário",
-      "site_favicon": "Favicon do Site",
+      "site_favicon": "Favicon do site",
       "or": "Ou"
     },
     "errors": {
-      "missing_git_info": "Informações Git obrigatórias ausentes",
+      "missing_git_info": "Informações necessárias do Git ausentes",
       "unable_to_determine_path": "Não foi possível determinar o caminho do arquivo",
-      "required_fields_empty": "Por favor, preencha todos os campos obrigatórios: {fields}"
+      "required_fields_empty": "Preencha todos os campos obrigatórios: {fields}"
     },
-    "search": "Buscar",
-    "search_placeholder": "Buscar...",
-    "search_sites_placeholder": "Buscar Sites...",
+    "search": "Pesquisar",
+    "search_placeholder": "Pesquisar...",
+    "search_sites_placeholder": "Pesquisar sites...",
     "prevent_navigation": {
-      "title": "Salvar Alterações Antes de Fechar?",
-      "description": "Você tem alterações não salvas. Se continuar sem salvar, essas alterações serão perdidas.",
-      "stay": "Ficar",
+      "title": "Salvar alterações antes de sair?",
+      "description": "Você tem alterações não salvas. Se sair agora, elas serão perdidas.",
+      "stay": "Permanecer",
       "leave": "Sair",
-      "browser_prompt": "Você tem alterações não salvas. Tem certeza que deseja sair?"
+      "browser_prompt": "Você tem alterações não salvas. Tem certeza de que deseja sair?"
     },
     "error_page": {
       "something_went_wrong": "Algo deu errado",
       "error_code": "Código do erro: {code}",
       "go_home": "Ir para o início",
-      "contact_support": "Contatar suporte",
-      "show_technical_details": "Mostrar detalhes técnicos"
+      "contact_support": "Falar com o suporte",
+      "show_technical_details": "Ver detalhes técnicos"
     },
     "image_upload": {
-      "file_too_large": "O tamanho do arquivo excede o limite de {limit}MB.",
-      "preview_title": "Pré-visualização da Imagem",
+      "file_too_large": "O arquivo excede o limite de {limit} MB.",
+      "preview_title": "Pré-visualização da imagem",
       "preview_desc": "Confirme se deseja enviar esta imagem.",
       "upload": "Enviar",
       "delete_title": "Remover imagem",
-      "delete_desc": "Isso excluirá permanentemente esta imagem. Esta ação não pode ser desfeita."
+      "delete_desc": "Esta ação excluirá a imagem permanentemente e não poderá ser desfeita."
     }
   }
 }

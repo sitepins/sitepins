@@ -1,119 +1,119 @@
 {
   "schema": {
     "types": {
-      "string": "Texto",
-      "number": "Número",
-      "boolean": "Booleano",
-      "media": "Medios",
-      "gallery": "Galería",
-      "array": "Array",
-      "date": "Fecha",
-      "object": "Objeto"
+      "string": "Texto (String)",
+      "number": "Número (Number)",
+      "boolean": "Booleano (Boolean)",
+      "media": "Multimedia (Media)",
+      "gallery": "Galería (Gallery)",
+      "array": "Lista (Array)",
+      "date": "Fecha (Date)",
+      "object": "Objeto (Object)"
     },
     "fields": {
-      "label": "Etiqueta",
-      "name": "Nombre",
-      "type": "Tipo de Campo",
+      "label": "Etiqueta (Label)",
+      "name": "Nombre del campo",
+      "type": "Tipo de campo",
       "placeholder": {
-        "type": "Elige tipo",
-        "label": "ej., Título",
+        "type": "Elige un tipo",
+        "label": "ej. Título",
         "name": "generado_automáticamente"
       },
       "description": "Descripción",
-      "default_value": "Valor Predeterminado",
+      "default_value": "Valor predeterminado",
       "boolean": {
-        "true": "Verdadero",
-        "false": "Falso"
+        "true": "Verdadero (True)",
+        "false": "Falso (False)"
       },
       "input_style": {
-        "label": "Estilo de Entrada",
-        "placeholder": "Elige estilo de entrada",
+        "label": "Estilo de entrada",
+        "placeholder": "Elige un estilo de entrada",
         "options": {
-          "standard_text": "Cuadro de Texto Estándar",
-          "standard_table": "Tabla Estándar",
-          "dropdown": "Selección de Menú Desplegable",
-          "multi_dropdown": "Menú Desplegable Multiselección"
+          "standard_text": "Caja de texto estándar",
+          "standard_table": "Tabla estándar",
+          "dropdown": "Menú desplegable",
+          "multi_dropdown": "Desplegable de selección múltiple"
         }
       }
     },
     "configuration": {
-      "title": "Configuración de Campo",
+      "title": "Configuración del campo",
       "dropdown": {
-        "title": "Configuración de Menú Desplegable",
-        "multi_title": "Configuración Multiselección",
-        "source": "Fuente",
-        "source_placeholder": "Elige fuente",
+        "title": "Configuración del menú desplegable",
+        "multi_title": "Configuración de selección múltiple",
+        "source": "Fuente de datos",
+        "source_placeholder": "Elige una fuente",
         "sources": {
-          "static": "Opciones Estáticas",
-          "folder": "Archivos de Carpeta",
-          "file": "Datos de Archivo"
+          "static": "Opciones estáticas",
+          "folder": "Archivos de una carpeta",
+          "file": "Datos de un archivo"
         },
         "static": {
-          "placeholder": "Ingresa valor de opción"
+          "placeholder": "Introduce el valor de la opción"
         },
         "folder": {
-          "path": "Ruta de Carpeta",
+          "path": "Ruta de la carpeta",
           "path_placeholder": "Selecciona una carpeta",
-          "display_field": "Campo de Visualización (Clave Frontmatter)",
-          "field_placeholder": "ej. título (por defecto es nombre de archivo)",
+          "display_field": "Campo para mostrar (clave Frontmatter)",
+          "field_placeholder": "ej. title (por defecto nombre de archivo)",
           "loading_fields": "Cargando campos...",
-          "default_field": "nombre de archivo (predeterminado)",
-          "include_pattern": "Patrón de Inclusión (Glob)",
+          "default_field": "nombre_archivo (por defecto)",
+          "include_pattern": "Patrón de inclusión (Glob)",
           "include_placeholder": "ej. *.md",
-          "exclude_pattern": "Patrón de Exclusión (Glob)",
+          "exclude_pattern": "Patrón de exclusión (Glob)",
           "exclude_placeholder": "ej. index.md"
         },
         "file": {
-          "path": "Ruta de Archivo (JSON/YAML/TOML)",
+          "path": "Ruta del archivo (JSON/YAML/TOML)",
           "path_placeholder": "Selecciona un archivo",
-          "data_key": "Clave de Datos (Campo a Extraer)",
-          "key_placeholder": "ej. categorías o nombre",
+          "data_key": "Clave de datos (campo a extraer)",
+          "key_placeholder": "ej. categories o name",
           "default_key": "Extraer archivo/array completo"
         }
       }
     },
     "array": {
-      "label": "Array de",
-      "placeholder": "Elige subtipo"
+      "label": "Lista de tipo",
+      "placeholder": "Elige el subtipo"
     },
     "nested": {
       "title": "Campos anidados",
-      "add_button": "Agregar campo anidado"
+      "add_button": "Añadir campo anidado"
     },
     "date": {
-      "default_value": "Valor Predeterminado",
-      "mode_placeholder": "Elige modo",
-      "static": "Fecha Fija",
-      "dynamic": "Fecha Actual (En Vivo)",
+      "default_value": "Valor predeterminado",
+      "mode_placeholder": "Elige el modo",
+      "static": "Fecha fija",
+      "dynamic": "Fecha actual (dinámica)",
       "empty": "Vacío",
-      "select_initial": "Selecciona Fecha Inicial",
+      "select_initial": "Seleccionar fecha inicial",
       "today": "Hoy"
     },
     "actions": {
-      "add_option": "Agregar Opción",
-      "add_field": "Agregar Campo",
-      "update_field": "Actualizar Campo",
-      "enter_option": "Ingresa opción",
+      "add_option": "Añadir opción",
+      "add_field": "Añadir campo",
+      "update_field": "Actualizar campo",
+      "enter_option": "Introduce una opción",
       "include": "Incluir",
       "ignore": "Ignorar"
     },
     "builder": {
-      "add_new_field": "Agregar Nuevo Campo",
+      "add_new_field": "Añadir nuevo campo",
       "configure_properties": "Configura las propiedades del nuevo campo",
-      "field_settings": "Configuración de Campo",
-      "required": "Requerido",
+      "field_settings": "Ajustes del campo",
+      "required": "Obligatorio",
       "show": "Mostrar",
       "hide": "Ocultar",
-      "no_field_selected": "Sin campo seleccionado",
-      "select_to_edit": "Selecciona un campo de la lista para editar su configuración",
-      "no_fields": "Sin campos aún",
-      "add_first_field": "Agrega tu primer campo abajo",
-      "back_to_fields": "Volver a campos",
+      "no_field_selected": "Ningún campo seleccionado",
+      "select_to_edit": "Selecciona un campo de la lista para editar sus ajustes",
+      "no_fields": "Aún no hay campos",
+      "add_first_field": "Añade tu primer campo a continuación",
+      "back_to_fields": "Volver a la lista de campos",
       "field_count": "{count, plural, =0 {0 campos} one {1 campo} other {# campos}}"
     },
     "errors": {
-      "name_required": "El nombre del campo es requerido",
-      "name_exists": "El nombre del campo ya existe"
+      "name_required": "El nombre del campo es obligatorio",
+      "name_exists": "Ya existe un campo con este nombre"
     }
   }
 }

@@ -7,6 +7,12 @@ export const BRAND_NAME = process.env.NEXT_PUBLIC_BRAND_NAME || "Sitepins";
 export const BRAND_URL =
   process.env.NEXT_PUBLIC_BRAND_URL || "https://sitepins.com";
 
+export const TERMS_URL =
+  process.env.NEXT_PUBLIC_TERMS_URL || `${BRAND_URL}/terms`;
+
+export const PRIVACY_URL =
+  process.env.NEXT_PUBLIC_PRIVACY_URL || `${BRAND_URL}/privacy-policy`;
+
 export const SUPPORT_URL =
   process.env.NEXT_PUBLIC_SUPPORT_URL || `${BRAND_URL}/contact`;
 

@@ -77,7 +77,7 @@ export default function SearchPreview({
         {/* Date and description */}
         <div className="text-sm leading-5 text-[#5f6368] dark:text-[#bdc1c6]">
           <p>
-            {date && <span className="mr-1 font-normal">{date} —</span>}{" "}
+            {date && <span className="me-1 font-normal">{date} —</span>}{" "}
             {description
               ? description.length > 160
                 ? `${description.substring(0, 160)}...`

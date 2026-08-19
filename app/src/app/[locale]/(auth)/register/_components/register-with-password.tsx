@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth/auth-client";
+import { PRIVACY_URL, TERMS_URL } from "@/lib/brand";
 import { registerSchema } from "@/lib/validate";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { BetterFetchError } from "better-auth/react";
@@ -191,7 +192,7 @@ export default function RegisterWithPassword({
                       />
                       <FieldLabel
                         htmlFor="form-newsletter"
-                        className="text-popover-foreground mb-0 ml-2 text-xs font-normal"
+                        className="text-popover-foreground ms-2 mb-0 text-xs font-normal"
                       >
                         {tAuth("newsletter")}
                       </FieldLabel>
@@ -211,7 +212,7 @@ export default function RegisterWithPassword({
                 {tAuth.rich("terms_prefix", {
                   terms: (chunks) => (
                     <Link
-                      href="/terms"
+                      href={TERMS_URL}
                       className="text-default text-xs font-normal underline"
                       target="_blank"
                       rel="noopener noreferrer"
@@ -225,7 +226,7 @@ export default function RegisterWithPassword({
                 {tAuth.rich("privacy_prefix", {
                   privacy: (chunks) => (
                     <Link
-                      href="/privacy-policy"
+                      href={PRIVACY_URL}
                       className="text-default text-xs font-normal underline"
                       target="_blank"
                       rel="noopener noreferrer"

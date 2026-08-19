@@ -60,7 +60,7 @@ const ListRow = ({ file }: { file: TFiles }) => {
           <ImageSidebar
             file={file}
             asChild
-            className="h-full w-full cursor-pointer space-x-3"
+            className="flex h-full w-full cursor-pointer items-center gap-3"
           >
             {isFile ? (
               <div className="flex items-center">
@@ -118,7 +118,7 @@ const ListRow = ({ file }: { file: TFiles }) => {
                   {isNew && (
                     <Badge
                       variant={"destructive"}
-                      className="absolute top-0 -right-14"
+                      className="absolute -inset-e-14 top-0"
                     >
                       {tMedia("new")}
                     </Badge>
@@ -130,7 +130,7 @@ const ListRow = ({ file }: { file: TFiles }) => {
         </div>
       </TableCell>
       <TableCell className="w-[20%] text-center">{date}</TableCell>
-      <TableCell className="w-[15%] text-right">
+      <TableCell className="w-[15%] text-end">
         {(file.size || data?.size) &&
           `${Math.ceil((file.size || data?.size || 0) / 1024)} kb`}
       </TableCell>
@@ -150,7 +150,7 @@ export default function ListView({ items }: { items: TFiles[] }) {
               <TableHead className="w-[20%] text-center">
                 {tMedia("last_modified")}
               </TableHead>
-              <TableHead className="w-[15%] text-right">
+              <TableHead className="w-[15%] text-end">
                 {tMedia("size")}
               </TableHead>
             </TableRow>

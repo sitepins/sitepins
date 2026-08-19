@@ -21,7 +21,7 @@ export default function MediaListSkeleton() {
               <TableHead className="w-[20%] text-center">
                 {tMedia("last_modified")}
               </TableHead>
-              <TableHead className="w-[15%] text-right">
+              <TableHead className="w-[15%] text-end">
                 {tMedia("size")}
               </TableHead>
             </TableRow>
@@ -35,7 +35,7 @@ export default function MediaListSkeleton() {
             {Array.from({ length: 8 }).map((_, i) => (
               <TableRow key={i} className="hover:bg-transparent">
                 <TableCell className="w-[50%] py-3">
-                  <div className="flex items-center space-x-3">
+                  <div className="flex items-center gap-3">
                     <Skeleton className="h-10 w-18.25 shrink-0 rounded-sm" />
                     <Skeleton className="hidden h-4 w-40 md:block" />
                   </div>

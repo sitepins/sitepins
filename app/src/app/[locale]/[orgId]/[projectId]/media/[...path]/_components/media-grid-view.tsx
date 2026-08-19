@@ -36,7 +36,7 @@ export default function GridView({ items }: { items: TFiles[] }) {
           </h2>
           <div>
             <MediaUpload className="relative" type="button">
-              <FolderIcon className="mr-1.5 size-4" />
+              <FolderIcon className="me-1.5 size-4" />
               <span>{tMedia("upload")}</span>
             </MediaUpload>
           </div>
@@ -101,7 +101,7 @@ export default function GridView({ items }: { items: TFiles[] }) {
                     {isNew && (
                       <Badge
                         variant={"destructive"}
-                        className="absolute top-2 right-2"
+                        className="absolute inset-e-2 top-2"
                       >
                         {tMedia("new")}
                       </Badge>
@@ -110,14 +110,14 @@ export default function GridView({ items }: { items: TFiles[] }) {
                     {isReplace && (
                       <Badge
                         variant={"muted"}
-                        className="absolute top-2 right-2"
+                        className="absolute inset-e-2 top-2"
                       >
                         {tMedia("replaced")}
                       </Badge>
                     )}
                   </CardContent>
                   <CardFooter className="px-4 py-2 pt-2 pb-3.5">
-                    <p className="text-secondary-foreground line-clamp-1 w-full text-left text-sm">
+                    <p className="text-secondary-foreground line-clamp-1 w-full text-start text-sm">
                       {name}
                     </p>
                   </CardFooter>

@@ -148,11 +148,11 @@ export function GlobalSearch({
     const filePath = file.path.replace(/^content\//, "");
 
     if (isConfigFile(filePath)) {
-      return <Settings className="mr-2 h-4 w-4" />;
+      return <Settings className="me-2 h-4 w-4" />;
     }
 
     if (config?.media && filePath.startsWith(config.media)) {
-      return <ImageIcon className="mr-2 h-4 w-4" />;
+      return <ImageIcon className="me-2 h-4 w-4" />;
     }
 
     const isInContentOrMedia =
@@ -160,10 +160,10 @@ export function GlobalSearch({
       (config?.media && filePath.startsWith(config.media));
 
     if (!isInContentOrMedia && !isConfigFile(filePath)) {
-      return <FileCode2 className="mr-2 h-4 w-4" />;
+      return <FileCode2 className="me-2 h-4 w-4" />;
     }
 
-    return <FileIcon className="mr-2 h-4 w-4" />;
+    return <FileIcon className="me-2 h-4 w-4" />;
   };
 
   const fileList = React.useMemo(() => {
@@ -422,7 +422,7 @@ export function GlobalSearch({
                 setOpen(false);
                 setQuery("");
               }}
-              className="absolute top-1/2 right-3 -translate-y-1/2"
+              className="absolute inset-e-3 top-1/2 -translate-y-1/2"
             >
               <KbdGroup>
                 <Kbd>Esc</Kbd>

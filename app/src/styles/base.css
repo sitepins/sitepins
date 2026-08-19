@@ -2,6 +2,36 @@ html {
   @apply text-base;
 }
 
+html[dir="rtl"] {
+  direction: rtl;
+  font-family:
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    Roboto,
+    "Noto Sans Arabic",
+    "Geeza Pro",
+    Tahoma,
+    Arial,
+    sans-serif;
+}
+
+html[dir="rtl"] .cn-rtl-flip {
+  transform: scaleX(-1);
+}
+
+html[dir="rtl"] input,
+html[dir="rtl"] textarea {
+  text-align: right;
+}
+
+html[dir="rtl"] [dir="ltr"],
+html[dir="rtl"] code,
+html[dir="rtl"] pre {
+  direction: ltr;
+  text-align: left;
+}
+
 /* A shadcn ui shifting bug workaround */
 body[data-scroll-locked] {
   overflow: visible !important;
@@ -63,26 +93,3 @@ code {
 button {
   @apply cursor-pointer;
 }
-
-/* custom scrollbar */
-/* ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background: transparent;
-  border-radius: 4px;
-}
-
-*:hover::-webkit-scrollbar-thumb {
-  background: var(--muted);
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--muted-foreground) !important;
-} */

@@ -60,9 +60,9 @@ function ContentSkeleton() {
             <Skeleton className="h-4 w-full" />
           </div>
         </div>
-        <div className="space-y-3 pl-4">
+        <div className="space-y-3 ps-4">
           {Array.from({ length: 3 }).map((_, i) => (
-            <div key={i} className="flex items-center space-x-3">
+            <div key={i} className="flex items-center gap-3">
               <Skeleton className="size-2 shrink-0 rounded-full" />
               <Skeleton className={`h-4 ${i === 2 ? "w-1/2" : "w-2/3"}`} />
             </div>
@@ -81,13 +81,13 @@ function ContentSkeleton() {
 export default function EditorSkeleton() {
   return (
     <div className="flex h-svh flex-col overflow-hidden">
-      <header className="border-border bg-light sticky top-0 left-0 z-50 flex items-center justify-between border-b px-4 py-4 lg:px-6">
+      <header className="border-border bg-light sticky inset-s-0 top-0 z-50 flex items-center justify-between border-b px-4 py-4 lg:px-6">
         <div className="flex w-full items-center justify-between">
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center gap-3">
             <Skeleton className="h-7 w-20 rounded-md" />
             <Skeleton className="h-6 w-20 rounded-full" />
           </div>
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center gap-2">
             <Skeleton className="h-7 w-9 rounded-md sm:w-24" />
             <Skeleton className="h-7 w-9 rounded-md sm:w-20" />
             <Skeleton className="h-7 w-9 rounded-md sm:w-20" />
@@ -112,7 +112,7 @@ export default function EditorSkeleton() {
         </div>
 
         <div className="hidden h-full 2xl:flex">
-          <div className="border-border w-[40%] overflow-y-auto border-r p-5">
+          <div className="border-border w-[40%] overflow-y-auto border-e p-5">
             <FrontmatterSkeleton />
           </div>
           <div className="min-w-0 flex-1">

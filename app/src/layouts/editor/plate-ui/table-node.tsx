@@ -709,7 +709,7 @@ export const TableElement = withHOC(
         {...props}
         className={cn(
           "overflow-x-auto py-5",
-          hasControls && "-ml-2 *:data-[slot=block-selection]:left-2",
+          hasControls && "-ms-2 *:data-[slot=block-selection]:inset-s-2",
         )}
         ref={containerRef}
         style={{ paddingLeft: marginLeft }}
@@ -732,7 +732,7 @@ export const TableElement = withHOC(
             />
             <table
               className={cn(
-                "mr-0 ml-px table h-px table-fixed border-collapse",
+                "ms-px me-0 table h-px table-fixed border-collapse",
                 "data-[table-selecting=true]:[&_*::selection]:bg-transparent!",
                 "data-[table-selecting=true]:[&_*::selection]:text-inherit!",
                 "data-[table-selecting=true]:[&_*::-moz-selection]:bg-transparent!",
@@ -956,14 +956,14 @@ function TableFloatingToolbarContent({
               onMouseDown={(e) => e.preventDefault()}
               tooltip={tEditorToolbar("insert_column_before")}
             >
-              <ArrowLeft />
+              <ArrowLeft className="cn-rtl-flip" />
             </ToolbarButton>
             <ToolbarButton
               onClick={onInsertColumnAfter}
               onMouseDown={(e) => e.preventDefault()}
               tooltip={tEditorToolbar("insert_column_after")}
             >
-              <ArrowRight />
+              <ArrowRight className="cn-rtl-flip" />
             </ToolbarButton>
             <ToolbarButton
               onClick={onDeleteColumn}
@@ -1082,7 +1082,7 @@ function RowDragHandle({ dragRef }: { dragRef: React.Ref<HTMLButtonElement> }) {
   return (
     <Button
       className={cn(
-        "absolute top-1/2 left-0 z-51 h-6 w-4 -translate-y-1/2 p-0 focus-visible:ring-0 focus-visible:ring-offset-0",
+        "absolute inset-s-0 top-1/2 z-51 h-6 w-4 -translate-y-1/2 p-0 focus-visible:ring-0 focus-visible:ring-offset-0",
         "cursor-grab active:cursor-grabbing",
         "opacity-0 transition-opacity duration-100 group-hover/row:opacity-100 group-data-[table-resizing=true]/row:opacity-0",
       )}
@@ -1105,7 +1105,7 @@ function RowDropLine() {
   return (
     <div
       className={cn(
-        "bg-accent absolute inset-x-0 left-2 z-50 h-0.5",
+        "bg-accent absolute inset-x-0 inset-s-2 z-50 h-0.5",
         dropLine === "top" ? "-top-px" : "-bottom-px",
       )}
     />
@@ -1150,7 +1150,7 @@ export function TableCellElement({
       className={cn(
         "bg-background relative h-full overflow-visible border-none p-0",
         element.background ? "bg-(--cellBackground)" : "bg-background",
-        isHeader && "text-left *:m-0",
+        isHeader && "text-start *:m-0",
         "before:size-full",
         "data-[table-cell-selected=true]:before:z-10",
         "data-[table-cell-selected=true]:before:bg-brand/5",

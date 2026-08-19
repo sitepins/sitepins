@@ -82,7 +82,7 @@ export default function OrgSwitcher({
         <Link
           href={defaultOrgs ? `/org-${defaultOrgs.org_id}` : "#"}
           className={cn(
-            "flex flex-1 items-center overflow-hidden text-left md:gap-2",
+            "flex flex-1 items-center overflow-hidden text-start md:gap-2",
             isResponsive ? "gap-1" : "gap-2",
           )}
           onClick={() => {

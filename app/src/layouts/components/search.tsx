@@ -2,9 +2,9 @@
 
 import { cn } from "@/lib/utils/cn";
 import { Loader2, SearchIcon } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useTransition } from "react";
-import { useTranslations } from "next-intl";
 import { Input } from "./ui/input";
 
 export default function Search({
@@ -50,7 +50,7 @@ export default function Search({
       <div className="relative h-full overflow-hidden">
         <div
           className={cn(
-            "pointer-events-none absolute top-px left-px flex h-full max-h-[calc(100%-2px)] w-10 items-center justify-center overflow-hidden rounded-tl-md rounded-bl-md",
+            "pointer-events-none absolute inset-s-px top-px flex h-full max-h-[calc(100%-2px)] w-10 items-center justify-center overflow-hidden rounded-ss-md rounded-es-md",
           )}
           aria-hidden="true"
         >
@@ -69,7 +69,7 @@ export default function Search({
           {...(value && { value })}
           id="search"
           disabled={disabled}
-          className="bg-background h-10 w-full pl-9 focus:outline-none focus-visible:ring-0"
+          className="bg-background h-10 w-full ps-9 focus:outline-none focus-visible:ring-0"
           placeholder={placeholder || tCommon("search_placeholder")}
           spellCheck={false}
           defaultValue={params.get("q") || ""}

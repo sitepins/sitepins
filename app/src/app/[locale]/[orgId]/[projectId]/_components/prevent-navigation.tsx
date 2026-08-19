@@ -152,7 +152,7 @@ const PreventNavigation = ({ isDirty, resetData }: PreventNavigationProps) => {
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle className="flex items-center">
-            <TriangleAlert className="text-destructive mr-2" />
+            <TriangleAlert className="text-destructive me-2" />
             {tCommonPreventNavigation("title")}
           </AlertDialogTitle>
           <AlertDialogDescription>

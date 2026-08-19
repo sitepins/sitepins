@@ -142,14 +142,14 @@ function Draggable(props: PlateElementProps) {
             <div
               className={cn(
                 "slate-blockToolbar relative w-4.5",
-                "pointer-events-auto mr-1 flex items-center",
-                isInColumn && "mr-1.5",
+                "pointer-events-auto me-1 flex items-center",
+                isInColumn && "me-1.5",
               )}
             >
               <Button
                 ref={handleRef}
                 variant="ghost"
-                className="absolute left-0 h-6 w-full p-0"
+                className="absolute inset-s-0 h-6 w-full p-0"
                 style={{ top: `${dragButtonTop + 3}px` }}
                 data-plate-prevent-deselect
               >
@@ -167,7 +167,7 @@ function Draggable(props: PlateElementProps) {
 
       <div
         ref={previewRef}
-        className={cn("absolute left-0 hidden w-full")}
+        className={cn("absolute inset-s-0 hidden w-full")}
         style={{ top: `${-previewTop}px` }}
         contentEditable={false}
       />
@@ -206,7 +206,7 @@ function Gutter({
       {...props}
       className={cn(
         "slate-gutterLeft",
-        "absolute top-0 z-50 flex h-full -translate-x-full cursor-text hover:opacity-100 sm:opacity-0",
+        "absolute inset-s-0 top-0 z-50 flex h-full cursor-text hover:opacity-100 sm:opacity-0 ltr:-translate-x-full rtl:translate-x-full",
         getPluginByType(editor, element.type)?.node.isContainer
           ? "group-hover/container:opacity-100"
           : "group-hover:opacity-100",

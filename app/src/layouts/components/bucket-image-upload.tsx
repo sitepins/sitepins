@@ -119,7 +119,7 @@ export function BucketImageUpload({
   return (
     <>
       <div {...getRootProps()}>
-        <div className="flex flex-col items-start space-x-4 sm:flex-row lg:items-center">
+        <div className="flex flex-col items-start gap-4 sm:flex-row lg:items-center">
           {/* Upload Control */}
           <div className="flex-1">
             {/* File Rejection Messages */}

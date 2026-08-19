@@ -280,7 +280,7 @@ const SchemaList = () => {
                     size="sm"
                     variant="outline"
                   >
-                    <Settings className="mr-1" />
+                    <Settings className="me-1" />
                     {tCommon("actions.edit")}
                   </Button>
                 </div>

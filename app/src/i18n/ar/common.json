@@ -1,0 +1,140 @@
+{
+  "common": {
+    "settings": "الإعدادات",
+    "overview": "نظرة عامة",
+    "archived": "مؤرشف",
+    "locale": "ar",
+    "language": "اللغة",
+    "theme": "الموضوع",
+    "light": "ضوء",
+    "dark": "الظلام",
+    "system": "النظام",
+    "logout": {
+      "label": "تسجيل الخروج",
+      "demo_disabled": "تم تعطيل تسجيل الخروج في الوضع التجريبي.",
+      "confirm_title": "تأكيد الخروج",
+      "confirm_description": "هل أنت متأكد أنك تريد تسجيل الخروج من حسابك؟"
+    },
+    "accessibility": {
+      "trigger": "افتح قائمة إمكانية الوصول"
+    },
+    "actions": {
+      "save": "حفظ",
+      "cancel": "إلغاء",
+      "delete": "حذف",
+      "edit": "تحرير",
+      "create": "إنشاء",
+      "update": "تحديث",
+      "add": "أضف",
+      "rename": "إعادة تسمية",
+      "duplicate": "مكررة",
+      "back": "العودة",
+      "close": "إغلاق",
+      "archive": "أرشيف",
+      "restore": "استعادة",
+      "move": "تحرك",
+      "disconnect": "قطع الاتصال",
+      "connect": "الاتصال",
+      "finish": "إنهاء",
+      "next": "التالي",
+      "previous": "السابق",
+      "edit_as_code": "تحرير كرمز",
+      "continue": "متابعة",
+      "replace": "استبدال",
+      "confirm": "تأكيد",
+      "reset": "إعادة تعيين"
+    },
+    "status": {
+      "loading": "جار التحميل...",
+      "saving": "جارٍ الحفظ...",
+      "saved": "تم الحفظ",
+      "no_results": "لم يتم العثور على نتائج.",
+      "error": "حدث خطأ ما"
+    },
+    "confirm": {
+      "are_you_sure": "هل أنت متأكد؟",
+      "absolutely_sure": "هل أنت متأكد تماما؟",
+      "cannot_be_undone": "لا يمكن التراجع عن هذا الإجراء.",
+      "type_to_confirm": "اكتب {confirm} للتأكيد",
+      "confirm_value": "تأكيد",
+      "delete_description": "لا يمكن التراجع عن هذا الإجراء. سيؤدي هذا إلى حذف بياناتك نهائيًا من خوادمنا.",
+      "delete_media": "حذف ملف الوسائط",
+      "delete_media_description": "هل أنت متأكد أنك تريد حذف هذا الملف؟",
+      "enter_new_name": "أدخل اسمًا جديدًا للملف.",
+      "duplicate_file": "ملف مكرر",
+      "duplicate_file_description": "أدخل اسمًا جديدًا للملف المكرر."
+    },
+    "feedback": {
+      "language_updated": "تم تحديث اللغة بنجاح",
+      "language_update_failed": "فشل تحديث اللغة",
+      "duplicate_success": "تم تكرار الملف بنجاح!",
+      "duplicate_failed": "فشل في تكرار الملف",
+      "uploaded_success": "تم الرفع بنجاح",
+      "upload_failed": "فشل التحميل",
+      "error_processing": "خطأ في معالجة الملفات",
+      "image_deleted": "تم حذف الصورة بنجاح",
+      "rename_success": "تمت إعادة تسمية الملف بنجاح",
+      "rename_failed": "فشل في إعادة تسمية الملف",
+      "delete_success": "تم حذف الملف بنجاح",
+      "delete_failed": "فشل في حذف الملف",
+      "folder_rename_success": "تمت إعادة تسمية المجلد بنجاح",
+      "folder_rename_failed": "فشلت إعادة تسمية المجلد",
+      "folder_delete_success": "تم حذف المجلد بنجاح",
+      "folder_delete_failed": "فشل حذف المجلد",
+      "folder_duplicate_success": "تم تكرار المجلد بنجاح",
+      "folder_duplicate_failed": "فشل في تكرار المجلد",
+      "draft_saved": "تم حفظ المسودة في قاعدة البيانات",
+      "draft_saved_error": "فشل حفظ المسودة",
+      "draft_success": "تم حفظ المسودة بنجاح",
+      "publish_success": "تم النشر بنجاح",
+      "fetch_failed": "فشل في جلب بعض الملفات. يرجى المحاولة مرة أخرى.",
+      "invalid_path": "مسار المجلد غير صالح.",
+      "missing_context": "سياق المستودع مفقود. يرجى إعادة التحميل والمحاولة مرة أخرى.",
+      "unable_to_locate": "غير قادر على تحديد موقع الملفات لهذا المجلد. يرجى التحديث والمحاولة مرة أخرى.",
+      "demo_mode": "تم تعطيل هذا الإجراء في الوضع التجريبي.",
+      "draft_discard_success": "تم تجاهل المسودة بنجاح",
+      "draft_discard_error": "فشل تجاهل المسودة"
+    },
+    "labels": {
+      "name": "الاسم",
+      "date": "التاريخ",
+      "size": "الحجم",
+      "dimensions": "الأبعاد",
+      "required": "مطلوب",
+      "fields": "الحقول",
+      "user": "المستخدم",
+      "site_favicon": "أيقونة الموقع المفضلة",
+      "or": "أو"
+    },
+    "errors": {
+      "missing_git_info": "معلومات Git المطلوبة مفقودة",
+      "unable_to_determine_path": "غير قادر على تحديد مسار الملف",
+      "required_fields_empty": "يرجى ملء جميع الحقول المطلوبة: {fields}"
+    },
+    "search": "بحث",
+    "search_placeholder": "بحث...",
+    "search_sites_placeholder": "مواقع البحث...",
+    "prevent_navigation": {
+      "title": "هل تريد حفظ التغييرات قبل الإغلاق؟",
+      "description": "لديك تغييرات غير محفوظة. إذا قمت بالمتابعة دون حفظ، فسيتم فقدان هذه التغييرات.",
+      "stay": "البقاء",
+      "leave": "غادر",
+      "browser_prompt": "لديك تغييرات غير محفوظة. هل أنت متأكد أنك تريد المغادرة؟"
+    },
+    "error_page": {
+      "something_went_wrong": "حدث خطأ ما",
+      "error_code": "رمز الخطأ: {code}",
+      "go_home": "اذهب إلى المنزل",
+      "contact_support": "اتصل بالدعم",
+      "show_technical_details": "عرض التفاصيل الفنية"
+    },
+    "image_upload": {
+      "file_too_large": "يتجاوز حجم الملف الحد المسموح به وهو {limit} ميغابايت.",
+      "preview_title": "معاينة الصورة",
+      "preview_desc": "قم بتأكيد ما إذا كنت تريد تحميل هذه الصورة.",
+      "upload": "تحميل",
+      "delete_title": "إزالة الصورة",
+      "delete_desc": "سيؤدي هذا إلى حذف هذه الصورة نهائيًا. لا يمكن التراجع عن هذا الإجراء."
+    }
+  }
+}

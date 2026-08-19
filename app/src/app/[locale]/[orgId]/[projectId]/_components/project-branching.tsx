@@ -461,9 +461,9 @@ const ProjectBranching = ({
                     disabled={isMerging}
                   >
                     {isMerging ? (
-                      <Loader2 className="mr-1 size-3 animate-spin" />
+                      <Loader2 className="me-1 size-3 animate-spin" />
                     ) : (
-                      <CheckCircle2 className="mr-1 size-3" />
+                      <CheckCircle2 className="me-1 size-3" />
                     )}
                     {tProjectBranching("merge")}
                   </Button>
@@ -485,7 +485,7 @@ const ProjectBranching = ({
               <h4 className="flex items-center text-sm font-medium">
                 {tProjectBranching("changes_detected")}
                 {isSyncing && (
-                  <Loader2 className="ml-2 size-3 animate-spin opacity-50" />
+                  <Loader2 className="ms-2 size-3 animate-spin opacity-50" />
                 )}
               </h4>
               <p className="text-muted-foreground text-xs">
@@ -581,7 +581,7 @@ const ProjectBranching = ({
                     </Button>
                     <Button onClick={handleCreatePR} disabled={isCreating}>
                       {isCreating && (
-                        <Loader2 className="mr-2 size-4 animate-spin" />
+                        <Loader2 className="me-2 size-4 animate-spin" />
                       )}
                       {tProjectBranching("create_request", { provider: "" })}
                     </Button>

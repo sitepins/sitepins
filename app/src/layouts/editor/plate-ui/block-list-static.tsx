@@ -49,7 +49,7 @@ function TodoMarkerStatic(props: SlateRenderElementProps) {
     <div contentEditable={false}>
       <button
         className={cn(
-          "peer border-primary bg-background ring-offset-background focus-visible:ring-ring data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground pointer-events-none absolute top-1 -left-6 size-4 shrink-0 rounded-sm border focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none",
+          "peer border-primary bg-background ring-offset-background focus-visible:ring-ring data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground pointer-events-none absolute -inset-s-6 top-1 size-4 shrink-0 rounded-sm border focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none",
           props.className,
         )}
         data-state={checked ? "checked" : "unchecked"}

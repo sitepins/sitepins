@@ -362,7 +362,7 @@ export default function SnippetForm({
                             placeholder={tProjectSettingsSnippets(
                               "select_schemas_placeholder",
                             )}
-                            className="ml-1"
+                            className="ms-1"
                           />
                         </>
                       )}

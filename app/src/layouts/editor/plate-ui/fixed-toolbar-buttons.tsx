@@ -442,14 +442,11 @@ export default function FixedToolbarButtons() {
 
   return (
     <div className="@container/toolbar w-full overflow-hidden" ref={toolbarRef}>
-      <div
-        className="mx-1.5 flex min-h-10"
-        style={{ transform: "translateX(calc(-1px))" }}
-      >
+      <div className="mx-1.5 flex min-h-10">
         {visibleItems.map((item, index) => (
           <React.Fragment key={item.key}>
             {item.render({
-              className: index === firstRightIndex ? "ml-auto" : undefined,
+              className: index === firstRightIndex ? "ms-auto" : undefined,
               noSeparator: index === visibleItems.length - 1 && hasOverflow,
               hasOverflow,
               isRawNarrow,
@@ -459,7 +456,7 @@ export default function FixedToolbarButtons() {
 
         {hasOverflow && (
           <div
-            className={cn("self-center", rightItems.length === 0 && "ml-auto")}
+            className={cn("self-center", rightItems.length === 0 && "ms-auto")}
           >
             <OverflowMenu>
               {centerOverflow.map((item) => (

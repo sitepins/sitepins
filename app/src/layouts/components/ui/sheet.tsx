@@ -13,11 +13,20 @@ function SheetTrigger({
   asChild,
   children,
   render,
+  nativeButton,
   ...props
 }: SheetPrimitive.Trigger.Props & { asChild?: boolean }) {
+  const isNativeButton =
+    nativeButton !== undefined
+      ? nativeButton
+      : asChild && React.isValidElement(children)
+        ? children.type === "button"
+        : undefined;
+
   return (
     <SheetPrimitive.Trigger
       data-slot="sheet-trigger"
+      nativeButton={isNativeButton}
       render={asChild ? (children as React.ReactElement) : render}
       {...props}
     >
@@ -30,11 +39,20 @@ function SheetClose({
   asChild,
   children,
   render,
+  nativeButton,
   ...props
 }: SheetPrimitive.Close.Props & { asChild?: boolean }) {
+  const isNativeButton =
+    nativeButton !== undefined
+      ? nativeButton
+      : asChild && React.isValidElement(children)
+        ? children.type === "button"
+        : undefined;
+
   return (
     <SheetPrimitive.Close
       data-slot="sheet-close"
+      nativeButton={isNativeButton}
       render={asChild ? (children as React.ReactElement) : render}
       {...props}
     >
@@ -91,7 +109,7 @@ function SheetContent({
       >
         {children}
         {showCloseButton && (
-          <SheetPrimitive.Close className="ring-offset-background focus:ring-ring data-open:bg-secondary absolute top-4 right-4 rounded-xs opacity-70 transition-opacity hover:opacity-100 focus:ring-2 focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none">
+          <SheetPrimitive.Close className="ring-offset-background focus:ring-ring data-open:bg-secondary absolute inset-e-4 top-4 rounded-xs opacity-70 transition-opacity hover:opacity-100 focus:ring-2 focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none">
             <XIcon className="size-4" />
             <span className="sr-only">Close</span>
           </SheetPrimitive.Close>

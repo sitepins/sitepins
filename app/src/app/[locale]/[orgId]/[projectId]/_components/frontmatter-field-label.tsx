@@ -84,7 +84,7 @@ export function PreviewLabel({
       {children}
       {isRequired && <span className="text-destructive">*</span>}
       {currentLength !== undefined && maxLength !== undefined && (
-        <Badge variant={getBadgeVariant()} className="ml-auto">
+        <Badge variant={getBadgeVariant()} className="ms-auto">
           {currentLength}/{maxLength}
         </Badge>
       )}

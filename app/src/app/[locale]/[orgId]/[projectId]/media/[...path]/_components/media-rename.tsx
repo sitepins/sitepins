@@ -1,6 +1,5 @@
 "use client";
 
-import { logger } from "@/lib/logger";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -13,21 +12,22 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { toast } from "@/components/ui/toast";
 import { GITHUB_API_VERSION, GITLAB_API_VERSION } from "@/lib/constant";
+import { logger } from "@/lib/logger";
 import { checkMedia } from "@/lib/utils/check-media-file";
 import { toBase64 } from "@/lib/utils/git-utils";
 import { isGitLabProvider } from "@/lib/utils/provider-checker";
 import { selectConfig } from "@/redux/features/config/slice";
+import { getGitProviderAdapter } from "@/redux/features/git/provider-adapter";
 import { useUpdateGitHubFilesMutation } from "@/redux/features/github";
 import { useUpdateGitLabFilesMutation } from "@/redux/features/gitlab";
 import { selectMediaInfo, setMedia } from "@/redux/features/media/slice";
-import { getGitProviderAdapter } from "@/redux/features/git/provider-adapter";
 import { store, useAppDispatch } from "@/redux/store";
 import { useTranslations } from "next-intl";
 import path from "path";
 import { useState } from "react";
 import { useSelector } from "react-redux";
-import { toast } from "@/components/ui/toast";
 
 export default function MediaRename({
   filePath,
@@ -229,17 +229,6 @@ export default function MediaRename({
 
   return (
     <Dialog modal open={open} onOpenChange={setOpen}>
-      {/* <DialogTrigger asChild>
-        {children ? (
-          children
-        ) : (
-          <Button className="w-full space-x-1" variant="outline">
-            <FilePenLine className="size-4" />
-            <span>Rename</span>
-          </Button>
-        )}
-      </DialogTrigger> */}
-
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>{tMedia("rename_file")}</DialogTitle>

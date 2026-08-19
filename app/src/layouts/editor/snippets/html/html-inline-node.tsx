@@ -91,7 +91,7 @@ export const HtmlInlineElement = withRef<typeof PlateElement>(
           "relative inline-flex items-baseline gap-1.5 rounded-md border-2 transition-all",
           theme.border,
           theme.bg,
-          "py-1 pr-10 pl-2.5 font-mono text-sm",
+          "py-1 ps-2.5 pe-10 font-mono text-sm",
           selected && focused && "ring-2 ring-emerald-400 ring-offset-2",
           className,
         )}
@@ -100,7 +100,7 @@ export const HtmlInlineElement = withRef<typeof PlateElement>(
         <SnippetControls
           element={element}
           isBlock={false}
-          className="top-1/2 right-1 -translate-y-1/2"
+          className="inset-e-1 top-1/2 -translate-y-1/2"
           code=""
         />
         {!isClosingTag && (

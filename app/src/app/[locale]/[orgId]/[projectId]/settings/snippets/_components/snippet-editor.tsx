@@ -27,7 +27,10 @@ export function SnippetEditor({ value, onChange }: CodeEditorProps) {
   };
 
   return (
-    <div className="border-border relative overflow-hidden rounded border shadow-lg">
+    <div
+      dir="ltr"
+      className="border-border relative overflow-hidden rounded border text-left shadow-lg"
+    >
       <Editor
         height={"200px"}
         language={"html"}

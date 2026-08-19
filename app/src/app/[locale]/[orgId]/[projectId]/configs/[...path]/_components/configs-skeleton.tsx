@@ -5,11 +5,11 @@ export function ConfigsSkeleton() {
   return (
     <div className="flex flex-col">
       {/* Editor Header Skeleton */}
-      <header className="border-border bg-light sticky top-0 left-0 z-50 flex items-center justify-between border-b px-4 py-5 lg:px-6">
+      <header className="border-border bg-light sticky inset-s-0 top-0 z-50 flex items-center justify-between border-b px-4 py-5 lg:px-6">
         <div className="flex w-full items-center justify-between">
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center gap-3">
             {/* Back Button Placeholder */}
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center gap-2">
               <Skeleton className="h-7 w-20 rounded-md" />
             </div>
 
@@ -17,7 +17,7 @@ export function ConfigsSkeleton() {
             <Skeleton className="h-6 w-20 rounded-full" />
           </div>
 
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center gap-2">
             {/* Action Buttons Placeholder */}
             <Skeleton className="h-7 w-16 rounded-md" />
             <Skeleton className="h-7 w-16 rounded-md" />

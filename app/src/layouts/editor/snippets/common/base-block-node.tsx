@@ -113,7 +113,7 @@ export const BaseSnippetBlock = withRef<
               </span>
             )}
             {titleExtra && (
-              <div className="ml-auto" contentEditable={false}>
+              <div className="ms-auto" contentEditable={false}>
                 {titleExtra}
               </div>
             )}
@@ -123,7 +123,7 @@ export const BaseSnippetBlock = withRef<
 
         <div
           className={cn(
-            "my-3 w-full overflow-hidden border-l-2 pl-2",
+            "my-3 w-full overflow-hidden border-s-2 ps-2",
             theme.border,
             contentClassName,
             hideContent && "hidden",

@@ -79,13 +79,10 @@ function CodeFilePage({
   const isConfigReady =
     token && branch && provider && owner && repoName && filePath;
 
-  const { data: treesData, isLoading: isTreesLoading } = useGitTrees(
-    isGitLabProvider(provider) ? filePath : "",
-    {
-      recursive: isGitHubProvider(provider),
-      skip: !isConfigReady,
-    },
-  );
+  const { data: treesData, isLoading: isTreesLoading } = useGitTrees("", {
+    recursive: isGitHubProvider(provider),
+    skip: !isConfigReady || isGitLabProvider(provider),
+  });
 
   const {
     data: response,

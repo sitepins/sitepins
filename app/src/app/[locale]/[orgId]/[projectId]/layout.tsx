@@ -246,7 +246,7 @@ export default function Layout(
                   {!isArchived && files.length > 0 && (
                     <ul
                       id="sidebar-content-root"
-                      className="sidebar-content-root tree bg-background rounded pr-2"
+                      className="sidebar-content-root tree bg-background rounded pe-2"
                     >
                       <li>
                         <Accordion
@@ -256,7 +256,7 @@ export default function Layout(
                           <AccordionItem value="config" className="border-0">
                             <Link
                               className={cn(
-                                "text-foreground w-full rounded pr-0",
+                                "text-foreground w-full rounded pe-0",
                                 pathname.includes(
                                   `/${params.orgId}/${params.projectId}/content/${config.content}`,
                                 ) ||
@@ -270,14 +270,14 @@ export default function Layout(
                             >
                               <AccordionTrigger
                                 className={cn(
-                                  "h-auto w-full justify-start space-x-1 py-3 pr-1 pl-3 text-sm hover:no-underline",
+                                  "h-auto w-full justify-start gap-1 py-3 ps-3 pe-1 text-sm hover:no-underline",
                                 )}
                               >
                                 <>
                                   <FileTypeCorner className="inline-block size-5 stroke-[1.5]" />
                                   <span
                                     className={cn(
-                                      "flex-1 text-left",
+                                      "flex-1 text-start",
                                       config.content.includes("content") &&
                                         "capitalize",
                                     )}
@@ -287,7 +287,7 @@ export default function Layout(
                                 </>
                               </AccordionTrigger>
                             </Link>
-                            <AccordionContent className="pl-1">
+                            <AccordionContent className="ps-1">
                               <ul>
                                 <Suspense
                                   fallback={Array.from(
@@ -318,17 +318,17 @@ export default function Layout(
 
                   {/* Code */}
                   {!isArchived && !canAccessProFeatures && (
-                    <ul className="tree bg-background rounded pr-2 [--tree-spacing:2rem]">
+                    <ul className="tree bg-background rounded pe-2 [--tree-spacing:2rem]">
                       <li>
                         <button
                           type="button"
                           onClick={() => setShowUpgradeCode(true)}
                           className={cn(
-                            "text-foreground flex h-auto w-full items-center justify-start space-x-2 py-3 pr-1 pl-3 text-sm",
+                            "text-foreground flex h-auto w-full items-center justify-start gap-2 py-3 ps-3 pe-1 text-sm",
                           )}
                         >
                           <FileCode2 className="inline-block size-5 stroke-[1.5]" />
-                          <span className="flex-1 text-left">
+                          <span className="flex-1 text-start">
                             {tSidebar("code")}
                           </span>
                         </button>
@@ -336,23 +336,23 @@ export default function Layout(
                     </ul>
                   )}
                   {!isArchived && canAccessProFeatures && (
-                    <ul className="tree bg-background rounded pr-2 [--tree-spacing:2rem]">
+                    <ul className="tree bg-background rounded pe-2 [--tree-spacing:2rem]">
                       <li>
                         <Accordion className={cn("relative")}>
                           <AccordionItem value="code" className="border-0">
                             <AccordionTrigger
                               className={cn(
-                                "h-auto w-full justify-start space-x-2 py-3 pr-1 pl-3 text-sm hover:no-underline",
+                                "h-auto w-full justify-start gap-2 py-3 ps-3 pe-1 text-sm hover:no-underline",
                               )}
                             >
                               <>
                                 <FileCode2 className="inline-block size-5 stroke-[1.5]" />
-                                <span className="flex-1 text-left">
+                                <span className="flex-1 text-start">
                                   {tSidebar("code")}
                                 </span>
                               </>
                             </AccordionTrigger>
-                            <AccordionContent className="pl-1">
+                            <AccordionContent className="ps-1">
                               <ul>
                                 <Suspense
                                   fallback={Array.from(
@@ -391,13 +391,13 @@ export default function Layout(
 
                   {/* Config */}
                   {!isArchived && config.configs?.length > 0 && (
-                    <ul className="tree bg-background rounded pr-2 [--tree-spacing:2rem]">
+                    <ul className="tree bg-background rounded pe-2 [--tree-spacing:2rem]">
                       <li>
                         <Accordion className={cn("relative")}>
                           <AccordionItem value="config" className="border-0">
                             <Link
                               className={cn(
-                                "text-foreground w-full rounded pr-0",
+                                "text-foreground w-full rounded pe-0",
                                 pathname.includes(
                                   `/${params.orgId}/${params.projectId}/configs/`,
                                 )
@@ -408,19 +408,19 @@ export default function Layout(
                             >
                               <AccordionTrigger
                                 className={cn(
-                                  "h-auto w-full justify-start space-x-2 py-3 pr-1 pl-3 text-sm hover:no-underline",
+                                  "h-auto w-full justify-start gap-2 py-3 ps-3 pe-1 text-sm hover:no-underline",
                                 )}
                               >
                                 <>
                                   <FileCog className="inline-block size-5 stroke-[1.5]" />
-                                  <span className="flex-1 text-left">
+                                  <span className="flex-1 text-start">
                                     {tSidebar("config")}
                                   </span>
                                 </>
                               </AccordionTrigger>
                             </Link>
 
-                            <AccordionContent className="pl-1">
+                            <AccordionContent className="ps-1">
                               <ul>
                                 <ConfigsMenu
                                   files={
@@ -478,7 +478,7 @@ const ArchiveBlocked = ({
       <p className="text-muted-foreground mb-4">
         {t("archived_project.description")}
       </p>
-      <div className="space-x-2">
+      <div className="flex items-center justify-center gap-2">
         <Link
           href={`/${orgId}/${projectId}?tab=settings`}
           className="btn bg-primary inline-flex items-center rounded px-4 py-2 text-white"

@@ -359,7 +359,7 @@ export default function MediaUpload({
       <>
         <div {...getRootProps()}>
           <Button {...props} isLoading={isPending}>
-            <Images className="mr-1.5 size-4" />
+            <Images className="me-1.5 size-4" />
             <span>{tMedia("replace")}</span>
             <input {...getInputProps()} />
           </Button>
@@ -536,7 +536,7 @@ export default function MediaUpload({
       {conflictHandler}
       <div {...getRootProps()}>
         <Button {...props} isLoading={isPending} disabled={false}>
-          <Upload className="size-4 sm:mr-1.5" />
+          <Upload className="size-4 sm:me-1.5" />
           <span className="hidden sm:inline-block">{tMedia("upload")}</span>
           <input {...getInputProps()} />
         </Button>

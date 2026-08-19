@@ -240,7 +240,7 @@ export default function VercelConnectForm({
           onClick={() => handleValidate(token)}
           disabled={isValidating || token.trim().length < 20}
         >
-          {isValidating && <Loader2 className="mr-2 size-4 animate-spin" />}
+          {isValidating && <Loader2 className="me-2 size-4 animate-spin" />}
           {isValidating
             ? tOrgSandbox("status_validating")
             : isConnected
@@ -325,7 +325,7 @@ export default function VercelConnectForm({
           }
           disabled={isConnecting}
         >
-          {isConnecting && <Loader2 className="mr-2 size-4 animate-spin" />}
+          {isConnecting && <Loader2 className="me-2 size-4 animate-spin" />}
           {isConnecting
             ? connectStatus || tOrgSandbox("connecting")
             : tOrgSandbox("connect_btn")}
@@ -451,7 +451,7 @@ export default function VercelConnectForm({
                     size="sm"
                     onClick={() => setShowUpdateForm(true)}
                   >
-                    <RefreshCw className="mr-2 size-4" />
+                    <RefreshCw className="me-2 size-4" />
                     {tOrgSandbox("update_token_btn")}
                   </Button>
 
@@ -462,7 +462,7 @@ export default function VercelConnectForm({
                         size="sm"
                         className="text-destructive hover:text-destructive"
                       >
-                        <Unlink className="mr-2 size-4" />
+                        <Unlink className="me-2 size-4" />
                         {tOrgSandbox("disconnect_btn")}
                       </Button>
                     </AlertDialogTrigger>

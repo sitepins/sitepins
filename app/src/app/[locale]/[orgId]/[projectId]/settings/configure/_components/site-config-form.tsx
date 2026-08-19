@@ -618,7 +618,7 @@ export const ConfigForm = ({
                               placeholder={tProjectSettingsConfigureProject(
                                 "form.config_placeholder",
                               )}
-                              className="ml-1"
+                              className="ms-1"
                               onKeyDown={(e) => {
                                 if (e.key === "Enter") {
                                   e.preventDefault();
@@ -742,7 +742,7 @@ export const ConfigForm = ({
 
           {/* Help description — below buttons on mobile, left on md+ */}
           <div className="flex items-center justify-center md:order-1 md:justify-start">
-            <CircleQuestionMark className="mr-2 hidden size-5 shrink-0 sm:inline-block" />
+            <CircleQuestionMark className="me-2 hidden size-5 shrink-0 sm:inline-block" />
             <p className="text-text-dark text-sm">
               {tProjectSettingsConfigureProject("help.text")}{" "}
               <Link

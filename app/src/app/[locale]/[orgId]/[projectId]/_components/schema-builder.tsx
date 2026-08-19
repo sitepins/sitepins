@@ -109,7 +109,7 @@ export function SchemaBuilder({ value, onChange }: SchemaBuilderProps) {
             {selectedField.name}
           </p>
         </div>
-        <div className="ml-2 flex items-center gap-3 md:gap-4">
+        <div className="ms-2 flex items-center gap-3 md:gap-4">
           <Label className="mb-0 flex h-8 cursor-pointer items-center gap-1.5">
             <span className="text-muted-foreground text-[11px] font-medium md:text-xs">
               {tSchema("builder.required")}
@@ -211,7 +211,7 @@ export function SchemaBuilder({ value, onChange }: SchemaBuilderProps) {
       {/* LEFT SIDEBAR — field list */}
       <div
         className={cn(
-          "border-border flex h-full flex-col border-r",
+          "border-border flex h-full flex-col border-e",
           "w-full md:w-72 md:shrink-0",
           mobileShowDetail ? "hidden md:flex" : "flex",
         )}

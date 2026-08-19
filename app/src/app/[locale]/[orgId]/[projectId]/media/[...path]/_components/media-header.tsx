@@ -60,7 +60,7 @@ export default function MediaHeader() {
         <div className="grid w-full grid-cols-[1fr_auto] gap-2 lg:grid-cols-1">
           <Search className="h-10 flex-1 [&_input]:h-10" />
           <MediaUpload className="relative h-10 lg:hidden" type="button">
-            <FolderIcon className="mr-1.5 size-4" />
+            <FolderIcon className="me-1.5 size-4" />
             <span className="hidden sm:inline-block">{tMedia("upload")}</span>
           </MediaUpload>
         </div>
@@ -104,7 +104,7 @@ export default function MediaHeader() {
             ))}
           </div>
           <MediaUpload className="relative hidden h-10 lg:flex" type="button">
-            <FolderIcon className="mr-1.5 size-4" />
+            <FolderIcon className="me-1.5 size-4" />
             <span>{tMedia("upload")}</span>
           </MediaUpload>
         </div>

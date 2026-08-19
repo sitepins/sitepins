@@ -58,10 +58,12 @@ export default function FormError({
       {errorList.map((err, index) => (
         <li
           key={index}
-          className="relative flex items-center space-x-2 text-sm font-semibold"
+          className="relative flex items-center gap-2 text-sm font-semibold"
         >
           <TriangleAlert />
-          <span className="flex-1 text-pretty break-words">{err.message}</span>
+          <span className="flex-1 text-pretty wrap-break-word">
+            {err.message}
+          </span>
           <div>
             <Button
               type="button"

@@ -16,7 +16,7 @@ export default function OrgSitesSkeleton() {
       <div className="bg-light hidden grid-cols-12 rounded-lg px-8 py-2.5 md:grid">
         <Skeleton className="col-span-6 h-5 w-24" />
         <Skeleton className="col-span-4 h-5 w-28" />
-        <Skeleton className="col-span-2 ml-auto h-5 w-16" />
+        <Skeleton className="col-span-2 ms-auto h-5 w-16" />
       </div>
 
       {/* Site Items Skeleton */}
@@ -27,7 +27,7 @@ export default function OrgSitesSkeleton() {
             className="border-border relative flex grid-cols-12 items-center gap-x-3 overflow-hidden rounded-lg border px-2.5 *:py-8 md:grid lg:gap-x-0 lg:px-0"
           >
             {/* Avatar + Name Section — mirrors ProjectNameSection */}
-            <div className="col-span-6 flex h-full items-center py-0! md:space-x-5">
+            <div className="col-span-6 flex h-full items-center py-0! md:gap-5">
               {/* Avatar — mirrors ProjectIcon "card" container footprint */}
               <Skeleton className="h-12 w-12 rounded-full lg:h-full lg:w-47 lg:rounded-none" />
               {/* Name - Hidden on mobile */}
@@ -46,7 +46,7 @@ export default function OrgSitesSkeleton() {
             </div>
 
             {/* Status Section - Hidden on mobile */}
-            <div className="col-span-2 mr-6 hidden md:flex md:items-center md:justify-end">
+            <div className="col-span-2 me-6 hidden md:flex md:items-center md:justify-end">
               <Skeleton className="h-6 w-16 rounded-full" />
             </div>
           </div>

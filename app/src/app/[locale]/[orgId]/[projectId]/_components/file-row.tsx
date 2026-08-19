@@ -59,10 +59,10 @@ export default function FileRow({ file }: { file: TFiles }) {
         <div className="col-span-4 flex items-center justify-center text-center">
           <Skeleton className="h-6 w-4/5" />
         </div>
-        <div className="col-span-1 text-left">
+        <div className="col-span-1 text-start">
           <Skeleton className="h-6 w-4/5" />
         </div>
-        <div className="col-span-1 text-right">
+        <div className="col-span-1 text-end">
           <Button
             className="text-muted-foreground"
             variant={"ghost"}
@@ -93,7 +93,7 @@ export default function FileRow({ file }: { file: TFiles }) {
     >
       <div className="text-secondary-foreground col-span-4 flex h-full items-center justify-between overflow-hidden py-0! text-ellipsis">
         <Link
-          className="text-foreground group/link inline-flex items-center gap-2 pr-2 text-sm font-semibold underline underline-offset-4 hover:underline md:px-4 md:no-underline"
+          className="text-foreground group/link inline-flex items-center gap-2 pe-2 text-sm font-semibold underline underline-offset-4 hover:underline md:px-4 md:no-underline"
           href={`${pathname}/${name}${ext}`}
         >
           <span className="line-clamp-1">{title}</span>
@@ -119,10 +119,10 @@ export default function FileRow({ file }: { file: TFiles }) {
           <FileStatus draft={!!data?.draft} />
         </div>
       </div>
-      <div className="col-span-1 hidden text-left md:block">
+      <div className="col-span-1 hidden text-start md:block">
         <FileStatus draft={!!data?.draft} />
       </div>
-      <div className="col-span-1 hidden text-right md:block lg:text-center">
+      <div className="col-span-1 hidden text-end md:block lg:text-center">
         <FileAction file={file} />
       </div>
     </div>

@@ -109,7 +109,7 @@
       "no_fields": "Belum ada kolom",
       "add_first_field": "Tambahkan bidang pertama Anda di bawah",
       "back_to_fields": "Kembali ke bidang",
-      "field_count": "{hitungan, jamak, =0 {0 bidang} satu {1 bidang} lainnya {# bidang}}"
+      "field_count": "{count, plural, =0 {0 bidang} one {1 bidang} other {# bidang}}"
     },
     "errors": {
       "name_required": "Nama bidang wajib diisi",

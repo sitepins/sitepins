@@ -77,7 +77,7 @@ export default function ResponsiveEditorLayout({
                 className="data-active:bg-primary! bg-secondary text-secondary-foreground hover:bg-secondary/80 hover:text-foreground h-full flex-1 rounded-sm border-none shadow-none data-active:text-white! data-active:shadow-sm"
                 size="sm"
               >
-                <Tag className="mr-2 size-4 text-current" />
+                <Tag className="size-4 text-current" />
                 {tEditorTabs("frontmatter")}
               </Button>
             </TabsTrigger>
@@ -86,7 +86,7 @@ export default function ResponsiveEditorLayout({
                 className="data-active:bg-primary! bg-secondary text-secondary-foreground hover:bg-secondary/80 hover:text-foreground h-full flex-1 rounded-sm border-none shadow-none data-active:text-white! data-active:shadow-sm"
                 size="sm"
               >
-                <Text className="mr-2 size-4 text-current" />
+                <Text className="size-4 text-current" />
                 {tEditorTabs("content")}
               </Button>
             </TabsTrigger>
@@ -132,7 +132,7 @@ export default function ResponsiveEditorLayout({
   if (fullscreen) {
     return (
       <div
-        className={`h-[calc(100svh-70px)] transition-[margin] duration-300 ${seoSidebarOpen ? "2xl:mr-105" : ""}`}
+        className={`h-[calc(100svh-70px)] transition-[margin] duration-300 ${seoSidebarOpen ? "2xl:me-105" : ""}`}
       >
         <ContentEditor
           markdownContent={markdownContent}
@@ -147,7 +147,7 @@ export default function ResponsiveEditorLayout({
 
   return (
     <div
-      className={`h-[calc(100svh-70px)] overflow-y-hidden transition-[margin] duration-300 ${seoSidebarOpen ? "2xl:mr-105" : ""}`}
+      className={`h-[calc(100svh-70px)] overflow-y-hidden transition-[margin] duration-300 ${seoSidebarOpen ? "2xl:me-105" : ""}`}
     >
       <ResizablePanelGroup className="h-full" orientation="horizontal">
         <ResizablePanel minSize="30%" defaultSize="40%" className="">

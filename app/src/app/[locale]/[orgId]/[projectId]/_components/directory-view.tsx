@@ -330,7 +330,7 @@ export default function DirectoryView({
       className="space-y-0"
       wrapperClassName="p-4 md:px-6 md:py-5 lg:px-8 lg:py-6"
     >
-      <div className="flex flex-col gap-y-3 md:flex-row md:items-center md:space-x-2">
+      <div className="flex flex-col gap-y-3 md:flex-row md:items-center md:gap-2">
         <Search className="flex-1" />
         <div className="flex w-full items-center gap-x-2 md:w-auto">
           <SortSelect
@@ -373,10 +373,10 @@ export default function DirectoryView({
                   <div className="text-h6 text-primary col-span-5 flex">
                     {tDirectoryView("headers.file_name")}
                   </div>
-                  <div className="text-h6 text-primary col-span-3 text-left">
+                  <div className="text-h6 text-primary col-span-3 text-start">
                     {tDirectoryView("headers.size")}
                   </div>
-                  <div className="text-h6 text-primary col-span-3 text-left">
+                  <div className="text-h6 text-primary col-span-3 text-start">
                     {tDirectoryView("headers.last_modified")}
                   </div>
                   <div className="text-h6 text-primary col-span-1 text-center"></div>
@@ -386,16 +386,16 @@ export default function DirectoryView({
                   <div className="text-h6 text-primary col-span-4 flex">
                     {tDirectoryView("headers.title")}
                   </div>
-                  <div className="text-h6 text-primary col-span-2 text-left">
+                  <div className="text-h6 text-primary col-span-2 text-start">
                     {tDirectoryView("headers.slug")}
                   </div>
                   <div className="text-h6 text-primary col-span-4 text-center">
                     {tDirectoryView("headers.last_update")}
                   </div>
-                  <div className="text-h6 text-primary col-span-1 text-left">
+                  <div className="text-h6 text-primary col-span-1 text-start">
                     {tDirectoryView("headers.status")}
                   </div>
-                  <div className="text-h6 text-primary col-span-1 text-left"></div>
+                  <div className="text-h6 text-primary col-span-1 text-start"></div>
                 </>
               )}
             </div>

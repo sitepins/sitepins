@@ -158,13 +158,13 @@ export default function ProjectHeader({ project }: { project?: TProject }) {
       />
 
       {/* Middle: Dynamic Title */}
-      <div className="flex-1 text-left xl:text-center">
+      <div className="flex-1 text-start xl:text-center">
         {middleTitle && (
           <h1 className="flex items-center justify-start text-lg font-semibold xl:justify-center">
             {middleTitle}
             {middleTitle === tCommon("overview") &&
               project?.status === "archived" && (
-                <Badge variant="destructive" className="ml-2">
+                <Badge variant="destructive" className="ms-2">
                   {tCommon("archived")}
                 </Badge>
               )}
@@ -208,7 +208,7 @@ export default function ProjectHeader({ project }: { project?: TProject }) {
                       projectId: project?.project_id,
                     })}
                   >
-                    <item.icon className="mr-2 h-4 w-4" />
+                    <item.icon className="me-2 h-4 w-4" />
                     {item.name}
                   </Link>
                 </DropdownMenuItem>

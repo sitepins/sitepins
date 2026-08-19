@@ -58,7 +58,7 @@ export default function DeleteOrg({
               variant={variant}
               size={"lg"}
             >
-              <Trash2 className="mr-1.5 size-5" />
+              <Trash2 className="me-1.5 size-5" />
               {tOrgGeneralDelete("delete_org_btn")}
             </Button>
           </AlertDialogTrigger>

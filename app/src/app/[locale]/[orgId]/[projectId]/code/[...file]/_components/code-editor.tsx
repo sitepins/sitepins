@@ -21,7 +21,11 @@ import { cn } from "@/lib/utils/cn";
 import { configureMonacoLoader } from "@/lib/utils/monaco";
 import { normalizePath } from "@/lib/utils/normalize-path";
 import { isGitLabProvider } from "@/lib/utils/provider-checker";
-import { applyShikiToMonaco, preloadShiki } from "@/lib/utils/shiki";
+import {
+  applyShikiToMonaco,
+  hasShikiHighlighter,
+  preloadShiki,
+} from "@/lib/utils/shiki";
 import { selectConfig } from "@/redux/features/config/slice";
 import { useUpdateGitHubFilesMutation } from "@/redux/features/github";
 import { useUpdateGitLabFilesMutation } from "@/redux/features/gitlab";
@@ -92,7 +96,13 @@ export default function CodeEditor({
   const [shikiReady, setShikiReady] = useState(false);
 
   useEffect(() => {
-    preloadShiki().then(() => setShikiReady(true));
+    preloadShiki()
+      .catch((err) => {
+        logger.warn("Failed to preload Shiki:", err);
+      })
+      .finally(() => {
+        setShikiReady(true);
+      });
   }, []);
 
   const monacoEditorRef = useRef<Parameters<OnMount>[0] | null>(null);
@@ -105,10 +115,15 @@ export default function CodeEditor({
   const { activeUsers } = usePresence(orgId, projectId, filePath);
 
   const { resolvedTheme } = useTheme();
-  // Derive monacoTheme only when resolvedTheme is known. While undefined
-  // (server render + first hydration pass), Monaco is not rendered at all so
-  // the skeleton fills the gap — no light-flash on dark-mode hard reload.
-  const monacoTheme = resolvedTheme === "dark" ? "dark-plus" : "light-plus";
+  // Derive monacoTheme: use Shiki theme if ready and available, else fall back to built-in vs/vs-dark
+  const monacoTheme =
+    shikiReady && hasShikiHighlighter()
+      ? resolvedTheme === "dark"
+        ? "dark-plus"
+        : "light-plus"
+      : resolvedTheme === "dark"
+        ? "vs-dark"
+        : "vs";
 
   const hasChanges = value !== savedContent;
 
@@ -226,7 +241,7 @@ export default function CodeEditor({
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle className="flex items-center">
-              <TriangleAlert className="text-destructive mr-2" />
+              <TriangleAlert className="text-destructive me-2" />
               {tEditor("code.discard_title")}
             </AlertDialogTitle>
             <AlertDialogDescription>
@@ -247,21 +262,21 @@ export default function CodeEditor({
       <div className="bg-background sticky top-0 z-50 shrink-0">
         {/* Row 1: actions — matches content editor header style */}
         <header className="border-border bg-light flex items-center justify-between border-b px-4 py-4 lg:px-6">
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center gap-3">
             <Button
               variant="ghost"
               size="sm"
-              className="flex items-center md:space-x-2"
+              className="flex items-center gap-2"
               type="button"
               onClick={router.back}
             >
-              <ArrowLeft className="size-4" />
+              <ArrowLeft className="cn-rtl-flip size-4" />
               <span className="hidden md:inline">
                 {tCommon("actions.back")}
               </span>
             </Button>
 
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center gap-2">
               {fileIcon}
               <h1 className="text-text-dark max-w-55 truncate text-base font-bold sm:max-w-none sm:text-lg">
                 {fileName}
@@ -274,7 +289,7 @@ export default function CodeEditor({
             </div>
           </div>
 
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center gap-3">
             <PresenceAvatars users={activeUsers} />
 
             {config.repoName && config.branch && config.token && (
@@ -325,7 +340,9 @@ export default function CodeEditor({
               const pathToSegment = array.slice(0, index + 1).join("/");
               return (
                 <div key={index} className="flex items-center">
-                  {index > 0 && <ChevronRight className="h-3 w-3 min-w-3" />}
+                  {index > 0 && (
+                    <ChevronRight className="cn-rtl-flip h-3 w-3 min-w-3" />
+                  )}
                   {isLast ? (
                     <span className="max-w-30 truncate font-semibold sm:max-w-none">
                       {segment}
@@ -351,7 +368,7 @@ export default function CodeEditor({
       {/* ── Editor ── */}
       <div className="bg-background border-border relative min-h-0 flex-1 overflow-hidden border-b">
         {!isEditorReady && (
-          <div className="absolute inset-0 flex space-x-4 p-4">
+          <div className="absolute inset-0 flex gap-4 p-4">
             <div className="hidden w-10 flex-col space-y-3 pt-1 sm:flex">
               {Array.from({ length: 21 }).map((_, i) => (
                 <Skeleton key={i} className="h-4 w-full opacity-20" />
@@ -376,8 +393,9 @@ export default function CodeEditor({
             is pre-loaded so applyShikiToMonaco runs synchronously in
             beforeMount — no light-flash while the async highlighter loads. */}
         <div
+          dir="ltr"
           className={cn(
-            "h-full w-full transition-opacity duration-300",
+            "h-full w-full text-left transition-opacity duration-300",
             isEditorReady ? "opacity-100" : "opacity-0",
           )}
         >
@@ -455,7 +473,7 @@ export default function CodeEditor({
         {/* Status bar */}
         <div className="border-border bg-light shrink-0 border-t px-4 py-2">
           <div className="text-text flex items-center justify-between text-xs">
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center gap-4">
               <span>{tEditor("code.encoding")}</span>
               <span>
                 {language.charAt(0).toUpperCase() + language.slice(1)}
@@ -469,7 +487,7 @@ export default function CodeEditor({
                 , {tEditor("code.column", { column: 1 })}
               </span>
             </div>
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center gap-4">
               <span>
                 {tEditor("code.lines_count", {
                   count: value.split("\n").length,

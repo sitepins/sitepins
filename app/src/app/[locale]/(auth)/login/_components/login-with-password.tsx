@@ -153,7 +153,7 @@ export default function LoginWithPassword({
             }}
           />
 
-          <div className="text-right">
+          <div className="text-end">
             <Link
               className="text-text-dark my-2 inline-block text-sm hover:underline"
               href={"/forgot-password"}

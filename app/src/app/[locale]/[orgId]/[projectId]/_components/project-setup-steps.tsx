@@ -200,7 +200,7 @@ export default function ProjectSetupSteps({
                     </p>
                   </div>
                 </div>
-                <ChevronRight className="text-muted-foreground size-5" />
+                <ChevronRight className="cn-rtl-flip text-muted-foreground size-5" />
               </div>
             ))}
           </div>
@@ -238,7 +238,7 @@ export default function ProjectSetupSteps({
                 <div>
                   <h4 className="mb-2 text-base font-medium">
                     {tProjectSetupSteps("login_signup")}{" "}
-                    <ExternalLink className="ml-1 inline-block size-4" />
+                    <ExternalLink className="ms-1 inline-block size-4" />
                   </h4>
                   <p className="text-muted-foreground text-sm">
                     <Link
@@ -259,7 +259,7 @@ export default function ProjectSetupSteps({
                 <div>
                   <h4 className="mb-2 text-base font-medium">
                     {tProjectSetupSteps("deploy_to_vercel")}{" "}
-                    <Rocket className="ml-1 inline-block size-4" />
+                    <Rocket className="ms-1 inline-block size-4" />
                   </h4>
                   <p className="text-muted-foreground text-sm">
                     <Link

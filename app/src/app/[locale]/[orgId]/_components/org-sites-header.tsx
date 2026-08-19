@@ -35,7 +35,7 @@ const OrgSitesHeader = ({
       <div className="flex items-center gap-2">
         {/* Add New Project */}
         <AddSite orgId={orgId} disabled={isArchived} className="h-10">
-          <Plus className="mr-2 h-4 w-4" />
+          <Plus className="me-2 h-4 w-4" />
           {tAddSite("add_new_site")}
         </AddSite>
       </div>

@@ -27,7 +27,7 @@ export default function LinkExpiredView() {
       </CardHeader>
       <CardContent className="pb-2.5">
         <p className="mb-3 text-sm">
-          <AlertTriangle className="text-destructive mr-2 inline-block size-5" />
+          <AlertTriangle className="text-destructive me-2 inline-block size-5" />
           {tAuth("message")}
         </p>
       </CardContent>

@@ -69,7 +69,7 @@ export default function UpdateNewsletterSubscription({
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="flex items-start space-x-2">
+        <div className="flex items-start gap-2">
           <Checkbox
             id="newsletter-sub"
             checked={checked}

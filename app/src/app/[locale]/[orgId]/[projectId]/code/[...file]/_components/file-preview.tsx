@@ -53,7 +53,7 @@ export default function FilePreview({
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center gap-3">
               <FileText className="text-muted-foreground size-6" />
               <div>
                 <CardTitle className="text-lg">{fileName}</CardTitle>
@@ -61,7 +61,7 @@ export default function FilePreview({
               </div>
             </div>
 
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center gap-2">
               <Badge variant="muted">{language}</Badge>
               <Link href={`/org-${orgId}/${projectId}/code/${filePath}`}>
                 <Button className="gap-2">
@@ -75,14 +75,14 @@ export default function FilePreview({
 
         <CardContent>
           <div className="space-y-4">
-            <div className="text-muted-foreground flex items-center space-x-6 text-sm">
+            <div className="text-muted-foreground flex items-center gap-6 text-sm">
               <span>Lines: {lines}</span>
               <span>Characters: {chars}</span>
               <span>Language: {language}</span>
             </div>
 
             <div className="bg-muted/30 rounded-lg border p-4">
-              <div className="mb-3 flex items-center space-x-2">
+              <div className="mb-3 flex items-center gap-2">
                 <Eye className="size-4" />
                 <span className="text-sm font-medium">Preview</span>
               </div>

@@ -74,9 +74,9 @@ export const RawEditor = ({
       className={`raw-markdown-editor [&_.monaco-editor-background]:bg-background! [&_.monaco-editor_.margin]:bg-background! [&_.monaco-editor_.overflow-guard]:bg-background! [&_.monaco-editor]:bg-background! relative flex h-fit flex-col rounded ${isMobile ? "" : "pt-4 lg:pt-6"}`}
     >
       <div
-        className={`scrollbar-hide bg-background border-border before:bg-background @container/toolbar sticky top-0 left-0 z-50 flex min-h-10 w-auto items-stretch justify-between overflow-x-auto rounded-lg border p-1 before:pointer-events-none before:absolute before:inset-x-0 before:-top-4 before:h-4 lg:before:-top-6 lg:before:h-6 ${isMobile ? "" : "mx-4 lg:mx-6"}`}
+        className={`scrollbar-hide bg-background border-border before:bg-background @container/toolbar sticky inset-s-0 top-0 z-50 flex min-h-10 w-auto items-stretch justify-between overflow-x-auto rounded-lg border p-1 before:pointer-events-none before:absolute before:inset-x-0 before:-top-4 before:h-4 lg:before:-top-6 lg:before:h-6 ${isMobile ? "" : "mx-4 lg:mx-6"}`}
       >
-        <div className="mr-1.5 ml-auto flex items-stretch self-stretch">
+        <div className="ms-auto me-1.5 flex items-stretch self-stretch">
           <button
             className={cn(
               "hover:bg-muted hover:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 aria-checked:bg-primary aria-checked:text-primary-foreground aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
@@ -123,7 +123,8 @@ export const RawEditor = ({
         </div>
       </div>
       <div
-        className={`relative px-0 pt-4 ${isMobile ? "" : "lg:pt-6"} ${isMobile ? "h-[calc(100vh-215px)]" : "h-[calc(100vh-152px)]"}`}
+        dir="ltr"
+        className={`relative px-0 pt-4 text-left ${isMobile ? "" : "lg:pt-6"} ${isMobile ? "h-[calc(100vh-215px)]" : "h-[calc(100vh-152px)]"}`}
       >
         <MonacoEditor
           key="raw-editor"

@@ -19,10 +19,8 @@ export default function ContentAnalysis({ content }: { content: string }) {
         className="border-border rounded-lg border bg-white px-4 last:border-b dark:bg-transparent"
       >
         <AccordionTrigger className="text-sm font-normal hover:no-underline">
-          <div className="flex items-center">
-            <span className="mr-2 inline-block">
-              <FileTextIcon className="size-4" />
-            </span>
+          <div className="flex items-center gap-2">
+            <FileTextIcon className="size-4 shrink-0" />
             <span className="font-medium">
               {tEditorSeo("content_analysis")}
             </span>

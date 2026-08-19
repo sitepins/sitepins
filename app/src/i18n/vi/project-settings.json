@@ -110,7 +110,7 @@
       "description": "Quản lý lược đồ nội dung cho dự án của bạn",
       "no_schemas_found": "Không tìm thấy lược đồ nào",
       "create_first_schema": "Tạo lược đồ đầu tiên của bạn bằng cách điều hướng đến thư mục nội dung",
-      "fields_count": "{đếm, số nhiều, =1 {# trường} khác {# trường}}",
+      "fields_count": "{count, plural, other {# trường}}",
       "edit_dialog_title": "Chỉnh sửa lược đồ",
       "edit_dialog_description": "Sửa đổi các trường lược đồ của bạn và thuộc tính của chúng",
       "schema_name_label": "Tên lược đồ",

@@ -103,7 +103,7 @@ export function SnippetControls({
   return (
     <div
       className={`bg-light absolute z-20 flex items-center gap-1 rounded-sm p-1 transition-colors ${
-        isBlock ? "top-3 right-3" : "-top-8 right-0"
+        isBlock ? "inset-e-3 top-3" : "inset-e-0 -top-8"
       } ${className}`}
       contentEditable={false}
       style={{ pointerEvents: "all" }}

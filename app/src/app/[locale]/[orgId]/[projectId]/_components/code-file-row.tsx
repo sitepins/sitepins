@@ -31,7 +31,7 @@ export default function CodeFileRow({ file }: { file: TFiles }) {
       key={file.name}
     >
       <div className="text-secondary-foreground col-span-5 flex h-full items-center justify-between overflow-hidden py-0! text-ellipsis">
-        <div className="grid grid-cols-[auto_1fr] items-center gap-3 pr-2 md:px-4 md:no-underline">
+        <div className="grid grid-cols-[auto_1fr] items-center gap-3 pe-2 md:px-4 md:no-underline">
           {fileIcon}
           <Link
             className="text-foreground group/link inline-flex items-center gap-2 text-sm font-semibold underline-offset-4 hover:underline"
@@ -43,7 +43,7 @@ export default function CodeFileRow({ file }: { file: TFiles }) {
         </div>
       </div>
       <div className="col-span-3 flex items-center justify-between md:text-center">
-        <p className="text-foreground text-left text-sm font-medium">
+        <p className="text-foreground text-start text-sm font-medium">
           <span className="md:hidden">{tDirectoryView("size")}: </span>
           <span className="line-clamp-1 inline md:block">
             {file.size ? `${(file.size / 1024).toFixed(1)} KB` : "-"}
@@ -56,7 +56,7 @@ export default function CodeFileRow({ file }: { file: TFiles }) {
           </p>
         </div>
       </div>
-      <div className="col-span-3 hidden text-left md:block">
+      <div className="col-span-3 hidden text-start md:block">
         <p className="text-foreground text-sm font-medium">
           {commitDate ? dateFormat(commitDate) : tDirectoryView("na")}
         </p>

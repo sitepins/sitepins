@@ -84,7 +84,7 @@ export function SocialAuth({
           onClick={loginWithGithub}
         >
           <SiGithub className="size-5" />
-          <span className="ml-2">{tAuthSocial("github")}</span>
+          <span className="ms-2">{tAuthSocial("github")}</span>
         </Button>
         <Button
           type="button"
@@ -93,11 +93,11 @@ export function SocialAuth({
           onClick={loginWithGoogle}
         >
           <SiGoogle className="size-5" />
-          <span className="ml-2">{tAuthSocial("google")}</span>
+          <span className="ms-2">{tAuthSocial("google")}</span>
         </Button>
       </div>
 
-      <div className="items flex items-center space-x-3 pt-3">
+      <div className="items flex items-center gap-3 pt-3">
         <Separator className="flex-1" />
         <p className="bg-card text-muted-foreground inline-block flex-1 text-sm whitespace-nowrap">
           {tAuthSocial("email")}

@@ -297,7 +297,7 @@ export default function RepoManager({ canUpdate }: { canUpdate?: boolean }) {
       <CardContent>
         {isConnected && !isSelecting ? (
           <div className="border-border flex items-center justify-between rounded-lg border p-4">
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center gap-3">
               <div className="bg-primary/10 text-primary flex size-10 items-center justify-center rounded-lg">
                 <GitBranch className="size-5" />
               </div>
@@ -395,7 +395,7 @@ export default function RepoManager({ canUpdate }: { canUpdate?: boolean }) {
                         <ComboboxItem
                           key={repo.full_name}
                           value={repo.full_name}
-                          className="pl-4"
+                          className="ps-4"
                         >
                           <div className="group flex max-w-full items-center gap-1">
                             <span className="text-nowrap opacity-50">
@@ -424,7 +424,7 @@ export default function RepoManager({ canUpdate }: { canUpdate?: boolean }) {
                 </ComboboxContent>
               </Combobox>
 
-              <FieldDescription className="flex items-center space-x-1 pt-2">
+              <FieldDescription className="flex items-center gap-1 pt-2">
                 <span className="text-muted-foreground text-xs">
                   {tProjectSettingsGitRepo("cant_see_repo")}
                 </span>
@@ -458,8 +458,8 @@ export default function RepoManager({ canUpdate }: { canUpdate?: boolean }) {
                       placeholder={
                         isBranchLoading ? (
                           <div className="relative inline-flex items-center justify-center">
-                            <Loader2 className="absolute left-0 mr-1 inline-block size-4 animate-spin" />
-                            <span className="pl-5">
+                            <Loader2 className="absolute inset-s-0 me-1 inline-block size-4 animate-spin" />
+                            <span className="ps-5">
                               {tProjectSettingsGitRepo("please_wait")}
                             </span>
                           </div>
@@ -496,7 +496,7 @@ export default function RepoManager({ canUpdate }: { canUpdate?: boolean }) {
                 isLoading={isDisconnecting}
                 disabled={isDisconnecting || !canUpdateSettings}
               >
-                <Unplug className="mr-2 size-4" />
+                <Unplug className="me-2 size-4" />
                 {tProjectSettingsGitRepo("disconnect_btn")}
               </Button>
             </AlertDialogTrigger>

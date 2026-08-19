@@ -23,6 +23,7 @@ import {
 } from "@platejs/link/react";
 import { cva } from "class-variance-authority";
 import { ExternalLink, Link, Text, Unlink } from "lucide-react";
+import { useTranslations } from "next-intl";
 import type { TLinkElement } from "platejs";
 import { KEYS } from "platejs";
 import {
@@ -31,7 +32,6 @@ import {
   useFormInputProps,
   usePluginOption,
 } from "platejs/react";
-import { useTranslations } from "next-intl";
 import * as React from "react";
 
 const popoverVariants = cva(
@@ -102,9 +102,9 @@ export function LinkFloatingToolbar({
   if (hidden) return null;
 
   const input = (
-    <div className="flex w-[330px] flex-col" {...inputProps}>
+    <div className="flex w-82.5 flex-col" {...inputProps}>
       <div className="flex items-center">
-        <div className="text-muted-foreground flex items-center pr-1 pl-2">
+        <div className="text-muted-foreground flex items-center ps-2 pe-1">
           <Link className="size-4" />
         </div>
 
@@ -116,7 +116,7 @@ export function LinkFloatingToolbar({
       </div>
       <Separator className="my-1" />
       <div className="flex items-center">
-        <div className="text-muted-foreground flex items-center pr-1 pl-2">
+        <div className="text-muted-foreground flex items-center ps-2 pe-1">
           <Text className="size-4" />
         </div>
         <input

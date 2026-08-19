@@ -2,8 +2,8 @@ import { Skeleton } from "@/layouts/components/ui/skeleton";
 
 export function EditorSkeleton() {
   return (
-    <div className="border-border bg-muted/5 relative h-[200px] w-full overflow-hidden rounded border p-4 shadow-lg">
-      <div className="flex h-full space-x-4">
+    <div className="border-border bg-muted/5 relative h-50 w-full overflow-hidden rounded border p-4 shadow-lg">
+      <div className="flex h-full gap-4">
         {/* Fake gutter */}
         <div className="hidden w-6 flex-col space-y-3 pt-1 sm:flex">
           {Array.from({ length: 3 }).map((_, i) => (
@@ -14,7 +14,7 @@ export function EditorSkeleton() {
         {/* Fake code lines */}
         <div className="flex-1 space-y-3 pt-1">
           {[60, 80, 40].map((width, i) => (
-            <div key={i} className="flex space-x-2">
+            <div key={i} className="flex gap-2">
               <Skeleton
                 className="h-3 rounded-sm"
                 style={{

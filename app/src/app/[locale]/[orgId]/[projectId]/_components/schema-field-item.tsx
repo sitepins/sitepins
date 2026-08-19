@@ -441,7 +441,7 @@ export function FieldItem({
                                 setNewOption("");
                               }}
                             >
-                              <Plus className="mr-2 size-4" />
+                              <Plus className="me-2 size-4" />
                               {tSchema("actions.add_option")}
                             </Button>
                           )}

@@ -109,7 +109,7 @@
       "no_fields": "아직 필드가 없습니다",
       "add_first_field": "아래에 첫 번째 필드를 추가하세요",
       "back_to_fields": "필드로 돌아가기",
-      "field_count": "{개수, 복수형, =0 {0개 필드} 1개 {1개 필드} 기타 {#개 필드}}"
+      "field_count": "{count, plural, =0 {0개 필드} other {#개 필드}}"
     },
     "errors": {
       "name_required": "필드 이름은 필수입니다",

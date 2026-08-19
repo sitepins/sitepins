@@ -58,7 +58,7 @@ export default function OrgHeader() {
       />
 
       {/* Middle: Title */}
-      <div className="flex-1 text-left xl:text-center">
+      <div className="flex-1 text-start xl:text-center">
         <h1 className="flex items-center justify-start text-lg font-semibold xl:justify-center">
           {middleTitle}
         </h1>
@@ -80,7 +80,7 @@ export default function OrgHeader() {
                     orgId: normalizedOrgId,
                   })}
                 >
-                  <item.icon className="mr-2 h-4 w-4" />
+                  <item.icon className="h-4 w-4" />
                   {item.name}
                 </Link>
               </DropdownMenuItem>

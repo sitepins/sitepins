@@ -25,7 +25,7 @@ export function AILeaf(props: PlateTextProps) {
         "transition-all duration-200 ease-in-out",
         isLast &&
           streaming &&
-          'after:bg-primary after:ml-1.5 after:inline-block after:h-3 after:w-3 after:rounded-full after:align-middle after:content-[""]',
+          'after:bg-primary after:ms-1.5 after:inline-block after:h-3 after:w-3 after:rounded-full after:align-middle after:content-[""]',
       )}
       {...props}
     />

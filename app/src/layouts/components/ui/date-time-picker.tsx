@@ -119,13 +119,13 @@ export function DateTimePicker({
           <Button
             variant="outline"
             className={cn(
-              "w-full justify-start text-left font-normal",
+              "w-full justify-start text-start font-normal",
               !date && "text-muted-foreground",
-              date && showClear && "pr-10",
+              date && showClear && "pe-10",
               className,
             )}
           >
-            <Clock className="mr-2 size-4 shrink-0" />
+            <Clock className="me-2 size-4 shrink-0" />
             <span className="truncate">
               {date ? `${formattedDate} at ${formattedTime}` : placeholder}
             </span>
@@ -175,7 +175,7 @@ export function DateTimePicker({
                   onClick={(e) => e.stopPropagation()}
                 />
               </div>
-              <div className="ml-2 grid gap-1">
+              <div className="ms-2 grid gap-1">
                 <Label className="text-xs">AM/PM</Label>
                 <ToggleGroup
                   value={[isAM ? "am" : "pm"]}
@@ -184,13 +184,13 @@ export function DateTimePicker({
                 >
                   <ToggleGroupItem
                     value="am"
-                    className="data-pressed:bg-primary not-data-pressed:bg-muted data-pressed:text-primary-foreground size-9 rounded-lg! rounded-r-none! px-2 text-xs"
+                    className="data-pressed:bg-primary not-data-pressed:bg-muted data-pressed:text-primary-foreground size-9 rounded-lg! rounded-e-none! px-2 text-xs"
                   >
                     AM
                   </ToggleGroupItem>
                   <ToggleGroupItem
                     value="pm"
-                    className="data-pressed:bg-primary not-data-pressed:bg-muted data-pressed:text-primary-foreground size-9 rounded-lg! rounded-l-none! px-2 text-xs"
+                    className="data-pressed:bg-primary not-data-pressed:bg-muted data-pressed:text-primary-foreground size-9 rounded-lg! rounded-s-none! px-2 text-xs"
                   >
                     PM
                   </ToggleGroupItem>

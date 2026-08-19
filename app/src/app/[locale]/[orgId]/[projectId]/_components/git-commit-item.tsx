@@ -73,7 +73,7 @@ export function GitCommitItem({
 
   return (
     <>
-      <div className="border-b-border hover:bg-muted/50 relative flex space-x-3 border-b p-4 transition-colors">
+      <div className="border-b-border hover:bg-muted/50 relative flex gap-3 border-b p-4 transition-colors">
         <Avatar
           email={authorEmail!}
           src={avatarUrl!}
@@ -82,7 +82,7 @@ export function GitCommitItem({
           height={40}
           className="mt-1 hidden size-8! rounded-full sm:flex"
         />
-        <div className="min-w-0 flex-1">
+        <div className="min-w-0 flex-1 pe-20">
           <p className="text-text-dark truncate text-sm font-medium">
             {authorName}
           </p>
@@ -94,8 +94,8 @@ export function GitCommitItem({
           >
             {commitMessage}
           </a>
-          <div className="text-muted-foreground mt-2 flex items-center space-x-3 text-sm">
-            <div className="flex items-center space-x-1">
+          <div className="text-muted-foreground mt-2 flex items-center gap-3 text-sm">
+            <div className="flex items-center gap-1">
               <Clock className="h-4 w-4" />
               <span>
                 {commitDate
@@ -116,7 +116,7 @@ export function GitCommitItem({
                 disabled={isLatest}
                 className="h-8 w-full sm:w-auto"
               >
-                <History className="mr-1 h-3 w-3" />
+                <History className="me-1 h-3 w-3" />
                 {tProjectGit("restore_version")}
               </Button>
             )}
@@ -127,7 +127,7 @@ export function GitCommitItem({
                 onClick={() => handleActionClick("revert")}
                 className="h-8 w-full sm:w-auto"
               >
-                <RotateCcw className="mr-1 h-3 w-3" />
+                <RotateCcw className="me-1 h-3 w-3" />
                 {tProjectGit("undo_commit")}
               </Button>
             )}
@@ -136,7 +136,7 @@ export function GitCommitItem({
         {isDisplayableDeploymentStatus(deploymentStatus) && (
           <Badge
             variant={getDeploymentStatusVariant(deploymentStatus)}
-            className="absolute top-4 right-4 capitalize"
+            className="absolute inset-e-4 top-4 capitalize"
           >
             {deploymentStatus}
           </Badge>

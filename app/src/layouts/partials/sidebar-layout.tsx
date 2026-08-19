@@ -92,7 +92,7 @@ export function SidebarLayout({
   return (
     <aside
       className={cn(
-        "bg-light border-r-border sticky top-0 left-0 flex h-full w-full max-w-70 flex-col border-r xl:fixed xl:top-0 xl:left-0 xl:z-20 xl:h-screen",
+        "bg-light border-e-border sticky inset-s-0 top-0 flex h-full w-full max-w-70 flex-col border-e xl:fixed xl:inset-s-0 xl:top-0 xl:z-20 xl:h-screen",
         className,
       )}
       {...rest}
@@ -148,8 +148,8 @@ export function SidebarMenu({
   items,
   listClassName,
   itemClassName,
-  linkClassName = "text-text-dark hover:bg-background/50 flex items-center rounded-lg py-2.5 pr-3 pl-4 text-sm font-medium transition-colors",
-  iconClassName = "mr-1.5 size-5",
+  linkClassName = "text-text-dark hover:bg-background/50 flex items-center gap-1.5 rounded-lg py-2.5 pe-3 ps-4 text-sm font-medium transition-colors",
+  iconClassName = "size-5",
   labelClassName,
   activeClassName = "bg-background",
 }: SidebarMenuProps) {
@@ -209,7 +209,7 @@ function SidebarCloseButton() {
         type="button"
         className="hover:bg-background border-border relative flex w-full items-center justify-center border-b py-4 transition-colors xl:hidden"
       >
-        <ChevronLeft className="absolute left-4 size-5" />
+        <ChevronLeft className="cn-rtl-flip absolute inset-s-4 size-5" />
         <h2 className="text-sm font-semibold">{tSidebar("actions.close")}</h2>
       </button>
     </SheetClose>

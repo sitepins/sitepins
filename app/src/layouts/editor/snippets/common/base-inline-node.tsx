@@ -45,7 +45,7 @@ export const BaseInlineSnippet = withRef<
         "relative inline-flex items-center gap-1.5 rounded-md border-2 transition-all",
         theme.border,
         theme.bg,
-        "py-1 pr-10 pl-2.5 font-mono text-sm leading-none",
+        "py-1 ps-2.5 pe-10 font-mono text-sm leading-none",
         selected && focused && "ring-2 ring-purple-400 ring-offset-2",
         className,
       )}
@@ -54,7 +54,7 @@ export const BaseInlineSnippet = withRef<
       <SnippetControls
         element={element}
         isBlock={false}
-        className="top-1/2 right-0.5 -translate-y-1/2 scale-75"
+        className="inset-e-0.5 top-1/2 -translate-y-1/2 scale-75"
         code=""
       />
 

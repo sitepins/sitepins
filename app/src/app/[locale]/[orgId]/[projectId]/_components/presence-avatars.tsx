@@ -1,12 +1,12 @@
 "use client";
 
+import Avatar from "@/components/avatar";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { type PresenceUser } from "@/hooks/use-presence";
-import Avatar from "@/components/avatar";
 import { cn } from "@/lib/utils/cn";
 
 const MAX_VISIBLE = 3;
@@ -39,7 +39,7 @@ export default function PresenceAvatars({ users }: { users: PresenceUser[] }) {
 
   return (
     <div className="flex items-center">
-      <div className="flex -space-x-2">
+      <div className="flex -space-x-2 rtl:space-x-reverse">
         {visible.map((user) => {
           const color = getColorForUser(user.id);
           return (
@@ -62,7 +62,7 @@ export default function PresenceAvatars({ users }: { users: PresenceUser[] }) {
                   />
                   {/* Online pulse dot */}
                   <span
-                    className="absolute -right-0.5 -bottom-0.5 size-2.5 rounded-full border-2 border-white dark:border-gray-900"
+                    className="absolute -inset-e-0.5 -bottom-0.5 size-2.5 rounded-full border-2 border-white dark:border-gray-900"
                     style={{ backgroundColor: "#22c55e" }}
                   />
                 </div>

@@ -176,7 +176,7 @@ export function FileOperation({
         {children && (
           <AlertDialogTrigger asChild>
             <Button
-              className="relative flex w-full items-center justify-start px-2 py-1.5 text-left select-none focus-visible:ring-0 focus-visible:outline-none"
+              className="relative flex w-full items-center justify-start px-2 py-1.5 text-start select-none focus-visible:ring-0 focus-visible:outline-none"
               variant="ghost"
             >
               {children}
@@ -343,7 +343,7 @@ export function FileOperation({
         {children && (
           <AlertDialogTrigger asChild>
             <Button
-              className="relative flex w-full items-center justify-start px-2 py-1.5 text-left select-none focus-visible:ring-0 focus-visible:outline-none"
+              className="relative flex w-full items-center justify-start px-2 py-1.5 text-start select-none focus-visible:ring-0 focus-visible:outline-none"
               variant="ghost"
             >
               {children}
@@ -380,7 +380,7 @@ export function FileOperation({
       {children && (
         <AlertDialogTrigger asChild>
           <Button
-            className="relative flex w-full items-center justify-start px-2 py-1.5 text-left select-none focus-visible:ring-0 focus-visible:outline-none"
+            className="relative flex w-full items-center justify-start px-2 py-1.5 text-start select-none focus-visible:ring-0 focus-visible:outline-none"
             variant="ghost"
           >
             {children}

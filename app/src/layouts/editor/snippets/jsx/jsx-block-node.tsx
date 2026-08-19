@@ -75,10 +75,10 @@ export const JsxBlockElement = ({
         theme={theme}
         label="CODE"
         className={className}
-        contentClassName="border-none pl-0"
+        contentClassName="border-none ps-0"
         {...restProps}
       >
-        <div className="pl-0">
+        <div className="ps-0">
           <EditableTagLine
             text={content || `<${name} />`}
             propName="opening"

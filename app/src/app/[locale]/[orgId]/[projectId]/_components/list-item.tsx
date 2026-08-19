@@ -24,7 +24,7 @@ export default function ListItem({
       dragListener={false}
       dragControls={dragControls}
       className={cn(
-        "bg-background flex cursor-grab items-center px-2 py-2 pl-2 last:border-b-0",
+        "bg-background flex cursor-grab items-center px-2 py-2 last:border-b-0",
         className,
       )}
     >

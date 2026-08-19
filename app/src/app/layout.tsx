@@ -2,6 +2,7 @@ import { AppProviders } from "@/helpers/app-providers";
 import { PartneroScript } from "@/helpers/partnero-script";
 import config from "@/lib/config";
 import MaintenanceScreen from "@/partials/maintenance";
+import { getDirection } from "@/lib/i18n/direction";
 import "@/styles/main.css";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
@@ -28,7 +29,12 @@ export default async function RootLayout({
   const locale = await getLocale();
 
   return (
-    <html suppressHydrationWarning lang={locale} className="overflow-x-hidden">
+    <html
+      suppressHydrationWarning
+      lang={locale}
+      dir={getDirection(locale)}
+      className="overflow-x-hidden"
+    >
       <head>
         {/* responsive meta */}
         <meta

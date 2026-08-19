@@ -276,7 +276,7 @@ export default function SeoAnalysis({
                   <Info className="size-4" />
                 </button>
               </TooltipTrigger>
-              <TooltipContent side="left" className="max-w-64 text-left">
+              <TooltipContent side="left" className="max-w-64 text-start">
                 {tEditorSeo("focus_keyword_help")}
               </TooltipContent>
             </Tooltip>
@@ -307,7 +307,7 @@ export default function SeoAnalysis({
                     <span>{category.title}</span>
                     <Badge
                       variant="muted"
-                      className="bg-background/80 text-text ml-auto text-xs font-normal"
+                      className="bg-background/80 text-text ms-auto text-xs font-normal"
                     >
                       {category.count}
                     </Badge>
@@ -337,7 +337,7 @@ export default function SeoAnalysis({
                               </TooltipTrigger>
                               <TooltipContent
                                 side="left"
-                                className="max-w-64 text-left"
+                                className="max-w-64 text-start"
                               >
                                 {tEditorSeo(
                                   `explanations.${getMetricExplanationKey(result.metricKey)}`,
@@ -383,7 +383,7 @@ export default function SeoAnalysis({
                         )}
 
                         {result.tip && (
-                          <div className="text-muted-foreground border-border/60 mt-3 border-l-2 pl-3 text-xs">
+                          <div className="text-muted-foreground border-border/60 mt-3 border-s-2 ps-3 text-xs">
                             <span className="font-medium not-italic">
                               {tEditorSeo("recommendation")}
                             </span>
@@ -416,7 +416,7 @@ export default function SeoAnalysis({
             <button
               type="button"
               onClick={() => setShowUpgrade(true)}
-              className="border-border bg-light/50 hover:bg-light flex w-full items-center gap-2 rounded-lg border border-dashed px-4 py-3 text-left text-sm transition-colors"
+              className="border-border bg-light/50 hover:bg-light flex w-full items-center gap-2 rounded-lg border border-dashed px-4 py-3 text-start text-sm transition-colors"
             >
               <Lock className="text-muted-foreground size-4 shrink-0" />
               <span className="min-w-0">

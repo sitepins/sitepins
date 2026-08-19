@@ -148,7 +148,7 @@ function MemberListItem({
 
   return (
     <div className="group hover:bg-muted/50 flex flex-col gap-4 px-4 py-4 transition-colors md:flex-row md:items-center md:justify-between">
-      <div className="flex items-center space-x-4">
+      <div className="flex items-center gap-4">
         <Avatar
           className="bg-light border-border size-10 rounded-full border object-cover object-center shadow-sm"
           width={40}
@@ -248,7 +248,7 @@ function AddMemberDialog({
         </DialogHeader>
         <form
           id="add-team-member-form"
-          className="mt-4 space-y-3 text-left"
+          className="mt-4 space-y-3 text-start"
           onSubmit={form.handleSubmit(onSubmit)}
         >
           <FieldGroup>

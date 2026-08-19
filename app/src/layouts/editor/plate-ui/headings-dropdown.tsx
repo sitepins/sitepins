@@ -127,7 +127,7 @@ export function HeadingsMenu(props: DropdownMenuProps) {
                 key={itemValue}
                 value={itemValue}
               >
-                <Icon className="mr-2 size-5" />
+                <Icon className="me-2 size-5" />
                 {label}
               </DropdownMenuRadioItem>
             ))}

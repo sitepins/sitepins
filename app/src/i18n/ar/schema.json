@@ -1,0 +1,119 @@
+{
+  "schema": {
+    "types": {
+      "string": "سلسلة",
+      "number": "رقم",
+      "boolean": "منطقية",
+      "media": "وسائل الإعلام",
+      "gallery": "معرض",
+      "array": "صفيف",
+      "date": "التاريخ",
+      "object": "كائن"
+    },
+    "fields": {
+      "label": "التسمية",
+      "name": "الاسم",
+      "type": "نوع الحقل",
+      "placeholder": {
+        "type": "اختر النوع",
+        "label": "على سبيل المثال، العنوان",
+        "name": "auto_generated"
+      },
+      "description": "الوصف",
+      "default_value": "القيمة الافتراضية",
+      "boolean": {
+        "true": "صحيح",
+        "false": "خطأ"
+      },
+      "input_style": {
+        "label": "نمط الإدخال",
+        "placeholder": "اختر نمط الإدخال",
+        "options": {
+          "standard_text": "مربع نص قياسي",
+          "standard_table": "الجدول القياسي",
+          "dropdown": "اختيار القائمة المنسدلة",
+          "multi_dropdown": "القائمة المنسدلة متعددة التحديد"
+        }
+      }
+    },
+    "configuration": {
+      "title": "التكوين الميداني",
+      "dropdown": {
+        "title": "تكوين القائمة المنسدلة",
+        "multi_title": "تكوين متعدد التحديد",
+        "source": "المصدر",
+        "source_placeholder": "اختر المصدر",
+        "sources": {
+          "static": "الخيارات الثابتة",
+          "folder": "الملفات من المجلد",
+          "file": "البيانات من الملف"
+        },
+        "static": {
+          "placeholder": "أدخل قيمة الخيار"
+        },
+        "folder": {
+          "path": "مسار المجلد",
+          "path_placeholder": "حدد مجلدًا",
+          "display_field": "حقل العرض (مفتاح المادة الأمامية)",
+          "field_placeholder": "على سبيل المثال العنوان (الافتراضي لاسم الملف)",
+          "loading_fields": "جارٍ تحميل الحقول...",
+          "default_field": "اسم الملف (افتراضي)",
+          "include_pattern": "تضمين النمط (الكرة الأرضية)",
+          "include_placeholder": "على سبيل المثال *.MD",
+          "exclude_pattern": "استبعاد النمط (الكرة الأرضية)",
+          "exclude_placeholder": "على سبيل المثال مؤشر.MD"
+        },
+        "file": {
+          "path": "مسار الملف (JSON/YAML/TOML)",
+          "path_placeholder": "حدد ملفًا",
+          "data_key": "مفتاح البيانات (الحقل المراد استخراجه)",
+          "key_placeholder": "على سبيل المثال الفئات أو الاسم",
+          "default_key": "استخراج الملف/المصفوفة بأكملها"
+        }
+      }
+    },
+    "array": {
+      "label": "مجموعة من",
+      "placeholder": "اختر النوع الفرعي"
+    },
+    "nested": {
+      "title": "الحقول المتداخلة",
+      "add_button": "إضافة حقل متداخل"
+    },
+    "date": {
+      "default_value": "القيمة الافتراضية",
+      "mode_placeholder": "اختر الوضع",
+      "static": "تاريخ محدد",
+      "dynamic": "التاريخ الحالي (مباشر)",
+      "empty": "فارغ",
+      "select_initial": "حدد التاريخ الأولي",
+      "today": "اليوم"
+    },
+    "actions": {
+      "add_option": "إضافة خيار",
+      "add_field": "إضافة حقل",
+      "update_field": "تحديث الحقل",
+      "enter_option": "أدخل الخيار",
+      "include": "تضمين",
+      "ignore": "تجاهل"
+    },
+    "builder": {
+      "add_new_field": "إضافة حقل جديد",
+      "configure_properties": "تكوين خصائص الحقل الجديد",
+      "field_settings": "إعدادات المجال",
+      "required": "مطلوب",
+      "show": "عرض",
+      "hide": "إخفاء",
+      "no_field_selected": "لم يتم تحديد أي حقل",
+      "select_to_edit": "حدد حقلاً من القائمة لتحرير إعداداته",
+      "no_fields": "لا توجد حقول بعد",
+      "add_first_field": "أضف حقلك الأول أدناه",
+      "back_to_fields": "العودة إلى الحقول",
+      "field_count": "{count, plural, =0 {0 حقول} one {1 حقل} other {# حقول}}"
+    },
+    "errors": {
+      "name_required": "اسم الحقل مطلوب",
+      "name_exists": "اسم الحقل موجود بالفعل"
+    }
+  }
+}

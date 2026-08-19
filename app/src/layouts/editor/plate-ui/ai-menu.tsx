@@ -852,7 +852,7 @@ export function AILoadingBar() {
         >
           <PauseIcon className="h-4 w-4" />
           {tEditorAi("stop")}
-          <kbd className="bg-border text-muted-foreground ml-1 rounded px-1 font-mono text-[10px] shadow-sm">
+          <kbd className="bg-border text-muted-foreground ms-1 rounded px-1 font-mono text-[10px] shadow-sm">
             Esc
           </kbd>
         </Button>

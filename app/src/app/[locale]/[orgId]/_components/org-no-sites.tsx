@@ -23,7 +23,7 @@ export default function OrgNoSites({ orgId }: Props) {
           Connect your existing website to get started in minutes.
         </p>
         <AddSite className="mt-5" orgId={`${orgId}`} disabled={isArchived}>
-          <Plus className="mr-2 h-4 w-4" />
+          <Plus className="me-2 h-4 w-4" />
           Add New Site
         </AddSite>
       </div>

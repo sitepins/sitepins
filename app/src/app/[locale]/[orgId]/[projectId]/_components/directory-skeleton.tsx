@@ -23,7 +23,7 @@ export default function DirectorySkeleton({
       wrapperClassName="p-4 md:px-6 md:py-5 lg:px-8 lg:py-6"
     >
       {/* Action Bar Skeleton */}
-      <div className="flex flex-col gap-y-3 md:flex-row md:items-center md:space-x-2">
+      <div className="flex flex-col gap-y-3 md:flex-row md:items-center md:gap-2">
         <div className="flex-1">
           <Skeleton className="h-10 w-full rounded-md" />
         </div>
@@ -44,10 +44,10 @@ export default function DirectorySkeleton({
                     <TableHead className="w-[45%]">
                       <Skeleton className="h-4 w-20" />
                     </TableHead>
-                    <TableHead className="hidden w-[25%] text-left sm:table-cell">
+                    <TableHead className="hidden w-[25%] text-start sm:table-cell">
                       <Skeleton className="h-4 w-12" />
                     </TableHead>
-                    <TableHead className="hidden w-[25%] text-left sm:table-cell">
+                    <TableHead className="hidden w-[25%] text-start sm:table-cell">
                       <Skeleton className="h-4 w-24" />
                     </TableHead>
                     <TableHead className="w-[5%]" />
@@ -57,13 +57,13 @@ export default function DirectorySkeleton({
                     <TableHead className="w-[40%]">
                       <Skeleton className="h-4 w-16" />
                     </TableHead>
-                    <TableHead className="hidden w-[20%] text-left sm:table-cell">
+                    <TableHead className="hidden w-[20%] text-start sm:table-cell">
                       <Skeleton className="h-4 w-12" />
                     </TableHead>
                     <TableHead className="hidden w-[30%] text-center sm:table-cell">
                       <Skeleton className="h-4 w-24" />
                     </TableHead>
-                    <TableHead className="w-[5%] text-left">
+                    <TableHead className="w-[5%] text-start">
                       <Skeleton className="h-4 w-12" />
                     </TableHead>
                     <TableHead className="w-[5%]" />

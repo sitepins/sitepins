@@ -176,7 +176,7 @@ export default function AISettings() {
                 <div className="relative">
                   <Input
                     id="ai-api-key"
-                    className="pr-10"
+                    className="pe-10"
                     value={aiCredential.apiKey}
                     onChange={handleChangeValue}
                     placeholder={tDashboardAiAgent("api_key_placeholder")}
@@ -187,7 +187,7 @@ export default function AISettings() {
                   <Button
                     size="icon"
                     variant="ghost"
-                    className="absolute top-0.75 right-0.75 bottom-0.75 h-auto rounded-r-md"
+                    className="absolute inset-e-0.75 top-0.75 bottom-0.75 h-auto rounded-e-md"
                     onClick={toggleKeyVisibility}
                     type="button"
                   >
@@ -224,13 +224,8 @@ export default function AISettings() {
           </CardContent>
           <CardFooter className="flex justify-between">
             {initialAiCredential.apiKey && (
-              <Button
-                variant="destructive"
-                onClick={deleteKey}
-                type="button"
-                className="mr-auto"
-              >
-                <Trash className="mr-2 size-4" />
+              <Button variant="destructive" onClick={deleteKey} type="button">
+                <Trash className="me-2 size-4" />
                 {tDashboardAiAgent("delete_key")}
               </Button>
             )}
@@ -242,7 +237,7 @@ export default function AISettings() {
                 !isDirty
               }
               type="submit"
-              className="ml-auto"
+              className="ms-auto"
             >
               {tDashboardAiAgent("save_changes")}
             </Button>

@@ -32,7 +32,7 @@ export default function Loading({
         aria-label={ariaLabel || tCommon("status.loading")}
       />
       {message && (
-        <span className="text-muted-foreground ml-2 text-sm">{message}</span>
+        <span className="text-muted-foreground ms-2 text-sm">{message}</span>
       )}
     </div>
   );

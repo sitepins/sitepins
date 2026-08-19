@@ -54,7 +54,7 @@ export default function ForgotPasswordView({
       <CardContent>
         <form
           id="form-reset-pass"
-          className="space-y-4 text-left"
+          className="space-y-4 text-start"
           onSubmit={form.handleSubmit(onSubmit)}
         >
           <FieldGroup>

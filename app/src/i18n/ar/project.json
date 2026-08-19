@@ -1,0 +1,131 @@
+{
+  "project": {
+    "activity": {
+      "recent_file_changes": "تغييرات الملف الأخيرة",
+      "latest_activity": "أحدث نشاط لك أو لفريقك",
+      "updated": "تم التحديث",
+      "created": "تم إنشاؤها",
+      "deleted": "تم الحذف",
+      "renamed": "تمت إعادة تسميته",
+      "duplicated": "مكررة",
+      "no_more": "لا أكثر",
+      "load_more": "تحميل المزيد"
+    },
+    "branching": {
+      "incoming_request": "طلب {provider} وارد",
+      "merge": "دمج",
+      "details": "التفاصيل",
+      "changes_detected": "تم اكتشاف التغييرات",
+      "view_request": "عرض الطلب",
+      "create_request": "قم بإنشاء طلب {provider}",
+      "title": "العنوان",
+      "description_optional": "الوصف (اختياري)",
+      "placeholder_title": "عنوان الميزة",
+      "placeholder_description": "وصف التغييرات الخاصة بك...",
+      "merge_into": "دمج {head} في {base}",
+      "merge_description": "دمج التغييرات من {head} إلى {base}",
+      "success_created": "تم إنشاء {type} بنجاح!",
+      "success_merged": "تم دمج {branch} بنجاح!",
+      "error_create": "فشل في إنشاء {type}",
+      "error_merge": "فشل الدمج",
+      "permission_error_title": "خطأ في إذن تطبيق GitHub",
+      "permission_error_description": "يحتاج تطبيق GitHub الخاص بك إلى إذن \"سحب الطلبات: الكتابة\". يرجى قبول الأذونات الجديدة في إعدادات GitHub.",
+      "review": "مراجعة",
+      "switcher": {
+        "placeholder": "فرع البحث...",
+        "no_results": "لم يتم العثور على فرع.",
+        "default": "default",
+        "create_new": "إنشاء فرع جديد"
+      },
+      "create": {
+        "title": "إنشاء فرع جديد",
+        "desc": "أنشئ فرعًا جديدًا من <branch>{branchName}</branch>",
+        "label": "اسم الفرع",
+        "placeholder": "على سبيل المثال التدريج",
+        "submit": "إنشاء فرع",
+        "error": {
+          "required": "اسم الفرع مطلوب",
+          "sha": "تعذر العثور على الفرع الأساسي SHA",
+          "failed": "فشل في إنشاء فرع جديد"
+        },
+        "success": "تم إنشاء الفرع {name} بنجاح!"
+      },
+      "status": {
+        "on_default": "أنت في الفرع الافتراضي: {branch}",
+        "ahead": "{branch} يسبق {base}."
+      }
+    },
+    "git": {
+      "recent_activities": "أنشطة جيت الأخيرة",
+      "recent_commits": "الالتزامات الأخيرة إلى المستودع الخاص بك",
+      "revert": "العودة",
+      "reset": "إعادة تعيين",
+      "commit": "ارتكاب",
+      "restore_version": "استعادة النسخة",
+      "undo_commit": "التراجع عن الالتزام",
+      "admin_only": "يمكن للمسؤولين والمالكين فقط تنفيذ هذا الإجراء",
+      "restore_title": "استعادة إلى هذا الإصدار",
+      "restore_description_github": "سيؤدي هذا إلى العودة بالزمن إلى الوراء لمعرفة الشكل الذي كان يبدو عليه موقعك في هذه اللحظة بالضبط. ستتم إزالة أي تغييرات تم إجراؤها بعد هذا الإصدار.",
+      "restore_description_gitlab": "سيؤدي هذا إلى إعادة موقعك إلى ما كان عليه في هذه اللحظة بالضبط. سنقوم بإنشاء تحديث جديد لتحقيق ذلك، حتى يظل سجلك آمنًا.",
+      "restore_warning_github": "⚠️ تحذير: هذا تغيير دائم. سيتم حذف كافة التحديثات الأحدث من هذا الفرع. استخدم هذا فقط إذا كنت تريد تجاهل العمل الأخير تمامًا.",
+      "restore_warning_gitlab": "✓ هذا آمن. لن يتم حذف عملك الأخير؛ نقوم فقط بإنشاء إصدار جديد بناءً على هذا الإصدار القديم.",
+      "undo_title": "التراجع عن هذا الالتزام",
+      "undo_description": "سيؤدي هذا إلى إنشاء تحديث جديد يعكس كل ما تم تغييره في هذا الإصدار المحدد.",
+      "undo_warning": "✓ هذا آمن! سنضيف إصدارًا جديدًا إلى سجلك يلغي هذه التغييرات المحددة، مع الحفاظ على كل شيء آخر كما هو.",
+      "feedback": {
+        "reset_success": "تمت إعادة تعيين الفرع إلى {sha} بنجاح!",
+        "revert_success": "الالتزام عاد! الالتزام الجديد: {sha}",
+        "revert_failed": "فشل في العودة"
+      },
+      "actions": {
+        "restoring": "استعادة",
+        "undoing": "التراجع",
+        "confirm_restore": "تأكيد الاستعادة",
+        "confirm_undo": "تأكيد التراجع"
+      },
+      "commit_messages": {
+        "add_file": "أضف {name}",
+        "rename_file": "إعادة تسمية الملف {name}",
+        "delete_file": "حذف الملف {name}",
+        "duplicate_file": "ملف مكرر {name}",
+        "create_schema": "إنشاء المخطط {name}",
+        "update_schema": "تحديث المخطط {name}",
+        "delete_schema": "حذف المخطط {name}",
+        "update_config": "تحديث تكوينات الموقع"
+      }
+    },
+    "setup-steps": {
+      "getting_started": "البدء",
+      "description": "أكمل هذه الخطوات لإعداد Sitepins ونشر المحتوى الأول الخاص بك",
+      "progress": "التقدم",
+      "progress_count": "{completed} من {total}",
+      "steps": {
+        "add_site": {
+          "title": "إضافة موقع جديد",
+          "description": "تم إنشاء موقعك وهو جاهز للتكوين"
+        },
+        "configure_project": {
+          "title": "تكوين المشروع",
+          "description": "قم بإعداد بنية المستودع الخاص بك (مجلد المحتوى، وجذر الوسائط، وما إلى ذلك)"
+        },
+        "publish_content": {
+          "title": "نشر المحتوى الأول",
+          "description": "انشر المحتوى الأول الخاص بك من اللوحة اليمنى"
+        },
+        "deploy_site": {
+          "title": "نشر الموقع",
+          "description": "انشر موقعك على Vercel لأول مرة"
+        }
+      },
+      "edit_config": "تحرير تكوين المشروع",
+      "deploy_to_vercel": "نشر إلى فيرسل",
+      "login_signup": "تسجيل الدخول أو الاشتراك",
+      "create_account": "إنشاء حساب",
+      "deploy_repo": "نشر المستودع الخاص بك",
+      "one_click": "بنقرة واحدة",
+      "or": "أو",
+      "already_deployed": "تم نشرها بالفعل؟ أدخل عنوان URL الآن",
+      "vercel_host": "على Vercel لاستضافة موقعك"
+    }
+  }
+}

@@ -234,7 +234,7 @@ const SnippetList = () => {
               <Skeleton className="hidden h-9 w-36 md:block" />
             ) : canAccessProFeatures ? (
               <Button className="hidden md:flex" onClick={handleCreateSnippet}>
-                <Plus className="mr-2 size-4" />
+                <Plus className="me-2 size-4" />
                 {tCommon("actions.add")}
               </Button>
             ) : (
@@ -289,7 +289,7 @@ const SnippetList = () => {
                     size="sm"
                     variant="outline"
                   >
-                    <Settings className="mr-1" />
+                    <Settings className="me-1" />
                     <span className="hidden sm:inline-block">
                       {tCommon("actions.edit")}
                     </span>
@@ -304,7 +304,7 @@ const SnippetList = () => {
             <Skeleton className="h-9 w-full" />
           ) : canAccessProFeatures ? (
             <Button className="w-full" onClick={handleCreateSnippet}>
-              <Plus className="mr-2 size-4" />
+              <Plus className="me-2 size-4" />
               {tCommon("actions.add")}
             </Button>
           ) : (

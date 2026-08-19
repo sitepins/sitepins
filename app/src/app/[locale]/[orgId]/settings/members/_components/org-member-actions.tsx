@@ -70,7 +70,7 @@ function DeleteOrgMember({
         !isControlled && (
           <AlertDialogTrigger asChild>
             <Button
-              className="text-destructive hover:text-destructive block w-full text-left"
+              className="text-destructive hover:text-destructive block w-full text-start"
               variant={"ghost"}
               disabled={isLoading || !canManageMembers}
             >
@@ -170,7 +170,7 @@ export default function MemberActions({
           <ul>
             <li>
               <Button
-                className="block w-full text-left capitalize"
+                className="block w-full text-start capitalize"
                 variant={"ghost"}
                 disabled={
                   owner === member.user_id || isUpdating || !canManageMembers
@@ -208,7 +208,7 @@ export default function MemberActions({
             </li>
             <li>
               <Button
-                className="text-destructive hover:text-destructive block w-full text-left"
+                className="text-destructive hover:text-destructive block w-full text-start"
                 variant={"ghost"}
                 onClick={() => {
                   setIsOpen(false);

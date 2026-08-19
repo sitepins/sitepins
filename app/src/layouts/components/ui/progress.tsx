@@ -27,7 +27,7 @@ function Progress({
         <ProgressPrimitive.Indicator
           data-slot="progress-indicator"
           className={cn(
-            "bg-primary absolute inset-y-0 left-0 transition-[width] duration-300",
+            "bg-primary absolute inset-y-0 inset-s-0 transition-[width] duration-300",
             indicatorClassName,
           )}
         />

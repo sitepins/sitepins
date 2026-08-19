@@ -162,7 +162,7 @@ export default function ConfigActions({
             className="cursor-pointer"
             onClick={() => setShowDuplicateDialog(true)}
           >
-            <CopyPlus className="mr-1 size-4" />
+            <CopyPlus className="size-4" />
             <span>{tCommon("actions.duplicate")}</span>
           </DropdownMenuItem>
           {canAccessProFeatures && (
@@ -171,7 +171,7 @@ export default function ConfigActions({
                 href={`/${params.orgId}/${params.projectId}/code/${currentFilepath}`}
                 className="flex w-full items-center"
               >
-                <Code2 className="mr-1 size-4" />
+                <Code2 className="size-4" />
                 <span>{tCommon("actions.edit_as_code")}</span>
               </Link>
             </DropdownMenuItem>

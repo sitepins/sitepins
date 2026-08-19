@@ -215,8 +215,8 @@
       "encoding": "UTF-8",
       "line": "Ln {line}",
       "column": "Col {column}",
-      "lines_count": "{đếm, số nhiều, =1 {# dòng} khác {# dòng}}",
-      "characters_count": "{đếm, số nhiều, =1 {# ký tự} khác {# ký tự}}",
+      "lines_count": "{count, plural, other {# dòng}}",
+      "characters_count": "{count, plural, other {# ký tự}}",
       "error_loading_title": "Lỗi tải tập tin",
       "error_loading_desc": "Không thể tải tập tin để chỉnh sửa."
     },

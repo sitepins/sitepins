@@ -32,7 +32,7 @@ export function FixedToolbar({
     <div
       ref={wrapperRef}
       className={cn(
-        "bg-background before:bg-background sticky top-0 left-0 z-50 w-full pb-4 before:pointer-events-none before:absolute before:inset-x-0 before:-top-4 before:h-4 lg:pb-6 lg:before:-top-6 lg:before:h-6 2xl:-mx-6 2xl:w-[calc(100%+3rem)] 2xl:px-6",
+        "bg-background before:bg-background sticky inset-s-0 top-0 z-50 w-full pb-4 before:pointer-events-none before:absolute before:inset-x-0 before:-top-4 before:h-4 lg:pb-6 lg:before:-top-6 lg:before:h-6 2xl:-mx-6 2xl:w-[calc(100%+3rem)] 2xl:px-6",
         isScrolled && "shadow-md",
       )}
     >

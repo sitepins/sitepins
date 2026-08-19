@@ -65,7 +65,7 @@ const ContentMenu = ({
                 )}
                 href={resolveHref(item.path)}
               >
-                <span className="flex-1 text-left text-inherit">
+                <span className="flex-1 text-start text-inherit">
                   {item.name}
                 </span>
               </Link>
@@ -82,11 +82,11 @@ const ContentMenu = ({
         ) : (
           <NavLink
             key={item.path}
-            className="text-foreground hover:text-primary hover:bg-muted/50 ml-2 flex items-center rounded px-2 py-2.5 transition-colors"
+            className="text-foreground hover:text-primary hover:bg-muted/50 ms-2 flex items-center rounded px-2 py-2.5 transition-colors"
             href={resolveHref(item.path)}
             activeClassName="bg-muted text-primary"
           >
-            <span className="text-inherit">{item.name}</span>
+            <span className="flex-1 text-start text-inherit">{item.name}</span>
           </NavLink>
         )}
       </li>
@@ -106,7 +106,7 @@ const ContentMenu = ({
       return (
         <li key={item.path + "_" + index}>
           <NavLink
-            className="bg-primary! my-2 ml-2 flex cursor-default items-center rounded-sm px-2 py-1 text-white!"
+            className="bg-primary! my-2 ms-2 flex cursor-default items-center rounded-sm px-2 py-1 text-white!"
             activeClassName="bg-background text-primary"
             href={``}
             key={item.path + "_" + index}
@@ -121,11 +121,11 @@ const ContentMenu = ({
       return (
         <li key={item.path + "_" + item.type + "_" + index}>
           <NavLink
-            className="text-foreground hover:text-primary hover:bg-muted/50 ml-2 flex items-center rounded px-2 py-2.5 transition-colors"
+            className="text-foreground hover:text-primary hover:bg-muted/50 ms-2 flex items-center rounded px-2 py-2.5 transition-colors"
             activeClassName="bg-muted text-primary"
             href={resolveHref(item.path)}
           >
-            <span>{item.name}</span>
+            <span className="flex-1 text-start">{item.name}</span>
           </NavLink>
         </li>
       );

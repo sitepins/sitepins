@@ -109,7 +109,7 @@
       "no_fields": "Chưa có trường nào",
       "add_first_field": "Thêm trường đầu tiên của bạn bên dưới",
       "back_to_fields": "Quay lại trường",
-      "field_count": "{đếm, số nhiều, =0 {0 trường} một {1 trường} {# trường khác}}"
+      "field_count": "{count, plural, =0 {0 trường} other {# trường}}"
     },
     "errors": {
       "name_required": "Tên trường là bắt buộc",

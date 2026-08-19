@@ -24,7 +24,7 @@ function ProjectNameSection({
   siteUrl,
 }: ProjectNameSectionProps) {
   return (
-    <div className="group col-span-6 flex h-full items-center py-0! md:relative md:space-x-5">
+    <div className="group col-span-6 flex h-full items-center py-0! md:relative md:gap-5">
       <ProjectIcon
         variant="card"
         projectName={projectName}
@@ -34,7 +34,7 @@ function ProjectNameSection({
 
       <h3 className="text-primary hidden text-lg md:block">
         {projectName}{" "}
-        <Edit className="ml-2 inline-block size-4 opacity-0 transition group-hover:opacity-100" />
+        <Edit className="ms-2 inline-block size-4 opacity-0 transition group-hover:opacity-100" />
       </h3>
 
       <Link href={`/${orgId}/${projectId}`} className="absolute inset-0" />
@@ -85,19 +85,19 @@ function RepositoryLink({
       className={buttonVariants({
         variant: "link",
         className:
-          "text-secondary-foreground hover:text-primary relative z-30 line-clamp-1 hidden w-auto items-center justify-start p-0! text-left wrap-break-word break-all whitespace-normal md:inline-flex",
+          "text-secondary-foreground hover:text-primary relative z-30 line-clamp-1 hidden w-auto items-center justify-start p-0! text-start wrap-break-word break-all whitespace-normal md:inline-flex",
       })}
     >
       {isGitLab ? (
-        <SiGitlab className="mr-1 inline-block size-5" />
+        <SiGitlab className="me-1 inline-block size-5" />
       ) : (
-        <SiGithub className="mr-1 inline-block size-5" />
+        <SiGithub className="me-1 inline-block size-5" />
       )}
       <span className="text-foreground line-clamp-1 flex-1 wrap-break-word break-all whitespace-normal">
         {repository}/tree/{branch}
       </span>
       {visibility ? (
-        <span className="text-muted-foreground ml-2 hidden text-sm md:inline-block">
+        <span className="text-muted-foreground ms-2 hidden text-sm md:inline-block">
           (
           {visibility === "private"
             ? tOrgSites("private")
@@ -105,7 +105,7 @@ function RepositoryLink({
           )
         </span>
       ) : null}
-      <ExternalLink className="ml-1 inline-block size-4 translate-y-[-1.5px]" />
+      <ExternalLink className="ms-1 inline-block size-4 translate-y-[-1.5px]" />
     </Link>
   );
 }
@@ -140,12 +140,12 @@ function SiteItem({ site, orgId }: SiteItemProps) {
       />
 
       {/* Middle section: Repository info (now includes visibility text) */}
-      <div className="text-muted-foreground col-span-4 w-full text-left">
+      <div className="text-muted-foreground col-span-4 w-full text-start">
         <div className="flex flex-wrap justify-between gap-2 md:hidden">
           <h3 className="text-primary flex min-w-0 truncate text-sm sm:text-lg lg:hidden">
             {project_name}
           </h3>
-          <span className="inline-flex items-center space-x-2 md:hidden">
+          <span className="inline-flex items-center gap-2 md:hidden">
             <StatusBadge status={status} />
           </span>
         </div>
@@ -160,7 +160,7 @@ function SiteItem({ site, orgId }: SiteItemProps) {
       </div>
 
       {/* Right section: Status */}
-      <div className="col-span-2 mr-6 hidden md:flex md:items-center md:justify-end">
+      <div className="col-span-2 me-6 hidden md:flex md:items-center md:justify-end">
         <StatusBadge status={status} />
       </div>
     </div>
@@ -187,10 +187,10 @@ function TableHeader() {
   return (
     <div className="bg-light text-text-dark hidden grid-cols-12 rounded-lg px-8 py-2.5 font-semibold md:grid">
       <div className="text-h6 col-span-6 flex">{tOrgSites("site_name")}</div>
-      <div className="text-h6 col-span-4 text-left">
+      <div className="text-h6 col-span-4 text-start">
         {tOrgSites("repository")}
       </div>
-      <div className="text-h6 col-span-2 text-right">{tOrgSites("status")}</div>
+      <div className="text-h6 col-span-2 text-end">{tOrgSites("status")}</div>
     </div>
   );
 }

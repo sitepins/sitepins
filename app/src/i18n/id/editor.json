@@ -215,8 +215,8 @@
       "encoding": "UTF-8",
       "line": "Di {line}",
       "column": "Kol {column}",
-      "lines_count": "{hitungan, jamak, =1 {# baris} other {# baris}}",
-      "characters_count": "{hitungan, jamak, =1 {# karakter} other {# karakter}}",
+      "lines_count": "{count, plural, =1 {# baris} other {# baris}}",
+      "characters_count": "{count, plural, =1 {# karakter} other {# karakter}}",
       "error_loading_title": "Terjadi kesalahan saat memuat berkas",
       "error_loading_desc": "Tidak dapat memuat file untuk diedit."
     },

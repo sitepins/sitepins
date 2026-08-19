@@ -67,7 +67,7 @@ export default function RootLayout({
             <h1 className="text-muted-foreground mb-8 text-xl font-medium">
               {tAuth("tagline")}
             </h1>
-            <Card className="w-full border-0 text-left">{children}</Card>
+            <Card className="w-full border-0 text-start">{children}</Card>
             <div className="mt-6 flex justify-center">
               <LanguageSwitcher compact />
             </div>

@@ -97,14 +97,14 @@ export const JsxInlineElement = withRef<typeof PlateElement>(
         <SnippetControls
           element={element}
           isBlock={false}
-          className="top-1/2 right-0.5 -translate-y-1/2"
+          className="inset-e-0.5 top-1/2 -translate-y-1/2"
           code=""
         />
 
         {/* Header: Badge + Opening Tag */}
         <div
           contentEditable={false}
-          className="flex items-start gap-2 px-2.5 pt-2 pr-8 select-none"
+          className="flex items-start gap-2 ps-2.5 pe-8 pt-2 select-none"
         >
           <span
             className={cn(

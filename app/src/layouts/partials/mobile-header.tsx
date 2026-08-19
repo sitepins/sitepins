@@ -9,11 +9,12 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { getDirection } from "@/lib/i18n/direction";
 import { cn } from "@/lib/utils/cn";
 import { useGetOrgsQuery } from "@/redux/features/orgs/org-api";
 import { useGetProjectsQuery } from "@/redux/features/project/project-api";
 import { PanelLeft } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useParams, usePathname } from "next/navigation";
 import path from "path";
 
@@ -23,8 +24,10 @@ export default function MobileHeader({
   children: React.ReactNode;
 }) {
   const tSidebar = useTranslations("navigation.sidebar");
+  const locale = useLocale();
   const params = useParams();
   const pathname = usePathname();
+  const isRtl = getDirection(locale) === "rtl";
 
   const rawOrgId = params?.orgId as string;
   const orgId = rawOrgId?.startsWith("org-") ? rawOrgId.slice(4) : rawOrgId;
@@ -45,20 +48,20 @@ export default function MobileHeader({
   return (
     <div
       className={cn(
-        "bg-light border-b-border sticky top-0 left-0 z-30 flex h-16 w-full items-center justify-between border-b px-4 xl:hidden",
+        "bg-light border-b-border sticky inset-s-0 top-0 z-30 flex h-16 w-full items-center justify-between border-b px-4 xl:hidden",
         isFilesLikeRoute && hasFileExtension && "hidden",
       )}
     >
-      <div className="flex w-12 flex-none items-center space-x-2">
+      <div className="flex w-12 flex-none items-center gap-2">
         <Sheet>
           <SheetTrigger asChild id="mobile-header-trigger">
             <Button type="button" size="icon" variant="ghost">
-              <PanelLeft className="size-6" />
+              <PanelLeft className="cn-rtl-flip size-6" />
             </Button>
           </SheetTrigger>
           <SheetContent
             className="w-70 max-w-70! p-0"
-            side={"left"}
+            side={isRtl ? "right" : "left"}
             showCloseButton={false}
           >
             <SheetHeader className="hidden">

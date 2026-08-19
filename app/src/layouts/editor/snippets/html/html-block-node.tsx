@@ -151,7 +151,7 @@ export const HtmlBlockElement = ({
             Preview
           </span>
           {(iframeRawWidth || iframeRawHeight) && (
-            <span className="ml-1 text-[10px] text-emerald-500">
+            <span className="ms-1 text-[10px] text-emerald-500">
               {iframeRawWidth && `w: ${iframeRawWidth}`}
               {iframeRawWidth && iframeRawHeight && " · "}
               {iframeRawHeight && `h: ${iframeRawHeight}`}

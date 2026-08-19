@@ -55,11 +55,20 @@ function DrawerTrigger({
   asChild,
   children,
   render,
+  nativeButton,
   ...props
 }: DrawerPrimitive.Trigger.Props & { asChild?: boolean }) {
+  const isNativeButton =
+    nativeButton !== undefined
+      ? nativeButton
+      : asChild && React.isValidElement(children)
+        ? children.type === "button"
+        : undefined;
+
   return (
     <DrawerPrimitive.Trigger
       data-slot="drawer-trigger"
+      nativeButton={isNativeButton}
       render={asChild ? (children as React.ReactElement) : render}
       {...props}
     >
@@ -76,11 +85,20 @@ function DrawerClose({
   asChild,
   children,
   render,
+  nativeButton,
   ...props
 }: DrawerPrimitive.Close.Props & { asChild?: boolean }) {
+  const isNativeButton =
+    nativeButton !== undefined
+      ? nativeButton
+      : asChild && React.isValidElement(children)
+        ? children.type === "button"
+        : undefined;
+
   return (
     <DrawerPrimitive.Close
       data-slot="drawer-close"
+      nativeButton={isNativeButton}
       render={asChild ? (children as React.ReactElement) : render}
       {...props}
     >
@@ -114,7 +132,7 @@ function DrawerSwipeHandle({
       data-slot="drawer-swipe-handle"
       aria-hidden="true"
       className={cn(
-        "after:bg-muted relative z-10 mt-4 flex shrink-0 cursor-grab transition-opacity duration-200 group-data-nested-drawer-open/drawer-popup:opacity-0 group-data-nested-drawer-swiping/drawer-popup:opacity-100 group-data-[swipe-axis=x]/drawer-popup:h-full group-data-[swipe-axis=x]/drawer-popup:w-3 group-data-[swipe-axis=x]/drawer-popup:items-center group-data-[swipe-axis=y]/drawer-popup:h-2 group-data-[swipe-axis=y]/drawer-popup:w-full group-data-[swipe-axis=y]/drawer-popup:justify-center after:block after:shrink-0 after:rounded-full group-data-[swipe-axis=x]/drawer-popup:after:h-[100px] group-data-[swipe-axis=x]/drawer-popup:after:w-1.5 group-data-[swipe-axis=y]/drawer-popup:after:h-2 group-data-[swipe-axis=y]/drawer-popup:after:w-25 active:cursor-grabbing",
+        "after:bg-muted relative z-10 mt-4 flex shrink-0 cursor-grab transition-opacity duration-200 group-data-nested-drawer-open/drawer-popup:opacity-0 group-data-nested-drawer-swiping/drawer-popup:opacity-100 group-data-[swipe-axis=x]/drawer-popup:h-full group-data-[swipe-axis=x]/drawer-popup:w-3 group-data-[swipe-axis=x]/drawer-popup:items-center group-data-[swipe-axis=y]/drawer-popup:h-2 group-data-[swipe-axis=y]/drawer-popup:w-full group-data-[swipe-axis=y]/drawer-popup:justify-center after:block after:shrink-0 after:rounded-full group-data-[swipe-axis=x]/drawer-popup:after:h-25 group-data-[swipe-axis=x]/drawer-popup:after:w-1.5 group-data-[swipe-axis=y]/drawer-popup:after:h-2 group-data-[swipe-axis=y]/drawer-popup:after:w-25 active:cursor-grabbing",
         className,
       )}
       {...props}
@@ -180,7 +198,7 @@ function DrawerHeader({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="drawer-header"
       className={cn(
-        "flex shrink-0 flex-col gap-0.5 p-4 group-data-[swipe-axis=y]/drawer-popup:text-center md:gap-1.5 md:text-left",
+        "flex shrink-0 flex-col gap-0.5 p-4 group-data-[swipe-axis=y]/drawer-popup:text-center md:gap-1.5 md:text-start",
         className,
       )}
       {...props}

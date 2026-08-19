@@ -2,8 +2,8 @@
 
 import { QuotaUpgradeAction } from "@/components/quota-upgrade-action";
 import {
-  TemplateStartPanel,
   hasTemplatePanel,
+  TemplateStartPanel,
 } from "@/components/template-start-panel";
 import { Button, ButtonProps } from "@/components/ui/button";
 import {
@@ -39,6 +39,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { toast } from "@/components/ui/toast";
 import { UpgradeCta } from "@/components/upgrade-cta";
 import { UpgradeDialog } from "@/components/upgrade-dialog";
 import { useDebounce } from "@/hooks/use-debounce";
@@ -47,17 +48,17 @@ import { useAllInstallationRepos } from "@/hooks/use-fetch-repos";
 import { useGitAuth } from "@/hooks/use-git-auth";
 import { useOwnerPlan } from "@/hooks/use-owner-plan";
 import { authClient } from "@/lib/auth/auth-client";
+import { IS_DEMO } from "@/lib/constant";
 import { getPlanLimits } from "@/lib/limits";
 import { cn } from "@/lib/utils/cn";
 import { isDemoUrl } from "@/lib/utils/demo-urls";
-import { IS_DEMO } from "@/lib/constant";
 import { errorMessage } from "@/lib/utils/error";
-import { isSiteCreationPlanLimitError } from "@/lib/utils/site-creation-error";
 import {
   isGitHubProvider,
   isGitLabProvider,
   TGitProvider,
 } from "@/lib/utils/provider-checker";
+import { isSiteCreationPlanLimitError } from "@/lib/utils/site-creation-error";
 import { projectSchema } from "@/lib/validate";
 import { useGetGitHubBranchesQuery as useGitHubBranches } from "@/redux/features/github";
 import { useGetGitLabBranchesQuery } from "@/redux/features/gitlab/gitlab-api";
@@ -76,7 +77,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { toast } from "@/components/ui/toast";
 import { z } from "zod/v4";
 import AddOrg from "./add-org";
 import FormError from "./form-error";
@@ -359,7 +359,7 @@ export default function AddSite({
                   }}
                   className="group sm:w-44"
                 >
-                  <Plus className="mr-1 h-4 w-4" />
+                  <Plus className="me-1 h-4 w-4" />
                   {tAddSite("create_new_org")}
                 </AlertDialogAction>
               ) : (
@@ -441,11 +441,11 @@ export default function AddSite({
                         </span>
                       </div>
                       {isConnected ? (
-                        <Badge variant="success" className="ml-auto h-5 gap-1">
+                        <Badge variant="success" className="ms-auto h-5 gap-1">
                           {tAddSite("connected")}
                         </Badge>
                       ) : (
-                        <Badge variant="warning" className="ml-auto h-5 gap-1">
+                        <Badge variant="warning" className="ms-auto h-5 gap-1">
                           {tAddSite("not_connected")}
                         </Badge>
                       )}
@@ -507,7 +507,7 @@ export default function AddSite({
                 }
               })}
               ref={formRef}
-              className="mx-auto w-full space-y-3 text-left"
+              className="mx-auto w-full space-y-3 text-start"
             >
               <FieldGroup>
                 <div className="grid grid-cols-2 gap-4">
@@ -661,7 +661,7 @@ export default function AddSite({
                                     <span className="text-nowrap opacity-50">
                                       {repo.owner?.login}/
                                     </span>
-                                    <span className="w-full text-left">
+                                    <span className="w-full text-start">
                                       {repo.name}
                                     </span>
 
@@ -675,7 +675,7 @@ export default function AddSite({
                                         }}
                                         className="hidden group-hover:block"
                                       >
-                                        <ExternalLink className="ml-auto size-4 shrink-0 opacity-50" />
+                                        <ExternalLink className="ms-auto size-4 shrink-0 opacity-50" />
                                       </Link>
                                     )}
                                   </div>
@@ -726,8 +726,8 @@ export default function AddSite({
                             placeholder={
                               isBranchLoading ? (
                                 <div className="relative inline-flex items-center justify-center">
-                                  <Loader2 className="absolute left-0 mr-1 inline-block size-4 animate-spin" />
-                                  <span className="pl-5">
+                                  <Loader2 className="absolute inset-s-0 inline-block size-4 animate-spin" />
+                                  <span className="ps-5">
                                     {tAddSite("please_wait")}
                                   </span>
                                 </div>

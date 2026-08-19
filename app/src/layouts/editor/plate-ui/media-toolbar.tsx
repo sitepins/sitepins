@@ -100,7 +100,7 @@ export function MediaToolbar({
         {isEditing ? (
           <div className="flex w-82.5 flex-col">
             <div className="flex items-center">
-              <div className="text-muted-foreground flex items-center pr-1 pl-2">
+              <div className="text-muted-foreground flex items-center ps-2 pe-1">
                 <Link className="size-4" />
               </div>
 

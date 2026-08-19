@@ -213,7 +213,7 @@ export default function MediaMove({
           </div>
 
           {isExpanded && hasChildren && (
-            <div className="ml-6 space-y-1">
+            <div className="ms-6 space-y-1">
               {renderFolderTree(
                 tree.children?.filter(
                   (child) => !child.isFile && child.name !== ".well-known",
@@ -381,12 +381,12 @@ export default function MediaMove({
 
           {/* Search */}
           <div className="relative">
-            <Search className="text-muted-foreground absolute top-2.5 left-2 size-4" />
+            <Search className="text-muted-foreground absolute inset-s-2 top-2.5 size-4" />
             <Input
               placeholder={tMedia("search_folders")}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-8"
+              className="ps-8"
             />
           </div>
 

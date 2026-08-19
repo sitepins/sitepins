@@ -82,7 +82,7 @@ function AlertDialogHeader({
   return (
     <div
       data-slot="alert-dialog-header"
-      className={cn("space-y-1.5 p-1 text-center sm:text-left", className)}
+      className={cn("space-y-1.5 p-1 text-center sm:text-start", className)}
       {...props}
     />
   );

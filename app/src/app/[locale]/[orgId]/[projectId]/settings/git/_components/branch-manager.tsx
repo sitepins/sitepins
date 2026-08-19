@@ -145,7 +145,7 @@ export default function BranchManager({ canUpdate }: { canUpdate?: boolean }) {
       <CardContent>
         {!isEditing ? (
           <div className="border-border flex items-center justify-between rounded-lg border p-4">
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center gap-3">
               <div className="bg-primary/10 text-primary flex size-10 items-center justify-center rounded-lg">
                 <GitBranch className="size-5" />
               </div>

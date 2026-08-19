@@ -6,6 +6,7 @@ import { revertToOriginal } from "@/editor/utils/plate-utils";
 import { useDebounce } from "@/hooks/use-debounce";
 import { useHydrated } from "@/hooks/use-hydrated";
 import { useOwnerPlan } from "@/hooks/use-owner-plan";
+import { getDirection } from "@/lib/i18n/direction";
 import { stringValue } from "@/lib/utils/frontmatter-value";
 import {
   getSeoScore,
@@ -19,7 +20,7 @@ import { useGetProjectQuery } from "@/redux/features/project/project-api";
 import { TField, TState } from "@/types";
 import { ChartSpline } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
 import {
   type Dispatch,
@@ -56,6 +57,8 @@ export default function SeoSetting({
   onSidebarOpenChange: (open: boolean) => void;
 }) {
   const tEditorSeo = useTranslations("editor.seo");
+  const locale = useLocale();
+  const isRtl = getDirection(locale) === "rtl";
   const {
     projectId,
     orgId,
@@ -349,15 +352,15 @@ export default function SeoSetting({
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.2 }}
                   onClick={() => onSidebarOpenChange(false)}
-                  className="bg-background/20 fixed top-17.25 right-0 bottom-0 left-0 z-60 cursor-pointer backdrop-blur-sm xl:left-70 2xl:hidden"
+                  className="bg-background/20 fixed inset-x-0 top-17.25 bottom-0 z-60 cursor-pointer backdrop-blur-sm xl:inset-s-70 2xl:hidden"
                 />
                 <motion.div
                   key="seo-sidebar"
-                  initial={{ x: "100%" }}
+                  initial={{ x: isRtl ? "-100%" : "100%" }}
                   animate={{ x: 0 }}
-                  exit={{ x: "100%" }}
+                  exit={{ x: isRtl ? "-100%" : "100%" }}
                   transition={{ type: "spring", bounce: 0, duration: 0.3 }}
-                  className="bg-light border-border fixed top-17.25 right-0 z-70 h-[calc(100svh-67px)] w-full max-w-105 border-l shadow-lg 2xl:shadow-none"
+                  className="bg-light border-border fixed inset-e-0 top-17.25 z-70 h-[calc(100svh-67px)] w-full max-w-105 border-s shadow-lg 2xl:shadow-none"
                 >
                   <div className="dark:[&_input]:bg-input/30 dark:[&_textarea]:bg-input/30 h-full space-y-4 overflow-y-auto p-5 [&_input]:bg-white [&_textarea]:bg-white">
                     <SearchPreview

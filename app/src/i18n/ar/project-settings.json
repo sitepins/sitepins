@@ -1,0 +1,282 @@
+{
+  "project-settings": {
+    "general": {
+      "form": {
+        "title": "إعدادات المشروع",
+        "description": "قم بتحديث معلومات مشروعك.",
+        "demo_error": "هذا موقع تجريبي، لا يمكنك تحديثه",
+        "success": "تم تحديث الموقع بنجاح",
+        "site_name": "اسم الموقع",
+        "website": "الموقع الإلكتروني (اختياري)"
+      },
+      "archive": {
+        "restore_title": "استعادة المشروع",
+        "restore_desc": "يتم أرشفة المشروع حاليا. يجب استعادته أولاً لإجراء أي تغييرات.",
+        "archive_title": "مشروع الأرشيف",
+        "archive_desc": "سيتم أرشفة المشروع. سيتم إخفاؤه من قائمة المشاريع ولكن يمكن استعادته لاحقًا.",
+        "restore_btn": "استعادة المشروع",
+        "archive_btn": "مشروع الأرشيف",
+        "archive_confirm_title": "أرشفة هذا المشروع؟",
+        "restore_confirm_title": "هل تريد استعادة هذا المشروع؟",
+        "archive_confirm_desc": "سيتم أرشفة هذا المشروع. سيتم إخفاؤه من قائمة المشاريع ولكن يمكن استعادته لاحقًا.",
+        "restore_confirm_desc": "سيتم استعادة هذا المشروع. سيكون مرئيًا في قائمة المشاريع ويمكن تحديثه.",
+        "demo_error": "هذه الميزة غير متوفرة في العرض التوضيحي",
+        "archive_success": "تمت أرشفة المشروع بنجاح",
+        "restore_success": "تمت استعادة المشروع بنجاح",
+        "error": "حدث خطأ ما"
+      },
+      "delete": {
+        "title": "حذف المشروع",
+        "description": "سيتم حذف المشروع نهائيا. هذا الإجراء لا رجعة فيه ولا يمكن التراجع عنه.",
+        "warning": "سيتم حذف هذا المشروع نهائيًا. هذا الإجراء لا رجعة فيه ولا يمكن التراجع عنه. سيتم فقدان كافة البيانات المرتبطة بهذا المشروع.",
+        "delete_btn": "حذف المشروع",
+        "confirm_title": "هل أنت متأكد تماما؟",
+        "confirm_desc": "لا يمكن التراجع عن هذا الإجراء. سيتم حذف هذا نهائيًا.",
+        "placeholder": "اكتب تأكيد للتأكيد",
+        "demo_error": "لا يمكنك حذف المشاريع في الوضع التجريبي.",
+        "success": "تم حذف المشروع بنجاح.",
+        "error": "حدث خطأ ما",
+        "error_suffix": "غير مصرح لك بحذف هذا المشروع.",
+        "error_generic": "حدث خطأ ما"
+      },
+      "move": {
+        "title": "تحرك المشروع",
+        "description": "انقل هذا المشروع إلى مؤسسة أخرى تنتمي إليها.",
+        "current_org": "المنظمة الحالية",
+        "destination": "الوجهة",
+        "loading_orgs": "جارٍ تحميل المنظمات...",
+        "no_orgs": "لا توجد منظمات أخرى متاحة.",
+        "placeholder": "اختر الوجهة",
+        "move_btn": "تحرك المشروع",
+        "confirm_title": "تأكيد التحرك",
+        "confirm_desc": "انقل هذا المشروع إلى",
+        "confirm_move_btn": "تحرك المشروع",
+        "error_select": "اختر منظمة",
+        "success": "تم نقل المشروع بنجاح",
+        "error": "فشل مشروع النقل"
+      },
+      "avatar": {
+        "title": "الصورة المصغرة للمشروع",
+        "description": "اجعل صورة موقعك فريدة عن طريق إضافة صورة.",
+        "demo_error": "هذا موقع تجريبي، لا يمكنك تحديثه",
+        "success": "تم تحديث الموقع بنجاح"
+      }
+    },
+    "git": {
+      "repo": {
+        "title": "مستودع جيت",
+        "description_connected": "مشروعك متصل حاليًا بمستودع.",
+        "description_disconnected": "قم بتوصيل مشروعك بمستودع Git لإدارة المحتوى الخاص بك.",
+        "connected_at": "متصل {time}",
+        "provider_label": "حدد الموفر",
+        "select_provider_placeholder": "حدد مزودًا",
+        "select_repo_label": "مستودع",
+        "select_repo_placeholder": "حدد مستودعًا",
+        "no_repo_found": "لم يتم العثور على مستودع",
+        "please_wait": "من فضلك انتظر...",
+        "cant_see_repo": "لا أستطيع رؤية الريبو الخاص بك هنا؟",
+        "configure_on": "التهيئة في {provider}",
+        "branch_label": "فرع",
+        "choose_branch_placeholder": "اختر فرعا",
+        "disconnect_btn": "قطع الاتصال",
+        "disconnect_confirm_title": "هل أنت متأكد تماما؟",
+        "disconnect_confirm_desc": "سيؤدي هذا الإجراء إلى فصل المستودع عن Sitepins. يمكنك دائمًا توصيله مرة أخرى لاحقًا.",
+        "connect_repo_btn": "ربط المستودع",
+        "error_missing_info": "معلومات المشروع أو المؤسسة مفقودة",
+        "success_disconnect": "تم قطع اتصال المستودع بنجاح",
+        "error_disconnect": "فشل في قطع اتصال المستودع",
+        "error_no_repo_branch": "الرجاء تحديد المستودع والفرع",
+        "success_connect": "تم توصيل المستودع بنجاح",
+        "error_connect": "فشل في الاتصال بالمستودع"
+      },
+      "branch": {
+        "title": "إدارة الفروع",
+        "description": "إدارة الفرع المستخدم لمحتوى مشروعك",
+        "current_branch_label": "الفرع الحالي",
+        "select_branch_label": "حدد الفرع",
+        "loading_branches": "جارٍ تحميل الفروع...",
+        "placeholder": "اختر فرعا",
+        "branches_label": "الفروع",
+        "change_branch_btn": "تغيير الفرع",
+        "update_branch_btn": "تحديث فرع",
+        "success_message": "تم تحديث الفرع بنجاح!",
+        "error_missing_info": "معلومات المشروع أو المؤسسة مفقودة",
+        "error_no_repo": "لا يوجد مستودع متصل",
+        "error_generic": "فشل في تحديث الفرع"
+      }
+    },
+    "schemas": {
+      "title": "إدارة المخطط",
+      "description": "إدارة مخططات المحتوى لمشروعك",
+      "no_schemas_found": "لم يتم العثور على أي مخططات",
+      "create_first_schema": "أنشئ مخططك الأول بالانتقال إلى مجلد المحتوى",
+      "fields_count": "{count, plural, =1 {# حقل} other {# حقول}}",
+      "edit_dialog_title": "تحرير المخطط",
+      "edit_dialog_description": "تعديل حقول المخطط الخاص بك وخصائصها",
+      "schema_name_label": "اسم المخطط",
+      "update_btn": "تحديث المخطط",
+      "success_update": "تم تحديث المخطط بنجاح!",
+      "error_update": "حدث خطأ أثناء تحديث المخطط",
+      "success_delete": "تم حذف المخطط بنجاح!",
+      "error_delete": "حدث خطأ أثناء حذف المخطط",
+      "error_validation": "يرجى إصلاح الحقول المميزة والمحاولة مرة أخرى."
+    },
+    "snippets": {
+      "title": "إدارة المقتطف",
+      "description": "إدارة مقتطفات التعليمات البرمجية لمشروعك",
+      "add_btn": "إضافة مقتطف",
+      "no_snippets_found": "لم يتم العثور على مقتطفات",
+      "create_first_snippet": "أنشئ مقتطفك الأول للبدء",
+      "used_in": "يستخدم في: {schemas}",
+      "no_schemas_linked": "لا توجد مخططات مرتبطة",
+      "edit_dialog_title": "تحرير المقتطف",
+      "create_dialog_title": "إنشاء مقتطف",
+      "dialog_description": "قم بتكوين خصائص مقتطف التعليمات البرمجية الخاص بك",
+      "success_created": "تم إنشاء المقتطف بنجاح!",
+      "success_updated": "تم تحديث المقتطف بنجاح!",
+      "error_save": "حدث خطأ أثناء حفظ المقتطف",
+      "success_deleted": "تم حذف المقتطف بنجاح!",
+      "error_delete": "حدث خطأ أثناء حذف المقتطف",
+      "label_field": "التسمية",
+      "label_placeholder": "تسمية المقتطف",
+      "schemas_field": "المخططات المطبقة",
+      "select_schemas_placeholder": "حدد المخططات",
+      "no_schemas_found_in_combobox": "لم يتم العثور على أي مخططات.",
+      "code_field": "الكود",
+      "delete_confirm_title": "حذف مقتطف",
+      "delete_confirm_desc": "هل أنت متأكد أنك تريد حذف هذا المقتطف؟ لا يمكن التراجع عن هذا الإجراء.",
+      "update_btn": "تحديث مقتطف",
+      "create_btn": "إنشاء مقتطف"
+    },
+    "arrangement": {
+      "title": "ترتيبات الشريط الجانبي",
+      "description": "تخصيص بنية المحتوى الخاص بك والتخطيط",
+      "features": {
+        "virtual_folders": {
+          "title": "المجلدات الافتراضية",
+          "desc": "لن يغير الريبو الخاص بك"
+        },
+        "visual_headings": {
+          "title": "العناوين المرئية",
+          "desc": "تنظيم الأقسام"
+        },
+        "drag_and_drop": {
+          "title": "السحب والإسقاط",
+          "desc": "إعادة الطلب على الفور"
+        },
+        "glob_patterns": {
+          "title": "أنماط الكرة الأرضية",
+          "desc": "تصفية الملفات بسهولة"
+        }
+      },
+      "no_arrangements": "لا توجد ترتيبات بعد",
+      "get_started": "ابدأ بإضافة مجلد أو ملف أو عنوان لتخصيص تخطيط الشريط الجانبي الخاص بك.",
+      "add_item_btn": "+ إضافة عنصر جديد",
+      "edit_dialog_title": "تحرير عنصر الترتيب",
+      "add_dialog_title": "إضافة عنصر ترتيب جديد",
+      "edit_dialog_desc": "قم بتحديث تفاصيل عنصر الترتيب الخاص بك.",
+      "add_dialog_desc": "قم بتكوين عنصر الترتيب الجديد الخاص بك.",
+      "select_type_label": "حدد النوع:",
+      "select_type_placeholder": "حدد النوع",
+      "type_options": {
+        "file": "ملف",
+        "heading": "العنوان",
+        "folder": "مجلد",
+        "video": "فيديو",
+        "preview_image": "معاينة الصورة"
+      },
+      "rename_file": "إعادة تسمية الملف",
+      "rename_successful": "تمت إعادة تسمية الملف بنجاح إلى {name}",
+      "error_renaming": "حدث خطأ في إعادة تسمية الملف. يرجى المحاولة مرة أخرى.",
+      "success_update": "تم تحديث الترتيب بنجاح",
+      "file_form": {
+        "select_file": "حدد ملف",
+        "placeholder": "حدد ملف",
+        "no_items": "لم يتم العثور على أي عناصر.",
+        "name_label": "الاسم",
+        "name_placeholder": "مؤشر"
+      },
+      "folder_form": {
+        "select_folder": "حدد المجلد",
+        "placeholder": "حدد المجلد",
+        "no_items": "لم يتم العثور على أي عناصر.",
+        "group_name_label": "اسم المجموعة",
+        "group_name_placeholder": "قائمة المدونات",
+        "include_label": "تضمين",
+        "include_placeholder": "*.MD",
+        "exclude_label": "استبعاد",
+        "exclude_placeholder": "*index.md"
+      },
+      "heading_form": {
+        "name_label": "الاسم",
+        "placeholder": "العنوان"
+      },
+      "errors": {
+        "name_min_length": "يجب أن يتكون الاسم من حرفين على الأقل.",
+        "heading_min_length": "يجب أن يتكون العنوان من حرفين على الأقل.",
+        "name_exists": "اسم المجموعة موجود بالفعل.",
+        "heading_exists": "العنوان موجود بالفعل."
+      },
+      "delete_confirm_title": "هل أنت متأكد تماما؟",
+      "continue_btn": "متابعة"
+    },
+    "configure": {
+      "commit": {
+        "title": "تكوين الالتزام",
+        "description": "تحديد كيفية التعامل مع رسائل الالتزام عند حفظ التغييرات",
+        "custom_commit_label": "رسائل الالتزام المخصصة",
+        "custom_commit_desc": "قم بتمكين هذا لكتابة رسائل الالتزام الخاصة بك عند الحفظ. عندما تكون نشطة، يمكنك تقديم رسالة مخصصة؛ وبخلاف ذلك، ستقوم Sitepins تلقائيًا بإنشاء واحدة لك.",
+        "save_btn": "حفظ التغييرات",
+        "success_update": "تم تحديث إعدادات حوار الالتزام بنجاح",
+        "error_update": "فشل في تحديث الإعدادات"
+      },
+      "project": {
+        "title": "تحرير تكوين المشروع",
+        "description": "تكوين إعدادات المشروع الخاص بك. انقر فوق حفظ لتطبيق التغييرات.",
+        "steps": {
+          "content": "المحتوى",
+          "media": "وسائل الإعلام",
+          "public": "عام",
+          "configs": "التكوينات"
+        },
+        "form": {
+          "content_label": "مجلد المحتوى",
+          "content_placeholder": "حدد مجلد المحتوى الخاص بك",
+          "media_label": "مجلد الوسائط",
+          "media_placeholder": "حدد مجلد الوسائط (الصور) الخاص بك",
+          "public_label": "المجلد العام",
+          "public_placeholder": "حدد المجلد العام الخاص بك",
+          "config_label": "تكوينات الموقع (اختياري)",
+          "config_placeholder": "حدد ملف التكوين الخاص بك",
+          "suggested": "مقترح:",
+          "no_results": "لم يتم العثور على نتائج.",
+          "suggestions": {
+            "content": "حيث يتم تخزين ملفات تخفيض السعر الخاص بك",
+            "media": "حيث يتم تخزين ملفات الوسائط الخاصة بك",
+            "public": "حيث يتم تخزين الملفات العامة الخاصة بك",
+            "config": "حيث يتم تخزين ملفات التكوين الخاصة بك"
+          }
+        },
+        "buttons": {
+          "finish": "إنهاء الإعداد",
+          "update": "تحديث التكوين"
+        },
+        "help": {
+          "text": "هل تحتاج إلى مساعدة في التكوين الخاص بك؟",
+          "contact_us": "اتصل بنا"
+        },
+        "status": {
+          "success_create": "تم إنشاء ملف التكوين بنجاح",
+          "success_update": "تم تحديث ملف التكوين بنجاح",
+          "error_update": "فشل في تحديث الإعدادات",
+          "not_configured": "لم يتم تكوينه",
+          "none": "لا شيء"
+        },
+        "summary": {
+          "title": "تكوين المشروع",
+          "description": "نظرة عامة سريعة على التكوين الحالي الخاص بك"
+        }
+      }
+    }
+  }
+}

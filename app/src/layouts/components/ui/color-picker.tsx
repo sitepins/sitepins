@@ -386,7 +386,7 @@ export function ColorPicker({ color = "#000000", onChange }: ColorPickerProps) {
       <PopoverTrigger asChild>
         <Button
           variant="outline"
-          className="w-60 justify-start text-left font-normal"
+          className="w-60 justify-start text-start font-normal"
         >
           <div className="flex w-full items-center gap-2">
             <div

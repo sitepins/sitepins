@@ -23,8 +23,8 @@ export default function SimpleHeader({ auth }: { auth?: TSession }) {
 
           {hasMounted &&
             (auth?.user ? (
-              <Link href="/dashboard/account" className="ml-4">
-                <div className="flex items-center space-x-3">
+              <Link href="/dashboard/account" className="ms-4">
+                <div className="flex items-center gap-3">
                   <Avatar
                     email={auth.user.email || ""}
                     alt={auth.user.full_name || tCommon("labels.name")}
@@ -39,7 +39,7 @@ export default function SimpleHeader({ auth }: { auth?: TSession }) {
                 </div>
               </Link>
             ) : (
-              <Link href="/login" className="ml-4">
+              <Link href="/login" className="ms-4">
                 <Button>{tAuth("submit")}</Button>
               </Link>
             ))}

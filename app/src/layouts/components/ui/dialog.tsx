@@ -60,11 +60,20 @@ function DialogTrigger({
   asChild,
   children,
   render,
+  nativeButton,
   ...props
 }: DialogPrimitive.Trigger.Props & { asChild?: boolean }) {
+  const isNativeButton =
+    nativeButton !== undefined
+      ? nativeButton
+      : asChild && React.isValidElement(children)
+        ? children.type === "button"
+        : undefined;
+
   return (
     <DialogPrimitive.Trigger
       data-slot="dialog-trigger"
+      nativeButton={isNativeButton}
       render={asChild ? (children as React.ReactElement) : render}
       {...props}
     >
@@ -81,11 +90,20 @@ function DialogClose({
   asChild,
   children,
   render,
+  nativeButton,
   ...props
 }: DialogPrimitive.Close.Props & { asChild?: boolean }) {
+  const isNativeButton =
+    nativeButton !== undefined
+      ? nativeButton
+      : asChild && React.isValidElement(children)
+        ? children.type === "button"
+        : undefined;
+
   return (
     <DialogPrimitive.Close
       data-slot="dialog-close"
+      nativeButton={isNativeButton}
       render={asChild ? (children as React.ReactElement) : render}
       {...props}
     >
@@ -164,7 +182,7 @@ function DialogContent({
             render={
               <Button
                 variant="ghost"
-                className="absolute top-2 right-2"
+                className="absolute inset-e-2 top-2"
                 size="icon"
               />
             }

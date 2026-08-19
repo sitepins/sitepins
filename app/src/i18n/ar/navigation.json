@@ -1,0 +1,55 @@
+{
+  "navigation": {
+    "menu": {
+      "footer_account": {
+        "account": "الحساب",
+        "updates": "التحديثات",
+        "support": "الدعم",
+        "ai_agent": "وكيل منظمة العفو الدولية",
+        "preferences": "التفضيلات"
+      },
+      "user_dashboard": {
+        "overview": "نظرة عامة",
+        "account": "الحساب",
+        "preferences": "التفضيلات",
+        "ai_agent": "وكيل منظمة العفو الدولية"
+      },
+      "org_dashboard": {
+        "websites": "المواقع الإلكترونية",
+        "settings": "الإعدادات"
+      },
+      "org_settings": {
+        "general": "عام",
+        "members": "الأعضاء",
+        "sandbox": "رمل"
+      },
+      "project_dashboard": {
+        "overview": "نظرة عامة",
+        "media": "وسائل الإعلام",
+        "settings": "الإعدادات"
+      },
+      "project_settings": {
+        "general": "عام",
+        "configure": "تكوين",
+        "git": "بوابة",
+        "schemas": "المخططات",
+        "snippets": "مقتطفات",
+        "arrangement": "الترتيب"
+      }
+    },
+    "sidebar": {
+      "open_menu": "فتح القائمة",
+      "code": "الكود",
+      "config": "التكوين",
+      "actions": {
+        "close": "إغلاق"
+      },
+      "sidebar_trigger_mobile": {
+        "title": "قائمة المحتوى",
+        "description": "شاهد جميع ملفات المحتوى الخاصة بك من الشريط الجانبي",
+        "message": "هل تبحث عن المحتوى الخاص بك؟ افتح الشريط الجانبي لرؤية جميع الملفات.",
+        "open_sidebar": "افتح الشريط الجانبي"
+      }
+    }
+  }
+}

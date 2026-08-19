@@ -33,7 +33,7 @@ export default function Error({
                   {tCommonErrorPage("error_code", { code: error.digest })}
                 </p>
               )}
-              <div className="mb-4 space-x-2 text-center">
+              <div className="mb-4 flex items-center justify-center gap-2 text-center">
                 <Button onClick={() => router.push("/")}>
                   {tCommonErrorPage("go_home")}
                 </Button>
@@ -45,7 +45,7 @@ export default function Error({
                     className="flex items-center"
                   >
                     {tCommonErrorPage("contact_support")}{" "}
-                    <ExternalLink className="ml-1 size-4" />
+                    <ExternalLink className="ms-1 size-4" />
                   </Link>
                 </Button>
               </div>

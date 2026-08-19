@@ -141,7 +141,7 @@ export function SortableFieldItem({
           }
         }}
         className={cn(
-          "group flex w-full cursor-pointer items-center gap-2 px-3 py-2 text-left transition-all duration-200 focus:outline-none",
+          "group flex w-full cursor-pointer items-center gap-2 px-3 py-2 text-start transition-all duration-200 focus:outline-none",
           isActive ? "bg-primary/10" : "hover:bg-muted/40",
           item.isIgnored && "opacity-50",
         )}
@@ -162,7 +162,7 @@ export function SortableFieldItem({
             {renderTypeIcon(item.type, "text-muted-foreground/80 size-4")}
           </div>
 
-          <div className="ml-1 min-w-0 flex-1 text-start select-none">
+          <div className="ms-1 min-w-0 flex-1 text-start select-none">
             <p className="text-foreground/90 truncate text-[13px] font-semibold tracking-tight">
               {item.label || item.name}
             </p>
@@ -175,7 +175,7 @@ export function SortableFieldItem({
             <Badge
               variant="muted"
               size="sm"
-              className="bg-muted/60 text-muted-foreground ml-auto border-none text-[10px] font-medium"
+              className="bg-muted/60 text-muted-foreground ms-auto border-none text-[10px] font-medium"
             >
               {tCommon("labels.required")}
             </Badge>
@@ -1107,7 +1107,7 @@ export function SchemaEditorLayout({
             {selectedField.name}
           </p>
         </div>
-        <div className="ml-2 flex items-center gap-3 md:gap-4">
+        <div className="ms-2 flex items-center gap-3 md:gap-4">
           <Label className="mb-0 flex h-8 cursor-pointer items-center gap-1.5">
             <span className="text-muted-foreground text-[11px] font-medium md:text-xs">
               {tCommon("labels.required")}
@@ -1201,7 +1201,7 @@ export function SchemaEditorLayout({
       {/* LEFT SIDEBAR — field list */}
       <div
         className={cn(
-          "border-border flex h-full flex-col border-r",
+          "border-border flex h-full flex-col border-e",
           "w-full md:w-72 md:shrink-0",
           mobileShowDetail ? "hidden md:flex" : "flex",
         )}

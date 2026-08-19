@@ -48,7 +48,7 @@ export function CodeBlockElement(props: PlateElementProps<TCodeBlockElement>) {
       <div
         className={`bg-muted/50 relative rounded-md ${isShowPreview && isPreview ? "grid grid-cols-[1.5fr_1fr] gap-2" : ""}`}
       >
-        <pre className="overflow-x-auto p-8 pr-4 font-mono text-sm leading-[normal] tab-2 print:break-inside-avoid">
+        <pre className="overflow-x-auto p-8 pe-4 font-mono text-sm leading-[normal] tab-2 print:break-inside-avoid">
           <code>{props.children}</code>
         </pre>
 
@@ -69,7 +69,7 @@ export function CodeBlockElement(props: PlateElementProps<TCodeBlockElement>) {
         )}
 
         <div
-          className="absolute top-2 right-2 z-10 flex items-center gap-1 select-none"
+          className="absolute inset-e-2 top-2 z-10 flex items-center gap-1 select-none"
           contentEditable={false}
         >
           {isShowPreview && (

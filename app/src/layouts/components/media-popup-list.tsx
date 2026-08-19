@@ -1,12 +1,13 @@
 "use client";
 
-import { useAddLog } from "@/hooks/use-add-log";
-import { logger } from "@/lib/logger";
 import { Button, ButtonProps } from "@/components/ui/button";
+import { toast } from "@/components/ui/toast";
 import VideoThumbnail from "@/components/video-thumbnail";
+import { useAddLog } from "@/hooks/use-add-log";
 import { useDebounce } from "@/hooks/use-debounce";
 import { useGitProvider } from "@/hooks/use-git-provider";
 import { AcceptImages, MAX_FILES, MAX_SIZE } from "@/lib/constant";
+import { logger } from "@/lib/logger";
 import { checkMedia, isVideo } from "@/lib/utils/check-media-file";
 import { cn } from "@/lib/utils/cn";
 import {
@@ -43,7 +44,6 @@ import {
 } from "react";
 import { useDropzone } from "react-dropzone";
 import { useSelector } from "react-redux";
-import { toast } from "@/components/ui/toast";
 import MediaConflictHandler from "./media-conflict-handler";
 import { MediaUploadPreview } from "./media-upload-preview";
 import SafeImage from "./safe-image";
@@ -119,7 +119,7 @@ const RenderFolderOrFiles = ({
             </AspectRatio>
           </CardContent>
           <CardFooter className="px-4 py-2 pt-2 pb-3.5">
-            <p className="text-secondary-foreground line-clamp-1 w-full text-left text-sm">
+            <p className="text-secondary-foreground line-clamp-1 w-full text-start text-sm">
               {item.name}
             </p>
           </CardFooter>
@@ -133,7 +133,7 @@ const RenderFolderOrFiles = ({
               {item.isNew && (
                 <Badge
                   variant={"destructive"}
-                  className="absolute top-2 right-2 z-50"
+                  className="absolute inset-e-2 top-2 z-50"
                 >
                   {tMedia("new")}
                 </Badge>
@@ -142,7 +142,7 @@ const RenderFolderOrFiles = ({
               {item.isReplace && (
                 <Badge
                   variant={"muted"}
-                  className="absolute top-2 right-2 z-50"
+                  className="absolute inset-e-2 top-2 z-50"
                 >
                   {tMedia("replace")}
                 </Badge>
@@ -189,7 +189,7 @@ const RenderFolderOrFiles = ({
               </AspectRatio>
             </CardContent>
             <CardFooter className="px-4 py-2 pt-2 pb-3.5">
-              <p className="text-secondary-foreground line-clamp-1 w-full text-left text-sm">
+              <p className="text-secondary-foreground line-clamp-1 w-full text-start text-sm">
                 {item.name}
               </p>
             </CardFooter>
@@ -605,7 +605,7 @@ const MediaPopupList = ({
             </div>
 
             <div className="relative w-full sm:max-w-xs">
-              <div className="absolute top-1/2 left-3 -translate-y-1/2">
+              <div className="absolute inset-s-3 top-1/2 -translate-y-1/2">
                 {search !== debouncedSearch || isLoading ? (
                   <Loader2 className="text-muted-foreground size-4 animate-spin" />
                 ) : (
@@ -617,7 +617,7 @@ const MediaPopupList = ({
                 placeholder={tMedia("search")}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="bg-muted h-9 border-0 pl-9 text-sm ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+                className="bg-muted h-9 border-0 ps-9 text-sm ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
               />
             </div>
           </div>

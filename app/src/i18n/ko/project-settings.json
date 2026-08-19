@@ -110,7 +110,7 @@
       "description": "프로젝트의 콘텐츠 스키마를 관리하세요",
       "no_schemas_found": "스키마를 찾을 수 없습니다",
       "create_first_schema": "콘텐츠 폴더로 이동하여 첫 번째 스키마를 생성하세요",
-      "fields_count": "{개수, 복수형, =1 {# 필드} 기타 {# 필드}}",
+      "fields_count": "{count, plural, other {#개 필드}}",
       "edit_dialog_title": "스키마 편집",
       "edit_dialog_description": "스키마 필드와 해당 속성을 수정하세요",
       "schema_name_label": "스키마 이름",

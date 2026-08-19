@@ -8,6 +8,11 @@ let highlighterPromise: ReturnType<typeof createHighlighter> | null = null;
 let cachedHighlighter: Awaited<ReturnType<typeof createHighlighter>> | null =
   null;
 
+/** Returns true if the Shiki highlighter has already been instantiated. */
+export function hasShikiHighlighter(): boolean {
+  return cachedHighlighter !== null;
+}
+
 /** Start loading Shiki immediately. Safe to call multiple times. */
 export function preloadShiki(): Promise<void> {
   if (!highlighterPromise) {

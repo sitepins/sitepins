@@ -38,7 +38,7 @@ export default function DashboardSidebar({ orgs }: DashboardSidebarProps) {
           href="/"
           className="hover:bg-background relative flex w-full items-center justify-center rounded-lg py-2.5 transition-colors"
         >
-          <ChevronLeft className="absolute left-4 size-5" />
+          <ChevronLeft className="cn-rtl-flip absolute inset-s-4 size-5" />
           <h2 className="text-sm font-semibold">{tSidebar("back")}</h2>
         </Link>
       }
@@ -52,7 +52,7 @@ export default function DashboardSidebar({ orgs }: DashboardSidebarProps) {
         <SidebarMenu
           items={items}
           listClassName="flex-1 space-y-1"
-          iconClassName="mr-1.5 size-5 stroke-[1.5]"
+          iconClassName="size-5 stroke-[1.5]"
           labelClassName="text-text-dark flex-1"
         />
       </div>

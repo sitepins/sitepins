@@ -78,7 +78,7 @@ export default function MoveProject({
       <CardContent>
         <div className="space-y-4">
           {/* current org info */}
-          <div className="text-left">
+          <div className="text-start">
             <div className="text-muted-foreground text-sm">
               {tProjectSettingsGeneralMove("current_org")}
             </div>

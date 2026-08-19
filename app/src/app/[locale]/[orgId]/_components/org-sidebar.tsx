@@ -3,6 +3,7 @@
 import OrgSwitcher from "@/components/org-switcher";
 import { useOrgId } from "@/hooks/use-org-id";
 import { useSafeLocale } from "@/hooks/use-safe-locale";
+import { getDirection } from "@/lib/i18n/direction";
 import { getOrgDashboardMenu, getOrgSettingsMenu } from "@/lib/menu";
 import {
   SidebarLayout,
@@ -20,6 +21,7 @@ import { GlobalSearch } from "./global-search";
 
 export default function OrgSidebar({ orgs }: { orgs: TOrg[] }) {
   const locale = useSafeLocale();
+  const isRtl = getDirection(locale) === "rtl";
   const { effectiveOrgId, prefixedOrgId } = useOrgId(orgs);
   const pathname = usePathname();
   const [view, setView] = useState<"main" | "settings">(
@@ -70,7 +72,9 @@ export default function OrgSidebar({ orgs }: { orgs: TOrg[] }) {
         label: (
           <div className="flex w-full items-center justify-between">
             <span>{String(computedName)}</span>
-            {isSettings && <ChevronRight className="size-4 opacity-50" />}
+            {isSettings && (
+              <ChevronRight className="cn-rtl-flip size-4 opacity-50" />
+            )}
           </div>
         ),
       };
@@ -99,25 +103,25 @@ export default function OrgSidebar({ orgs }: { orgs: TOrg[] }) {
           {view === "main" ? (
             <motion.div
               key="main"
-              initial={{ x: "-100%" }}
+              initial={{ x: isRtl ? "100%" : "-100%" }}
               animate={{ x: 0 }}
-              exit={{ x: "-100%" }}
+              exit={{ x: isRtl ? "100%" : "-100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 200 }}
               className="absolute inset-0 flex flex-col overflow-y-auto px-4 pt-4"
             >
               <SidebarMenu
                 items={menuItems}
                 listClassName="flex-1 space-y-1"
-                iconClassName="mr-1.5 size-5 stroke-[1.5]"
+                iconClassName="size-5 stroke-[1.5]"
                 labelClassName="text-text-dark flex-1"
               />
             </motion.div>
           ) : (
             <motion.div
               key="settings"
-              initial={{ x: "100%" }}
+              initial={{ x: isRtl ? "-100%" : "100%" }}
               animate={{ x: 0 }}
-              exit={{ x: "100%" }}
+              exit={{ x: isRtl ? "-100%" : "100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 200 }}
               className="absolute inset-0 flex flex-col overflow-y-auto px-4 pt-4"
             >
@@ -128,13 +132,13 @@ export default function OrgSidebar({ orgs }: { orgs: TOrg[] }) {
                 }}
                 className="hover:bg-background relative flex w-full items-center justify-center rounded-lg py-2.5 transition-colors"
               >
-                <ChevronLeft className="absolute left-4 size-5" />
+                <ChevronLeft className="cn-rtl-flip absolute inset-s-4 size-5" />
                 <h2 className="text-sm font-semibold">{tCommon("settings")}</h2>
               </button>
               <SidebarMenu
                 items={settingsMenuItems}
                 listClassName="space-y-1 mt-3"
-                iconClassName="mr-1.5 size-5 stroke-[1.5]"
+                iconClassName="size-5 stroke-[1.5]"
                 labelClassName="text-text-dark"
               />
             </motion.div>

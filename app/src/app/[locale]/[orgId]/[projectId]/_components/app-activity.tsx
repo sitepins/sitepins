@@ -61,7 +61,7 @@ export default function AppActivity({
         {projectLogQuery.isLoading ? (
           <div className="px-4">
             <div className="space-y-4 py-3">
-              <div className="flex items-center space-x-4">
+              <div className="flex items-center gap-4">
                 <Skeleton className="size-10 rounded-full" />
                 <div className="flex-1 space-y-2">
                   <Skeleton className="h-4 w-3/4 rounded" />
@@ -69,7 +69,7 @@ export default function AppActivity({
                 </div>
               </div>
 
-              <div className="flex items-center space-x-4">
+              <div className="flex items-center gap-4">
                 <Skeleton className="size-10 rounded-full" />
                 <div className="flex-1 space-y-2">
                   <Skeleton className="h-4 w-3/4 rounded" />
@@ -77,7 +77,7 @@ export default function AppActivity({
                 </div>
               </div>
 
-              <div className="flex items-center space-x-4">
+              <div className="flex items-center gap-4">
                 <Skeleton className="size-10 rounded-full" />
                 <div className="flex-1 space-y-2">
                   <Skeleton className="h-4 w-3/4 rounded" />
@@ -127,7 +127,7 @@ export default function AppActivity({
                   return (
                     <li
                       key={idx}
-                      className="border-b-border hover:bg-muted/50 relative flex border-b px-4 py-4 transition-colors"
+                      className="border-b-border hover:bg-muted/50 relative flex gap-3 border-b px-4 py-4 transition-colors"
                     >
                       <div className="bg-secondary hidden size-10 items-center justify-center rounded-full sm:flex md:flex">
                         <FileText className="text-muted-foreground size-5" />
@@ -135,7 +135,7 @@ export default function AppActivity({
 
                       <div className="min-w-0 flex-1">
                         {/* filename row — padded right so text never bleeds under the badge */}
-                        <div className="pr-20">
+                        <div className="pe-20">
                           {isDelete ? (
                             <span className="text-muted-foreground block truncate font-medium line-through">
                               {fileName}
@@ -152,22 +152,22 @@ export default function AppActivity({
 
                         <Badge
                           variant={badgeVariant}
-                          className="absolute top-4 right-4 text-xs"
+                          className="absolute inset-e-4 top-4 text-xs"
                         >
                           {badgeLabel}
                         </Badge>
 
                         {filePath ? (
                           <p
-                            dir="rtl"
-                            className="text-muted-foreground mt-2 truncate text-left text-sm"
+                            dir="ltr"
+                            className="text-muted-foreground mt-2 truncate text-start text-sm"
                           >
                             {filePath}
                           </p>
                         ) : null}
 
                         <div className="text-muted-foreground mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
-                          <div className="flex items-center space-x-1">
+                          <div className="flex items-center gap-1">
                             <Clock className="h-4 w-4 shrink-0" />
                             <span>
                               {dateObj
@@ -177,7 +177,7 @@ export default function AppActivity({
                                 : ""}
                             </span>
                           </div>
-                          <div className="flex items-center space-x-1">
+                          <div className="flex items-center gap-1">
                             <User className="h-4 w-4 shrink-0" />
                             <span>{log.user_name}</span>
                           </div>

@@ -29,17 +29,19 @@
 }
 
 .tree ul {
-  margin-left: 10px;
-  padding-left: 0;
+  margin-inline-start: 10px;
+  margin-inline-end: 0;
+  padding-inline-start: 0;
+  padding-inline-end: 0;
 }
 
 .tree ul li {
-  @apply border-border border-l;
+  @apply border-border border-s;
   display: flow-root;
 }
 
 .tree ul li:last-child {
-  border-color: transparent;
+  border-inline-start-color: transparent;
 }
 
 .tree ul li::before {
@@ -48,16 +50,27 @@
   display: block;
   position: absolute;
   top: calc(var(--tree-spacing) / -4);
-  left: -1px;
+  inset-inline-start: -1px;
   width: 9px;
   height: calc(var(--tree-spacing) + 1px);
-  border-width: 0 0 1px 1px;
+  border-style: solid;
+  border-width: 0;
+  border-block-end-width: 1px;
+  border-inline-start-width: 1px;
   max-height: 74%;
-  border-bottom-left-radius: var(--radius);
+  border-end-start-radius: var(--radius);
+}
+
+html[dir="rtl"] .tree ul li::before {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: var(--radius);
+  left: auto;
+  right: -1px;
 }
 
 .tree ul li > div {
-  margin-left: 8px;
+  margin-inline-start: 8px;
+  margin-inline-end: 0;
 }
 
 .tree ul li > div a {
@@ -65,7 +78,8 @@
 }
 
 .tree ul li > div ul {
-  margin-left: 10px;
+  margin-inline-start: 10px;
+  margin-inline-end: 0;
 }
 
 /* bg colors */

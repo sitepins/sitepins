@@ -65,9 +65,9 @@ export default function SidebarProfileSetting() {
         <DropdownMenuTrigger asChild>
           <Button
             variant={"basic"}
-            className="hover:bg-background flex h-12 w-full items-center justify-between space-x-1 whitespace-normal"
+            className="hover:bg-background flex h-12 w-full items-center justify-between gap-1 whitespace-normal"
           >
-            <div className="flex flex-1 items-center justify-between space-x-2 text-left">
+            <div className="flex flex-1 items-center justify-between gap-2 text-start">
               <Avatar
                 className="size-8 rounded-full"
                 src={auth?.user.image || ""}
@@ -113,7 +113,7 @@ export default function SidebarProfileSetting() {
                     className="flex w-full items-center px-3 py-1.5"
                     onClick={() => setIsOpen(false)}
                   >
-                    <item.icon className="mr-1 size-4" />
+                    <item.icon className="size-4" />
                     <span className="text-sm font-medium">{item.name}</span>
                   </Link>
                 </DropdownMenuItem>
@@ -127,7 +127,7 @@ export default function SidebarProfileSetting() {
                 setShowLogoutAlert(true);
               }}
             >
-              <LogOut className="mr-1 size-4" />
+              <LogOut className="size-4" />
               <span className="text-sm">{tCommon("logout.label")}</span>
             </DropdownMenuItem>
           </div>

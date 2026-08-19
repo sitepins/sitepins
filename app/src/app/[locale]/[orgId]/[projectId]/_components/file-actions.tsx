@@ -79,7 +79,7 @@ export default function FileAction({
                 href={`/${params.orgId}/${params.projectId}/content/${filePath}`}
                 className="flex w-full items-center"
               >
-                <Edit2Icon className="mr-2 size-4" />
+                <Edit2Icon className="me-2 size-4" />
                 <span className="font-medium">
                   {tDirectoryViewActions("edit_in_cms")}
                 </span>
@@ -92,7 +92,7 @@ export default function FileAction({
                 href={`/${params.orgId}/${params.projectId}/code/${filePath}`}
                 className="flex w-full items-center"
               >
-                <Code2 className="mr-2 size-4" />
+                <Code2 className="me-2 size-4" />
                 <span className="font-medium">
                   {tCommon("actions.edit_as_code")}
                 </span>
@@ -106,7 +106,7 @@ export default function FileAction({
               setIsDuplicateOpen(true);
             }}
           >
-            <CopyIcon className="mr-2 size-4" />
+            <CopyIcon className="me-2 size-4" />
             <span>{tCommon("actions.duplicate")}</span>
           </DropdownMenuItem>
           <DropdownMenuItem
@@ -116,7 +116,7 @@ export default function FileAction({
               setIsRenameOpen(true);
             }}
           >
-            <Edit2Icon className="mr-2 size-4" />
+            <Edit2Icon className="me-2 size-4" />
             <span>{tCommon("actions.rename")}</span>
           </DropdownMenuItem>
           <DropdownMenuItem
@@ -127,7 +127,7 @@ export default function FileAction({
               setIsDeleteOpen(true);
             }}
           >
-            <Trash2 className="mr-2 size-4" />
+            <Trash2 className="me-2 size-4" />
             <span>{tCommon("actions.delete")}</span>
           </DropdownMenuItem>
         </DropdownMenuContent>

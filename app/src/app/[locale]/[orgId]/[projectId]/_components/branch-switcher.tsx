@@ -119,7 +119,7 @@ export function BranchSwitcher({ project, config }: BranchSwitcherProps) {
             <div className="flex items-center gap-2 truncate">
               <span className="truncate">{config.branch}</span>
             </div>
-            <ChevronsUpDown className="ml-2 size-3 shrink-0 opacity-50" />
+            <ChevronsUpDown className="ms-2 size-3 shrink-0 opacity-50" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent
@@ -159,7 +159,7 @@ export function BranchSwitcher({ project, config }: BranchSwitcherProps) {
                           <GitBranch className="text-muted-foreground size-3.5 opacity-60" />
                           {branch.name}
                           {project?.branch === branch.name && (
-                            <span className="text-muted-foreground ml-2 text-xs">
+                            <span className="text-muted-foreground ms-2 text-xs">
                               ({tProjectBranching("switcher.default")})
                             </span>
                           )}
@@ -187,7 +187,7 @@ export function BranchSwitcher({ project, config }: BranchSwitcherProps) {
               >
                 <div className="flex w-full items-center justify-between">
                   <div className="flex items-center">
-                    <Plus className="mr-2 size-4" />
+                    <Plus className="me-2 size-4" />
                     {tProjectBranching("switcher.create_new")}
                   </div>
                   {!canAccessProFeatures && (
@@ -240,7 +240,7 @@ export function BranchSwitcher({ project, config }: BranchSwitcherProps) {
             </Button>
             <Button onClick={handleCreateBranch} disabled={isBranchCreating}>
               {isBranchCreating && (
-                <Loader2 className="mr-2 size-4 animate-spin" />
+                <Loader2 className="me-2 size-4 animate-spin" />
               )}
               {tProjectBranching("create.submit")}
             </Button>

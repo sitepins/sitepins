@@ -215,8 +215,8 @@
       "encoding": "UTF-8",
       "line": "Ln {line}",
       "column": "Col {column}",
-      "lines_count": "{개수, 복수형, =1 {#줄} 기타 {#줄}}",
-      "characters_count": "{개수, 복수형, =1 {#자} 기타 {#자}}",
+      "lines_count": "{count, plural, other {#줄}}",
+      "characters_count": "{count, plural, other {#자}}",
       "error_loading_title": "파일을 로드하는 중에 오류가 발생했습니다",
       "error_loading_desc": "편집할 파일을 로드할 수 없습니다."
     },

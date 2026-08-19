@@ -63,7 +63,7 @@ export function EquationElement(props: PlateElementProps<TEquationElement>) {
             className={cn(
               "group hover:bg-primary/10 data-[selected=true]:bg-primary/10 flex cursor-pointer items-center justify-center rounded-sm select-none",
               props.element.texExpression.length === 0
-                ? "bg-muted p-3 pr-9"
+                ? "bg-muted p-3 pe-9"
                 : "px-2 py-1",
             )}
             data-selected={selected}
@@ -162,7 +162,7 @@ export function InlineEquationElement(
             />
             {element.texExpression.length === 0 && (
               <span>
-                <RadicalIcon className="mr-1 inline-block h-4.75 w-4 py-[1.5px] align-text-bottom" />
+                <RadicalIcon className="me-1 inline-block h-4.75 w-4 py-[1.5px] align-text-bottom" />
                 {tEditorEquation("new")}
               </span>
             )}

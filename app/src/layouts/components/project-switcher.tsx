@@ -59,7 +59,7 @@ export default function ProjectSwitcher({
             ? `/org-${orgId}/${currentProject.project_id}`
             : `/org-${orgId}`
         }
-        className="flex flex-1 items-center gap-1 overflow-hidden text-left md:gap-2"
+        className="flex flex-1 items-center gap-1 overflow-hidden text-start md:gap-2"
       >
         <ProjectIcon
           variant="trigger"
@@ -93,7 +93,7 @@ export default function ProjectSwitcher({
         <DropdownMenuContent className="w-64 p-0" align="end" sideOffset={10}>
           <Command>
             <CommandInput
-              className="pl-1"
+              className="ps-1"
               placeholder={tDashboardSwitcher("search")}
             />
             <CommandList>

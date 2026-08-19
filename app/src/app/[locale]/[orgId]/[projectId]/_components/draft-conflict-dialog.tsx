@@ -132,14 +132,14 @@ export default function DraftConflictDialog({
             className="w-full sm:w-auto"
             onClick={() => onChoose("use-git")}
           >
-            <GitBranch className="mr-2 size-4" />
+            <GitBranch className="me-2 size-4" />
             {t("use_git")}
           </Button>
           <Button
             className="w-full sm:w-auto"
             onClick={() => onChoose("use-draft")}
           >
-            <HardDrive className="mr-2 size-4" />
+            <HardDrive className="me-2 size-4" />
             {t("use_draft")}
           </Button>
         </AlertDialogFooter>

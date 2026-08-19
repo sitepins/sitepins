@@ -236,7 +236,7 @@ export default function EditorHeader({
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle className="flex items-center">
-              <TriangleAlert className="text-destructive mr-2" />
+              <TriangleAlert className="text-destructive me-2" />
               {tEditorHeader("reset_dialog_title")}
             </AlertDialogTitle>
             <AlertDialogDescription>
@@ -256,7 +256,7 @@ export default function EditorHeader({
 
       <header className="border-border bg-light sticky top-0 left-0 z-50 flex items-center justify-between border-b px-4 py-4 lg:px-6">
         <div className="flex w-full items-center justify-between">
-          <div className="flex items-center md:space-x-4">
+          <div className="flex items-center gap-4">
             <Button
               onClick={handleOpenSidebar}
               variant="ghost"
@@ -267,11 +267,11 @@ export default function EditorHeader({
               <Menu className="size-5" />
             </Button>
 
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center gap-3">
               <Button
                 variant="ghost"
                 size="sm"
-                className="flex items-center md:space-x-2"
+                className="flex items-center gap-2"
                 type="button"
                 onClick={router.back}
               >
@@ -283,7 +283,7 @@ export default function EditorHeader({
 
               {canAccessProFeatures &&
                 isDisplayableDeploymentStatus(deploymentStatus) && (
-                  <div className="flex min-w-0 items-center space-x-1 sm:space-x-2">
+                  <div className="flex min-w-0 items-center gap-1 sm:gap-2">
                     {/* Mobile: Just colored dot */}
                     <div className="flex items-center md:hidden">
                       <Tooltip>
@@ -312,7 +312,7 @@ export default function EditorHeader({
             </div>
           </div>
 
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center gap-3">
             <PresenceAvatars users={activeUsers} />
             {config.repoName && config.branch && config.token && (
               <PreviewButton

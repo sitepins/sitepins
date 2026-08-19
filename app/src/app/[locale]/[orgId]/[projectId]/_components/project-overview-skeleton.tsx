@@ -30,7 +30,7 @@ export function ProjectOverviewSkeleton() {
         <CardContent className="px-0 pb-4">
           <div className="space-y-4 px-4 py-4">
             {[1, 2].map((i) => (
-              <div key={i} className="flex items-start space-x-4">
+              <div key={i} className="flex items-start gap-4">
                 <Skeleton className="size-10 rounded-full" />
                 <div className="flex-1 space-y-2">
                   <Skeleton className="h-4 w-3/4" />

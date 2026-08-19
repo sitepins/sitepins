@@ -829,7 +829,7 @@ export default function FrontmatterRenderer({
     const fieldsToRender = isNested ? schema : [...schema, ...virtualItems];
 
     return (
-      <ul className="flex w-full flex-col space-y-4 pl-0">
+      <ul className="flex w-full flex-col space-y-4 ps-0">
         <AnimatePresence mode="popLayout" initial={false}>
           {fieldsToRender?.map((item) => {
             if (item.isIgnored) {
@@ -876,7 +876,7 @@ export default function FrontmatterRenderer({
                                     type="button"
                                     className="line-clamp-1 max-w-sm overflow-hidden p-0 text-wrap whitespace-normal capitalize"
                                   >
-                                    <span className="line-clamp-1 text-left text-wrap break-all whitespace-normal">
+                                    <span className="line-clamp-1 text-start text-wrap break-all whitespace-normal">
                                       {plainify(crumb.label)}
                                     </span>
                                   </Button>
@@ -1174,7 +1174,7 @@ export default function FrontmatterRenderer({
                           }),
                         );
                       }}
-                      className="ml-2 size-6"
+                      className="ms-2 size-6"
                     >
                       <Plus className="size-3" />
                     </Button>
@@ -1286,7 +1286,7 @@ export default function FrontmatterRenderer({
                             }),
                           );
                         }}
-                        className="ml-2 size-6 whitespace-normal"
+                        className="ms-2 size-6 whitespace-normal"
                       >
                         <Plus className="size-3" />
                       </Button>
@@ -1338,7 +1338,7 @@ export default function FrontmatterRenderer({
                                     <div
                                       className={buttonVariants({
                                         className:
-                                          "border-border! bg-light relative flex w-full cursor-pointer justify-between border pr-0 pl-2.5 whitespace-normal *:z-20",
+                                          "border-border! bg-light relative flex w-full cursor-pointer justify-between border ps-2.5 pe-0 whitespace-normal *:z-20",
                                         size: "lg",
                                         variant: "outline",
                                       })}
@@ -1352,10 +1352,10 @@ export default function FrontmatterRenderer({
                                         });
                                       }}
                                     >
-                                      <span className="line-clamp-1 flex-1 text-left text-wrap whitespace-normal capitalize">
+                                      <span className="line-clamp-1 flex-1 text-start text-wrap whitespace-normal capitalize">
                                         {label}
                                       </span>
-                                      <PenLine className="mr-2 ml-auto size-4 flex-none" />
+                                      <PenLine className="ms-auto me-2 size-4 flex-none" />
 
                                       <Button
                                         onClick={(e) => {
@@ -1381,7 +1381,7 @@ export default function FrontmatterRenderer({
                                       <Button
                                         type="button"
                                         variant={"ghost"}
-                                        className="hover:text-destructive/75 absolute top-1/2 right-1 h-[calc(100%-5px)] -translate-y-1/2 whitespace-normal"
+                                        className="hover:text-destructive/75 absolute inset-e-1 top-1/2 h-[calc(100%-5px)] -translate-y-1/2 whitespace-normal"
                                         onClick={() => {
                                           const name = generateName({
                                             parent: parent?.name,
@@ -1401,7 +1401,7 @@ export default function FrontmatterRenderer({
                                           parent: parent?.name,
                                           index: index,
                                         })}
-                                        className="pr-10"
+                                        className="pe-10"
                                         value={
                                           stringValue(values?.[index]) || ""
                                         }
@@ -1440,10 +1440,10 @@ export default function FrontmatterRenderer({
                         "border-border! bg-light group flex w-full cursor-pointer border px-2.5!",
                     })}
                   >
-                    <span className="mr-2 line-clamp-1 text-wrap break-all capitalize">
+                    <span className="me-2 line-clamp-1 text-wrap break-all capitalize">
                       {item.label}
                     </span>
-                    <div className="ml-auto flex items-center gap-2">
+                    <div className="ms-auto flex items-center gap-2">
                       {showDuplicate && !isNested && (
                         <button
                           type="button"

@@ -94,7 +94,7 @@ const toolbarButtonVariants = cva(
 
 const dropdownArrowVariants = cva(
   cn(
-    "inline-flex items-center justify-center rounded-r-md text-sm font-medium text-foreground transition-colors disabled:pointer-events-none disabled:opacity-50",
+    "inline-flex items-center justify-center rounded-e-md text-sm font-medium text-foreground transition-colors disabled:pointer-events-none disabled:opacity-50",
   ),
   {
     defaultVariants: {
@@ -111,7 +111,7 @@ const dropdownArrowVariants = cva(
         default:
           "bg-transparent hover:bg-muted hover:text-muted-foreground data-pressed:bg-primary data-pressed:text-primary-foreground",
         outline:
-          "border border-l-0 border-input bg-transparent hover:bg-primary hover:text-primary-foreground",
+          "border border-s-0 border-input bg-transparent hover:bg-primary hover:text-primary-foreground",
       },
     },
   },
@@ -146,7 +146,7 @@ export const ToolbarButton = withTooltip(function ToolbarButton({
             size,
             variant,
           }),
-          isDropdown && "justify-between gap-1 pr-1",
+          isDropdown && "justify-between gap-1 pe-1",
           className,
         )}
         value={pressed ? "single" : ""}
@@ -176,7 +176,7 @@ export const ToolbarButton = withTooltip(function ToolbarButton({
           size,
           variant,
         }),
-        isDropdown && "pr-1",
+        isDropdown && "pe-1",
         className,
       )}
       {...props}
@@ -215,7 +215,7 @@ export function ToolbarSplitButtonPrimary({
           size,
           variant,
         }),
-        "rounded-r-none",
+        "rounded-e-none",
         "group-data-[pressed=true]:bg-primary group-data-[pressed=true]:text-primary-foreground",
         className,
       )}

@@ -424,7 +424,8 @@ export const RichEditor = ({
           className={`relative ${isMobile ? "" : "p-4 lg:p-6"} ${isMobile ? "h-[calc(100vh-170px)]" : "h-[calc(100vh-110px)]"}`}
         >
           <Editor
-            className={`relative min-h-[calc(100%-42px)] px-0 ${isMobile ? "pt-4" : "pt-0"} pb-20`}
+            dir="auto"
+            className={`relative min-h-[calc(100%-42px)] ps-6 pe-2 sm:ps-7 ${isMobile ? "pt-4" : "pt-0"} pb-20`}
             variant="none"
             placeholder={tEditorRich("placeholder")}
           />

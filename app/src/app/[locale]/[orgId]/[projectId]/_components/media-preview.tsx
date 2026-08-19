@@ -61,14 +61,14 @@ export default function MediaPreview({
         />
       )}
 
-      <div className="mt-4 flex max-w-96.25 space-x-2.5 lg:mt-0">
+      <div className="mt-4 flex max-w-96.25 gap-2.5 lg:mt-0">
         <Button
           type="button"
           onClick={(e) => {
             e.preventDefault();
             buttonRef.current?.click();
           }}
-          className="flex-1 space-x-2 lg:ml-2 lg:hidden"
+          className="flex-1 gap-2 lg:ms-2 lg:hidden"
         >
           <Camera />
 

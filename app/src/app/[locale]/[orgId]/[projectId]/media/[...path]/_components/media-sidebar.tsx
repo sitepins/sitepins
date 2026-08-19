@@ -104,29 +104,29 @@ export default function MediaSidebar({
     return null;
   })();
 
+  if (!isFile) {
+    return <>{children}</>;
+  }
+
   return (
     <>
       <Drawer
         open={drawerOpen}
         onOpenChange={(isOpen) => {
-          if (!isFile) return;
           setDrawerOpen(isOpen);
           if (!isOpen) {
             setSelectedImage(null);
             setDimensions(null);
           }
         }}
-        {...(!isFile && { open: false })}
         swipeDirection="right"
         modal
       >
         <DrawerTrigger
           {...props}
           onClick={() => {
-            if (isFile) {
-              setSelectedImage(filepath);
-              setDimensions(null);
-            }
+            setSelectedImage(filepath);
+            setDimensions(null);
           }}
         >
           {children}
@@ -196,8 +196,8 @@ export default function MediaSidebar({
               <div>
                 <Label>{tCommon("labels.name")}</Label>
                 <div className="relative">
-                  <Input readOnly value={name} className="pr-10" />
-                  <div className="absolute top-0 right-0 h-full">
+                  <Input readOnly value={name} className="pe-10" />
+                  <div className="absolute inset-e-0 top-0 h-full">
                     <Button
                       type="button"
                       variant="ghost"
@@ -249,7 +249,7 @@ export default function MediaSidebar({
                 shouldReplace
                 replaceImageUrl={filepath.replace("media/", "")}
               >
-                <Replace className="mr-1.5 size-4" />
+                <Replace className="me-1.5 size-4" />
                 <span>{tCommon("actions.replace")}</span>
               </MediaUpload>
               <Button onClick={() => setMoveOpen(true)}>
@@ -259,7 +259,7 @@ export default function MediaSidebar({
             </div>
 
             <Button variant={"destructive"} onClick={() => setDeleteOpen(true)}>
-              <Trash2 className="mr-1.5 size-4" />
+              <Trash2 className="me-1.5 size-4" />
               <span>{tCommon("actions.delete")}</span>
             </Button>
           </DrawerFooter>

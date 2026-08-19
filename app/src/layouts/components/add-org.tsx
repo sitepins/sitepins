@@ -65,7 +65,7 @@ export default function AddOrg({
     <Dialog open={showDialog} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         <Button {...props}>
-          <span className="bg-light border-border mr-1 flex size-6 flex-none items-center justify-center rounded-full border text-xs">
+          <span className="bg-light border-border me-1 flex size-6 flex-none items-center justify-center rounded-full border text-xs">
             <Plus className="size-3" />
           </span>
           <span className="flex-1 text-sm capitalize">
@@ -104,7 +104,7 @@ export default function AddOrg({
                   }
                 });
             })}
-            className="space-y-6 text-left"
+            className="space-y-6 text-start"
           >
             <FieldGroup>
               <Controller

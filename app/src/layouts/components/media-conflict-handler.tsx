@@ -103,7 +103,7 @@ const MediaConflictHandler = ({
             type="button"
             variant="outline"
             size="sm"
-            className="mr-auto"
+            className="me-auto"
           >
             {tMediaConflict("stop")}
           </Button>

@@ -42,7 +42,7 @@ import { useAppSelector } from "@/redux/store";
 import {
   ArrowLeft,
   ChevronDown,
-  Menu,
+  PanelLeft,
   RotateCcw,
   TriangleAlert,
 } from "lucide-react";
@@ -256,7 +256,7 @@ export default function EditorHeader({
 
       <header className="border-border bg-light sticky top-0 left-0 z-50 flex items-center justify-between border-b px-4 py-4 lg:px-6">
         <div className="flex w-full items-center justify-between">
-          <div className="flex items-center gap-4">
+          <div className="flex min-w-0 shrink items-center gap-2 sm:gap-4">
             <Button
               onClick={handleOpenSidebar}
               variant="ghost"
@@ -264,7 +264,7 @@ export default function EditorHeader({
               className="xl:hidden"
               type="button"
             >
-              <Menu className="size-5" />
+              <PanelLeft className="cn-rtl-flip size-5" />
             </Button>
 
             <div className="flex items-center gap-3">
@@ -312,7 +312,7 @@ export default function EditorHeader({
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex shrink-0 items-center gap-2 sm:gap-3">
             <PresenceAvatars users={activeUsers} />
             {config.repoName && config.branch && config.token && (
               <PreviewButton

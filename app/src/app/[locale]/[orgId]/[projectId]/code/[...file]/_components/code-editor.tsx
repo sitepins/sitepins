@@ -12,12 +12,26 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { toast } from "@/components/ui/toast";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { useDeploymentStatusPollingInterval } from "@/hooks/use-deployment-status-polling";
+import { useGitProvider } from "@/hooks/use-git-provider";
 import { useMediaQuery } from "@/hooks/use-media-query";
+import { useOwnerPlan } from "@/hooks/use-owner-plan";
 import { usePresence } from "@/hooks/use-presence";
 import { useSandboxPreview } from "@/hooks/use-sandbox-preview";
 import { useVercelIntegration } from "@/hooks/use-vercel-integration";
 import { logger } from "@/lib/logger";
 import { cn } from "@/lib/utils/cn";
+import {
+  getDeploymentStatusClass,
+  getDeploymentStatusI18nKey,
+  isDisplayableDeploymentStatus,
+} from "@/lib/utils/deployment-status";
 import { configureMonacoLoader } from "@/lib/utils/monaco";
 import { normalizePath } from "@/lib/utils/normalize-path";
 import { isGitLabProvider } from "@/lib/utils/provider-checker";
@@ -27,12 +41,14 @@ import {
   preloadShiki,
 } from "@/lib/utils/shiki";
 import { selectConfig } from "@/redux/features/config/slice";
+import { commitStatusState } from "@/redux/features/git/provider-adapter";
 import { useUpdateGitHubFilesMutation } from "@/redux/features/github";
 import { useUpdateGitLabFilesMutation } from "@/redux/features/gitlab";
 import type { OnMount } from "@monaco-editor/react";
 import {
   ArrowLeft,
   ChevronRight,
+  PanelLeft,
   RotateCcw,
   Save,
   TriangleAlert,
@@ -45,12 +61,11 @@ import { useRouter } from "next/navigation";
 import path from "path";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
-import { toast } from "@/components/ui/toast";
 import PresenceAvatars from "../../../_components/presence-avatars";
 import PreventNavigation from "../../../_components/prevent-navigation";
 import PreviewButton from "../../../_components/preview-button";
 import CodeSkeleton from "./code-skeleton";
-import { getFileIcon, getLanguageFromExtension } from "./file-icons";
+import { getLanguageFromExtension } from "./file-icons";
 
 // Configure Monaco AMD loader to a compatible CDN version
 configureMonacoLoader();
@@ -76,6 +91,7 @@ export default function CodeEditor({
 }: CodeEditorProps) {
   const tCommon = useTranslations("common");
   const tEditor = useTranslations("editor");
+  const tEditorHeader = useTranslations("editor.header");
   const isMobile = useMediaQuery("(max-width: 768px)");
   const config = useSelector(selectConfig);
   const router = useRouter();
@@ -88,6 +104,33 @@ export default function CodeEditor({
     useVercelIntegration(orgId);
 
   const isSaving = isGitLabProvider(config.provider) ? isGlSaving : isGhSaving;
+
+  const { canAccessProFeatures } = useOwnerPlan();
+  const { useGitCommitStatus } = useGitProvider();
+
+  const [statusState, setStatusState] = useState<string | undefined>(undefined);
+  const pollingInterval = useDeploymentStatusPollingInterval(statusState);
+
+  const { data: rawStatus, refetch: refetchStatus } = useGitCommitStatus({
+    skip: !config.owner || !config.branch || !canAccessProFeatures,
+    pollingInterval,
+  });
+  const statusStateFromData = commitStatusState(rawStatus);
+
+  const prevSavingRef = useRef(isSaving);
+  useEffect(() => {
+    if (prevSavingRef.current && !isSaving) {
+      setStatusState(undefined);
+      if (canAccessProFeatures) refetchStatus();
+    }
+    prevSavingRef.current = isSaving;
+  }, [isSaving, canAccessProFeatures, refetchStatus]);
+
+  if (statusState !== statusStateFromData) {
+    setStatusState(statusStateFromData);
+  }
+
+  const deploymentStatus = statusStateFromData;
 
   const [value, setValue] = useState(content);
   const [savedContent, setSavedContent] = useState(content);
@@ -111,7 +154,6 @@ export default function CodeEditor({
 
   const language = getLanguageFromExtension(filePath);
   const fileName = path.basename(filePath);
-  const fileIcon = getFileIcon(filePath);
   const { activeUsers } = usePresence(orgId, projectId, filePath);
 
   const { resolvedTheme } = useTheme();
@@ -262,7 +304,22 @@ export default function CodeEditor({
       <div className="bg-background sticky top-0 z-50 shrink-0">
         {/* Row 1: actions — matches content editor header style */}
         <header className="border-border bg-light flex items-center justify-between border-b px-4 py-4 lg:px-6">
-          <div className="flex items-center gap-3">
+          <div className="flex min-w-0 shrink items-center gap-2 sm:gap-3">
+            <Button
+              onClick={() => {
+                const sidebar = document.getElementById(
+                  "mobile-header-trigger",
+                );
+                if (sidebar) sidebar.click();
+              }}
+              variant="ghost"
+              size="sm"
+              className="xl:hidden"
+              type="button"
+            >
+              <PanelLeft className="cn-rtl-flip size-5" />
+            </Button>
+
             <Button
               variant="ghost"
               size="sm"
@@ -276,20 +333,36 @@ export default function CodeEditor({
               </span>
             </Button>
 
-            <div className="flex items-center gap-2">
-              {fileIcon}
-              <h1 className="text-text-dark max-w-55 truncate text-base font-bold sm:max-w-none sm:text-lg">
-                {fileName}
-              </h1>
-              {hasChanges && (
-                <span className="text-muted-foreground text-xs sm:text-sm">
-                  {tEditor("code.edited")}
-                </span>
+            {canAccessProFeatures &&
+              isDisplayableDeploymentStatus(deploymentStatus) && (
+                <div className="flex min-w-0 items-center gap-1 sm:gap-2">
+                  {/* Mobile: dot */}
+                  <div className="flex items-center md:hidden">
+                    <Tooltip>
+                      <TooltipTrigger
+                        type="button"
+                        className={`size-2 rounded-full ${getDeploymentStatusClass(deploymentStatus)}`}
+                      />
+                      <TooltipContent className="text-xs">
+                        {tEditorHeader(
+                          getDeploymentStatusI18nKey(deploymentStatus),
+                        )}
+                      </TooltipContent>
+                    </Tooltip>
+                  </div>
+                  {/* Desktop: badge */}
+                  <span
+                    className={`hidden rounded-full px-2 py-0.5 text-xs font-medium whitespace-nowrap md:inline-flex ${getDeploymentStatusClass(deploymentStatus)}`}
+                  >
+                    {tEditorHeader(
+                      getDeploymentStatusI18nKey(deploymentStatus),
+                    )}
+                  </span>
+                </div>
               )}
-            </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex shrink-0 items-center gap-2 sm:gap-3">
             <PresenceAvatars users={activeUsers} />
 
             {config.repoName && config.branch && config.token && (
@@ -327,24 +400,24 @@ export default function CodeEditor({
               disabled={!hasChanges}
             >
               <Save className="size-4" />
-              <span className="hidden sm:inline">{tEditor("code.commit")}</span>
+              {tEditor("code.commit")}
             </Button>
           </div>
         </header>
 
         {/* Row 2: breadcrumb */}
         <div className="bg-light border-border border-b px-4 py-2">
-          <div className="flex flex-wrap items-center overflow-x-auto text-xs whitespace-nowrap sm:text-sm">
+          <div className="flex items-center overflow-x-auto text-xs whitespace-nowrap sm:text-sm">
             {filePath.split("/").map((segment, index, array) => {
               const isLast = index === array.length - 1;
               const pathToSegment = array.slice(0, index + 1).join("/");
               return (
                 <div key={index} className="flex items-center">
                   {index > 0 && (
-                    <ChevronRight className="cn-rtl-flip h-3 w-3 min-w-3" />
+                    <ChevronRight className="cn-rtl-flip h-3 w-3 min-w-3 opacity-40" />
                   )}
                   {isLast ? (
-                    <span className="max-w-30 truncate font-semibold sm:max-w-none">
+                    <span className="max-w-30 truncate px-1.5 font-semibold sm:max-w-none">
                       {segment}
                     </span>
                   ) : (
@@ -352,7 +425,7 @@ export default function CodeEditor({
                       href={`/${orgId}/${projectId}/code/${normalizePath(pathToSegment)}`}
                       className={buttonVariants({
                         variant: "link",
-                        className: "h-auto! px-1! py-1!",
+                        className: "h-auto! px-1.5! py-0!",
                       })}
                     >
                       {segment}
@@ -389,9 +462,6 @@ export default function CodeEditor({
           </div>
         )}
 
-        {/* Gate on shikiReady + resolvedTheme: Monaco initializes once Shiki
-            is pre-loaded so applyShikiToMonaco runs synchronously in
-            beforeMount — no light-flash while the async highlighter loads. */}
         <div
           dir="ltr"
           className={cn(

@@ -39,7 +39,7 @@ export function useSchemaData(relativePath: string, schemaDir?: string) {
     if (primarySchemaData) return;
     if (!directSchemaError && schemaDir) return;
     // Skip schema fetching entirely when schemaDir is not provided
-    // This prevents schema lookup for non-content routes (media, code, configs)
+    // This prevents schema lookup for non-content routes (media, code, config)
     if (!schemaDir) return;
 
     (async () => {

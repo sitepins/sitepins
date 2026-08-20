@@ -1,9 +1,9 @@
 import Container from "@/components/container";
 import { Skeleton } from "@/components/ui/skeleton";
 
-export function ConfigsSkeleton() {
+export function ConfigSkeleton() {
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col pb-10">
       {/* Editor Header Skeleton */}
       <header className="border-border bg-light sticky inset-s-0 top-0 z-50 flex items-center justify-between border-b px-4 py-4 lg:px-6">
         <div className="flex w-full items-center justify-between">
@@ -28,7 +28,7 @@ export function ConfigsSkeleton() {
         </div>
       </header>
 
-      <Container className="py-10">
+      <Container>
         <div className="flex flex-col space-y-4">
           {Array.from({ length: 9 }).map((_, i) => (
             <div

@@ -187,7 +187,7 @@ export default function EditorHeader({
   };
 
   const pathname = usePathname();
-  const isConfigsPath = Boolean(pathname && pathname.includes("/configs/"));
+  const isConfigPath = Boolean(pathname && pathname.includes("/config/"));
 
   const confirmReset = () => {
     resetValue();
@@ -450,7 +450,7 @@ export default function EditorHeader({
                 {tCommon("actions.save")}
               </Button>
             )}
-            {isConfigsPath && (
+            {isConfigPath && (
               <ConfigActions
                 pathname={pathname}
                 config={config}

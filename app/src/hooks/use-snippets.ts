@@ -28,7 +28,7 @@ export const useSnippets = (): UseSnippetsResult => {
 
   const isConfig = useMemo(() => {
     if (!pathname) return false;
-    return pathname.includes("/configs/");
+    return pathname.includes("/config/");
   }, [pathname]);
 
   const queryArgs = useMemo(() => {

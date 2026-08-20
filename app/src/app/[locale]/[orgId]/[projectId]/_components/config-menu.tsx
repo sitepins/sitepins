@@ -7,7 +7,7 @@ import { TConfig, TFiles } from "@/types";
 import path from "path";
 import { FolderAccordion, useFolderActive } from "./folder-accordion";
 
-const ConfigsMenu = ({
+const ConfigMenu = ({
   files,
   className,
   config,
@@ -23,7 +23,7 @@ const ConfigsMenu = ({
   const isFolderActive = useFolderActive(orgId, projectId);
 
   const resolveHref = (filePath: string) =>
-    `/org-${orgId}/${projectId}/configs/${filePath.replace("content/", "")}`;
+    `/org-${orgId}/${projectId}/config/${filePath.replace("content/", "")}`;
 
   return files?.map((file, index) => {
     const isIncluded = config.configs?.some((item: string) => {
@@ -37,7 +37,7 @@ const ConfigsMenu = ({
     if (!isIncluded) {
       if (file.children) {
         return (
-          <ConfigsMenu
+          <ConfigMenu
             key={index}
             files={file.children}
             config={config}
@@ -57,24 +57,19 @@ const ConfigsMenu = ({
             isActive={isFolderActive(file.path)}
             className={className}
             trigger={
-              <NavLink
+              <span
                 className={cn(
-                  "text-foreground hover:text-primary ms-1 flex flex-1 items-center justify-between rounded py-2.5 pe-2.5 transition-colors",
+                  "text-foreground ms-1 flex flex-1 items-center justify-between py-2.5 pe-2.5 transition-colors",
+                  isFolderActive(file.path) ? "text-primary" : "",
                 )}
-                href={resolveHref(file.path)}
-                activeClassName={
-                  file.path.replace("content/", "") !== config.content
-                    ? "text-primary"
-                    : ""
-                }
               >
                 <span className="flex-1 text-start text-inherit">
                   {file.name}
                 </span>
-              </NavLink>
+              </span>
             }
           >
-            <ConfigsMenu
+            <ConfigMenu
               key={index}
               files={file.children}
               config={config}
@@ -100,4 +95,4 @@ const ConfigsMenu = ({
   });
 };
 
-export default ConfigsMenu;
+export default ConfigMenu;

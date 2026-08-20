@@ -51,13 +51,13 @@ export default function ConfigActions({
     useGitProvider();
   const { updateCacheOnDuplicate } = useGitCacheUpdates();
 
-  // Support both `/content/` and `/configs/` routes by extracting the tail after either segment
-  const pathMatch = pathname?.match(/\/(?:content|configs)\/(.+)$/);
+  // Support `/content/` and `/config/` routes by extracting the tail after either segment
+  const pathMatch = pathname?.match(/\/(?:content|config)\/(.+)$/);
   const currentFilepath = pathMatch
     ? decodeURIComponent(pathMatch[1])
     : undefined;
   const currentPrefix = pathMatch
-    ? pathname!.match(/\/(content|configs)\//)![1]
+    ? pathname!.match(/\/(content|config)\//)![1]
     : undefined;
 
   const treesQuery = useGitTrees(
@@ -130,7 +130,7 @@ export default function ConfigActions({
 
         if (currentPrefix) {
           const newUrl = pathname!.replace(
-            /\/(?:content|configs)\/.+$/,
+            /\/(?:content|config)\/.+$/,
             `/${currentPrefix}/${encodeURIComponent(newPath)}`,
           );
           router.push(newUrl);

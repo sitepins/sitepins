@@ -34,7 +34,7 @@ import { Suspense, use, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { GlobalSearch } from "../_components/global-search";
 import CodeMenu from "./_components/code-menu";
-import ConfigsMenu from "./_components/configs-menu";
+import ConfigMenu from "./_components/config-menu";
 import ContentMenu from "./_components/content-menu";
 import ProjectHeader from "./_components/project-header";
 import ProjectSidebar from "./_components/project-sidebar";
@@ -201,7 +201,7 @@ export default function Layout(
   const isArchived = project?.status === "archived";
 
   // Blocked child routes when project is archived
-  const blockedSegments = ["/content/", "/media/", "/configs/", "/code/"];
+  const blockedSegments = ["/content/", "/media/", "/config/", "/code/"];
   const isBlockedChildRoute =
     isArchived &&
     blockedSegments.some((seg) =>
@@ -261,7 +261,7 @@ export default function Layout(
                                   `/${params.orgId}/${params.projectId}/content/${config.content}`,
                                 ) ||
                                   pathname.includes(
-                                    `/${params.orgId}/${params.projectId}/configs/${config.content}`,
+                                    `/${params.orgId}/${params.projectId}/config/${config.content}`,
                                   )
                                   ? "text-primary"
                                   : "",
@@ -399,7 +399,7 @@ export default function Layout(
                               className={cn(
                                 "text-foreground w-full rounded pe-0",
                                 pathname.includes(
-                                  `/${params.orgId}/${params.projectId}/configs/`,
+                                  `/${params.orgId}/${params.projectId}/config/`,
                                 )
                                   ? "text-primary"
                                   : "",
@@ -422,7 +422,7 @@ export default function Layout(
 
                             <AccordionContent className="ps-1">
                               <ul>
-                                <ConfigsMenu
+                                <ConfigMenu
                                   files={
                                     trees.find((t) => t.name === "theme")
                                       ?.children ?? []

@@ -49,6 +49,7 @@ export default function ResponsiveEditorLayout({
   const { fullscreen } = useSelector(selectConfig);
 
   const pathname = usePathname();
+  const isConfigRoute = Boolean(pathname?.includes("/config/"));
 
   // Mobile behavior
   if (isMobile) {
@@ -59,7 +60,7 @@ export default function ResponsiveEditorLayout({
             schema={schema}
             data={data}
             setData={setData}
-            showDuplicate={pathname?.includes("/configs/")}
+            showDuplicate={isConfigRoute}
           />
         </div>
       );
@@ -97,7 +98,7 @@ export default function ResponsiveEditorLayout({
               schema={schema}
               data={data}
               setData={setData}
-              showDuplicate={pathname?.includes("/configs/")}
+              showDuplicate={isConfigRoute}
             />
           </TabsContent>
           <TabsContent value="content" className="h-full min-h-0 flex-1">
@@ -123,7 +124,7 @@ export default function ResponsiveEditorLayout({
           schema={schema}
           data={data}
           setData={setData}
-          showDuplicate={pathname?.includes("/configs/")}
+          showDuplicate={isConfigRoute}
         />
       </Container>
     );
@@ -156,7 +157,7 @@ export default function ResponsiveEditorLayout({
               schema={schema}
               data={data}
               setData={setData}
-              showDuplicate={pathname?.includes("/configs/")}
+              showDuplicate={isConfigRoute}
             />
           </div>
         </ResizablePanel>

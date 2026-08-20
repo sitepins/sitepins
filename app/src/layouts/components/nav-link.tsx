@@ -31,7 +31,7 @@ export function NavLink({
   const basePrefix = `/${orgId}/${projectId}/`;
 
   // Get current pure path by stripping common prefixes
-  const prefixes = ["content/", "configs/", "code/"];
+  const prefixes = ["content/", "config/", "code/"];
   let currentPath = "";
   for (const prefix of prefixes) {
     if (pathname.startsWith(basePrefix + prefix)) {

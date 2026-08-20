@@ -240,7 +240,7 @@ export function GlobalSearch({
     }
 
     if (isConfigFile(normalizedPath)) {
-      router.push(`/${currentOrgId}/${projectId}/configs/${normalizedPath}`);
+      router.push(`/${currentOrgId}/${projectId}/config/${normalizedPath}`);
       return;
     }
 

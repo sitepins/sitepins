@@ -76,7 +76,7 @@ export function useFolderActive(orgId: string, projectId: string) {
     const pureFolderPath = normalizePath(folderPath).replace(/^content\//, "");
 
     let currentPurePath = pathname;
-    for (const prefix of ["content/", "configs/", "code/"]) {
+    for (const prefix of ["content/", "config/", "code/"]) {
       if (pathname.startsWith(basePrefix + prefix)) {
         currentPurePath = pathname.replace(basePrefix + prefix, "");
         break;

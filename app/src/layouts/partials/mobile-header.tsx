@@ -43,7 +43,7 @@ export default function MobileHeader({
   // Visibility logic
   const isFilesLikeRoute =
     pathname.includes("/content/") ||
-    pathname.includes("/configs/") ||
+    pathname.includes("/config/") ||
     pathname.includes("/code/");
   const hasFileExtension = Boolean(path.extname(pathname));
 

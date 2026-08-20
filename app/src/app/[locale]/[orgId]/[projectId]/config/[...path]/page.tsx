@@ -13,10 +13,10 @@ import { use } from "react";
 import { useSelector } from "react-redux";
 import EditorWrapper from "../../_components/editor-wrapper";
 import { ImagePasteListener } from "../../_components/image-paste-listener";
-import { ConfigsSkeleton } from "./_components/configs-skeleton";
+import { ConfigSkeleton } from "./_components/config-skeleton";
 
 export default function Configuration(
-  props: PageProps<"/[locale]/[orgId]/[projectId]/configs/[...path]">,
+  props: PageProps<"/[locale]/[orgId]/[projectId]/config/[...path]">,
 ) {
   const params = use(props.params);
   const { path: file } = params;
@@ -39,7 +39,7 @@ export default function Configuration(
   });
 
   if (isLoading || !isSuccess) {
-    return <ConfigsSkeleton />;
+    return <ConfigSkeleton />;
   }
 
   const { data, content, fmType, comments } =

@@ -254,7 +254,7 @@ export default function EditorHeader({
 
       {/* Duplicate handled by DuplicateConfig component */}
 
-      <header className="border-border bg-light sticky top-0 left-0 z-50 flex items-center justify-between border-b px-4 py-4 lg:px-6">
+      <header className="border-border bg-light sticky inset-s-0 top-0 z-50 flex items-center justify-between border-b px-4 py-4 lg:px-6">
         <div className="flex w-full items-center justify-between">
           <div className="flex min-w-0 shrink items-center gap-2 sm:gap-4">
             <Button
@@ -275,7 +275,7 @@ export default function EditorHeader({
                 type="button"
                 onClick={router.back}
               >
-                <ArrowLeft className="size-4" />
+                <ArrowLeft className="cn-rtl-flip size-4" />
                 <span className="hidden md:inline">
                   {tCommon("actions.back")}
                 </span>

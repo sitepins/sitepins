@@ -5,32 +5,36 @@ export default function CodeSkeleton() {
   return (
     <div className="flex h-full min-h-screen flex-col">
       {/* Header Skeleton */}
-      <div className="sticky top-0 z-50 shrink-0">
-        {/* Row 1: actions (matches new header) */}
+      <div className="sticky inset-s-0 top-0 z-50 shrink-0">
+        {/* Row 1: actions (matches code-editor header) */}
         <div className="border-border bg-light flex items-center justify-between border-b px-4 py-4 lg:px-6">
-          {/* Left: back button + file icon + name */}
-          <div className="flex items-center gap-3">
-            <Skeleton className="h-8 w-16 rounded-md" /> {/* Back button */}
-            <Skeleton className="size-5 rounded-sm" /> {/* File icon */}
-            <Skeleton className="h-5 w-36 sm:w-52" /> {/* File name */}
+          {/* Left: sidebar button (xl:hidden) + back button + build status */}
+          <div className="flex min-w-0 shrink items-center gap-2 sm:gap-3">
+            <Skeleton className="size-8 rounded-md xl:hidden" />
+            <Skeleton className="h-8 w-8 rounded-md md:w-16" />
+            <Skeleton className="size-2 rounded-full md:hidden" />
+            <Skeleton className="hidden h-5 w-20 rounded-full md:block" />
           </div>
 
-          {/* Right: preview + reset + save */}
-          <div className="flex items-center gap-3">
-            <Skeleton className="h-9 w-24 rounded-md" /> {/* Preview */}
-            <Skeleton className="h-9 w-20 rounded-md" /> {/* Reset */}
-            <Skeleton className="h-9 w-20 rounded-md" /> {/* Save */}
+          {/* Right: preview + reset + commit */}
+          <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+            {/* Preview button */}
+            <Skeleton className="size-9 rounded-md sm:w-24" />
+            {/* Reset button */}
+            <Skeleton className="size-9 rounded-md sm:w-20" />
+            {/* Commit button */}
+            <Skeleton className="h-9 w-22 rounded-md" />
           </div>
         </div>
 
         {/* Row 2: breadcrumb */}
         <div className="border-border bg-light border-b px-4 py-2">
-          <div className="flex items-center gap-2 overflow-x-auto py-1">
-            <Skeleton className="h-4 w-12" />
-            <ChevronRight className="text-muted-foreground cn-rtl-flip h-3 w-3" />
-            <Skeleton className="h-4 w-16" />
-            <ChevronRight className="text-muted-foreground cn-rtl-flip h-3 w-3" />
-            <Skeleton className="h-4 w-24" />
+          <div className="flex items-center overflow-x-auto text-xs whitespace-nowrap sm:text-sm">
+            <Skeleton className="h-4 w-12 px-1.5" />
+            <ChevronRight className="cn-rtl-flip h-3 w-3 min-w-3 opacity-40" />
+            <Skeleton className="h-4 w-16 px-1.5" />
+            <ChevronRight className="cn-rtl-flip h-3 w-3 min-w-3 opacity-40" />
+            <Skeleton className="h-4 w-24 px-1.5" />
           </div>
         </div>
       </div>

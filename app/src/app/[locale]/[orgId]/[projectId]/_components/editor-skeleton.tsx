@@ -83,16 +83,26 @@ export default function EditorSkeleton() {
     <div className="flex h-svh flex-col overflow-hidden">
       <header className="border-border bg-light sticky inset-s-0 top-0 z-50 flex items-center justify-between border-b px-4 py-4 lg:px-6">
         <div className="flex w-full items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Skeleton className="h-7 w-20 rounded-md" />
-            <Skeleton className="h-6 w-20 rounded-full" />
+          <div className="flex min-w-0 shrink items-center gap-2 sm:gap-4">
+            <Skeleton className="size-8 rounded-md xl:hidden" />
+
+            <div className="flex items-center gap-3">
+              <Skeleton className="h-8 w-8 rounded-md md:w-16" />
+              <Skeleton className="size-2 rounded-full md:hidden" />
+              <Skeleton className="hidden h-5 w-20 rounded-full md:block" />
+            </div>
           </div>
-          <div className="flex items-center gap-2">
-            <Skeleton className="h-7 w-9 rounded-md sm:w-24" />
-            <Skeleton className="h-7 w-9 rounded-md sm:w-20" />
-            <Skeleton className="h-7 w-9 rounded-md sm:w-20" />
-            <div className="border-border flex h-7 items-center overflow-hidden rounded-md border">
-              <Skeleton className="h-full w-20 rounded-none" />
+
+          <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+            {/* Preview button */}
+            <Skeleton className="size-9 rounded-md sm:w-24" />
+            {/* SEO score button */}
+            <Skeleton className="h-9 w-16 rounded-md sm:w-20" />
+            {/* Reset button */}
+            <Skeleton className="size-9 rounded-md sm:w-20" />
+            {/* Publish button group */}
+            <div className="border-border flex h-9 items-center overflow-hidden rounded-md border">
+              <Skeleton className="h-full w-18 rounded-none sm:w-20" />
               <div className="bg-border h-full w-px" />
               <Skeleton className="h-full w-8 rounded-none" />
             </div>

@@ -301,7 +301,7 @@ export default function CodeEditor({
       </AlertDialog>
 
       {/* ── Header ── */}
-      <div className="bg-background sticky top-0 z-50 shrink-0">
+      <div className="bg-background sticky inset-s-0 top-0 z-50 shrink-0">
         {/* Row 1: actions — matches content editor header style */}
         <header className="border-border bg-light flex items-center justify-between border-b px-4 py-4 lg:px-6">
           <div className="flex min-w-0 shrink items-center gap-2 sm:gap-3">

@@ -82,8 +82,8 @@ export function GitCommitItem({
           height={40}
           className="mt-1 hidden size-8! rounded-full sm:flex"
         />
-        <div className="min-w-0 flex-1 pe-20">
-          <p className="text-text-dark truncate text-sm font-medium">
+        <div className="min-w-0 flex-1">
+          <p className="text-text-dark truncate pe-20 text-sm font-medium">
             {authorName}
           </p>
           <a

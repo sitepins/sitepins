@@ -9,10 +9,10 @@ WORKDIR /app
 COPY pnpm-workspace.yaml package.json pnpm-lock.yaml ./
 COPY app/package.json ./app/package.json
 COPY api/package.json ./api/package.json
-RUN pnpm install --frozen-lockfile --filter sitepins-backend
+RUN pnpm install --frozen-lockfile --filter sitepins-api
 
 COPY api ./api
-RUN pnpm --filter sitepins-backend build
+RUN pnpm --filter sitepins-api build
 RUN pnpm prune --prod
 
 FROM node:22-bookworm-slim

@@ -42,6 +42,55 @@ export async function getLatestCommitSha(
   return null;
 }
 
+export function getGitAuthUrl(
+  provider: string,
+  repository: string,
+  token?: string,
+): string {
+  if (isGitLabProvider(provider)) {
+    return token
+      ? `https://oauth2:${token}@gitlab.com/${repository}.git`
+      : `https://gitlab.com/${repository}.git`;
+  }
+  return token
+    ? `https://x-access-token:${token}@github.com/${repository}.git`
+    : `https://github.com/${repository}.git`;
+}
+
+export async function cloneRepository(
+  session: Session,
+  repository: string,
+  branch: string,
+  provider: string,
+  token: string | undefined,
+  signal?: AbortSignal,
+) {
+  const authUrl = getGitAuthUrl(provider, repository, token);
+  await session.runCommand({ cmd: "git", args: ["init"], signal });
+  const fetchRes = await session.runCommand({
+    cmd: "git",
+    args: ["fetch", "--depth", "1", "--", authUrl, branch],
+    signal,
+  });
+  if (fetchRes.exitCode !== 0) {
+    const stderr = await fetchRes.stderr();
+    throw new Error(
+      `Failed to clone repository (${fetchRes.exitCode}): ${stderr.slice(0, 300)}`,
+    );
+  }
+  const checkoutRes = await session.runCommand({
+    cmd: "git",
+    args: ["checkout", "-f", "FETCH_HEAD"],
+    signal,
+  });
+  if (checkoutRes.exitCode !== 0) {
+    const stderr = await checkoutRes.stderr();
+    throw new Error(
+      `Failed to checkout repository branch (${checkoutRes.exitCode}): ${stderr.slice(0, 300)}`,
+    );
+  }
+}
+
 export async function pullLatestCommits(
   session: Session,
   repository: string,
@@ -50,21 +99,31 @@ export async function pullLatestCommits(
   token: string | undefined,
   signal?: AbortSignal,
 ) {
-  const authUrl = isGitLabProvider(provider)
-    ? `https://oauth2:${token}@gitlab.com/${repository}.git`
-    : `https://x-access-token:${token}@github.com/${repository}.git`;
-  await session.runCommand({
+  const authUrl = getGitAuthUrl(provider, repository, token);
+  const fetchRes = await session.runCommand({
     cmd: "git",
     // `--` stops option parsing: git keeps reading flags after positional
     // args, so a branch named `--upload-pack=…` would otherwise run a command.
     args: ["fetch", "--depth", "1", "--", authUrl, branch],
     signal,
   });
-  await session.runCommand({
+  if (fetchRes.exitCode !== 0) {
+    const stderr = await fetchRes.stderr();
+    throw new Error(
+      `Failed to pull latest commits (${fetchRes.exitCode}): ${stderr.slice(0, 300)}`,
+    );
+  }
+  const resetRes = await session.runCommand({
     cmd: "git",
     args: ["reset", "--hard", "FETCH_HEAD"],
     signal,
   });
+  if (resetRes.exitCode !== 0) {
+    const stderr = await resetRes.stderr();
+    throw new Error(
+      `Failed to reset repository to latest commit (${resetRes.exitCode}): ${stderr.slice(0, 300)}`,
+    );
+  }
 }
 
 export function gitCloneSource(

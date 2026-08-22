@@ -11,8 +11,8 @@ import {
 } from "@/lib/sandbox/dev-server";
 import { frameworkPort, frameworkSpec } from "@/lib/sandbox/frameworks";
 import {
+  cloneRepository,
   getLatestCommitSha,
-  gitCloneSource,
   pullLatestCommits,
 } from "@/lib/sandbox/git";
 import {
@@ -344,9 +344,7 @@ async function* streamCreate(
   }
 
   // ── 2. Cold start: clone → install → start ──
-  yield { step: "Cloning repository" };
   const sandbox = await Sandbox.create({
-    source: gitCloneSource(provider, repository, branch, token),
     ports: [port],
     timeout: COLD_START_TIMEOUT_MS,
     signal,
@@ -356,6 +354,9 @@ async function* streamCreate(
   const sandboxName = sandbox.name;
   const session = sandbox.currentSession();
   const previewUrl = session.domain(port);
+
+  yield { step: "Cloning repository" };
+  await cloneRepository(session, repository, branch, provider, token, signal);
 
   yield { step: "Installing dependencies" };
   const pm = await detectPackageManager(session, signal);

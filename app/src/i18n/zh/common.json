@@ -135,6 +135,15 @@
       "upload": "上传",
       "delete_title": "删除图片",
       "delete_desc": "此图片将被永久删除，操作无法撤销。"
+    },
+    "pwa": {
+      "install_app": "安装应用",
+      "update_available": "Sitepins 有新版本可用。",
+      "reload": "重新加载",
+      "offline_warning": "您当前处于离线状态。在网络恢复前，同步已暂停。",
+      "online_restored": "已恢复在线！连接已恢复。",
+      "offline_toast": "您处于离线状态。实时同步已暂停。",
+      "retry": "重试"
     }
   }
 }

@@ -3,11 +3,11 @@ import { GITHUB_API_VERSION, IS_DEMO, SNIPPET_FOLDER } from "@/lib/constant";
 import { logger } from "@/lib/logger";
 import { checkMedia } from "@/lib/utils/check-media-file";
 import {
-  getManifestFile,
   isOldConfigFormat,
   migrateConfig,
   type TLegacyConfig,
 } from "@/lib/utils/config-migration";
+import { getManifestFile } from "@/lib/utils/manifest";
 import { parseContentJson } from "@/lib/utils/content-serializer";
 import { Framework } from "@/lib/utils/framework-detector";
 import { fmDetector } from "@/lib/utils/frontmatter-detector";

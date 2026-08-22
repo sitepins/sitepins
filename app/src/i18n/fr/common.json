@@ -135,6 +135,15 @@
       "upload": "Téléverser",
       "delete_title": "Supprimer l'image",
       "delete_desc": "Cette action supprimera définitivement l'image et ne peut pas être annulée."
+    },
+    "pwa": {
+      "install_app": "Installer l'application",
+      "update_available": "Une nouvelle version de Sitepins est disponible.",
+      "reload": "Recharger",
+      "offline_warning": "Vous êtes actuellement hors ligne. La synchronisation est suspendue jusqu'au rétablissement de la connexion.",
+      "online_restored": "De nouveau en ligne ! Connexion rétablie.",
+      "offline_toast": "Vous êtes hors ligne. La synchronisation en direct est suspendue.",
+      "retry": "Réessayer"
     }
   }
 }

@@ -292,14 +292,15 @@ export default function Layout(
                                 <Suspense
                                   fallback={Array.from(
                                     { length: 6 },
-                                    () => 1,
-                                  ).map((item) => {
-                                    return (
-                                      <li key={item} className="mb-3 last:mb-0">
+                                    (_, index) => (
+                                      <li
+                                        key={index}
+                                        className="mb-3 last:mb-0"
+                                      >
                                         <Skeleton className="h-3 w-full" />
                                       </li>
-                                    );
-                                  })}
+                                    ),
+                                  )}
                                 >
                                   <ContentMenu
                                     files={files}
@@ -357,14 +358,15 @@ export default function Layout(
                                 <Suspense
                                   fallback={Array.from(
                                     { length: 6 },
-                                    () => 1,
-                                  ).map((item) => {
-                                    return (
-                                      <li key={item} className="mb-3 last:mb-0">
+                                    (_, index) => (
+                                      <li
+                                        key={index}
+                                        className="mb-3 last:mb-0"
+                                      >
                                         <Skeleton className="h-3 w-full" />
                                       </li>
-                                    );
-                                  })}
+                                    ),
+                                  )}
                                 >
                                   <CodeMenu
                                     files={

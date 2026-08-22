@@ -135,6 +135,15 @@
       "upload": "Unggah",
       "delete_title": "Hapus Gambar",
       "delete_desc": "Tindakan ini akan menghapus gambar secara permanen dan tidak dapat dibatalkan."
+    },
+    "pwa": {
+      "install_app": "Instal Aplikasi",
+      "update_available": "Versi baru Sitepins telah tersedia.",
+      "reload": "Muat ulang",
+      "offline_warning": "Anda sedang offline. Sinkronisasi dijeda hingga koneksi internet pulih.",
+      "online_restored": "Kembali online! Koneksi telah pulih.",
+      "offline_toast": "Anda sedang offline. Sinkronisasi langsung dijeda.",
+      "retry": "Coba lagi"
     }
   }
 }

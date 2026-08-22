@@ -135,6 +135,15 @@
       "upload": "Upload",
       "delete_title": "Remove Image",
       "delete_desc": "This will permanently delete this image. This action cannot be undone."
+    },
+    "pwa": {
+      "install_app": "Install App",
+      "update_available": "A new version of Sitepins is available.",
+      "reload": "Reload",
+      "offline_warning": "You are currently offline. Workspace sync is paused until internet is restored.",
+      "online_restored": "Back online! Connection restored.",
+      "offline_toast": "You are offline. Live sync paused until reconnected.",
+      "retry": "Retry"
     }
   }
 }

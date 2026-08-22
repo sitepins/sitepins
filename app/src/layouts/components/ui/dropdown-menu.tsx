@@ -66,17 +66,10 @@ function DropdownMenuTrigger({
   nativeButton,
   ...props
 }: DropdownMenuPrimitive.Trigger.Props & { asChild?: boolean }) {
-  const isNativeButton =
-    nativeButton !== undefined
-      ? nativeButton
-      : asChild && React.isValidElement(children)
-        ? children.type === "button"
-        : undefined;
-
   return (
     <DropdownMenuPrimitive.Trigger
       data-slot="dropdown-menu-trigger"
-      nativeButton={isNativeButton}
+      nativeButton={nativeButton}
       render={asChild ? (children as React.ReactElement) : render}
       {...props}
     >

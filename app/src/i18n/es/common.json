@@ -135,6 +135,15 @@
       "upload": "Subir",
       "delete_title": "Eliminar imagen",
       "delete_desc": "Esto eliminará permanentemente la imagen. Esta acción no se puede deshacer."
+    },
+    "pwa": {
+      "install_app": "Instalar aplicación",
+      "update_available": "Hay una nueva versión de Sitepins disponible.",
+      "reload": "Recargar",
+      "offline_warning": "Actualmente no tienes conexión. La sincronización está en pausa hasta que se restablezca internet.",
+      "online_restored": "¡De nuevo en línea! Conexión restablecida.",
+      "offline_toast": "Estás sin conexión. La sincronización en vivo está en pausa.",
+      "retry": "Reintentar"
     }
   }
 }

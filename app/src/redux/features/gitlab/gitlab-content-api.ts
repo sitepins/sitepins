@@ -3,11 +3,11 @@ import { MdxSnippet } from "@/editor/utils/plate-types";
 import { GITLAB_API_VERSION, SNIPPET_FOLDER } from "@/lib/constant";
 import { checkMedia } from "@/lib/utils/check-media-file";
 import {
-  getManifestFile,
   isOldConfigFormat,
   migrateConfig,
   type TLegacyConfig,
 } from "@/lib/utils/config-migration";
+import { getManifestFile } from "@/lib/utils/manifest";
 import { parseContentJson } from "@/lib/utils/content-serializer";
 import { fmDetector } from "@/lib/utils/frontmatter-detector";
 import { pathToDir } from "@/lib/utils/path-to-dir";

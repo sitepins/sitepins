@@ -16,17 +16,10 @@ function SheetTrigger({
   nativeButton,
   ...props
 }: SheetPrimitive.Trigger.Props & { asChild?: boolean }) {
-  const isNativeButton =
-    nativeButton !== undefined
-      ? nativeButton
-      : asChild && React.isValidElement(children)
-        ? children.type === "button"
-        : undefined;
-
   return (
     <SheetPrimitive.Trigger
       data-slot="sheet-trigger"
-      nativeButton={isNativeButton}
+      nativeButton={nativeButton}
       render={asChild ? (children as React.ReactElement) : render}
       {...props}
     >
@@ -42,17 +35,10 @@ function SheetClose({
   nativeButton,
   ...props
 }: SheetPrimitive.Close.Props & { asChild?: boolean }) {
-  const isNativeButton =
-    nativeButton !== undefined
-      ? nativeButton
-      : asChild && React.isValidElement(children)
-        ? children.type === "button"
-        : undefined;
-
   return (
     <SheetPrimitive.Close
       data-slot="sheet-close"
-      nativeButton={isNativeButton}
+      nativeButton={nativeButton}
       render={asChild ? (children as React.ReactElement) : render}
       {...props}
     >

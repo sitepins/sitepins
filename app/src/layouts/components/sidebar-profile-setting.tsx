@@ -21,7 +21,8 @@ import {
 import { authClient } from "@/lib/auth/auth-client";
 import { IS_DEMO } from "@/lib/constant";
 import { getFooterAccountMenu } from "@/lib/menu";
-import { LogOut } from "lucide-react";
+import { usePwaInstall } from "@/hooks/use-pwa-install";
+import { Download, LogOut } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useTheme } from "next-themes";
 import Link from "next/link";
@@ -32,6 +33,7 @@ import { toast } from "@/components/ui/toast";
 export default function SidebarProfileSetting() {
   const locale = useLocale();
   const router = useRouter();
+  const { isInstallable, promptInstall } = usePwaInstall();
 
   const [isOpen, setIsOpen] = useState(false);
   const [showLogoutAlert, setShowLogoutAlert] = useState(false);
@@ -43,6 +45,11 @@ export default function SidebarProfileSetting() {
     if (IS_DEMO) {
       toast.error(tCommon("logout.demo_disabled"));
       return;
+    }
+    try {
+      localStorage.removeItem("sitepins_cached_session");
+    } catch {
+      // Silently catch storage errors
     }
     await authClient.signOut({
       fetchOptions: {
@@ -119,6 +126,20 @@ export default function SidebarProfileSetting() {
                 </DropdownMenuItem>
               );
             })}
+            {isInstallable && (
+              <DropdownMenuItem
+                className="cursor-pointer px-3 py-1.5"
+                onClick={async () => {
+                  setIsOpen(false);
+                  await promptInstall();
+                }}
+              >
+                <Download className="size-4" />
+                <span className="text-sm font-medium">
+                  {tCommon("pwa.install_app")}
+                </span>
+              </DropdownMenuItem>
+            )}
             <DropdownMenuItem
               variant="destructive"
               className="cursor-pointer px-3 py-1.5"

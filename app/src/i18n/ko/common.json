@@ -135,6 +135,15 @@
       "upload": "업로드",
       "delete_title": "이미지 삭제",
       "delete_desc": "이미지가 영구적으로 삭제됩니다. 이 작업은 실행 취소할 수 없습니다."
+    },
+    "pwa": {
+      "install_app": "앱 설치",
+      "update_available": "Sitepins의 새 버전을 사용할 수 있습니다.",
+      "reload": "새로고침",
+      "offline_warning": "현재 오프라인 상태입니다. 인터넷이 복구될 때까지 동기화가 일시 중지됩니다.",
+      "online_restored": "다시 온라인 상태입니다! 연결이 복구되었습니다.",
+      "offline_toast": "오프라인 상태입니다. 다시 연결될 때까지 실시간 동기화가 일시 중지됩니다.",
+      "retry": "다시 시도"
     }
   }
 }

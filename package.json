@@ -1,5 +1,6 @@
 {
   "name": "sitepins-monorepo",
+  "version": "1.0.0",
   "private": true,
   "description": "Sitepins — open-source git-based CMS",
   "packageManager": "pnpm@11.20.0",
@@ -8,19 +9,22 @@
   },
   "scripts": {
     "dev": "pnpm --parallel --filter ./app --filter ./api dev",
-    "dev:app": "pnpm --filter sitepins dev",
-    "dev:api": "pnpm --filter sitepins-backend dev",
+    "dev:app": "pnpm --filter ./app dev",
+    "dev:api": "pnpm --filter ./api dev",
     "build": "pnpm -r build",
-    "build:app": "pnpm --filter sitepins build",
-    "build:api": "pnpm --filter sitepins-backend build",
+    "build:app": "pnpm --filter ./app build",
+    "build:api": "pnpm --filter ./api build",
     "format": "pnpm -r format",
     "test": "pnpm -r test",
-    "test:api": "pnpm --filter sitepins-backend test",
-    "test:app": "pnpm --filter sitepins test",
+    "test:api": "pnpm --filter ./api test",
+    "test:app": "pnpm --filter ./app test",
     "lint": "pnpm -r lint",
     "typecheck": "pnpm -r typecheck",
     "prepare": "husky",
-    "format:check": "pnpm -r format:check"
+    "format:check": "pnpm -r format:check",
+    "version:sync": "node scripts/sync-version.mjs",
+    "version:check": "node scripts/sync-version.mjs --check",
+    "version:set": "node scripts/sync-version.mjs"
   },
   "devDependencies": {
     "husky": "^9.1.7",

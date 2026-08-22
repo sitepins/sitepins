@@ -58,17 +58,10 @@ function DrawerTrigger({
   nativeButton,
   ...props
 }: DrawerPrimitive.Trigger.Props & { asChild?: boolean }) {
-  const isNativeButton =
-    nativeButton !== undefined
-      ? nativeButton
-      : asChild && React.isValidElement(children)
-        ? children.type === "button"
-        : undefined;
-
   return (
     <DrawerPrimitive.Trigger
       data-slot="drawer-trigger"
-      nativeButton={isNativeButton}
+      nativeButton={nativeButton}
       render={asChild ? (children as React.ReactElement) : render}
       {...props}
     >
@@ -88,17 +81,10 @@ function DrawerClose({
   nativeButton,
   ...props
 }: DrawerPrimitive.Close.Props & { asChild?: boolean }) {
-  const isNativeButton =
-    nativeButton !== undefined
-      ? nativeButton
-      : asChild && React.isValidElement(children)
-        ? children.type === "button"
-        : undefined;
-
   return (
     <DrawerPrimitive.Close
       data-slot="drawer-close"
-      nativeButton={isNativeButton}
+      nativeButton={nativeButton}
       render={asChild ? (children as React.ReactElement) : render}
       {...props}
     >

@@ -4,6 +4,10 @@ import path from "node:path";
 
 const withNextIntl = createNextIntlPlugin("./src/lib/i18n/request.ts");
 
+const packageJson = JSON.parse(
+  fs.readFileSync(new URL("./package.json", import.meta.url), "utf8"),
+);
+
 const OVERLAY_URL = new URL("./next.config.cloud.mjs", import.meta.url);
 
 async function loadOverlay() {
@@ -223,6 +227,9 @@ export default async function nextConfig() {
   return withNextIntl({
     reactStrictMode: true,
     trailingSlash: false,
+    env: {
+      NEXT_PUBLIC_APP_VERSION: packageJson.version,
+    },
     ...(overlay.tsconfigPath && {
       typescript: { tsconfigPath: overlay.tsconfigPath },
     }),

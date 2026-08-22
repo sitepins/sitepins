@@ -42,18 +42,33 @@ export default async function RootLayout({
           content="width=device-width, initial-scale=1, maximum-scale=5"
         />
 
-        {/* favicon */}
+        {/* favicon & app icons */}
         <link rel="icon" href={config.site.favicon} />
-        <meta name="msapplication-TileColor" content="#000000" />
+        <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+        <link rel="manifest" href="/manifest.webmanifest" />
+
+        {/* PWA metadata */}
+        <meta
+          name="application-name"
+          content={config.site.title || "Sitepins"}
+        />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta
+          name="apple-mobile-web-app-title"
+          content={config.site.title || "Sitepins"}
+        />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="msapplication-TileColor" content="#5D5FE5" />
         <meta
           name="theme-color"
           media="(prefers-color-scheme: light)"
-          content="#fff"
+          content="#5D5FE5"
         />
         <meta
           name="theme-color"
           media="(prefers-color-scheme: dark)"
-          content="#000"
+          content="#000000"
         />
 
         <title>{config.site.title}</title>

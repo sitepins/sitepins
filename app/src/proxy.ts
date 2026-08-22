@@ -159,9 +159,9 @@ export async function proxy(request: NextRequest) {
   return intlResponse;
 }
 
-// exclude Next internals, API routes, and browser probe endpoints
+// exclude Next internals, API routes, static assets, and PWA endpoints
 export const config = {
   matcher: [
-    "/((?!api|_next/static|_next/image|images|favicon.ico|\\.well-known).*)",
+    "/((?!api|_next/static|_next/image|images|icons|favicon\\.ico|sw\\.js|manifest\\.webmanifest|manifest\\.json|offline\\.html|\\.well-known).*)",
   ],
 };

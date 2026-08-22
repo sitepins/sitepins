@@ -26,7 +26,10 @@ export default function Loading({
       : "";
 
   return (
-    <div className={`${containerClass} ${className}`.trim()}>
+    <div
+      suppressHydrationWarning
+      className={`${containerClass} ${className}`.trim()}
+    >
       <Loader2
         className={`${sizeClass} animate-spin`}
         aria-label={ariaLabel || tCommon("status.loading")}

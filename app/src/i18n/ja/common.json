@@ -135,6 +135,15 @@
       "upload": "アップロード",
       "delete_title": "画像を削除",
       "delete_desc": "この画像は完全に削除されます。この操作は元に戻せません。"
+    },
+    "pwa": {
+      "install_app": "アプリをインストール",
+      "update_available": "Sitepins の新しいバージョンが利用可能です。",
+      "reload": "再読み込み",
+      "offline_warning": "現在オフラインです。インターネットが復旧するまで同期は一時停止されます。",
+      "online_restored": "オンラインに戻りました！接続が復旧しました。",
+      "offline_toast": "オフラインです。再接続するまでライブ同期は一時停止されます。",
+      "retry": "再試行"
     }
   }
 }

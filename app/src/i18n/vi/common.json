@@ -135,6 +135,15 @@
       "upload": "Tải lên",
       "delete_title": "Xóa hình ảnh",
       "delete_desc": "Hình ảnh này sẽ bị xóa vĩnh viễn và không thể khôi phục."
+    },
+    "pwa": {
+      "install_app": "Cài đặt ứng dụng",
+      "update_available": "Đã có phiên bản mới của Sitepins.",
+      "reload": "Tải lại",
+      "offline_warning": "Bạn đang ngoại tuyến. Quá trình đồng bộ hóa tạm dừng cho đến khi kết nối được khôi phục.",
+      "online_restored": "Đã trực tuyến trở lại! Kết nối đã được khôi phục.",
+      "offline_toast": "Bạn đang ngoại tuyến. Đồng bộ trực tiếp tạm dừng.",
+      "retry": "Thử lại"
     }
   }
 }

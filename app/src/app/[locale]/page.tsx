@@ -74,9 +74,7 @@ export default function ProtectedRootPage() {
 
   return (
     <ProtectedLayoutWrapper>
-      <div className="flex min-h-svh items-center justify-center">
-        <Loading />
-      </div>
+      <Loading fullScreen />
     </ProtectedLayoutWrapper>
   );
 }

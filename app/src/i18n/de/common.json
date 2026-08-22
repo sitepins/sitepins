@@ -135,6 +135,15 @@
       "upload": "Hochladen",
       "delete_title": "Bild entfernen",
       "delete_desc": "Dadurch wird das Bild unwiderruflich gelöscht. Diese Aktion kann nicht rückgängig gemacht werden."
+    },
+    "pwa": {
+      "install_app": "App installieren",
+      "update_available": "Eine neue Version von Sitepins ist verfügbar.",
+      "reload": "Neu laden",
+      "offline_warning": "Sie sind derzeit offline. Die Synchronisierung ist pausiert, bis die Verbindung wiederhergestellt ist.",
+      "online_restored": "Wieder online! Verbindung wiederhergestellt.",
+      "offline_toast": "Sie sind offline. Die Live-Synchronisierung ist pausiert.",
+      "retry": "Wiederholen"
     }
   }
 }

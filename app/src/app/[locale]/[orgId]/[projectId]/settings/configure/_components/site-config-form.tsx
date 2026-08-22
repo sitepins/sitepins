@@ -37,7 +37,6 @@ import {
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field";
-import manifest from "@/config/manifest.json";
 import { useAddLog } from "@/hooks/use-add-log";
 import { useGitProvider } from "@/hooks/use-git-provider";
 import { SUPPORT_URL } from "@/lib/brand";
@@ -46,6 +45,7 @@ import detectFramework from "@/lib/utils/framework-detector";
 import isConfigFile from "@/lib/utils/is-config-file";
 import { isGitLabProvider } from "@/lib/utils/provider-checker";
 import { configFormSchema } from "@/lib/validate";
+import { getManifestFile } from "@/lib/utils/manifest";
 import { selectConfig, updateConfig } from "@/redux/features/config/slice";
 import {
   githubContentApi,
@@ -307,10 +307,7 @@ export const ConfigForm = ({
     ];
 
     if (!config.content && data.public.value) {
-      files.push({
-        path: `${data.public.value}/.well-known/sitepins.json`,
-        content: JSON.stringify(manifest, null, 2),
-      });
+      files.push(getManifestFile(data.public.value));
     }
 
     try {

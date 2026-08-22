@@ -1,4 +1,3 @@
-import manifest from "@/config/manifest.json";
 import { Framework } from "@/lib/utils/framework-detector";
 import { TConfig } from "@/types";
 
@@ -136,14 +135,4 @@ export function isOldConfigFormat(config: TLegacyConfig): boolean {
       "root" in config.media) ||
     "showCommitModal" in config,
   );
-}
-
-export function getManifestFile(publicPath: string) {
-  const path = publicPath
-    ? `${publicPath}/.well-known/sitepins.json`
-    : ".well-known/sitepins.json";
-  return {
-    path,
-    content: JSON.stringify(manifest, null, 2),
-  };
 }

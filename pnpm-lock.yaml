@@ -295,8 +295,8 @@ importers:
         specifier: 1.1.1
         version: 1.1.1(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       country-list:
-        specifier: 2.3.0
-        version: 2.3.0
+        specifier: 2.4.1
+        version: 2.4.1
       date-fns:
         specifier: ^4.4.0
         version: 4.4.0
@@ -3501,8 +3501,8 @@ packages:
   cose-base@2.2.0:
     resolution: {integrity: sha512-AzlgcsCbUMymkADOJtQm3wO9S3ltPfYOFD5033keQn9NJzIbtnZj+UdBJe7DYml/8TdbtHJW3j58SOnKhWY/5g==}
 
-  country-list@2.3.0:
-    resolution: {integrity: sha512-qZk66RlmQm7fQjMYWku1AyjlKPogjPEorAZJG88owPExoPV8EsyCcuFLvO2afTXHEhi9liVOoyd+5A6ZS5QwaA==}
+  country-list@2.4.1:
+    resolution: {integrity: sha512-KhVV/UfUV3dSNpsWIqHTQxLpYDKPKz1UwkRjadt+YbX2PRhyCEihEoS5XgB7J7AMXpkicvl+tRHvkNI5wbji/g==}
 
   create-require@1.1.1:
     resolution: {integrity: sha512-dcKFX3jn0MpIaXjisoRvexIJVEKzaq7z2rZKxf+MSr9TkdmHmsU4m2lcLojrj/FHl8mk5VxMmYA+ftRkP/3oKQ==}
@@ -10015,7 +10015,7 @@ snapshots:
     dependencies:
       layout-base: 2.0.1
 
-  country-list@2.3.0: {}
+  country-list@2.4.1: {}
 
   create-require@1.1.1: {}
 

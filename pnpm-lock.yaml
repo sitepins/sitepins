@@ -169,8 +169,8 @@ importers:
         specifier: ^10.0.1
         version: 10.0.1(@types/react@19.2.18)(react@19.2.8)
       '@hocuspocus/provider':
-        specifier: ^4.5.0
-        version: 4.5.0(y-protocols@1.0.7(yjs@13.6.31))(yjs@13.6.31)
+        specifier: ^4.6.0
+        version: 4.6.0(y-protocols@1.0.7(yjs@13.6.31))(yjs@13.6.31)
       '@hookform/resolvers':
         specifier: ^5.7.1
         version: 5.7.1(@standard-schema/spec@1.1.0)(react-hook-form@7.85.0(react@19.2.8))(zod@4.4.3)
@@ -266,7 +266,7 @@ importers:
         version: 53.0.9(platejs@53.3.3(@types/react@19.2.18)(immer@11.1.15)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(scheduler@0.27.0)(use-sync-external-store@1.6.0(react@19.2.8)))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@platejs/yjs':
         specifier: ^53.2.0
-        version: 53.2.0(@hocuspocus/provider@4.5.0(y-protocols@1.0.7(yjs@13.6.31))(yjs@13.6.31))(platejs@53.3.3(@types/react@19.2.18)(immer@11.1.15)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(scheduler@0.27.0)(use-sync-external-store@1.6.0(react@19.2.8)))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(slate@0.126.0)(y-webrtc@10.3.0(yjs@13.6.31))
+        version: 53.2.0(@hocuspocus/provider@4.6.0(y-protocols@1.0.7(yjs@13.6.31))(yjs@13.6.31))(platejs@53.3.3(@types/react@19.2.18)(immer@11.1.15)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(scheduler@0.27.0)(use-sync-external-store@1.6.0(react@19.2.8)))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(slate@0.126.0)(y-webrtc@10.3.0(yjs@13.6.31))
       '@reduxjs/toolkit':
         specifier: ^2.12.0
         version: 2.12.0(react-redux@9.3.0(@types/react@19.2.18)(react@19.2.8)(redux@5.0.1))(react@19.2.8)
@@ -1003,8 +1003,11 @@ packages:
   '@hocuspocus/common@4.5.0':
     resolution: {integrity: sha512-hz6IBLLNKOWrWf+8r236CFFhpkcjEVXtZH1XRrkY0b5dYoQgR5gmuV5/5dJm1Vvyc8I70D+SHCvOch2AsRXonA==}
 
-  '@hocuspocus/provider@4.5.0':
-    resolution: {integrity: sha512-zpu68EIVZCzem1aCRjXeeeRVgaJHZa+p2rpherneUpwTnrb3WInL4IJ7cgMk0yP1/I2KPzve6meGODl1JPNTZQ==}
+  '@hocuspocus/common@4.6.0':
+    resolution: {integrity: sha512-OotSE6HHmQzA9KH5xElZTaps4KY96CPnOJ15Pph6EpFzbZV86vkwghZP/u7zxibPr5NVK+h9hXQ+OVeN9Pl/LQ==}
+
+  '@hocuspocus/provider@4.6.0':
+    resolution: {integrity: sha512-twKgZb1PbDSapfdghvLWR1zQEvSiQLCH7DjKL4QmSoG2P1a0D7p5MUrm/RzXKscPpzVjHyGzHPlIWAXEEcvfxQ==}
     peerDependencies:
       y-protocols: ^1.0.6
       yjs: 13.6.31
@@ -7554,9 +7557,13 @@ snapshots:
     dependencies:
       lib0: 0.2.117
 
-  '@hocuspocus/provider@4.5.0(y-protocols@1.0.7(yjs@13.6.31))(yjs@13.6.31)':
+  '@hocuspocus/common@4.6.0':
     dependencies:
-      '@hocuspocus/common': 4.5.0
+      lib0: 0.2.117
+
+  '@hocuspocus/provider@4.6.0(y-protocols@1.0.7(yjs@13.6.31))(yjs@13.6.31)':
+    dependencies:
+      '@hocuspocus/common': 4.6.0
       '@lifeomic/attempt': 3.1.0
       lib0: 0.2.117
       y-protocols: 1.0.7(yjs@13.6.31)
@@ -8434,9 +8441,9 @@ snapshots:
       - scheduler
       - use-sync-external-store
 
-  '@platejs/yjs@53.2.0(@hocuspocus/provider@4.5.0(y-protocols@1.0.7(yjs@13.6.31))(yjs@13.6.31))(platejs@53.3.3(@types/react@19.2.18)(immer@11.1.15)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(scheduler@0.27.0)(use-sync-external-store@1.6.0(react@19.2.8)))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(slate@0.126.0)(y-webrtc@10.3.0(yjs@13.6.31))':
+  '@platejs/yjs@53.2.0(@hocuspocus/provider@4.6.0(y-protocols@1.0.7(yjs@13.6.31))(yjs@13.6.31))(platejs@53.3.3(@types/react@19.2.18)(immer@11.1.15)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(scheduler@0.27.0)(use-sync-external-store@1.6.0(react@19.2.8)))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(slate@0.126.0)(y-webrtc@10.3.0(yjs@13.6.31))':
     dependencies:
-      '@hocuspocus/provider': 4.5.0(y-protocols@1.0.7(yjs@13.6.31))(yjs@13.6.31)
+      '@hocuspocus/provider': 4.6.0(y-protocols@1.0.7(yjs@13.6.31))(yjs@13.6.31)
       '@slate-yjs/core': 1.0.2(slate@0.126.0)(yjs@13.6.31)
       platejs: 53.3.3(@types/react@19.2.18)(immer@11.1.15)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(scheduler@0.27.0)(use-sync-external-store@1.6.0(react@19.2.8))
       react: 19.2.8

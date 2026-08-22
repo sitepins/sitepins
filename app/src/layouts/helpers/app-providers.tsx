@@ -3,11 +3,9 @@
 import CookieConsent from "@/components/cookie-consent";
 import { Toaster } from "@/components/ui/toast";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { PartneroCustomerSync } from "@/helpers/partnero-customer-sync";
 import TwSizeIndicator from "@/helpers/tw-size-indicator";
 import { ThemeProvider } from "next-themes";
 import React from "react";
-import PostHogProvider from "./posthog-provider";
 import { RtkProviders } from "./rtk-provider";
 
 type AppProvidersProps = {
@@ -16,22 +14,19 @@ type AppProvidersProps = {
 
 export function AppProviders({ children }: AppProvidersProps) {
   return (
-    <>
-      <PartneroCustomerSync />
-      <ThemeProvider
-        attribute="class"
-        defaultTheme="system"
-        enableColorScheme={false}
-      >
-        <TooltipProvider delay={500}>
-          <TwSizeIndicator />
-          <RtkProviders>
-            <CookieConsent />
-            <PostHogProvider>{children}</PostHogProvider>
-          </RtkProviders>
-        </TooltipProvider>
-        <Toaster />
-      </ThemeProvider>
-    </>
+    <ThemeProvider
+      attribute="class"
+      defaultTheme="system"
+      enableColorScheme={false}
+    >
+      <TooltipProvider delay={500}>
+        <TwSizeIndicator />
+        <RtkProviders>
+          <CookieConsent />
+          {children}
+        </RtkProviders>
+      </TooltipProvider>
+      <Toaster />
+    </ThemeProvider>
   );
 }

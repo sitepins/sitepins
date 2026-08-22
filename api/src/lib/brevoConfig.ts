@@ -45,13 +45,18 @@ const sendBrevoMail = async ({
   params?: object;
 }): Promise<Brevo.SendTransacEmailResponse | undefined> => {
   try {
+    const hasParams =
+      Boolean(params) &&
+      typeof params === "object" &&
+      Object.keys(params).length > 0;
+
     const data = await brevo.transactionalEmails.sendTransacEmail({
       ...(BREVO_SENDER && { sender: BREVO_SENDER }),
       to: [{ email: to }],
       ...(subject && { subject }),
       ...(htmlContent && { htmlContent }),
       ...(templateId && { templateId }),
-      ...(params && { params: params as Record<string, unknown> }),
+      ...(hasParams && { params: params as Record<string, unknown> }),
     });
     return data;
   } catch (error) {

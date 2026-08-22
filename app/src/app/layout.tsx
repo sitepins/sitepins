@@ -1,5 +1,4 @@
 import { AppProviders } from "@/helpers/app-providers";
-import { PartneroScript } from "@/helpers/partnero-script";
 import config from "@/lib/config";
 import MaintenanceScreen from "@/partials/maintenance";
 import { getDirection } from "@/lib/i18n/direction";
@@ -72,7 +71,6 @@ export default async function RootLayout({
         />
 
         <title>{config.site.title}</title>
-        <PartneroScript />
       </head>
 
       <body className={primaryFont.className} suppressHydrationWarning={true}>

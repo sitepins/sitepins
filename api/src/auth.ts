@@ -394,6 +394,9 @@ export const auth = betterAuth({
     },
   },
   advanced: {
+    ipAddress: {
+      ipAddressHeaders: ["cf-connecting-ip", "x-real-ip", "x-forwarded-for"],
+    },
     cookiePrefix: "sitepins-app",
     // Only share the session cookie across subdomains when COOKIE_DOMAIN is
     // set (e.g. hosted deploys with app + api on different subdomains). A

@@ -77,6 +77,9 @@ export const authDemo = betterAuth({
     },
   },
   advanced: {
+    ipAddress: {
+      ipAddressHeaders: ["cf-connecting-ip", "x-real-ip", "x-forwarded-for"],
+    },
     cookiePrefix: "sitepins-demo",
     crossSubDomainCookies: {
       enabled: process.env.NODE_ENV === "production",

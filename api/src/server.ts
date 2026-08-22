@@ -28,11 +28,23 @@ const hocuspocus = new Hocuspocus({
   debounce: 5000,
   maxDebounce: 30000,
   async onAuthenticate({ requestHeaders, documentName }) {
+    const cookieHeader =
+      typeof requestHeaders.get === "function"
+        ? requestHeaders.get("cookie")
+        : (requestHeaders as unknown as Record<string, string>)["cookie"];
+
     const session = await auth.api.getSession({
       headers: requestHeaders,
     });
     const userId = getSessionUserId(session);
-    if (!userId) throw new Error("Unauthorized");
+
+    if (!userId) {
+      logger.warn(
+        `[onAuthenticate] Unauthorized for "${documentName}". ` +
+          `Cookie header: ${cookieHeader ? "present" : "MISSING"}`,
+      );
+      throw new Error("Unauthorized");
+    }
 
     // Document-level access control: the user must belong to the org that
     // owns this document. Without this any authenticated user could open any

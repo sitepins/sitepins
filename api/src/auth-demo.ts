@@ -5,6 +5,9 @@ import { mongodbAdapter } from "better-auth/adapters/mongodb";
 import { customSession } from "better-auth/plugins";
 import { client, db } from "./auth";
 import { allowedOrigins } from "./config/cors-options";
+import { generateUserId } from "./lib/userIdGenerator";
+import { logger } from "./lib/logger";
+import { organizationService } from "./modules/organization/organization.service";
 
 export const authDemo = betterAuth({
   basePath: "/api/v1/demo/auth",
@@ -28,6 +31,30 @@ export const authDemo = betterAuth({
     // enabled: true, // enabled only if you want to test it in development
     window: parseInt(process.env.RATELIMIT_WINDOW || "10"), // seconds
     max: parseInt(process.env.RATELIMIT_MAX || "100"), // max requests / window
+  },
+  databaseHooks: {
+    user: {
+      create: {
+        before: async (user) => {
+          return {
+            data: {
+              ...user,
+              user_id: generateUserId(user.email),
+              full_name: user.name,
+            },
+          };
+        },
+        after: async (user) => {
+          try {
+            await organizationService.ensureDefaultOrganizationService(
+              user.user_id as string,
+            );
+          } catch (error) {
+            logger.error("Failed to create default organization", error);
+          }
+        },
+      },
+    },
   },
   user: {
     modelName: "user",

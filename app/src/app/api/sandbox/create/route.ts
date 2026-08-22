@@ -26,13 +26,37 @@ import {
   installDeps,
   isDevServerAlive,
   PKG_INSTALL,
+  readDevServerLog,
   SERVER_READY_TIMEOUT_MS,
-  waitForServer,
+  waitForServerStream,
   writeFileViaShell,
 } from "@/lib/sandbox/session";
 import { cleanVercelFetch, getSandboxAuth } from "@/lib/vercel-sandbox-auth";
-import { Sandbox } from "@vercel/sandbox";
+import { Sandbox, Snapshot } from "@vercel/sandbox";
 import { NextRequest, NextResponse } from "next/server";
+
+async function cleanupOldSnapshots(auth: ReturnType<typeof getSandboxAuth>) {
+  try {
+    const list = await Snapshot.list({ ...auth, fetch: cleanVercelFetch });
+    for await (const snap of list) {
+      try {
+        const s = await Snapshot.get({
+          snapshotId: snap.id,
+          ...auth,
+          fetch: cleanVercelFetch,
+        });
+        await s.delete();
+      } catch (err) {
+        logger.warn(
+          `[sandbox/create] Failed to delete snapshot ${snap.id}:`,
+          err,
+        );
+      }
+    }
+  } catch (e) {
+    logger.warn("[sandbox/create] Snapshot cleanup error:", e);
+  }
+}
 
 export const maxDuration = 600;
 
@@ -177,16 +201,30 @@ async function handleQuickOp(
           previewUrl,
           signal,
         );
-        await waitForServer(previewUrl, 15_000, signal);
-        await syncSandboxPreviewState(
-          spProjectId,
-          {
-            sandbox_name: sandboxName,
-            preview_url: previewUrl,
-            commit_sha: latestSha,
-          },
-          cookieHeader,
-        );
+        let syncReady = false;
+        for await (const evt of waitForServerStream(
+          previewUrl,
+          15_000,
+          signal,
+          session,
+          port,
+        )) {
+          if (evt.ready) {
+            syncReady = true;
+            break;
+          }
+        }
+        if (syncReady) {
+          await syncSandboxPreviewState(
+            spProjectId,
+            {
+              sandbox_name: sandboxName,
+              preview_url: previewUrl,
+              commit_sha: latestSha,
+            },
+            cookieHeader,
+          );
+        }
       }
     }
 
@@ -315,12 +353,28 @@ async function* streamCreate(
         previewUrl,
         signal,
       );
-      const ready = await waitForServer(
+      yield { step: "Waiting for server" };
+      let ready = false;
+      for await (const evt of waitForServerStream(
         previewUrl,
         SERVER_READY_TIMEOUT_MS,
         signal,
-      );
-      if (!ready) throw new Error("Dev server did not become ready in time.");
+        activeSession,
+        port,
+      )) {
+        if (evt.ready) {
+          ready = true;
+          break;
+        }
+        yield { step: "Waiting for server" };
+      }
+
+      if (!ready) {
+        const serverLog = await readDevServerLog(activeSession, 80, signal);
+        throw new Error(
+          `Dev server did not become ready in time.\n\nServer logs:\n${serverLog || "(empty)"}`,
+        );
+      }
 
       await syncSandboxPreviewState(
         spProjectId,
@@ -344,13 +398,40 @@ async function* streamCreate(
   }
 
   // ── 2. Cold start: clone → install → start ──
-  const sandbox = await Sandbox.create({
-    ports: [port],
-    timeout: COLD_START_TIMEOUT_MS,
-    signal,
-    fetch: cleanVercelFetch,
-    ...auth,
-  });
+  let sandbox: Sandbox;
+  try {
+    sandbox = await Sandbox.create({
+      ports: [port],
+      timeout: COLD_START_TIMEOUT_MS,
+      signal,
+      fetch: cleanVercelFetch,
+      ...auth,
+    });
+  } catch (e) {
+    const apiError = e as { json?: TVercelApiErrorBody; text?: string };
+    const rawError = [
+      errorMessage(e),
+      apiError.text,
+      JSON.stringify(apiError.json ?? {}),
+    ].join(" ");
+    if (
+      /Snapshots Storage|Hobby plan usage limit|usage limit exceeded/i.test(
+        rawError,
+      )
+    ) {
+      yield { step: "Cleaning unused snapshots" };
+      await cleanupOldSnapshots(auth);
+      sandbox = await Sandbox.create({
+        ports: [port],
+        timeout: COLD_START_TIMEOUT_MS,
+        signal,
+        fetch: cleanVercelFetch,
+        ...auth,
+      });
+    } else {
+      throw e;
+    }
+  }
   const sandboxName = sandbox.name;
   const session = sandbox.currentSession();
   const previewUrl = session.domain(port);
@@ -384,16 +465,26 @@ async function* streamCreate(
   await startDevServer(session, pm, port, generator, previewUrl, signal);
 
   yield { step: "Waiting for server" };
-  const ready = await waitForServer(
+  let ready = false;
+  for await (const evt of waitForServerStream(
     previewUrl,
     SERVER_READY_TIMEOUT_MS,
     signal,
-  );
+    session,
+    port,
+  )) {
+    if (evt.ready) {
+      ready = true;
+      break;
+    }
+    yield { step: "Waiting for server" };
+  }
 
   if (!ready) {
+    const serverLog = await readDevServerLog(session, 80, signal);
     await session.stop();
     throw new Error(
-      "Dev server did not become ready in time. Check your project for build errors.",
+      `Dev server did not become ready in time. Check your project for build errors.\n\nServer logs:\n${serverLog || "(empty)"}`,
     );
   }
 
@@ -493,11 +584,19 @@ export async function POST(req: NextRequest) {
           json: apiJson,
           text: apiError.text,
         });
-        controller.enqueue(
-          enc.encode(`data: ${JSON.stringify({ error: detail, code })}\n\n`),
-        );
+        try {
+          controller.enqueue(
+            enc.encode(`data: ${JSON.stringify({ error: detail, code })}\n\n`),
+          );
+        } catch {
+          // Stream already closed or aborted by client
+        }
       } finally {
-        controller.close();
+        try {
+          controller.close();
+        } catch {
+          // Already closed
+        }
       }
     },
   });

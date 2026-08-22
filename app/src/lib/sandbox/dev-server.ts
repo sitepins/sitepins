@@ -108,13 +108,15 @@ export async function startDevServer(
   }
 
   const envPrefix = spec?.needsHugoToolchain ? HUGO_ENV_PREFIX : "";
+  const shellCmd = `${envPrefix}${fullCmd} > /tmp/devserver.log 2>&1`;
 
   await session.runCommand({
     cmd: "sh",
-    args: ["-c", `${envPrefix}${fullCmd} > /tmp/devserver.log 2>&1`],
+    args: ["-c", shellCmd],
     env: {
       PORT: String(port),
       HOST: "0.0.0.0",
+      HOSTNAME: "0.0.0.0",
       SITEPINS_BASE_URL: previewUrl ?? "",
       __VITE_ADDITIONAL_SERVER_ALLOWED_HOSTS: ".vercel.run",
       ...(spec?.draftEnv && {

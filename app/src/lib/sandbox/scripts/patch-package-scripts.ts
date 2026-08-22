@@ -92,7 +92,11 @@ export function applyDevScriptFlags(scripts: Record<string, string>): {
     }
 
     if (/\bnext\s+dev/.test(s)) {
-      if (!/BUILD_DRAFTS/.test(s)) {
+      if (!/-H\b|--hostname\b/.test(out[k])) {
+        out[k] = out[k].replace(/\bnext\s+dev/g, "next dev -H 0.0.0.0");
+        changed = true;
+      }
+      if (!/BUILD_DRAFTS/.test(out[k])) {
         out[k] = out[k].replace(/\bnext\s+dev/g, "BUILD_DRAFTS=true next dev");
         changed = true;
       }

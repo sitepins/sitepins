@@ -1,3 +1,5 @@
+import { generateUserId } from "./userIdGenerator";
+
 // better-auth's inferred session type does not carry the configured
 // `additionalFields`, so `user_id` has to be read defensively. One helper
 // keeps that gap in a single place instead of an `as any` per call site.
@@ -6,7 +8,11 @@ export const getSessionUserId = (session: unknown): string | undefined => {
     session as { user?: Record<string, unknown> } | null | undefined
   )?.user;
   const userId = user?.user_id;
-  return typeof userId === "string" && userId ? userId : undefined;
+  if (typeof userId === "string" && userId) return userId;
+  if (typeof user?.email === "string" && user.email) {
+    return generateUserId(user.email);
+  }
+  return undefined;
 };
 
 export const getSessionUserRole = (session: unknown): string | undefined => {

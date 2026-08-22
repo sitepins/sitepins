@@ -8,6 +8,7 @@ import http from "http";
 import { Server as IOServer } from "socket.io";
 import { RawData, WebSocketServer } from "ws";
 import { auth } from "./auth";
+import { authDemo } from "./auth-demo";
 import { dbConnect } from "./lib/dbConnect";
 import { isOrgMember } from "./lib/orgAccess";
 import { authenticateSocket } from "./lib/socketAuth";
@@ -28,20 +29,28 @@ const hocuspocus = new Hocuspocus({
   debounce: 5000,
   maxDebounce: 30000,
   async onAuthenticate({ requestHeaders, documentName }) {
-    const cookieHeader =
-      typeof requestHeaders.get === "function"
-        ? requestHeaders.get("cookie")
-        : (requestHeaders as unknown as Record<string, string>)["cookie"];
-
-    const session = await auth.api.getSession({
-      headers: requestHeaders,
-    });
-    const userId = getSessionUserId(session);
+    // Try both auth issuers (app + demo) – the WebSocket handshake doesn't
+    // tell us which cookie prefix was used. Mirrors socketAuth.ts.
+    let session = await auth.api.getSession({ headers: requestHeaders });
+    let userId = getSessionUserId(session);
 
     if (!userId) {
+      session = await authDemo.api.getSession({ headers: requestHeaders });
+      userId = getSessionUserId(session);
+    }
+
+    if (!userId) {
+      // Log cookie names (not values) to help diagnose prefix mismatches
+      const cookieHeader =
+        typeof requestHeaders.get === "function"
+          ? requestHeaders.get("cookie")
+          : (requestHeaders as unknown as Record<string, string>)["cookie"];
+      const cookieNames = cookieHeader
+        ? cookieHeader.split(";").map((c: string) => c.trim().split("=")[0])
+        : [];
       logger.warn(
         `[onAuthenticate] Unauthorized for "${documentName}". ` +
-          `Cookie header: ${cookieHeader ? "present" : "MISSING"}`,
+          `Cookie names: [${cookieNames.join(", ")}]`,
       );
       throw new Error("Unauthorized");
     }

@@ -20,7 +20,7 @@ describe("serialized payloads run under plain node", () => {
     expect(out.trim()).toBe("PATCHED");
     expect(
       JSON.parse(readFileSync(join(dir, "package.json"), "utf8")).scripts.dev,
-    ).toBe("BUILD_DRAFTS=true BUILD_FUTURE=true next dev");
+    ).toBe("BUILD_DRAFTS=true BUILD_FUTURE=true next dev -H 0.0.0.0");
   });
 
   it("injects the bridge in a real node process", () => {

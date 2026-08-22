@@ -28,7 +28,7 @@ describe("applyDevScriptFlags", () => {
       "astro dev --buildFuture --buildDrafts",
     );
     expect(apply("next dev").scripts.dev).toBe(
-      "BUILD_DRAFTS=true BUILD_FUTURE=true next dev",
+      "BUILD_DRAFTS=true BUILD_FUTURE=true next dev -H 0.0.0.0",
     );
   });
 

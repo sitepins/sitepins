@@ -105,7 +105,12 @@ export const authDemo = betterAuth({
   },
   advanced: {
     ipAddress: {
-      ipAddressHeaders: ["cf-connecting-ip", "x-real-ip", "x-forwarded-for"],
+      ipAddressHeaders: [
+        "do-connecting-ip",
+        "cf-connecting-ip",
+        "x-real-ip",
+        "x-forwarded-for",
+      ],
     },
     cookiePrefix: "sitepins-demo",
     crossSubDomainCookies: {

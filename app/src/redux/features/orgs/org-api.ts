@@ -48,6 +48,17 @@ export const orgApi = api.injectEndpoints({
         method: "PATCH",
         data: orgData,
       }),
+      async onQueryStarted({ org_id }, { dispatch, queryFulfilled }) {
+        if (!org_id) return;
+        try {
+          const { data } = await queryFulfilled;
+          dispatch(
+            orgApi.util.updateQueryData("getOrg", org_id, (draft) => {
+              Object.assign(draft, data);
+            }),
+          );
+        } catch {}
+      },
       // Invalidate both the specific Org and the Orgs list
       invalidatesTags: (result, error, { org_id }) => [
         { type: "Org", id: org_id },

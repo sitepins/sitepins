@@ -47,8 +47,6 @@ type SandboxConnectFormProps = {
 
 type Team = { id: string; name: string; slug: string };
 
-type ConnectPhase = "token" | "team_select" | "connecting";
-
 const SANDBOX_NOTICE_KEYS = [
   "security0",
   "security1",
@@ -64,7 +62,6 @@ export default function VercelConnectForm({
   isRestricted,
 }: SandboxConnectFormProps) {
   const [token, setToken] = useState("");
-  const [phase, setPhase] = useState<ConnectPhase>("token");
   const [isValidating, setIsValidating] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
   const [connectStatus, setConnectStatus] = useState("");
@@ -88,7 +85,6 @@ export default function VercelConnectForm({
     setFormWasOpen(showUpdateForm);
     if (!showUpdateForm) {
       setToken("");
-      setPhase("token");
       setPendingConnect(null);
       setSelectedTeamId("");
     }
@@ -120,7 +116,6 @@ export default function VercelConnectForm({
         // Pause — let user pick account
         setPendingConnect({ token: tokenValue.trim(), username, teams });
         setSelectedTeamId(""); // default: personal
-        setPhase("team_select");
       } else {
         // Personal only — proceed immediately
         await handleFinalize(tokenValue.trim(), username, "");
@@ -140,7 +135,6 @@ export default function VercelConnectForm({
     username: string,
     teamId: string,
   ) => {
-    setPhase("connecting");
     setIsConnecting(true);
     try {
       setConnectStatus(tOrgSandbox("status_creating_project"));
@@ -175,7 +169,6 @@ export default function VercelConnectForm({
       setToken("");
       setShowUpdateForm(false);
       setPendingConnect(null);
-      setPhase("token");
       toast(tOrgSandbox("toast_connect_success"), {
         description: tOrgSandbox("toast_connect_success_desc", { username }),
       });
@@ -183,7 +176,6 @@ export default function VercelConnectForm({
       toast(tOrgSandbox("toast_connect_error"), {
         description: errorMessage(err),
       });
-      setPhase(pendingConnect ? "team_select" : "token");
     } finally {
       setIsConnecting(false);
       setConnectStatus("");
@@ -229,28 +221,36 @@ export default function VercelConnectForm({
           value={token}
           onChange={(e) => setToken(e.target.value)}
           onKeyDown={(e) =>
-            e.key === "Enter" && !isValidating && handleValidate(token)
+            e.key === "Enter" &&
+            !isValidating &&
+            !isConnecting &&
+            handleValidate(token)
           }
-          disabled={isValidating}
+          disabled={isValidating || isConnecting}
         />
       </div>
 
       <div className="flex items-center gap-3">
         <Button
           onClick={() => handleValidate(token)}
-          disabled={isValidating || token.trim().length < 20}
+          disabled={isValidating || isConnecting || token.trim().length < 20}
         >
-          {isValidating && <Loader2 className="me-2 size-4 animate-spin" />}
+          {(isValidating || isConnecting) && (
+            <Loader2 className="me-2 size-4 animate-spin" />
+          )}
           {isValidating
             ? tOrgSandbox("status_validating")
-            : isConnected
-              ? tOrgSandbox("save_token_btn")
-              : tOrgSandbox("connect_btn")}
+            : isConnecting
+              ? connectStatus || tOrgSandbox("connecting")
+              : isConnected
+                ? tOrgSandbox("save_token_btn")
+                : tOrgSandbox("connect_btn")}
         </Button>
         {isConnected && (
           <Button
             variant="ghost"
             size="sm"
+            disabled={isValidating || isConnecting}
             onClick={() => setShowUpdateForm(false)}
           >
             {tOrgSandbox("cancel_btn")}
@@ -269,18 +269,24 @@ export default function VercelConnectForm({
         <RadioGroup
           value={selectedTeamId}
           onValueChange={setSelectedTeamId}
+          disabled={isConnecting}
           className="space-y-1.5"
         >
           {/* Personal account */}
           <label
             className={cn(
               "flex cursor-pointer items-center gap-3 rounded-lg border px-3 py-2.5 transition-colors",
+              isConnecting && "cursor-not-allowed opacity-60",
               selectedTeamId === ""
                 ? "border-primary bg-primary/5"
                 : "border-border hover:bg-muted/50",
             )}
           >
-            <RadioGroupItem value="" id="team-personal" />
+            <RadioGroupItem
+              value=""
+              id="team-personal"
+              disabled={isConnecting}
+            />
             <div className="min-w-0 flex-1">
               <p className="text-sm font-medium">
                 {tOrgSandbox("personal_account")}
@@ -297,12 +303,17 @@ export default function VercelConnectForm({
               key={team.id}
               className={cn(
                 "flex cursor-pointer items-center gap-3 rounded-lg border px-3 py-2.5 transition-colors",
+                isConnecting && "cursor-not-allowed opacity-60",
                 selectedTeamId === team.id
                   ? "border-primary bg-primary/5"
                   : "border-border hover:bg-muted/50",
               )}
             >
-              <RadioGroupItem value={team.id} id={`team-${team.id}`} />
+              <RadioGroupItem
+                value={team.id}
+                id={`team-${team.id}`}
+                disabled={isConnecting}
+              />
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-medium">{team.name}</p>
                 <p className="text-muted-foreground font-mono text-xs">
@@ -335,7 +346,6 @@ export default function VercelConnectForm({
           size="sm"
           disabled={isConnecting}
           onClick={() => {
-            setPhase("token");
             setPendingConnect(null);
           }}
         >
@@ -496,7 +506,7 @@ export default function VercelConnectForm({
               {/* Update token flow */}
               {canUpdate &&
                 showUpdateForm &&
-                (phase === "team_select" ? teamPicker : tokenForm)}
+                (pendingConnect ? teamPicker : tokenForm)}
             </div>
           ) : (
             <div className="space-y-4">
@@ -504,7 +514,7 @@ export default function VercelConnectForm({
                 <p className="text-muted-foreground text-sm">
                   {tOrgSandbox("no_permission")}
                 </p>
-              ) : phase === "team_select" ? (
+              ) : pendingConnect ? (
                 teamPicker
               ) : (
                 tokenForm

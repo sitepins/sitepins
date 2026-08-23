@@ -49,7 +49,11 @@
       "saving": "Enregistrement...",
       "saved": "Enregistré",
       "no_results": "Aucun résultat trouvé.",
-      "error": "Une erreur est survenue"
+      "error": "Une erreur est survenue",
+      "all_operational": "Tous les systèmes sont opérationnels.",
+      "degraded": "Performances dégradées.",
+      "outage": "Interruption de service.",
+      "checking": "Vérification de l'état..."
     },
     "confirm": {
       "are_you_sure": "Êtes-vous sûr ?",

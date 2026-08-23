@@ -49,7 +49,11 @@
       "saving": "Guardando...",
       "saved": "Guardado",
       "no_results": "No se encontraron resultados.",
-      "error": "Algo salió mal"
+      "error": "Algo salió mal",
+      "all_operational": "Todos los sistemas normales.",
+      "degraded": "Rendimiento degradado.",
+      "outage": "Interrupción del sistema.",
+      "checking": "Comprobando estado..."
     },
     "confirm": {
       "are_you_sure": "¿Estás seguro?",

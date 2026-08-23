@@ -49,7 +49,11 @@
       "saving": "Saving...",
       "saved": "Saved",
       "no_results": "No results found.",
-      "error": "Something went wrong"
+      "error": "Something went wrong",
+      "all_operational": "All systems normal.",
+      "degraded": "Degraded performance.",
+      "outage": "System outage.",
+      "checking": "Checking status..."
     },
     "confirm": {
       "are_you_sure": "Are you sure?",

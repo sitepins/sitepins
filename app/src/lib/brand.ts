@@ -19,6 +19,12 @@ export const SUPPORT_URL =
 export const UPDATES_URL =
   process.env.NEXT_PUBLIC_UPDATES_URL || "https://updates.sitepins.com";
 
+export const STATUS_URL =
+  process.env.NEXT_PUBLIC_STATUS_URL || "https://status.sitepins.com";
+
+export const STATUS_API_URL =
+  process.env.NEXT_PUBLIC_STATUS_API_URL || `${STATUS_URL}/api/status.json`;
+
 export const COMMUNITY_URL =
   process.env.NEXT_PUBLIC_COMMUNITY_URL || "https://discord.gg/KrpvHfqcNA";
 

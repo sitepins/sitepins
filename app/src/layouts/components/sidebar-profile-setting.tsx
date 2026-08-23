@@ -22,6 +22,7 @@ import { authClient } from "@/lib/auth/auth-client";
 import { IS_DEMO } from "@/lib/constant";
 import { getFooterAccountMenu } from "@/lib/menu";
 import { usePwaInstall } from "@/hooks/use-pwa-install";
+import SidebarStatusItem from "@/layouts/components/sidebar-status-item";
 import { Download, LogOut } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useTheme } from "next-themes";
@@ -151,6 +152,8 @@ export default function SidebarProfileSetting() {
               <LogOut className="size-4" />
               <span className="text-sm">{tCommon("logout.label")}</span>
             </DropdownMenuItem>
+
+            <SidebarStatusItem onClick={() => setIsOpen(false)} />
           </div>
         </DropdownMenuContent>
       </DropdownMenu>

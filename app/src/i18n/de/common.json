@@ -49,7 +49,11 @@
       "saving": "Wird gespeichert...",
       "saved": "Gespeichert",
       "no_results": "Keine Ergebnisse gefunden.",
-      "error": "Etwas ist schiefgelaufen"
+      "error": "Etwas ist schiefgelaufen",
+      "all_operational": "Alle Systeme normal.",
+      "degraded": "Eingeschränkte Leistung.",
+      "outage": "Systemausfall.",
+      "checking": "Status wird überprüft..."
     },
     "confirm": {
       "are_you_sure": "Sind Sie sicher?",

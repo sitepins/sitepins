@@ -165,7 +165,11 @@ function ToastAction({
     <ToastPrimitive.Action
       data-slot="toast-action"
       render={render}
-      className={cn("shrink-0", className)}
+      className={cn(
+        "shrink-0",
+        "group-not-data-[type=default]/toast:border-current/30! group-not-data-[type=default]/toast:bg-current/10! group-not-data-[type=default]/toast:text-current! group-not-data-[type=default]/toast:hover:border-current/50! group-not-data-[type=default]/toast:hover:bg-current/20!",
+        className,
+      )}
       {...props}
     />
   );
@@ -184,6 +188,7 @@ function ToastClose({
       render={render}
       className={cn(
         "relative shrink-0 opacity-70 after:absolute after:-inset-2 after:content-[''] hover:opacity-100",
+        "group-not-data-[type=default]/toast:text-current! group-not-data-[type=default]/toast:hover:bg-current/20!",
         className,
       )}
       {...props}

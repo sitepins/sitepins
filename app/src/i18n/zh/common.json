@@ -49,7 +49,11 @@
       "saving": "保存中...",
       "saved": "已保存",
       "no_results": "未找到相关结果。",
-      "error": "出错了"
+      "error": "出错了",
+      "all_operational": "所有系统正常。",
+      "degraded": "性能下降。",
+      "outage": "系统故障。",
+      "checking": "正在检查状态..."
     },
     "confirm": {
       "are_you_sure": "您确定吗？",

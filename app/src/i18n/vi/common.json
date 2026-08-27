@@ -49,7 +49,11 @@
       "saving": "Đang lưu...",
       "saved": "Đã lưu",
       "no_results": "Không tìm thấy kết quả phù hợp.",
-      "error": "Đã xảy ra lỗi"
+      "error": "Đã xảy ra lỗi",
+      "all_operational": "Tất cả hệ thống bình thường.",
+      "degraded": "Hiệu suất bị suy giảm.",
+      "outage": "Hệ thống ngừng hoạt động.",
+      "checking": "Đang kiểm tra trạng thái..."
     },
     "confirm": {
       "are_you_sure": "Bạn có chắc chắn không?",

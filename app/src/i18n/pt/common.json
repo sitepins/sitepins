@@ -49,7 +49,11 @@
       "saving": "Salvando...",
       "saved": "Salvo",
       "no_results": "Nenhum resultado encontrado.",
-      "error": "Algo deu errado"
+      "error": "Algo deu errado",
+      "all_operational": "Todos os sistemas normais.",
+      "degraded": "Desempenho degradado.",
+      "outage": "Interrupção do sistema.",
+      "checking": "Verificando status..."
     },
     "confirm": {
       "are_you_sure": "Tem certeza?",

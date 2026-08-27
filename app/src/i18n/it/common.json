@@ -49,7 +49,11 @@
       "saving": "Salvataggio in corso...",
       "saved": "Salvato",
       "no_results": "Nessun risultato trovato.",
-      "error": "Si è verificato un errore"
+      "error": "Si è verificato un errore",
+      "all_operational": "Tutti i sistemi sono operativi.",
+      "degraded": "Prestazioni degradate.",
+      "outage": "Interruzione del servizio.",
+      "checking": "Verifica dello stato..."
     },
     "confirm": {
       "are_you_sure": "Sei sicuro?",

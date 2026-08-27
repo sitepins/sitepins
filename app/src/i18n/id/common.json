@@ -49,7 +49,11 @@
       "saving": "Menyimpan...",
       "saved": "Tersimpan",
       "no_results": "Tidak ada hasil ditemukan.",
-      "error": "Terjadi kesalahan"
+      "error": "Terjadi kesalahan",
+      "all_operational": "Semua sistem normal.",
+      "degraded": "Performa menurun.",
+      "outage": "Gangguan sistem.",
+      "checking": "Memeriksa status..."
     },
     "confirm": {
       "are_you_sure": "Apakah Anda yakin?",

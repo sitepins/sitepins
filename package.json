@@ -35,6 +35,10 @@
       "bash -c 'cd app && pnpm exec prettier --write \"$@\"' --",
       "bash -c 'cd app && pnpm exec eslint --no-warn-ignored \"$@\"' --"
     ],
+    "app/src/i18n/**/*.json": [
+      "bash -c 'cd app && pnpm exec prettier --write \"$@\"' --",
+      "bash -c 'cd app && pnpm exec vitest run src/lib/i18n/i18n.test.ts' --"
+    ],
     "api/src/**/*.ts": [
       "bash -c 'cd api && pnpm exec prettier --write \"$@\"' --",
       "bash -c 'cd api && pnpm exec eslint --no-warn-ignored \"$@\"' --"

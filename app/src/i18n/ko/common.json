@@ -49,7 +49,11 @@
       "saving": "저장하는 중...",
       "saved": "저장됨",
       "no_results": "검색 결과가 없습니다.",
-      "error": "오류가 발생했습니다"
+      "error": "오류가 발생했습니다",
+      "all_operational": "모든 시스템이 정상입니다.",
+      "degraded": "성능 저하.",
+      "outage": "시스템 장애.",
+      "checking": "상태 확인 중..."
     },
     "confirm": {
       "are_you_sure": "정말 진행하시겠습니까?",

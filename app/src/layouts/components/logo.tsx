@@ -2,6 +2,7 @@
 
 import useMounted from "@/hooks/use-mounted";
 import config from "@/lib/config";
+import { cn } from "@/lib/utils/cn";
 import { useTheme } from "next-themes";
 import Image from "next/image";
 import Link from "next/link";
@@ -46,7 +47,7 @@ const Logo = ({
     <Link
       href={link || "/"}
       target={link && link.startsWith("http") ? "_blank" : "_self"}
-      className={`relative inline-block ${className}`}
+      className={cn("relative inline-flex items-center", className)}
     >
       {logoPath ? (
         <>
@@ -56,15 +57,12 @@ const Logo = ({
             src={logoPath}
             alt={title}
             priority
+            className="block"
             style={{
               height: logo_height.replace("px", "") + "px",
               width: logo_width.replace("px", "") + "px",
             }}
           />
-
-          {/* <span className="bg-background absolute top-7.5 left-8.5 rounded-[3px] bg-linear-to-r from-[#5a77e3] to-[#64bdf7] px-1 py-0.5 text-[8px] font-bold text-[#fff] shadow">
-            BETA
-          </span> */}
         </>
       ) : logo_text ? (
         logo_text

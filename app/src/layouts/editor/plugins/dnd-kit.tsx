@@ -1,10 +1,14 @@
 "use client";
 
-import { DndProvider } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
 import { DndPlugin } from "@platejs/dnd";
 import { PlaceholderPlugin } from "@platejs/media/react";
-import { BlockDraggable } from "../plate-ui/block-draggable";
+import { DndProvider } from "react-dnd";
+import { TouchBackend } from "react-dnd-touch-backend";
+import {
+  BlockDraggable,
+  CustomDragLayer,
+  DragHandleProvider,
+} from "../plate-ui/block-draggable";
 
 export const DndKit = [
   DndPlugin.configure({
@@ -19,7 +23,20 @@ export const DndKit = [
     render: {
       aboveNodes: BlockDraggable,
       aboveSlate: ({ children }) => (
-        <DndProvider backend={HTML5Backend}>{children}</DndProvider>
+        <DndProvider
+          backend={TouchBackend}
+          options={{
+            enableMouseEvents: true,
+            enableTouchEvents: true,
+            delayTouchStart: 0,
+            ignoreContextMenu: true,
+          }}
+        >
+          <DragHandleProvider>
+            {children}
+            <CustomDragLayer />
+          </DragHandleProvider>
+        </DndProvider>
       ),
     },
   }),

@@ -13,19 +13,18 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils/cn";
 import { TablePlugin } from "@platejs/table/react";
-import {
-  ArrowDown,
-  ArrowLeft,
-  ArrowRight,
-  ArrowUp,
-  Grid3x3Icon,
-  Table,
-  Trash2Icon,
-  XIcon,
-} from "lucide-react";
+import { Grid3x3Icon, Table, Trash2Icon } from "lucide-react";
 import { KEYS } from "platejs";
 import { useEditorPlugin, useEditorSelector } from "platejs/react";
 import { useState } from "react";
+import {
+  DeleteColumnIcon,
+  DeleteRowIcon,
+  InsertColumnLeftIcon,
+  InsertColumnRightIcon,
+  InsertRowAboveIcon,
+  InsertRowBelowIcon,
+} from "./table-icons";
 import { ToolbarButton } from "./toolbar";
 
 export function TableToolbarButton(props: DropdownMenuProps) {
@@ -74,7 +73,7 @@ export function TableToolbarButton(props: DropdownMenuProps) {
                   editor.tf.focus();
                 }}
               >
-                <ArrowUp />
+                <InsertRowAboveIcon />
                 Insert row before
               </DropdownMenuItem>
               <DropdownMenuItem
@@ -85,7 +84,7 @@ export function TableToolbarButton(props: DropdownMenuProps) {
                   editor.tf.focus();
                 }}
               >
-                <ArrowDown />
+                <InsertRowBelowIcon />
                 Insert row after
               </DropdownMenuItem>
               <DropdownMenuItem
@@ -96,7 +95,7 @@ export function TableToolbarButton(props: DropdownMenuProps) {
                   editor.tf.focus();
                 }}
               >
-                <XIcon />
+                <DeleteRowIcon />
                 Delete row
               </DropdownMenuItem>
             </DropdownMenuSubContent>
@@ -119,7 +118,7 @@ export function TableToolbarButton(props: DropdownMenuProps) {
                   editor.tf.focus();
                 }}
               >
-                <ArrowLeft />
+                <InsertColumnLeftIcon />
                 Insert column before
               </DropdownMenuItem>
               <DropdownMenuItem
@@ -130,7 +129,7 @@ export function TableToolbarButton(props: DropdownMenuProps) {
                   editor.tf.focus();
                 }}
               >
-                <ArrowRight />
+                <InsertColumnRightIcon />
                 Insert column after
               </DropdownMenuItem>
               <DropdownMenuItem
@@ -141,7 +140,7 @@ export function TableToolbarButton(props: DropdownMenuProps) {
                   editor.tf.focus();
                 }}
               >
-                <XIcon />
+                <DeleteColumnIcon />
                 Delete column
               </DropdownMenuItem>
             </DropdownMenuSubContent>

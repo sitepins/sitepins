@@ -1148,3 +1148,251 @@ export function BorderTopIcon(props: LucideProps) {
     </svg>
   );
 }
+
+export function InsertRowAboveIcon(props: LucideProps) {
+  return (
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 16 16"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <rect
+        x="2"
+        y="6"
+        width="12"
+        height="8"
+        rx="1"
+        stroke="currentColor"
+        strokeWidth="1.2"
+      />
+      <line
+        x1="2"
+        y1="10"
+        x2="14"
+        y2="10"
+        stroke="currentColor"
+        strokeWidth="1"
+      />
+      <path
+        d="M8 1V4M8 1L6 2.5M8 1L10 2.5"
+        stroke="currentColor"
+        strokeWidth="1.2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+export function InsertRowBelowIcon(props: LucideProps) {
+  return (
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 16 16"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <rect
+        x="2"
+        y="2"
+        width="12"
+        height="8"
+        rx="1"
+        stroke="currentColor"
+        strokeWidth="1.2"
+      />
+      <line
+        x1="2"
+        y1="6"
+        x2="14"
+        y2="6"
+        stroke="currentColor"
+        strokeWidth="1"
+      />
+      <path
+        d="M8 15V12M8 15L6 13.5M8 15L10 13.5"
+        stroke="currentColor"
+        strokeWidth="1.2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+export function DeleteRowIcon(props: LucideProps) {
+  return (
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 16 16"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <rect
+        x="2"
+        y="2"
+        width="12"
+        height="12"
+        rx="1"
+        stroke="currentColor"
+        strokeWidth="1.2"
+      />
+      <line
+        x1="2"
+        y1="8"
+        x2="14"
+        y2="8"
+        stroke="currentColor"
+        strokeWidth="1"
+      />
+      <rect
+        x="3"
+        y="3"
+        width="10"
+        height="4"
+        fill="currentColor"
+        fillOpacity="0.15"
+      />
+      <line
+        x1="6"
+        y1="5"
+        x2="10"
+        y2="5"
+        stroke="currentColor"
+        strokeWidth="1.3"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+export function InsertColumnLeftIcon(props: LucideProps) {
+  return (
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 16 16"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <rect
+        x="6"
+        y="2"
+        width="8"
+        height="12"
+        rx="1"
+        stroke="currentColor"
+        strokeWidth="1.2"
+      />
+      <line
+        x1="10"
+        y1="2"
+        x2="10"
+        y2="14"
+        stroke="currentColor"
+        strokeWidth="1"
+      />
+      <path
+        d="M1 8H4M1 8L2.5 6M1 8L2.5 10"
+        stroke="currentColor"
+        strokeWidth="1.2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+export function InsertColumnRightIcon(props: LucideProps) {
+  return (
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 16 16"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <rect
+        x="2"
+        y="2"
+        width="8"
+        height="12"
+        rx="1"
+        stroke="currentColor"
+        strokeWidth="1.2"
+      />
+      <line
+        x1="6"
+        y1="2"
+        x2="6"
+        y2="14"
+        stroke="currentColor"
+        strokeWidth="1"
+      />
+      <path
+        d="M15 8H12M15 8L13.5 6M15 8L13.5 10"
+        stroke="currentColor"
+        strokeWidth="1.2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+export function DeleteColumnIcon(props: LucideProps) {
+  return (
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 16 16"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <rect
+        x="2"
+        y="2"
+        width="12"
+        height="12"
+        rx="1"
+        stroke="currentColor"
+        strokeWidth="1.2"
+      />
+      <line
+        x1="8"
+        y1="2"
+        x2="8"
+        y2="14"
+        stroke="currentColor"
+        strokeWidth="1"
+      />
+      <rect
+        x="3"
+        y="3"
+        width="4"
+        height="10"
+        fill="currentColor"
+        fillOpacity="0.15"
+      />
+      <line
+        x1="5"
+        y1="6"
+        x2="5"
+        y2="10"
+        stroke="currentColor"
+        strokeWidth="1.3"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}

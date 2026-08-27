@@ -33,15 +33,7 @@ import {
   useTableSelectionDom,
   useTableValue,
 } from "@platejs/table/react";
-import {
-  ArrowDown,
-  ArrowLeft,
-  ArrowRight,
-  ArrowUp,
-  GripVertical,
-  Trash2Icon,
-  XIcon,
-} from "lucide-react";
+import { GripVertical, Trash2Icon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import {
   KEYS,
@@ -69,7 +61,15 @@ import {
 } from "platejs/react";
 import * as React from "react";
 import { blockSelectionVariants } from "./block-selection";
-import { Toolbar, ToolbarButton, ToolbarGroup } from "./toolbar";
+import {
+  DeleteColumnIcon,
+  DeleteRowIcon,
+  InsertColumnLeftIcon,
+  InsertColumnRightIcon,
+  InsertRowAboveIcon,
+  InsertRowBelowIcon,
+} from "./table-icons";
+import { Toolbar, ToolbarButton, ToolbarSeparator } from "./toolbar";
 
 type TableResizeDirection = "bottom" | "left" | "right";
 
@@ -112,13 +112,7 @@ const TableResizeContext = React.createContext<TableResizeContextValue | null>(
 );
 
 function useTableResizeContext() {
-  const context = React.useContext(TableResizeContext);
-
-  if (!context) {
-    throw new Error("TableResizeContext is missing");
-  }
-
-  return context;
+  return React.useContext(TableResizeContext);
 }
 
 function useTableResizeController({
@@ -901,78 +895,72 @@ function TableFloatingToolbarContent({
   const tEditorToolbar = useTranslations("editor.toolbar");
   return (
     <PopoverContent
-      asChild
+      align="center"
+      side="top"
+      sideOffset={8}
+      className="border-border bg-popover flex! w-auto flex-row! items-center gap-0.5 rounded-md border p-1 shadow-md"
       contentEditable={false}
       onOpenAutoFocus={(e) => e.preventDefault()}
       {...props}
     >
-      <Toolbar
-        className="scrollbar-hide bg-popover border-border flex w-auto max-w-[80vw] flex-row overflow-x-auto rounded-md border p-1 shadow-md print:hidden"
-        contentEditable={false}
-      >
-        <ToolbarGroup>
-          {collapsedInside && (
-            <ToolbarGroup>
-              <ToolbarButton
-                tooltip={tEditorToolbar("delete_table")}
-                {...buttonProps}
-              >
-                <Trash2Icon />
-              </ToolbarButton>
-            </ToolbarGroup>
-          )}
-        </ToolbarGroup>
-
+      <Toolbar className="flex items-center gap-0.5 border-0 bg-transparent p-0 shadow-none">
         {collapsedInside && (
-          <ToolbarGroup>
+          <>
+            <ToolbarButton
+              tooltip={tEditorToolbar("delete_table")}
+              {...buttonProps}
+            >
+              <Trash2Icon className="size-4" />
+            </ToolbarButton>
+
+            <ToolbarSeparator orientation="vertical" className="mx-1 h-5" />
+
             <ToolbarButton
               onClick={onInsertRowBefore}
               onMouseDown={(e) => e.preventDefault()}
               tooltip={tEditorToolbar("insert_row_before")}
             >
-              <ArrowUp />
+              <InsertRowAboveIcon />
             </ToolbarButton>
             <ToolbarButton
               onClick={onInsertRowAfter}
               onMouseDown={(e) => e.preventDefault()}
               tooltip={tEditorToolbar("insert_row_after")}
             >
-              <ArrowDown />
+              <InsertRowBelowIcon />
             </ToolbarButton>
             <ToolbarButton
               onClick={onDeleteRow}
               onMouseDown={(e) => e.preventDefault()}
               tooltip={tEditorToolbar("delete_row")}
             >
-              <XIcon />
+              <DeleteRowIcon />
             </ToolbarButton>
-          </ToolbarGroup>
-        )}
 
-        {collapsedInside && (
-          <ToolbarGroup>
+            <ToolbarSeparator orientation="vertical" className="mx-1 h-5" />
+
             <ToolbarButton
               onClick={onInsertColumnBefore}
               onMouseDown={(e) => e.preventDefault()}
               tooltip={tEditorToolbar("insert_column_before")}
             >
-              <ArrowLeft className="cn-rtl-flip" />
+              <InsertColumnLeftIcon />
             </ToolbarButton>
             <ToolbarButton
               onClick={onInsertColumnAfter}
               onMouseDown={(e) => e.preventDefault()}
               tooltip={tEditorToolbar("insert_column_after")}
             >
-              <ArrowRight className="cn-rtl-flip" />
+              <InsertColumnRightIcon />
             </ToolbarButton>
             <ToolbarButton
               onClick={onDeleteColumn}
               onMouseDown={(e) => e.preventDefault()}
               tooltip={tEditorToolbar("delete_column")}
             >
-              <XIcon />
+              <DeleteColumnIcon />
             </ToolbarButton>
-          </ToolbarGroup>
+          </>
         )}
       </Toolbar>
     </PopoverContent>
@@ -1082,9 +1070,9 @@ function RowDragHandle({ dragRef }: { dragRef: React.Ref<HTMLButtonElement> }) {
   return (
     <Button
       className={cn(
-        "absolute inset-s-0 top-1/2 z-51 h-6 w-4 -translate-y-1/2 p-0 focus-visible:ring-0 focus-visible:ring-offset-0",
+        "absolute inset-s-0 top-1/2 z-20 h-6 w-4 -translate-y-1/2 p-0 focus-visible:ring-0 focus-visible:ring-offset-0",
         "cursor-grab active:cursor-grabbing",
-        "opacity-0 transition-opacity duration-100 group-hover/row:opacity-100 group-data-[table-resizing=true]/row:opacity-0",
+        "opacity-0 transition-opacity duration-150 ease-in-out group-hover/row:opacity-100 group-data-[table-resizing=true]/row:opacity-0",
       )}
       onClick={() => {
         editor.tf.select(element);
@@ -1105,7 +1093,7 @@ function RowDropLine() {
   return (
     <div
       className={cn(
-        "bg-accent absolute inset-x-0 inset-s-2 z-50 h-0.5",
+        "bg-accent absolute inset-x-0 inset-s-2 z-20 h-0.5",
         dropLine === "top" ? "-top-px" : "-bottom-px",
       )}
     />
@@ -1203,12 +1191,15 @@ const TableCellResizeControls = React.memo(function TableCellResizeControls({
   colIndex: number;
   rowIndex: number;
 }) {
+  const resizeContext = useTableResizeContext();
+  if (!resizeContext) return null;
+
   const {
     clearResizePreview,
     disableMarginLeft,
     setResizePreview,
     startResize,
-  } = useTableResizeContext();
+  } = resizeContext;
   const rightHandleKey = `right:${rowIndex}:${colIndex}`;
   const bottomHandleKey = `bottom:${rowIndex}:${colIndex}`;
   const leftHandleKey = `left:${rowIndex}:${colIndex}`;

@@ -4,10 +4,11 @@ import { Button } from "@/components/ui/button";
 import {
   Tooltip,
   TooltipContent,
+  TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils/cn";
-import { DndPlugin, useDraggable, useDropLine } from "@platejs/dnd";
+import { useDraggable, useDropLine } from "@platejs/dnd";
 import { expandListItemsWithChildren } from "@platejs/list";
 import { BlockSelectionPlugin } from "@platejs/selection/react";
 import { GripVertical } from "lucide-react";
@@ -18,11 +19,183 @@ import {
   type RenderNodeWrapper,
   MemoizedChildren,
   useEditorRef,
-  useElement,
-  usePluginOption,
-  useSelected,
 } from "platejs/react";
 import * as React from "react";
+import { useDragLayer } from "react-dnd";
+
+export function CustomDragLayer() {
+  const { isDragging, item, currentOffset } = useDragLayer((monitor) => ({
+    item: monitor.getItem() as {
+      element?: TElement;
+      editor?: PlateEditor;
+      id?: string | string[];
+    } | null,
+    currentOffset: monitor.getClientOffset(),
+    isDragging: monitor.isDragging(),
+  }));
+
+  if (!isDragging || !currentOffset || !item?.element) {
+    return null;
+  }
+
+  const text = (item.element.children as Array<{ text?: string }>)
+    ?.map((c) => c.text || "")
+    .join("")
+    .trim();
+
+  return (
+    <div className="pointer-events-none fixed inset-0 z-9999 overflow-hidden select-none">
+      <div
+        style={{
+          transform: `translate3d(${currentOffset.x + 14}px, ${currentOffset.y + 10}px, 0)`,
+        }}
+        className="border-border/80 bg-background/95 text-foreground inline-flex max-w-100 items-center gap-2 rounded-lg border px-3 py-1.5 text-xs font-medium shadow-2xl backdrop-blur-md"
+      >
+        <GripVertical className="text-muted-foreground size-3.5 shrink-0" />
+        <span className="truncate">{text || item.element.type || "Block"}</span>
+      </div>
+    </div>
+  );
+}
+
+type ActiveDragBlock = {
+  element: TElement;
+  top: number;
+  isDragging?: boolean;
+  isInColumn?: boolean;
+};
+
+type DragHandleContextValue = {
+  activeBlock: ActiveDragBlock | null;
+  setActiveBlock: (block: ActiveDragBlock | null) => void;
+  clearActiveBlock: () => void;
+  isVisible: boolean;
+  setIsVisible: (visible: boolean) => void;
+  wrapperRef: React.RefObject<HTMLDivElement | null>;
+};
+
+const DragHandleContext = React.createContext<DragHandleContextValue | null>(
+  null,
+);
+
+export function useDragHandleContext() {
+  return React.useContext(DragHandleContext);
+}
+
+export function DragHandleProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const [activeBlock, setActiveBlockState] =
+    React.useState<ActiveDragBlock | null>(null);
+  const [isVisible, setIsVisible] = React.useState(false);
+  const hideTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+  const wrapperRef = React.useRef<HTMLDivElement | null>(null);
+
+  const clearActiveBlock = React.useCallback(() => {
+    if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
+    hideTimerRef.current = setTimeout(() => {
+      setIsVisible(false);
+    }, 200);
+  }, []);
+
+  const setActiveBlock = React.useCallback(
+    (block: ActiveDragBlock | null) => {
+      if (hideTimerRef.current) {
+        clearTimeout(hideTimerRef.current);
+        hideTimerRef.current = null;
+      }
+      if (block) {
+        setActiveBlockState(block);
+        setIsVisible(true);
+      } else {
+        clearActiveBlock();
+      }
+    },
+    [clearActiveBlock],
+  );
+
+  return (
+    <DragHandleContext.Provider
+      value={{
+        activeBlock,
+        setActiveBlock,
+        clearActiveBlock,
+        isVisible,
+        setIsVisible,
+        wrapperRef,
+      }}
+    >
+      <div
+        ref={wrapperRef}
+        className="relative"
+        onMouseLeave={clearActiveBlock}
+      >
+        <FloatingDragHandle />
+        {children}
+      </div>
+    </DragHandleContext.Provider>
+  );
+}
+
+function FloatingDragHandle() {
+  const ctx = useDragHandleContext();
+  const activeBlock = ctx?.activeBlock;
+  const isVisible = ctx?.isVisible ?? false;
+
+  if (!activeBlock) return null;
+
+  return (
+    <div
+      className={cn(
+        "pointer-events-auto absolute top-0 left-0.5 z-20 touch-none select-none sm:left-1",
+        "transition-transform duration-150 ease-out",
+        isVisible && !activeBlock.isDragging
+          ? "opacity-100"
+          : "pointer-events-none opacity-0 transition-opacity duration-150",
+      )}
+      style={{
+        transform: `translate3d(0, ${activeBlock.top}px, 0)`,
+      }}
+      onMouseEnter={() => {
+        ctx?.setIsVisible(true);
+      }}
+    >
+      <div className="flex h-6 w-4.5 touch-none items-center justify-center">
+        <DragHandleButton element={activeBlock.element} />
+      </div>
+    </div>
+  );
+}
+
+function DragHandleButton({ element }: { element: TElement }) {
+  const editor = useEditorRef();
+  const blockSelectionApi = editor.getApi(BlockSelectionPlugin).blockSelection;
+
+  const { handleRef } = useDraggable({
+    element,
+    preview: { disable: true },
+    onDropHandler: (_, { dragItem }) => {
+      const id = (dragItem as { id: string[] | string }).id;
+
+      if (blockSelectionApi) {
+        blockSelectionApi.add(id);
+      }
+    },
+  });
+
+  return (
+    <Button
+      ref={handleRef}
+      variant="ghost"
+      className="h-6 w-full touch-none p-0 transition-transform duration-150 ease-out select-none hover:scale-105 hover:bg-transparent active:scale-95"
+      data-plate-prevent-deselect
+    >
+      <DragHandleContent editor={editor} element={element} />
+    </Button>
+  );
+}
 
 const UNDRAGGABLE_KEYS = [KEYS.column, KEYS.tr, KEYS.td];
 
@@ -72,49 +245,32 @@ export const BlockDraggable: RenderNodeWrapper = (props) => {
 
 function Draggable(props: PlateElementProps) {
   const { children, editor, element, path } = props;
-  const blockSelectionApi = editor.getApi(BlockSelectionPlugin).blockSelection;
+  const dragHandleCtx = useDragHandleContext();
 
-  const { isAboutToDrag, isDragging, nodeRef, previewRef, handleRef } =
-    useDraggable({
-      element,
-      onDropHandler: (_, { dragItem }) => {
-        const id = (dragItem as { id: string[] | string }).id;
-
-        if (blockSelectionApi) {
-          blockSelectionApi.add(id);
-        }
-        resetPreview();
-      },
-    });
+  const { isDragging, nodeRef } = useDraggable({
+    element,
+    preview: { disable: true },
+  });
 
   const isInColumn = path.length === 3;
   const isInTable = path.length === 4;
 
-  const [previewTop, setPreviewTop] = React.useState(0);
-
-  const resetPreview = () => {
-    if (previewRef.current) {
-      previewRef.current.replaceChildren();
-      previewRef.current?.classList.add("hidden");
+  const activateBlock = () => {
+    if (isInTable) return;
+    if (dragHandleCtx) {
+      const top = calcBlockTop(
+        editor,
+        element,
+        dragHandleCtx.wrapperRef.current,
+      );
+      dragHandleCtx.setActiveBlock({
+        element,
+        top,
+        isDragging,
+        isInColumn,
+      });
     }
   };
-
-  // clear up virtual multiple preview when drag end
-  React.useEffect(() => {
-    if (!isDragging) {
-      resetPreview();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isDragging]);
-
-  React.useEffect(() => {
-    if (isAboutToDrag) {
-      previewRef.current?.classList.remove("opacity-0");
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isAboutToDrag]);
-
-  const [dragButtonTop, setDragButtonTop] = React.useState(0);
 
   return (
     <div
@@ -125,53 +281,10 @@ function Draggable(props: PlateElementProps) {
           ? "group/container"
           : "group",
       )}
-      onMouseEnter={() => {
-        if (isDragging) return;
-        setDragButtonTop(calcDragButtonTop(editor, element));
-      }}
+      onMouseEnter={activateBlock}
+      onPointerDown={activateBlock}
+      onTouchStart={activateBlock}
     >
-      {!isInTable && (
-        <Gutter>
-          <div
-            className={cn(
-              "slate-blockToolbarWrapper",
-              "flex h-[1.5em]",
-              isInColumn && "h-4",
-            )}
-          >
-            <div
-              className={cn(
-                "slate-blockToolbar relative w-4.5",
-                "pointer-events-auto me-1 flex items-center",
-                isInColumn && "me-1.5",
-              )}
-            >
-              <Button
-                ref={handleRef}
-                variant="ghost"
-                className="absolute inset-s-0 h-6 w-full p-0"
-                style={{ top: `${dragButtonTop + 3}px` }}
-                data-plate-prevent-deselect
-              >
-                <DragHandle
-                  isDragging={isDragging}
-                  previewRef={previewRef}
-                  resetPreview={resetPreview}
-                  setPreviewTop={setPreviewTop}
-                />
-              </Button>
-            </div>
-          </div>
-        </Gutter>
-      )}
-
-      <div
-        ref={previewRef}
-        className={cn("absolute inset-s-0 hidden w-full")}
-        style={{ top: `${-previewTop}px` }}
-        contentEditable={false}
-      />
-
       <div
         ref={nodeRef}
         className="slate-blockWrapper flow-root"
@@ -188,156 +301,78 @@ function Draggable(props: PlateElementProps) {
   );
 }
 
-function Gutter({
-  children,
-  className,
-  ...props
-}: React.ComponentProps<"div">) {
-  const editor = useEditorRef();
-  const element = useElement();
-  const isSelectionAreaVisible = usePluginOption(
-    BlockSelectionPlugin,
-    "isSelectionAreaVisible",
-  );
-  const selected = useSelected();
-
-  return (
-    <div
-      {...props}
-      className={cn(
-        "slate-gutterLeft",
-        "absolute inset-s-0 top-0 z-50 flex h-full -translate-x-full cursor-text hover:opacity-100 sm:opacity-0",
-        getPluginByType(editor, element.type)?.node.isContainer
-          ? "group-hover/container:opacity-100"
-          : "group-hover:opacity-100",
-        isSelectionAreaVisible && "hidden",
-        !selected && "opacity-0",
-        className,
-      )}
-      contentEditable={false}
-    >
-      {children}
-    </div>
-  );
-}
-
-const DragHandle = React.memo(function DragHandle({
-  isDragging,
-  previewRef,
-  resetPreview,
-  setPreviewTop,
+const DragHandleContent = React.memo(function DragHandleContent({
+  editor,
+  element,
 }: {
-  isDragging: boolean;
-  previewRef: React.RefObject<HTMLDivElement | null>;
-  resetPreview: () => void;
-  setPreviewTop: (top: number) => void;
+  editor: PlateEditor;
+  element: TElement;
 }) {
-  const editor = useEditorRef();
-  const element = useElement();
+  const handleStartDrag = (
+    e: React.MouseEvent<HTMLElement> | React.TouchEvent<HTMLElement>,
+  ) => {
+    if ("button" in e && ((e.button !== 0 && e.button !== 2) || e.shiftKey)) {
+      return;
+    }
+
+    const blockSelection = editor
+      .getApi(BlockSelectionPlugin)
+      .blockSelection.getNodes({ sort: true });
+
+    let selectionNodes =
+      blockSelection.length > 0
+        ? blockSelection
+        : editor.api.blocks({ mode: "highest" });
+
+    // If current block is not in selection, use it as the starting point
+    if (!selectionNodes.some(([node]) => node.id === element.id)) {
+      const path = editor.api.findPath(element);
+
+      if (path) {
+        selectionNodes = [[element, path]];
+      }
+    }
+
+    // Process selection nodes to include list children
+    const blocks = expandListItemsWithChildren(editor, selectionNodes).map(
+      ([node]) => node,
+    );
+
+    if (blockSelection.length === 0) {
+      try {
+        editor.tf?.blur?.();
+        editor.tf?.collapse?.();
+      } catch {
+        // Ignore blur/collapse errors during DnD start
+      }
+    }
+
+    editor
+      .getApi(BlockSelectionPlugin)
+      .blockSelection.set(blocks.map((block) => block.id as string));
+  };
 
   return (
-    <Tooltip>
-      <TooltipTrigger asChild>
-        <div
-          className="flex size-full cursor-grab items-center justify-center"
-          onClick={(e) => {
-            e.preventDefault();
-            editor.getApi(BlockSelectionPlugin).blockSelection.focus();
-          }}
-          onMouseDown={(e) => {
-            resetPreview();
-
-            if ((e.button !== 0 && e.button !== 2) || e.shiftKey) return;
-
-            const blockSelection = editor
-              .getApi(BlockSelectionPlugin)
-              .blockSelection.getNodes({ sort: true });
-
-            let selectionNodes =
-              blockSelection.length > 0
-                ? blockSelection
-                : editor.api.blocks({ mode: "highest" });
-
-            // If current block is not in selection, use it as the starting point
-            if (!selectionNodes.some(([node]) => node.id === element.id)) {
-              const path = editor.api.findPath(element);
-
-              if (path) {
-                selectionNodes = [[element, path]];
-              }
-            }
-
-            // Process selection nodes to include list children
-            const blocks = expandListItemsWithChildren(
-              editor,
-              selectionNodes,
-            ).map(([node]) => node);
-
-            if (blockSelection.length === 0) {
-              try {
-                editor.tf?.blur?.();
-                editor.tf?.collapse?.();
-              } catch {
-                // Ignore blur/collapse errors during DnD start
-              }
-            }
-
-            const elements = createDragPreviewElements(editor, blocks);
-            previewRef.current?.append(...elements);
-            previewRef.current?.classList.remove("hidden");
-            previewRef.current?.classList.add("opacity-0");
-            editor.setOption(DndPlugin, "multiplePreviewRef", previewRef);
-
-            editor
-              .getApi(BlockSelectionPlugin)
-              .blockSelection.set(blocks.map((block) => block.id as string));
-          }}
-          onMouseEnter={() => {
-            if (isDragging) return;
-
-            const blockSelection = editor
-              .getApi(BlockSelectionPlugin)
-              .blockSelection.getNodes({ sort: true });
-
-            let selectedBlocks =
-              blockSelection.length > 0
-                ? blockSelection
-                : editor.api.blocks({ mode: "highest" });
-
-            // If current block is not in selection, use it as the starting point
-            if (!selectedBlocks.some(([node]) => node.id === element.id)) {
-              selectedBlocks = [[element, editor.api.findPath(element)!]];
-            }
-
-            // Process selection to include list children
-            const processedBlocks = expandListItemsWithChildren(
-              editor,
-              selectedBlocks,
-            );
-
-            const ids = processedBlocks.map((block) => block[0].id as string);
-
-            if (ids.length > 1 && ids.includes(element.id as string)) {
-              const previewTop = calculatePreviewTop(editor, {
-                blocks: processedBlocks.map((block) => block[0]),
-                element,
-              });
-              setPreviewTop(previewTop);
-            } else {
-              setPreviewTop(0);
-            }
-          }}
-          onMouseUp={() => {
-            resetPreview();
-          }}
-          data-plate-prevent-deselect
-          role="button"
-        >
-          <GripVertical className="text-muted-foreground" />
-        </div>
-      </TooltipTrigger>
-      <TooltipContent>Drag to move</TooltipContent>
-    </Tooltip>
+    <TooltipProvider delay={300}>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <div
+            className="text-muted-foreground/60 hover:bg-accent/80 hover:text-foreground flex size-full cursor-grab touch-none items-center justify-center rounded-sm transition-colors duration-150 select-none active:cursor-grabbing"
+            onClick={(e) => {
+              e.preventDefault();
+              editor.getApi(BlockSelectionPlugin).blockSelection.focus();
+            }}
+            onMouseDown={handleStartDrag}
+            onTouchStart={handleStartDrag}
+            data-plate-prevent-deselect
+            role="button"
+          >
+            <GripVertical className="size-4" />
+          </div>
+        </TooltipTrigger>
+        <TooltipContent>Drag to move</TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   );
 });
 
@@ -376,170 +411,30 @@ const safeToDOMNode = (
   }
 };
 
-const createDragPreviewElements = (
+const calcBlockTop = (
   editor: PlateEditor,
-  blocks: TElement[],
-): HTMLElement[] => {
-  const elements: HTMLElement[] = [];
-  const ids: string[] = [];
-
-  /**
-   * Remove data attributes from the element to avoid recognized as slate
-   * elements incorrectly.
-   */
-  const removeDataAttributes = (element: HTMLElement) => {
-    Array.from(element.attributes).forEach((attr) => {
-      if (
-        attr.name.startsWith("data-slate") ||
-        attr.name.startsWith("data-block-id")
-      ) {
-        element.removeAttribute(attr.name);
-      }
-    });
-
-    Array.from(element.children).forEach((child) => {
-      removeDataAttributes(child as HTMLElement);
-    });
-  };
-
-  const resolveElement = (node: TElement, index: number) => {
-    const domNode = safeToDOMNode(editor, node);
-
-    if (!domNode) return;
-
-    const newDomNode = domNode.cloneNode(true) as HTMLElement;
-
-    // Apply visual compensation for horizontal scroll
-    const applyScrollCompensation = (
-      original: Element,
-      cloned: HTMLElement,
-    ) => {
-      const scrollLeft = original.scrollLeft;
-
-      if (scrollLeft > 0) {
-        // Create a wrapper to handle the scroll offset
-        const scrollWrapper = document.createElement("div");
-        scrollWrapper.style.overflow = "hidden";
-        scrollWrapper.style.width = `${original.clientWidth}px`;
-
-        // Create inner container with the full content
-        const innerContainer = document.createElement("div");
-        innerContainer.style.transform = `translateX(-${scrollLeft}px)`;
-        innerContainer.style.width = `${original.scrollWidth}px`;
-
-        // Move all children to the inner container
-        while (cloned.firstChild) {
-          innerContainer.append(cloned.firstChild);
-        }
-
-        // Apply the original element's styles to maintain appearance
-        const originalStyles = window.getComputedStyle(original);
-        cloned.style.padding = "0";
-        innerContainer.style.padding = originalStyles.padding;
-
-        scrollWrapper.append(innerContainer);
-        cloned.append(scrollWrapper);
-      }
-    };
-
-    applyScrollCompensation(domNode, newDomNode);
-
-    ids.push(node.id as string);
-    const wrapper = document.createElement("div");
-    wrapper.append(newDomNode);
-    wrapper.style.display = "flow-root";
-
-    const lastDomBlock = blocks[index - 1];
-
-    if (lastDomBlock) {
-      const lastDomNode = safeToDOMNode(editor, lastDomBlock);
-
-      if (lastDomNode?.parentElement && domNode.parentElement) {
-        const lastDomNodeRect =
-          lastDomNode.parentElement.getBoundingClientRect();
-
-        const domNodeRect = domNode.parentElement.getBoundingClientRect();
-
-        const distance = domNodeRect.top - lastDomNodeRect.bottom;
-
-        // Check if the two elements are adjacent (touching each other)
-        if (distance > 15) {
-          wrapper.style.marginTop = `${distance}px`;
-        }
-      }
-    }
-
-    removeDataAttributes(newDomNode);
-    elements.push(wrapper);
-  };
-
-  blocks.forEach((node, index) => resolveElement(node, index));
-
-  editor.setOption(DndPlugin, "draggingId", ids);
-
-  return elements;
-};
-
-const calculatePreviewTop = (
-  editor: PlateEditor,
-  {
-    blocks,
-    element,
-  }: {
-    blocks: TElement[];
-    element: TElement;
-  },
+  element: TElement,
+  providerEl: HTMLElement | null,
 ): number => {
   const child = safeToDOMNode(editor, element);
-  const editable = safeToDOMNode(editor, editor);
-  const firstSelectedChild = blocks[0];
-
-  if (!child || !editable || !firstSelectedChild) return 0;
-
-  const firstDomNode = safeToDOMNode(editor, firstSelectedChild);
-
-  if (!firstDomNode) return 0;
-
-  // Get editor's top padding
-  const editorPaddingTop = Number(
-    window.getComputedStyle(editable).paddingTop.replace("px", ""),
-  );
-
-  // Calculate distance from first selected node to editor top
-  const firstNodeToEditorDistance =
-    firstDomNode.getBoundingClientRect().top -
-    editable.getBoundingClientRect().top -
-    editorPaddingTop;
-
-  // Get margin top of first selected node
-  const firstMarginTopString = window.getComputedStyle(firstDomNode).marginTop;
-  const marginTop = Number(firstMarginTopString.replace("px", ""));
-
-  // Calculate distance from current node to editor top
-  const currentToEditorDistance =
-    child.getBoundingClientRect().top -
-    editable.getBoundingClientRect().top -
-    editorPaddingTop;
-
-  const currentMarginTopString = window.getComputedStyle(child).marginTop;
-  const currentMarginTop = Number(currentMarginTopString.replace("px", ""));
-
-  const previewElementsTopDistance =
-    currentToEditorDistance -
-    firstNodeToEditorDistance +
-    marginTop -
-    currentMarginTop;
-
-  return previewElementsTopDistance;
-};
-
-const calcDragButtonTop = (editor: PlateEditor, element: TElement): number => {
-  const child = safeToDOMNode(editor, element);
-
   if (!child) return 0;
 
-  const currentMarginTopString = window.getComputedStyle(child).marginTop;
-  const currentMarginTop = Number(currentMarginTopString.replace("px", ""));
+  if (providerEl) {
+    const childRect = child.getBoundingClientRect();
+    const providerRect = providerEl.getBoundingClientRect();
 
-  return currentMarginTop;
+    const style = window.getComputedStyle(child);
+    const paddingTop = parseFloat(style.paddingTop) || 0;
+    let lineHeight = parseFloat(style.lineHeight);
+    if (isNaN(lineHeight)) {
+      const fontSize = parseFloat(style.fontSize) || 16;
+      lineHeight = fontSize * 1.35;
+    }
+    const buttonHeight = 24;
+    const verticalOffset = paddingTop + (lineHeight - buttonHeight) / 2;
+
+    return Math.round(childRect.top - providerRect.top + verticalOffset);
+  }
+
+  return (child as HTMLElement).offsetTop || 0;
 };

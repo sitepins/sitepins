@@ -56,12 +56,17 @@ export function ToolbarLink({
 
 export function ToolbarSeparator({
   className,
+  orientation = "vertical",
   ...props
 }: ToolbarPrimitive.Separator.Props) {
   return (
     <ToolbarPrimitive.Separator
+      orientation={orientation}
       className={cn(
-        "bg-border mx-2 my-1 shrink-0 data-[orientation=horizontal]:h-px data-[orientation=vertical]:h-full data-[orientation=vertical]:w-px",
+        "bg-border shrink-0",
+        orientation === "vertical"
+          ? "mx-1.5 h-4.5 w-px self-center"
+          : "my-1.5 h-px w-full",
         className,
       )}
       {...props}

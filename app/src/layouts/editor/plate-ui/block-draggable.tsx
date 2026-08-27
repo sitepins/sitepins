@@ -132,11 +132,35 @@ export function DragHandleProvider({
         className="relative"
         onMouseLeave={clearActiveBlock}
       >
+        <DndEndListener />
         <FloatingDragHandle />
         {children}
       </div>
     </DragHandleContext.Provider>
   );
+}
+
+function DndEndListener() {
+  const editor = useEditorRef();
+  const wasDraggingRef = React.useRef(false);
+  const { isDragging } = useDragLayer((monitor) => ({
+    isDragging: monitor.isDragging(),
+  }));
+
+  React.useEffect(() => {
+    if (wasDraggingRef.current && !isDragging) {
+      setTimeout(() => {
+        try {
+          editor.getApi(BlockSelectionPlugin).blockSelection.deselect();
+        } catch {
+          // Ignore if plugin not available
+        }
+      }, 0);
+    }
+    wasDraggingRef.current = isDragging;
+  }, [isDragging, editor]);
+
+  return null;
 }
 
 function FloatingDragHandle() {
@@ -171,18 +195,10 @@ function FloatingDragHandle() {
 
 function DragHandleButton({ element }: { element: TElement }) {
   const editor = useEditorRef();
-  const blockSelectionApi = editor.getApi(BlockSelectionPlugin).blockSelection;
 
   const { handleRef } = useDraggable({
     element,
     preview: { disable: true },
-    onDropHandler: (_, { dragItem }) => {
-      const id = (dragItem as { id: string[] | string }).id;
-
-      if (blockSelectionApi) {
-        blockSelectionApi.add(id);
-      }
-    },
   });
 
   return (
@@ -250,6 +266,15 @@ function Draggable(props: PlateElementProps) {
   const { isDragging, nodeRef } = useDraggable({
     element,
     preview: { disable: true },
+    onDropHandler: () => {
+      setTimeout(() => {
+        try {
+          editor.getApi(BlockSelectionPlugin).blockSelection.deselect();
+        } catch {
+          // Ignore
+        }
+      }, 0);
+    },
   });
 
   const isInColumn = path.length === 3;

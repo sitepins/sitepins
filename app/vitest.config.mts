@@ -9,26 +9,33 @@ export default defineConfig({
     alias: [
       {
         find: /^@\/components\//,
-        replacement: path.resolve(__dirname, "src/layouts/components") + "/",
+        replacement:
+          path.resolve(import.meta.dirname, "src/layouts/components") + "/",
       },
       {
         find: /^@\/partials\//,
-        replacement: path.resolve(__dirname, "src/layouts/partials") + "/",
+        replacement:
+          path.resolve(import.meta.dirname, "src/layouts/partials") + "/",
       },
       {
         find: /^@\/helpers\//,
-        replacement: path.resolve(__dirname, "src/layouts/helpers") + "/",
+        replacement:
+          path.resolve(import.meta.dirname, "src/layouts/helpers") + "/",
       },
       {
         find: /^@\/editor\//,
-        replacement: path.resolve(__dirname, "src/layouts/editor") + "/",
+        replacement:
+          path.resolve(import.meta.dirname, "src/layouts/editor") + "/",
       },
-      { find: /^@\//, replacement: path.resolve(__dirname, "src") + "/" },
+      {
+        find: /^@\//,
+        replacement: path.resolve(import.meta.dirname, "src") + "/",
+      },
       // Editor plugins import stylesheets; the node environment cannot load
       // them and nothing under test depends on their contents.
       {
         find: /^.*\.(css|scss)$/,
-        replacement: path.resolve(__dirname, "src/test/style-stub.ts"),
+        replacement: path.resolve(import.meta.dirname, "src/test/style-stub.ts"),
       },
     ],
   },

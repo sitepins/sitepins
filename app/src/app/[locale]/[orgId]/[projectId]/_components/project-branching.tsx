@@ -13,6 +13,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { toast } from "@/components/ui/toast";
 import { useGitProvider } from "@/hooks/use-git-provider";
 import { logger } from "@/lib/logger";
 import { errorMessageOr, errorStatus } from "@/lib/utils/error";
@@ -49,7 +50,6 @@ import {
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { ChangeEvent, useEffect, useState } from "react";
-import { toast } from "@/components/ui/toast";
 
 type ProjectBranchingProps = {
   project?: TProject;
@@ -417,33 +417,40 @@ const ProjectBranching = ({
             return (
               <div
                 key={reqId}
-                className="bg-muted/30 border-border flex items-center justify-between rounded-lg border px-5 py-3"
+                className="bg-muted/30 border-border flex flex-col gap-3 rounded-lg border p-4 sm:flex-row sm:items-center sm:justify-between sm:px-5 sm:py-3"
               >
-                <div className="flex items-center gap-3">
-                  <div className="bg-primary/10 text-primary flex size-8 items-center justify-center rounded-full">
+                <div className="flex min-w-0 flex-1 items-start gap-3 sm:items-center">
+                  <div className="bg-primary/10 text-primary flex size-8 shrink-0 items-center justify-center rounded-full">
                     <GitPullRequest className="size-4" />
                   </div>
-                  <div>
+                  <div className="min-w-0 flex-1">
                     <h4 className="text-sm font-medium">
                       {tProjectBranching("incoming_request", {
                         provider: isGitLabProvider(provider) ? "Merge" : "Pull",
                       })}
                     </h4>
-                    <p className="text-muted-foreground mt-1 text-xs leading-none">
-                      <span className="text-foreground font-semibold">
+                    <p className="text-muted-foreground mt-1 text-xs leading-normal">
+                      <span className="text-foreground font-semibold break-all">
                         {reqBranch}
                       </span>{" "}
-                      &rarr; {defaultBranch} : {reqTitle}
+                      &rarr;{" "}
+                      <span className="font-medium">{defaultBranch}</span>
+                      {reqTitle ? (
+                        <>
+                          {" "}
+                          : <span className="wrap-break-word">{reqTitle}</span>
+                        </>
+                      ) : null}
                     </p>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3">
+                <div className="flex shrink-0 items-center justify-end gap-2 sm:self-center">
                   <Button
                     variant="ghost"
                     size="sm"
                     asChild
-                    className="h-8 text-xs"
+                    className="h-8 px-2.5 text-xs"
                   >
                     <Link
                       href={reqUrl}
@@ -455,8 +462,9 @@ const ProjectBranching = ({
                     </Link>
                   </Button>
                   <Button
+                    variant="success"
                     size="sm"
-                    className="h-8 border-none bg-emerald-600 text-xs text-white hover:bg-emerald-700"
+                    className="h-8 px-3 text-xs"
                     onClick={() => handleMerge(reqId, reqBranch)}
                     disabled={isMerging}
                   >
@@ -476,19 +484,19 @@ const ProjectBranching = ({
 
       {/* Changes Detected / Branch Management Section */}
       {(isAhead || existingPR) && (
-        <div className="bg-muted/30 border-border flex items-center justify-between rounded-lg border px-5 py-3">
-          <div className="flex items-center gap-3">
-            <div className="bg-primary/10 text-primary flex size-8 items-center justify-center rounded-full">
+        <div className="bg-muted/30 border-border flex flex-col gap-3 rounded-lg border p-4 sm:flex-row sm:items-center sm:justify-between sm:px-5 sm:py-3">
+          <div className="flex min-w-0 flex-1 items-start gap-3 sm:items-center">
+            <div className="bg-primary/10 text-primary flex size-8 shrink-0 items-center justify-center rounded-full">
               <GitPullRequest className="size-4" />
             </div>
-            <div>
+            <div className="min-w-0 flex-1">
               <h4 className="flex items-center text-sm font-medium">
                 {tProjectBranching("changes_detected")}
                 {isSyncing && (
                   <Loader2 className="ms-2 size-3 animate-spin opacity-50" />
                 )}
               </h4>
-              <p className="text-muted-foreground text-xs">
+              <p className="text-muted-foreground mt-1 text-xs leading-normal">
                 {isDefaultBranch
                   ? `You are on the default branch: ${defaultBranch}`
                   : `${currentBranch} is ahead of ${defaultBranch}.`}
@@ -496,13 +504,13 @@ const ProjectBranching = ({
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex shrink-0 items-center justify-end gap-2 sm:self-center">
             {requestLink && (
               <Button
                 variant="outline"
                 size="sm"
                 asChild
-                className="h-8 text-xs"
+                className="h-8 px-2.5 text-xs"
               >
                 <Link
                   href={requestLink}
@@ -518,7 +526,7 @@ const ProjectBranching = ({
             {!existingPR && !prLink && isAhead && (
               <Dialog open={isOpen} onOpenChange={setIsOpen}>
                 <DialogTrigger asChild>
-                  <Button size="sm" className="h-8 text-xs">
+                  <Button size="sm" className="h-8 px-3 text-xs">
                     {tProjectBranching("create_request", {
                       provider: isGitLabProvider(provider) ? "Merge" : "Pull",
                     })}

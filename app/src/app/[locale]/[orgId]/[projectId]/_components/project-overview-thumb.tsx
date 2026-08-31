@@ -12,11 +12,11 @@ import { TProject } from "@/redux/features/project/type";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
-export type ProjectThumbProps = {
+export type ProjectOverviewThumbProps = {
   project?: TProject;
 };
 
-export function ProjectThumb({ project }: ProjectThumbProps) {
+export function ProjectOverviewThumb({ project }: ProjectOverviewThumbProps) {
   const tDashboard = useTranslations("dashboard");
   const siteUrl = project?.site_url;
 
@@ -73,6 +73,8 @@ export function ProjectThumb({ project }: ProjectThumbProps) {
     };
   }, [siteUrl]);
 
+  const [isImageReady, setIsImageReady] = useState(false);
+
   if (isLoading) {
     return <Skeleton className="aspect-video w-full rounded-md" />;
   }
@@ -90,14 +92,23 @@ export function ProjectThumb({ project }: ProjectThumbProps) {
   }
 
   return (
-    <div className="border-border relative w-full overflow-hidden rounded-md border">
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={imageUrl}
-        alt={`OG image of ${project?.project_name}`}
-        className="w-full object-contain"
-        onError={() => setImageUrl(null)}
-      />
+    <div className="relative aspect-video w-full">
+      {!isImageReady && (
+        <Skeleton className="absolute inset-0 h-full w-full rounded-md" />
+      )}
+      <div
+        className="border-border h-full w-full overflow-hidden rounded-md border"
+        style={{ visibility: isImageReady ? "visible" : "hidden" }}
+      >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={imageUrl}
+          alt={`OG image of ${project?.project_name}`}
+          className="w-full object-contain"
+          onLoad={() => setIsImageReady(true)}
+          onError={() => setImageUrl(null)}
+        />
+      </div>
     </div>
   );
 }

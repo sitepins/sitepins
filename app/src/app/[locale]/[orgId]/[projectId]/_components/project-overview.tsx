@@ -23,7 +23,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useState } from "react";
 import { BranchSwitcher } from "./branch-switcher";
-import { ProjectThumb } from "./project-thumb";
+import { ProjectOverviewThumb } from "./project-overview-thumb";
 
 export default function ProjectOverview({
   project,
@@ -94,7 +94,7 @@ export default function ProjectOverview({
     <div className="border-border bg-card text-card-foreground grid grid-cols-1 rounded-lg border md:grid-cols-12">
       {/* Left Column: Preview */}
       <div className="group relative flex items-center justify-center p-6 md:col-span-7 lg:col-span-6">
-        <ProjectThumb project={project} />
+        <ProjectOverviewThumb project={project} />
       </div>
 
       {/* Right Column: Details */}

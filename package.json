@@ -25,7 +25,7 @@
     "version:sync": "node scripts/sync-version.mjs",
     "version:check": "node scripts/sync-version.mjs --check",
     "version:set": "node scripts/sync-version.mjs",
-    "start": "PORT=4000 corepack pnpm --filter ./api start & PORT=3767 corepack pnpm --filter ./app start"
+    "start": "PORT=4000 corepack pnpm --filter ./api start & PORT=3767 NODE_OPTIONS=--dns-result-order=ipv4first corepack pnpm --filter ./app start"
   },
   "devDependencies": {
     "husky": "^9.1.7",

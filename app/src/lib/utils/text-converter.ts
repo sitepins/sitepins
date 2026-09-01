@@ -3,7 +3,11 @@ import { marked } from "marked";
 
 // slugify
 export const slugify = (content: string) => {
-  return slug(content);
+  if (!content) return "";
+  return slug(content)
+    .replace(/[^a-zA-Z0-9\u00C0-\u024F\u1E00-\u1EFF-]+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-+|-+$/g, "");
 };
 
 // markdownify

@@ -156,7 +156,7 @@ export default function AddFile({
                 });
 
                 const fileExtension = schemaData?.fileType || "md";
-                const fileName = slugify(data.name) + "." + fileExtension;
+                const fileName = `${data.name.trim()}.${fileExtension}`;
                 const fileDataToCreate = {
                   path: [decodedFilepath, fileName]
                     .filter(Boolean)

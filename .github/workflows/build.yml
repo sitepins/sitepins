@@ -23,6 +23,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: sitepins-build
+          include-hidden-files: true
           path: |
             app/.next
             api/dist

@@ -7,9 +7,9 @@ import { useEffect } from "react";
 
 // Open-source edition: detects the user's country once (for localization
 // defaults) and nothing else. The hosted cloud edition overrides this
-// module (cookie-consent.cloud.tsx) with referral-attribution cookies,
+// module (user-tracker.cloud.tsx) with referral-attribution cookies,
 // visit-history logging, and announcements.
-const CookieConsent = () => {
+const UserTracker = () => {
   const country = countryDetector();
   const { data: auth } = authClient.useSession();
   const [updateUserCountry] = useUpdateUserCountryMutation();
@@ -26,4 +26,4 @@ const CookieConsent = () => {
   return null;
 };
 
-export default CookieConsent;
+export default UserTracker;

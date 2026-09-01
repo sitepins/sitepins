@@ -117,7 +117,6 @@
     "@tailwindcss/typography": "^0.5.20",
     "@types/country-list": "^2.1.4",
     "@types/escape-html": "^1.0.4",
-    "@types/js-cookie": "^3.0.6",
     "@types/js-yaml": "^4.0.9",
     "@types/mdast": "^4.0.4",
     "@types/micromatch": "^4.0.10",

@@ -16,8 +16,8 @@ jobs:
       - name: Build-time env for the web app
         run: |
           printf '%s\n' \
-            'NEXT_PUBLIC_BACKEND_URL=https://sitepins-app.salite.top' \
-            'NEXT_PUBLIC_HP_WS_URL=wss://sitepins-app.salite.top/api/v1/editor/collab' \
+            'NEXT_PUBLIC_BACKEND_URL=https://sitepins-app.tempavatar.top' \
+            'NEXT_PUBLIC_HP_WS_URL=wss://sitepins-app.tempavatar.top/api/v1/editor/collab' \
             > app/.env
       - run: pnpm -r build
       - uses: actions/upload-artifact@v4

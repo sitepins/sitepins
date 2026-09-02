@@ -15,6 +15,7 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
+import { toast } from "@/components/ui/toast";
 import { authClient } from "@/lib/auth/auth-client";
 import { OTP_LENGTH } from "@/lib/constant";
 import { otpSchema } from "@/lib/validate";
@@ -23,7 +24,6 @@ import { REGEXP_ONLY_DIGITS } from "input-otp";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { toast } from "@/components/ui/toast";
 import * as z from "zod/v4";
 
 function OTPGroupField({ index }: { index: number }) {
@@ -99,7 +99,16 @@ export function OTPVerifyForm({ credential }: { credential: LoginCredential }) {
     <>
       <CardHeader>
         <CardTitle>{tAuthVerify("title")}</CardTitle>
-        <CardDescription>{tAuthVerify("description")}</CardDescription>
+        <CardDescription>
+          {tAuthVerify.rich("description", {
+            email: credential.email,
+            email_tag: (chunks) => (
+              <span className="text-foreground font-semibold break-all">
+                {chunks}
+              </span>
+            ),
+          })}
+        </CardDescription>
       </CardHeader>
 
       <CardContent>

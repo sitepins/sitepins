@@ -12,6 +12,7 @@ import { logger } from "./lib/logger";
 import { sendMail } from "./lib/mailer";
 import { verifyEmailWithReoon } from "./lib/emailVerifier";
 import splitName from "./lib/nameSplitter";
+import { escapeRegex } from "./lib/regexEscape";
 import { deleteFile } from "./lib/s3-utils";
 import { generateUserId } from "./lib/userIdGenerator";
 import { otpSchema } from "./modules/authentication/authentication.zod";
@@ -302,6 +303,19 @@ export const auth = betterAuth({
             message: error.issues.map((issue) => issue.message)[0],
           });
         }
+
+        // Check if user already exists
+        const email = payload.email.trim();
+        const existingUser = await User.findOne({
+          email: { $regex: new RegExp(`^${escapeRegex(email)}$`, "i") },
+        });
+
+        if (existingUser) {
+          throw new APIError("BAD_REQUEST", {
+            message: "User already exists with this email",
+          });
+        }
+
         // Verify email before creating user
         const { isValid, reason } = await verifyEmailWithReoon(payload.email);
 

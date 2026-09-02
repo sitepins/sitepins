@@ -303,8 +303,8 @@ export default function CodeEditor({
       {/* ── Header ── */}
       <div className="bg-background sticky inset-s-0 top-0 z-50 shrink-0">
         {/* Row 1: actions — matches content editor header style */}
-        <header className="border-border bg-light flex items-center justify-between border-b px-4 py-4 lg:px-6">
-          <div className="flex min-w-0 shrink items-center gap-2 sm:gap-3">
+        <header className="border-border bg-light flex items-center justify-between border-b px-2.5 py-2.5 sm:px-4 sm:py-4 lg:px-6">
+          <div className="flex shrink-0 items-center gap-1 sm:gap-2">
             <Button
               onClick={() => {
                 const sidebar = document.getElementById(
@@ -313,17 +313,17 @@ export default function CodeEditor({
                 if (sidebar) sidebar.click();
               }}
               variant="ghost"
-              size="sm"
-              className="xl:hidden"
+              size="icon-lg"
+              className="size-9 p-0 sm:size-auto sm:px-2.5 xl:hidden"
               type="button"
             >
-              <PanelLeft className="cn-rtl-flip size-5" />
+              <PanelLeft className="cn-rtl-flip size-4.5 sm:size-5" />
             </Button>
 
             <Button
               variant="ghost"
-              size="sm"
-              className="flex items-center gap-2"
+              size="icon-lg"
+              className="flex size-9 items-center gap-1.5 p-0 sm:size-auto sm:px-2.5"
               type="button"
               onClick={router.back}
             >
@@ -362,7 +362,7 @@ export default function CodeEditor({
               )}
           </div>
 
-          <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+          <div className="flex shrink-0 items-center gap-1.5 sm:gap-2.5">
             <PresenceAvatars users={activeUsers} />
 
             {config.repoName && config.branch && config.token && (
@@ -383,7 +383,8 @@ export default function CodeEditor({
 
             <Button
               variant="outline"
-              className="bg-transparent"
+              size="icon-lg"
+              className="size-9 p-0 sm:size-auto sm:h-9 sm:px-2.5"
               type="button"
               onClick={handleDiscardWithConfirmation}
               disabled={!hasChanges || isSaving}
@@ -395,6 +396,8 @@ export default function CodeEditor({
             </Button>
 
             <Button
+              size="default"
+              className="h-9 px-2.5 text-xs font-medium sm:px-3 sm:text-sm"
               onClick={handleSave}
               isLoading={isSaving}
               disabled={!hasChanges}

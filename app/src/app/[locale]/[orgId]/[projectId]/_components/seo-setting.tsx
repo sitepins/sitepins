@@ -290,7 +290,7 @@ export default function SeoSetting({
     seoScore === null ? null : (
       <span
         aria-label={tEditorSeo("score_label", { score: seoScore })}
-        className={`rounded-full px-1.5 py-0.5 text-[11px] font-medium tabular-nums ${
+        className={`rounded-full px-1.5 py-0 text-[11px] font-semibold whitespace-nowrap sm:px-2 sm:py-0.5 sm:text-xs ${
           seoScore >= 80
             ? "bg-success/15 text-success"
             : seoScore >= 50
@@ -308,8 +308,9 @@ export default function SeoSetting({
       {!canAccessSeo ? (
         <div className="flex items-center gap-2">
           <Button
-            size={"lg"}
-            variant={"outline"}
+            size="default"
+            variant="outline"
+            className="h-9 px-2 text-xs sm:px-2.5 sm:text-sm"
             type="button"
             aria-label="SEO"
             onClick={() => setShowUpgradeOrg(true)}
@@ -326,8 +327,9 @@ export default function SeoSetting({
         </div>
       ) : (
         <Button
-          size={"lg"}
-          variant={"outline"}
+          size="default"
+          variant="outline"
+          className="h-9 px-2 text-xs sm:px-2.5 sm:text-sm"
           type="button"
           aria-label="SEO"
           onClick={() => onSidebarOpenChange(!isSidebarOpen)}

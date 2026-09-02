@@ -520,13 +520,15 @@ export default function PreviewButton({
         <Button
           id="project-preview-button"
           variant="outline"
+          size="icon-lg"
+          className="size-9 p-0 sm:size-auto sm:h-9 sm:px-2.5"
           onClick={() => startSandbox(false)}
           disabled={isLoading}
         >
           {isLoading ? (
-            <Loader2 className="size-3.5 animate-spin" />
+            <Loader2 className="size-4 animate-spin" />
           ) : (
-            <MonitorPlay className="size-3.5" />
+            <MonitorPlay className="size-4" />
           )}
           <span className="hidden sm:inline">
             {isLoading ? (loadingStep ?? "Starting") : "Preview"}
@@ -540,20 +542,18 @@ export default function PreviewButton({
   // Preview exists — ButtonGroup with dropdown
   return (
     <>
-      <ButtonGroup>
+      <ButtonGroup className="h-9">
         {/* Main action: verify sandbox alive then open (auto-restarts if stopped) */}
         <Button
           id="project-preview-open-button"
           variant="outline"
+          size="icon-lg"
+          className="size-9 p-0 sm:size-auto sm:h-9 sm:px-2.5"
           onClick={() => startSandbox(false)}
           disabled={isLoading || isDestroying}
           title={isStale ? "Preview may be outdated — use Sync" : undefined}
         >
-          {isLoading ? (
-            <Loader2 className="size-3.5 animate-spin" />
-          ) : (
-            statusIcon
-          )}
+          {isLoading ? <Loader2 className="size-4 animate-spin" /> : statusIcon}
           <span className="hidden sm:inline">
             {isLoading ? (loadingStep ?? "Starting") : "Preview"}
           </span>
@@ -566,13 +566,15 @@ export default function PreviewButton({
           <DropdownMenuTrigger asChild>
             <Button
               variant="outline"
+              size="icon-lg"
+              className="h-9 w-7 px-0 sm:w-8"
               aria-label="Preview options"
               disabled={isLoading || isDestroying}
             >
               {isDestroying ? (
-                <Loader2 className="size-3.5 animate-spin" />
+                <Loader2 className="size-4 animate-spin" />
               ) : (
-                <ChevronDown className="size-3.5" />
+                <ChevronDown className="size-3.5 sm:size-4" />
               )}
             </Button>
           </DropdownMenuTrigger>

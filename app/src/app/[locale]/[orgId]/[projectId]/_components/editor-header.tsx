@@ -254,24 +254,24 @@ export default function EditorHeader({
 
       {/* Duplicate handled by DuplicateConfig component */}
 
-      <header className="border-border bg-light sticky inset-s-0 top-0 z-50 flex items-center justify-between border-b px-4 py-4 lg:px-6">
-        <div className="flex w-full items-center justify-between">
-          <div className="flex min-w-0 shrink items-center gap-2 sm:gap-4">
+      <header className="border-border bg-light sticky inset-s-0 top-0 z-50 flex items-center justify-between border-b px-2.5 py-2.5 sm:px-4 sm:py-4 lg:px-6">
+        <div className="flex w-full scrollbar-none items-center justify-between gap-1.5 overflow-x-auto sm:gap-4 [&::-webkit-scrollbar]:hidden">
+          <div className="flex shrink-0 items-center gap-1 sm:gap-2">
             <Button
               onClick={handleOpenSidebar}
               variant="ghost"
-              size="sm"
-              className="xl:hidden"
+              size="icon-lg"
+              className="size-9 p-0 sm:size-auto sm:px-2.5 xl:hidden"
               type="button"
             >
-              <PanelLeft className="cn-rtl-flip size-5" />
+              <PanelLeft className="cn-rtl-flip size-4.5 sm:size-5" />
             </Button>
 
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-1 sm:gap-3">
               <Button
                 variant="ghost"
-                size="sm"
-                className="flex items-center gap-2"
+                size="icon-lg"
+                className="flex size-9 items-center gap-1.5 p-0 sm:size-auto sm:px-2.5"
                 type="button"
                 onClick={router.back}
               >
@@ -312,7 +312,7 @@ export default function EditorHeader({
             </div>
           </div>
 
-          <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+          <div className="flex shrink-0 items-center gap-1.5 sm:gap-2.5">
             <PresenceAvatars users={activeUsers} />
             {config.repoName && config.branch && config.token && (
               <PreviewButton
@@ -338,7 +338,8 @@ export default function EditorHeader({
               <TooltipTrigger asChild>
                 <Button
                   variant="outline"
-                  className="bg-transparent"
+                  size="icon-lg"
+                  className="size-9 p-0 sm:size-auto sm:h-9 sm:px-2.5"
                   type="button"
                   onClick={handleResetWithConfirmation}
                   disabled={!hasChanges || pending}
@@ -353,9 +354,10 @@ export default function EditorHeader({
             </Tooltip>
             {/* Combined Publish/Draft button with dropdown */}
             {showDraftButton ? (
-              <ButtonGroup>
+              <ButtonGroup className="h-9">
                 <Button
-                  size="lg"
+                  size="default"
+                  className="h-9 px-2.5 text-xs font-medium sm:px-3 sm:text-sm"
                   type="button"
                   onClick={
                     effectiveActionType === "save"
@@ -382,8 +384,12 @@ export default function EditorHeader({
 
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button aria-label="More" size="lg">
-                      <ChevronDown />
+                    <Button
+                      aria-label="More"
+                      size="icon-lg"
+                      className="h-9 w-7 px-0 sm:w-8"
+                    >
+                      <ChevronDown className="size-3.5 sm:size-4" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="[--radius:1rem]">
@@ -443,7 +449,8 @@ export default function EditorHeader({
               <Button
                 isLoading={pending && !isDraft}
                 disabled={!hasChanges || pending}
-                size="lg"
+                size="default"
+                className="h-9 px-3 text-xs sm:px-4 sm:text-sm"
                 type="button"
                 onClick={() => handleSubmit()}
               >

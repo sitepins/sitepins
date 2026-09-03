@@ -18,6 +18,8 @@ jobs:
           printf '%s\n' \
             'NEXT_PUBLIC_BACKEND_URL=https://sitepins.cloudhostwp.com/api/v1' \
             'NEXT_PUBLIC_HP_WS_URL=wss://sitepins.cloudhostwp.com/api/v1/editor/collab' \
+            'NEXT_PUBLIC_GITHUB_APP_NAME=dig-designs-sitepins' \
+            'NEXT_PUBLIC_BUCKET_URL=https://pub-b2493a34d0c0466491efc75e0e072e74.r2.dev' \
             > app/.env
       - run: pnpm -r build
       - uses: actions/upload-artifact@v4

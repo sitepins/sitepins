@@ -87,6 +87,61 @@ describe("verifyEmailWithReoon", () => {
     expect(result.reason).toMatch(/spamtrap/i);
   });
 
+  it("passes a catch-all business email even when is_safe_to_send is false", async () => {
+    mockConfig.reoon_api_key = "key";
+    axiosGetMock.mockResolvedValue(
+      reoonResponse({
+        is_safe_to_send: false,
+        is_catch_all: true,
+        status: "catch_all",
+      }),
+    );
+    const result = await verifyEmailWithReoon("contact@business.com");
+    expect(result.isValid).toBe(true);
+  });
+
+  it("passes a catch-all business email when status is catch_all even if is_deliverable is not confirmed", async () => {
+    mockConfig.reoon_api_key = "key";
+    axiosGetMock.mockResolvedValue(
+      reoonResponse({
+        is_safe_to_send: false,
+        is_deliverable: false,
+        status: "catch_all",
+      }),
+    );
+    const result = await verifyEmailWithReoon("info@business.com");
+    expect(result.isValid).toBe(true);
+  });
+
+  it("still rejects a catch-all address if it is disposable", async () => {
+    mockConfig.reoon_api_key = "key";
+    axiosGetMock.mockResolvedValue(
+      reoonResponse({
+        is_safe_to_send: false,
+        is_catch_all: true,
+        is_disposable: true,
+      }),
+    );
+    const result = await verifyEmailWithReoon("temp@disposable.com");
+    expect(result.isValid).toBe(false);
+    expect(result.reason).toMatch(/disposable/i);
+  });
+
+  it("rejects an unsafe address when not a catch-all", async () => {
+    mockConfig.reoon_api_key = "key";
+    axiosGetMock.mockResolvedValue(
+      reoonResponse({
+        is_safe_to_send: false,
+        is_catch_all: false,
+      }),
+    );
+    const result = await verifyEmailWithReoon("unsafe@example.com");
+    expect(result.isValid).toBe(false);
+    expect(result.reason).toBe(
+      "This email is not safe to use for registration",
+    );
+  });
+
   it("fails open when the Reoon API call errors", async () => {
     mockConfig.reoon_api_key = "key";
     isAxiosErrorMock.mockReturnValue(true);

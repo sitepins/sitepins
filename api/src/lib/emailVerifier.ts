@@ -57,12 +57,18 @@ export const verifyEmailWithReoon = async (
     const data: EmailVerificationResponse = response.data;
 
     // Check if email is deliverable (POWER mode checks)
-    const isDeliverable = data.is_deliverable === true;
+    // Catch-all domains (common for business emails) are flagged as is_safe_to_send: false
+    // by Reoon because deliverability cannot be 100% guaranteed without sending.
+    // For signup registration, allow catch-all business emails as long as they are
+    // not disposable, spamtrap, disabled, or invalid syntax.
+    const isCatchAll =
+      data.is_catch_all === true || data.status === "catch_all";
+    const isDeliverable = data.is_deliverable === true || isCatchAll;
     const hasValidSyntax = data.is_valid_syntax;
     const isNotDisposable = !data.is_disposable;
     const isNotSpamtrap = !data.is_spamtrap;
     const isNotDisabled = !data.is_disabled;
-    const isSafeToSend = data.is_safe_to_send;
+    const isSafeToSend = Boolean(data.is_safe_to_send || isCatchAll);
 
     const isValid =
       isDeliverable &&

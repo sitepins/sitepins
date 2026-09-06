@@ -339,7 +339,7 @@ export default function EditorHeader({
                 <Button
                   variant="outline"
                   size="icon-lg"
-                  className="size-9 p-0 sm:size-auto sm:h-9 sm:px-2.5"
+                  className="size-9 gap-1.5 p-0 sm:size-auto sm:h-9 sm:px-2.5"
                   type="button"
                   onClick={handleResetWithConfirmation}
                   disabled={!hasChanges || pending}

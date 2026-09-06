@@ -521,7 +521,7 @@ export default function PreviewButton({
           id="project-preview-button"
           variant="outline"
           size="icon-lg"
-          className="size-9 p-0 sm:size-auto sm:h-9 sm:px-2.5"
+          className="size-9 gap-1.5 p-0 sm:size-auto sm:h-9 sm:px-2.5"
           onClick={() => startSandbox(false)}
           disabled={isLoading}
         >
@@ -548,7 +548,7 @@ export default function PreviewButton({
           id="project-preview-open-button"
           variant="outline"
           size="icon-lg"
-          className="size-9 p-0 sm:size-auto sm:h-9 sm:px-2.5"
+          className="size-9 gap-1.5 p-0 sm:size-auto sm:h-9 sm:px-2.5"
           onClick={() => startSandbox(false)}
           disabled={isLoading || isDestroying}
           title={isStale ? "Preview may be outdated — use Sync" : undefined}

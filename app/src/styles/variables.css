@@ -8,8 +8,6 @@
   --ring: var(--ring-color);
   --input: var(--input-color);
   --light: var(--light-color);
-  --white: var(--white-color);
-  --black: var(--black-color);
 
   --card: var(--body-color);
   --card-foreground: var(--text-default-color);
@@ -18,22 +16,22 @@
   --popover-foreground: var(--text-default-color);
 
   --primary: var(--primary-color);
-  --primary-foreground: var(--text-white-color);
+  --primary-foreground: var(--text-foreground-color);
 
   --muted: var(--muted-color);
   --muted-foreground: var(--text-muted-color);
 
   --accent: var(--accent-color);
-  --accent-foreground: #fff;
+  --accent-foreground: var(--text-foreground-color);
 
   --destructive: var(--danger-color);
-  --destructive-foreground: #fff;
+  --destructive-foreground: var(--text-foreground-color);
 
   --success: var(--success-color);
-  --success-foreground: #fff;
+  --success-foreground: var(--text-foreground-color);
 
   --warning: var(--warning-color);
-  --warning-foreground: #fff;
+  --warning-foreground: var(--text-foreground-color);
 
   --text-color: var(--text-default-color);
   --text-dark: var(--text-dark-color);
@@ -47,8 +45,6 @@
   --color-ring: var(--ring);
   --color-input: var(--input);
   --color-light: var(--light);
-  --color-white: var(--white);
-  --color-black: var(--black);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
   --color-success: var(--success);

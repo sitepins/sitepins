@@ -93,7 +93,7 @@ const CodeMenu = ({
       return (
         <li key={item.path + "_" + index}>
           <NavLink
-            className="bg-primary! mx-3 my-2 flex cursor-default items-center rounded-sm px-2.5 py-1 text-white!"
+            className="bg-primary! text-primary-foreground! mx-3 my-2 flex cursor-default items-center rounded-sm px-2.5 py-1"
             activeClassName=""
             href={``}
             key={item.path + "_" + index}

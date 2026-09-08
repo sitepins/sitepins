@@ -22,7 +22,7 @@ const NotFound = () => {
           </p>
           <Link
             href="/"
-            className="bg-primary hover:bg-primary/90 inline-flex items-center justify-center rounded-lg px-6 py-3 text-base font-medium text-white transition-colors"
+            className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex items-center justify-center rounded-lg px-6 py-3 text-base font-medium transition-colors"
           >
             {tNotFound("go_home")}
           </Link>

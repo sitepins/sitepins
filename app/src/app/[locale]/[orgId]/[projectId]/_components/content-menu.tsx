@@ -106,7 +106,7 @@ const ContentMenu = ({
       return (
         <li key={item.path + "_" + index}>
           <NavLink
-            className="bg-primary! my-2 ms-2 flex cursor-default items-center rounded-sm px-2 py-1 text-white!"
+            className="bg-primary! text-primary-foreground! my-2 ms-2 flex cursor-default items-center rounded-sm px-2 py-1"
             activeClassName="bg-background text-primary"
             href={``}
             key={item.path + "_" + index}

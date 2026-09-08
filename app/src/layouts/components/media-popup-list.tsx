@@ -509,7 +509,7 @@ const MediaPopupList = ({
           <div
             className={cn(
               "border-border bg-light relative w-full max-w-full overflow-hidden rounded border border-dashed p-3 text-center transition-colors duration-200 md:p-6",
-              isDragActive && "bg-success/20 border-success text-white",
+              isDragActive && "bg-success/20 border-success",
             )}
             {...getRootProps()}
           >

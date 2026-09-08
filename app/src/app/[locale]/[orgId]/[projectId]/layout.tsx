@@ -483,7 +483,7 @@ const ArchiveBlocked = ({
       <div className="flex items-center justify-center gap-2">
         <Link
           href={`/${orgId}/${projectId}?tab=settings`}
-          className="btn bg-primary inline-flex items-center rounded px-4 py-2 text-white"
+          className="btn bg-primary text-primary-foreground inline-flex items-center rounded px-4 py-2"
         >
           {t("archived_project.open_settings")}
         </Link>

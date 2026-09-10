@@ -147,7 +147,12 @@ export async function killPort(
   });
 }
 
-export type PollEvent = { ready: boolean; attempt: number; status?: number };
+export type PollEvent = {
+  ready: boolean;
+  attempt: number;
+  status?: number;
+  log?: string;
+};
 
 export async function* waitForServerStream(
   url: string,
@@ -160,60 +165,118 @@ export async function* waitForServerStream(
   let attempts = 0;
   let lastStatus = 0;
   const baseUrl = url.replace(/\/$/, "");
-  const probeTargets = [url, `${baseUrl}/favicon.ico`];
+  const probeTargets = [
+    url,
+    `${baseUrl}/__vite_ping`,
+    `${baseUrl}/favicon.ico`,
+  ];
+
+  let hasPrewarmed = false;
 
   while (Date.now() < deadline) {
     if (signal?.aborted) return false;
     attempts++;
+    let currentLog = "";
 
-    // 1. Direct container TCP socket check (instant in 1ms without triggering heavy SSR page compilation)
+    // 1. Direct container TCP socket check if session & port are given
+    let localSocketOpen = false;
     if (session && port) {
       try {
         const probeRes = await session.runCommand({
           cmd: "node",
           args: [
             "-e",
-            `const s=require('net').connect(${port},'127.0.0.1',()=>{console.log('OPEN');s.destroy();process.exit(0)});s.on('error',()=>process.exit(1));`,
+            `const s=require('net').connect(${port},'127.0.0.1',()=>{console.log('OPEN');s.destroy();process.exit(0)});s.on('error',()=>process.exit(1));setTimeout(()=>{s.destroy();process.exit(1);},1500);`,
           ],
           signal,
         });
         const out = (await probeRes.stdout()).trim();
         if (out === "OPEN") {
-          yield { ready: true, attempt: attempts, status: 200 };
-          return true;
+          localSocketOpen = true;
+          // Pre-warm the dev server root route internally with 0ms network latency
+          // so initial SSR compilation completes before user's browser opens the URL
+          if (!hasPrewarmed) {
+            hasPrewarmed = true;
+            session
+              .runCommand({
+                cmd: "sh",
+                args: [
+                  "-c",
+                  `curl -s -m 5 http://127.0.0.1:${port}/ > /dev/null 2>&1 &`,
+                ],
+              })
+              .catch(() => {});
+          }
         }
       } catch {
-        /* continue to external probe */
+        /* container socket check error */
+      }
+
+      // Early crash detection: if after 3 attempts (~2.5s) socket still isn't open,
+      // inspect devserver.log for fatal exit errors so we don't hang waiting
+      if (!localSocketOpen && attempts >= 3 && attempts % 2 === 1) {
+        try {
+          const logCheck = await session.runCommand({
+            cmd: "sh",
+            args: ["-c", `tail -n 100 /tmp/devserver.log 2>/dev/null || true`],
+            signal,
+          });
+          currentLog = (await logCheck.stdout()).trim();
+          if (
+            currentLog &&
+            /(?:npm ERR!|ELIFECYCLE|SyntaxError:|Cannot find module|address already in use|EADDRINUSE|command not found|sh:\s*\d*:\s*[^:]+:\s*not found|panic:\s*runtime error|FATAL:)/i.test(
+              currentLog,
+            )
+          ) {
+            throw new Error(`Dev server exited with an error:\n${currentLog}`);
+          }
+        } catch (err) {
+          if (
+            err instanceof Error &&
+            err.message.includes("Dev server exited")
+          ) {
+            throw err;
+          }
+        }
       }
     }
 
-    // 2. Public preview URL probe
-    for (const target of probeTargets) {
-      if (signal?.aborted) return false;
-      try {
-        const abortCtrl = new AbortController();
-        const timer = setTimeout(() => abortCtrl.abort(), 2000);
-        const onAbort = () => abortCtrl.abort();
-        signal?.addEventListener("abort", onAbort, { once: true });
-
+    // 2. Public preview URL probe:
+    // Run when container socket is confirmed open, or if session/port omitted, or every 3 attempts as fallback
+    if (localSocketOpen || !session || !port || attempts % 3 === 0) {
+      for (const target of probeTargets) {
+        if (signal?.aborted) return false;
         try {
-          const r = await fetch(target, {
-            method: "GET",
-            signal: abortCtrl.signal,
-            headers: { "User-Agent": "Sitepins-Probe" },
-          });
+          const abortCtrl = new AbortController();
+          const timer = setTimeout(() => abortCtrl.abort(), 8000);
+          const onAbort = () => abortCtrl.abort();
+          signal?.addEventListener("abort", onAbort, { once: true });
 
-          if (r.ok || r.status < 500) {
-            yield { ready: true, attempt: attempts, status: r.status };
-            return true;
+          try {
+            const r = await fetch(target, {
+              method: "HEAD",
+              signal: abortCtrl.signal,
+              headers: { "User-Agent": "Sitepins-Probe" },
+            });
+
+            const vercelErr = r.headers.get("x-vercel-error");
+            if (r.status === 502 || vercelErr === "SANDBOX_NOT_LISTENING") {
+              lastStatus = 502;
+              break;
+            }
+
+            if (r.ok || r.status < 500) {
+              yield { ready: true, attempt: attempts, status: r.status };
+              return true;
+            }
+            lastStatus = r.status;
+          } finally {
+            clearTimeout(timer);
+            signal?.removeEventListener("abort", onAbort);
           }
-          lastStatus = r.status;
-        } finally {
-          clearTimeout(timer);
-          signal?.removeEventListener("abort", onAbort);
+        } catch {
+          lastStatus = 0;
         }
-      } catch {
-        lastStatus = 0;
       }
     }
 
@@ -221,9 +284,10 @@ export async function* waitForServerStream(
       ready: false,
       attempt: attempts,
       ...(lastStatus > 0 && { status: lastStatus }),
+      ...(currentLog && { log: currentLog }),
     };
 
-    await new Promise((r) => setTimeout(r, 1000));
+    await new Promise((r) => setTimeout(r, localSocketOpen ? 400 : 700));
   }
 
   return false;
@@ -246,30 +310,104 @@ export async function waitForServer(
 export async function isDevServerAlive(
   url: string,
   signal?: AbortSignal,
+  session?: Session,
+  port?: number,
 ): Promise<boolean> {
+  // 1. Direct container TCP socket check if session & port are given
+  if (session && port) {
+    try {
+      const probeRes = await session.runCommand({
+        cmd: "node",
+        args: [
+          "-e",
+          `const s=require('net').connect(${port},'127.0.0.1',()=>{console.log('OPEN');s.destroy();process.exit(0)});s.on('error',()=>process.exit(1));setTimeout(()=>{s.destroy();process.exit(1);},1500);`,
+        ],
+        signal,
+      });
+      const out = (await probeRes.stdout()).trim();
+      if (out === "OPEN") {
+        // Dev server is running and bound to the port. Verify public URL isn't returning an explicit 502 SANDBOX_NOT_LISTENING.
+        // If public fetch times out because the server is busy compiling pages or processing images,
+        // do NOT treat it as dead — the process is active and working.
+        try {
+          const abortCtrl = new AbortController();
+          const timer = setTimeout(() => abortCtrl.abort(), 2500);
+          const r = await fetch(url, {
+            method: "HEAD",
+            signal: abortCtrl.signal,
+            headers: { "User-Agent": "Sitepins-Probe" },
+          });
+          clearTimeout(timer);
+          const vercelErr = r.headers.get("x-vercel-error");
+          if (r.status === 502 && vercelErr === "SANDBOX_NOT_LISTENING") {
+            return false;
+          }
+          return true;
+        } catch {
+          // Timed out or transient network issue while server is busy.
+          // Since container TCP socket is verified OPEN, dev server is alive.
+          return true;
+        }
+      }
+      return false;
+    } catch {
+      /* continue to external probe */
+    }
+  }
+
+  // 2. External HTTP probe fallback (HEAD first, then GET)
   const baseUrl = url.replace(/\/$/, "");
   const probeTargets = [url, `${baseUrl}/favicon.ico`];
 
   for (const target of probeTargets) {
     const abortCtrl = new AbortController();
-    const timer = setTimeout(() => abortCtrl.abort(), 2500);
+    const timer = setTimeout(() => abortCtrl.abort(), 5000);
     const onAbort = () => abortCtrl.abort();
     signal?.addEventListener("abort", onAbort, { once: true });
+
     try {
       const r = await fetch(target, {
-        method: "GET",
+        method: "HEAD",
         signal: abortCtrl.signal,
         headers: { "User-Agent": "Sitepins-Probe" },
       });
-      if (r.ok || r.status < 500) return true;
+      const vercelErr = r.headers.get("x-vercel-error");
+      if (r.status === 502 || vercelErr === "SANDBOX_NOT_LISTENING") {
+        return false;
+      }
+      if (r.ok || r.status < 500) {
+        return true;
+      }
     } catch {
-      /* continue to next target */
+      /* fallback to GET */
     } finally {
       clearTimeout(timer);
       signal?.removeEventListener("abort", onAbort);
     }
   }
-  return false;
+
+  const getAbort = new AbortController();
+  const getTimer = setTimeout(() => getAbort.abort(), 5000);
+  const onGetAbort = () => getAbort.abort();
+  signal?.addEventListener("abort", onGetAbort, { once: true });
+
+  try {
+    const r = await fetch(url, {
+      method: "GET",
+      signal: getAbort.signal,
+      headers: { "User-Agent": "Sitepins-Probe" },
+    });
+    const vercelErr = r.headers.get("x-vercel-error");
+    if (r.status === 502 || vercelErr === "SANDBOX_NOT_LISTENING") {
+      return false;
+    }
+    return r.ok || r.status < 500;
+  } catch {
+    return false;
+  } finally {
+    clearTimeout(getTimer);
+    signal?.removeEventListener("abort", onGetAbort);
+  }
 }
 
 /** Reads the tail of the dev-server log from inside the sandbox. */

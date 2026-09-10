@@ -74,19 +74,36 @@ export function applyDevScriptFlags(scripts: Record<string, string>): {
     }
 
     if (/hexo\s+server/.test(s) || /hexo\s+s(\s|$)/.test(s)) {
-      if (!/--drafts/.test(s) && !/-d(\s|$)/.test(s)) {
+      if (!/-i\b|--ip\b/.test(out[k])) {
+        out[k] = out[k].replace(/hexo(\s+(?:server|s))/g, "hexo$1 -i 0.0.0.0");
+        changed = true;
+      }
+      if (!/--drafts/.test(out[k]) && !/-d(\s|$)/.test(out[k])) {
         out[k] = out[k].replace(/hexo(\s+server|\s+s)/g, "hexo$1 --drafts");
         changed = true;
       }
     }
 
-    if (/\bastro\s+dev/.test(s)) {
-      if (!/--buildDrafts/.test(s)) {
-        out[k] = out[k].replace(/\bastro\s+dev/g, "astro dev --buildDrafts");
+    if (
+      /\bastro\s+dev\b/.test(s) ||
+      /^\s*astro\s*$/.test(s) ||
+      /\bastro(\s+--)/.test(s)
+    ) {
+      if (!/\bastro\s+dev\b/.test(out[k])) {
+        out[k] = out[k].replace(/\bastro\b/g, "astro dev");
         changed = true;
       }
-      if (!/--buildFuture/.test(out[k])) {
-        out[k] = out[k].replace(/\bastro\s+dev/g, "astro dev --buildFuture");
+      if (!/--host\b/.test(out[k])) {
+        out[k] = out[k].replace(/\bastro\s+dev\b/g, "astro dev --host 0.0.0.0");
+        changed = true;
+      }
+      if (!/--buildDrafts\b/.test(out[k])) {
+        // If '--' separator is already present, append flags after it; otherwise add ' -- --buildDrafts --buildFuture'
+        if (/\s--\s/.test(out[k])) {
+          out[k] = `${out[k]} --buildDrafts --buildFuture`;
+        } else {
+          out[k] = `${out[k]} -- --buildDrafts --buildFuture`;
+        }
         changed = true;
       }
     }

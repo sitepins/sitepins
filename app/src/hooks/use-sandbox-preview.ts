@@ -56,7 +56,7 @@ export function useSandboxPreview({
   vercelTeamId,
   vercelProjectId,
   spProjectId,
-  debounceMs = 2500,
+  debounceMs = 800,
 }: UseSandboxPreviewProps) {
   const config = useAppSelector(selectConfig);
 
@@ -83,7 +83,7 @@ export function useSandboxPreview({
       const cleanBranch = branch.replace(/[^a-zA-Z0-9]/g, "-");
       const tabName = `sitepins-preview-${cleanRepo}-${cleanBranch}`;
       const baseUrl = url.endsWith("/") ? url.slice(0, -1) : url;
-      const win = window.open(baseUrl + "?_t=" + Date.now(), tabName);
+      const win = window.open(baseUrl, tabName);
       if (win) {
         if (previewWindowRef) previewWindowRef.current = win;
         setPreviewWindow(cacheKey, win);
@@ -98,6 +98,10 @@ export function useSandboxPreview({
       ? config.repoName
       : `${config.owner}/${config.repoName}`;
     const cacheKey = `${repo}#${config.branch}`;
+    const sandboxName =
+      typeof window !== "undefined"
+        ? localStorage.getItem(`sitepins_sandbox_${cacheKey}`) || undefined
+        : undefined;
 
     fetch("/api/sandbox/create", {
       method: "POST",
@@ -110,6 +114,7 @@ export function useSandboxPreview({
         generator: config.framework,
         forceSync: true,
         onlyIfActive: true,
+        sandboxName,
         vercelToken,
         vercelTeamId,
         vercelProjectId,
@@ -153,6 +158,10 @@ export function useSandboxPreview({
 
     const timer = setTimeout(() => {
       const uncommittedFile = getUncommittedFileRef.current();
+      const sandboxName =
+        typeof window !== "undefined"
+          ? localStorage.getItem(`sitepins_sandbox_${cacheKey}`) || undefined
+          : undefined;
 
       fetch("/api/sandbox/create", {
         method: "POST",
@@ -164,6 +173,7 @@ export function useSandboxPreview({
           provider: config.provider,
           generator: config.framework,
           onlyIfActive: true,
+          sandboxName,
           uncommittedFile,
           vercelToken,
           vercelTeamId,

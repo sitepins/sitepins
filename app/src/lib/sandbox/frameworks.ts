@@ -28,7 +28,12 @@ export const FRAMEWORKS: Record<string, FrameworkSpec> = {
     devCommand: "tanstack",
     draftEnv: true,
   },
-  astro: { port: 4321, patchScripts: true, hmrRefreshesContent: true },
+  astro: {
+    port: 4321,
+    patchScripts: true,
+    hmrRefreshesContent: true,
+    draftEnv: true,
+  },
   hugo: {
     port: 1313,
     patchScripts: true,

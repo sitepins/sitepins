@@ -1,6 +1,7 @@
 import { Session } from "@vercel/sandbox";
 import { frameworkSpec } from "./frameworks";
 import { buildPatchPackageScriptsSource } from "./scripts/patch-package-scripts";
+import { buildPatchHugoSecuritySource } from "./scripts/patch-hugo-security";
 import {
   getRunScriptCommand,
   hasPackageScript,
@@ -26,6 +27,18 @@ export async function patchPackageScripts(
   return (await result.stdout()).trim() === "PATCHED";
 }
 
+export async function patchHugoSecurity(
+  session: Session,
+  signal?: AbortSignal,
+): Promise<boolean> {
+  const result = await session.runCommand({
+    cmd: "node",
+    args: ["-e", buildPatchHugoSecuritySource()],
+    signal,
+  });
+  return (await result.stdout()).trim().includes("PATCHED_HUGO_SECURITY:");
+}
+
 async function hugoDevCommand(
   session: Session,
   pkgManager: string,
@@ -33,11 +46,18 @@ async function hugoDevCommand(
   signal?: AbortSignal,
 ): Promise<string> {
   if (variant === "hugo_examplesite") {
+    const hasDevExample = await hasPackageScript(
+      session,
+      "dev:example",
+      signal,
+    );
     return [
-      "THEME_NAME=$(node -e \"const p=require('./package.json');console.log(p.name)\")",
+      "THEME_NAME=$(node -e \"const p=require('./package.json');console.log(p.name || '')\" 2>/dev/null || true)",
       'PARENT=$(dirname "$PWD")',
-      '[ -e "$PARENT/$THEME_NAME" ] || ln -sfn "$PWD" "$PARENT/$THEME_NAME"',
-      getRunScriptCommand(pkgManager, "dev:example").join(" "),
+      '([ -z "$THEME_NAME" ] || { sudo mkdir -p "$PARENT" 2>/dev/null; sudo ln -sfn "$PWD" "$PARENT/$THEME_NAME" 2>/dev/null || ln -sfn "$PWD" "$PARENT/$THEME_NAME" 2>/dev/null || true; })',
+      hasDevExample
+        ? getRunScriptCommand(pkgManager, "dev:example").join(" ")
+        : 'hugo serve -s exampleSite --bind 0.0.0.0 --liveReloadPort 443 --buildDrafts --buildFuture --appendPort=false --baseURL "$SITEPINS_BASE_URL"',
     ].join(" && ");
   }
 
@@ -91,8 +111,12 @@ export async function startDevServer(
 ) {
   const spec = frameworkSpec(generator);
 
-  if (spec?.patchScripts) {
+  if (spec?.patchScripts !== false) {
     await patchPackageScripts(session, signal);
+  }
+
+  if (spec?.needsHugoToolchain || spec?.devCommand?.startsWith("hugo")) {
+    await patchHugoSecurity(session, signal);
   }
 
   let fullCmd = PKG_START[pkgManager].join(" ");
@@ -114,6 +138,7 @@ export async function startDevServer(
     cmd: "sh",
     args: ["-c", shellCmd],
     env: {
+      NODE_OPTIONS: "--max-old-space-size=4096",
       PORT: String(port),
       HOST: "0.0.0.0",
       HOSTNAME: "0.0.0.0",
@@ -192,11 +217,11 @@ export async function installHugoIfNeeded(
   return true;
 }
 
-/** Installs Go to ./go/ in the project directory. */
+/** Installs Go to ./go/ in the project directory if not already installed. */
 export async function installGoIfNeeded(
   session: Session,
   signal?: AbortSignal,
-): Promise<void> {
+): Promise<boolean> {
   const check = await session.runCommand({
     cmd: "sh",
     args: [
@@ -205,7 +230,7 @@ export async function installGoIfNeeded(
     ],
     signal,
   });
-  if ((await check.stdout()).trim().includes("OK")) return;
+  if ((await check.stdout()).trim().includes("OK")) return false;
 
   await session.runCommand({
     cmd: "sh",
@@ -215,4 +240,5 @@ export async function installGoIfNeeded(
     ],
     signal,
   });
+  return true;
 }

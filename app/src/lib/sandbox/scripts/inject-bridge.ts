@@ -12,7 +12,22 @@ export const NEXT_BRIDGE_COMPONENT =
   '    window.addEventListener("message", h);\n' +
   '    return () => window.removeEventListener("message", h);\n' +
   "  }, [router]);\n" +
-  "  return null;\n" +
+  "  return (\n" +
+  "    <script\n" +
+  '      type="speculationrules"\n' +
+  "      dangerouslySetInnerHTML={{\n" +
+  "        __html: JSON.stringify({\n" +
+  "          prefetch: [\n" +
+  "            {\n" +
+  '              source: "document",\n' +
+  '              where: { and: [{ href_matches: "/*" }] },\n' +
+  '              eagerness: "moderate",\n' +
+  "            },\n" +
+  "          ],\n" +
+  "        }),\n" +
+  "      }}\n" +
+  "    />\n" +
+  "  );\n" +
   "}\n";
 
 export const TANSTACK_BRIDGE_COMPONENT =
@@ -28,7 +43,22 @@ export const TANSTACK_BRIDGE_COMPONENT =
   '    window.addEventListener("message", h);\n' +
   '    return () => window.removeEventListener("message", h);\n' +
   "  }, [router]);\n" +
-  "  return null;\n" +
+  "  return (\n" +
+  "    <script\n" +
+  '      type="speculationrules"\n' +
+  "      dangerouslySetInnerHTML={{\n" +
+  "        __html: JSON.stringify({\n" +
+  "          prefetch: [\n" +
+  "            {\n" +
+  '              source: "document",\n' +
+  '              where: { and: [{ href_matches: "/*" }] },\n' +
+  '              eagerness: "moderate",\n' +
+  "            },\n" +
+  "          ],\n" +
+  "        }),\n" +
+  "      }}\n" +
+  "    />\n" +
+  "  );\n" +
   "}\n";
 
 export const NEXT_DOCUMENT_TEMPLATE =
@@ -40,6 +70,12 @@ export const NEXT_DOCUMENT_TEMPLATE =
   "      <body>\n" +
   "        <Main />\n" +
   "        <NextScript />\n" +
+  "        <script\n" +
+  '          type="speculationrules"\n' +
+  "          dangerouslySetInnerHTML={{\n" +
+  '            __html: \'{"prefetch":[{"source":"document","where":{"and":[{"href_matches":"/*"}]},"eagerness":"moderate"}]}\',\n' +
+  "          }}\n" +
+  "        />\n" +
   "      </body>\n" +
   "    </Html>\n" +
   "  );\n" +

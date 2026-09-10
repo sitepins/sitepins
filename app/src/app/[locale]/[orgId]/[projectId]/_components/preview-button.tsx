@@ -15,7 +15,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useOwnerPlan } from "@/hooks/use-owner-plan";
-import { setPreviewWindow } from "@/hooks/use-sandbox-preview";
+import {
+  getPreviewWindow,
+  setPreviewWindow,
+} from "@/hooks/use-sandbox-preview";
 import { UpgradeDialog } from "@/layouts/components/upgrade-dialog";
 import { isGitLabProvider, TGitProvider } from "@/lib/utils/provider-checker";
 import {
@@ -334,6 +337,14 @@ export default function PreviewButton({
     if (!sandboxName || !vercelToken || !vercelProjectId) return;
 
     const stopBeacon = () => {
+      // Do not kill the sandbox if the user still has the preview tab open
+      const win =
+        getPreviewWindow(cacheKey) ??
+        (previewWindowRef?.current && !previewWindowRef.current.closed
+          ? previewWindowRef.current
+          : null);
+      if (win && !win.closed) return;
+
       const payload = JSON.stringify({
         sandboxName,
         vercelToken,
@@ -349,7 +360,15 @@ export default function PreviewButton({
 
     window.addEventListener("pagehide", stopBeacon);
     return () => window.removeEventListener("pagehide", stopBeacon);
-  }, [sandboxName, vercelToken, vercelTeamId, vercelProjectId, spProjectId]);
+  }, [
+    sandboxName,
+    vercelToken,
+    vercelTeamId,
+    vercelProjectId,
+    spProjectId,
+    cacheKey,
+    previewWindowRef,
+  ]);
 
   // ── Start / sync sandbox (SSE) ────────────────────────────────────────
 

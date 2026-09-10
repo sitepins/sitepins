@@ -20,12 +20,16 @@ describe("applyDevScriptFlags", () => {
   it("patches jekyll and hexo", () => {
     expect(apply("jekyll serve").scripts.dev).toContain("--host 0.0.0.0");
     expect(apply("jekyll serve").scripts.dev).toContain("--drafts");
+    expect(apply("hexo server").scripts.dev).toContain("-i 0.0.0.0");
     expect(apply("hexo server").scripts.dev).toContain("--drafts");
   });
 
   it("patches astro and next", () => {
     expect(apply("astro dev").scripts.dev).toBe(
-      "astro dev --buildFuture --buildDrafts",
+      "astro dev --host 0.0.0.0 -- --buildDrafts --buildFuture",
+    );
+    expect(apply("astro").scripts.dev).toBe(
+      "astro dev --host 0.0.0.0 -- --buildDrafts --buildFuture",
     );
     expect(apply("next dev").scripts.dev).toBe(
       "BUILD_DRAFTS=true BUILD_FUTURE=true next dev -H 0.0.0.0",

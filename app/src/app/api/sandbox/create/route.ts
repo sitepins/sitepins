@@ -32,7 +32,7 @@ import {
   writeFileViaShell,
 } from "@/lib/sandbox/session";
 import { cleanVercelFetch, getSandboxAuth } from "@/lib/vercel-sandbox-auth";
-import { Sandbox, Snapshot } from "@vercel/sandbox";
+import { Sandbox, Session, Snapshot } from "@vercel/sandbox";
 import { NextRequest, NextResponse } from "next/server";
 
 async function cleanupOldSnapshots(auth: ReturnType<typeof getSandboxAuth>) {
@@ -58,6 +58,75 @@ async function cleanupOldSnapshots(auth: ReturnType<typeof getSandboxAuth>) {
   }
 }
 
+async function createSandboxWithResources(
+  params: Parameters<typeof Sandbox.create>[0],
+): Promise<Sandbox> {
+  try {
+    return await Sandbox.create({
+      ...params,
+      resources: { vcpus: 4 },
+    });
+  } catch (err) {
+    const msg = errorMessage(err) ?? "";
+    if (/resource|vcpu|cpu/i.test(msg)) {
+      return await Sandbox.create(params);
+    }
+    throw err;
+  }
+}
+
+async function detectFrameworkFromSession(
+  session: Session,
+  signal?: AbortSignal,
+): Promise<string | null> {
+  try {
+    const probe = await session.runCommand({
+      cmd: "node",
+      args: [
+        "-e",
+        `const fs = require('fs');
+        if (fs.existsSync('exampleSite') || fs.existsSync('theme.toml')) {
+          console.log('hugo_examplesite');
+          process.exit(0);
+        }
+        if (
+          fs.existsSync('hugo.toml') ||
+          fs.existsSync('config.toml') ||
+          fs.existsSync('config.yaml') ||
+          fs.existsSync('config/_default/config.toml') ||
+          fs.existsSync('config/_default/hugo.toml') ||
+          fs.existsSync('exampleSite/hugo.toml') ||
+          fs.existsSync('exampleSite/config.toml')
+        ) {
+          console.log('hugo');
+          process.exit(0);
+        }
+        if (fs.existsSync('package.json')) {
+          try {
+            const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+            const deps = { ...pkg.dependencies, ...pkg.devDependencies };
+            if (deps['astro']) { console.log('astro'); process.exit(0); }
+            if (deps['next']) { console.log('nextjs'); process.exit(0); }
+            if (deps['@tanstack/start']) { console.log('tanstack'); process.exit(0); }
+            if (deps['nuxt']) { console.log('nuxt'); process.exit(0); }
+            if (deps['@remix-run/dev']) { console.log('remix'); process.exit(0); }
+            if (deps['@sveltejs/kit']) { console.log('sveltekit'); process.exit(0); }
+            if (deps['hexo']) { console.log('hexo'); process.exit(0); }
+            if (deps['gatsby']) { console.log('gatsby'); process.exit(0); }
+            if (deps['vite']) { console.log('vite'); process.exit(0); }
+          } catch {}
+        }
+        console.log('unknown');`,
+      ],
+      signal,
+    });
+    const out = (await probe.stdout()).trim();
+    return out !== "unknown" && out.length > 0 ? out : null;
+  } catch {
+    return null;
+  }
+}
+
 export const maxDuration = 600;
 
 type TSandboxRequestBody = {
@@ -70,6 +139,7 @@ type TSandboxRequestBody = {
   uncommittedFile?: { path: string; content: string };
   spProjectId: string;
   onlyIfActive?: boolean;
+  sandboxName?: string;
   vercelToken?: unknown;
   vercelTeamId?: unknown;
   vercelProjectId?: unknown;
@@ -87,7 +157,6 @@ async function handleQuickOp(
     branch,
     token,
     provider,
-    generator,
     forceSync,
     uncommittedFile,
     spProjectId,
@@ -95,11 +164,16 @@ async function handleQuickOp(
   if (!spProjectId) return NextResponse.json({ active: false });
 
   const auth = getSandboxAuth(body);
-  const port = frameworkPort(generator);
-  const { sandboxName, commitSha: cachedSha } = await getCachedPreview(
-    spProjectId,
-    cookieHeader,
-  );
+  let generator = body.generator;
+  let port = frameworkPort(generator);
+  let sandboxName = body.sandboxName;
+  let cachedSha: string | undefined;
+
+  if (!sandboxName || (forceSync && !cachedSha)) {
+    const cached = await getCachedPreview(spProjectId, cookieHeader);
+    sandboxName = sandboxName || cached.sandboxName;
+    cachedSha = cached.commitSha;
+  }
   if (!sandboxName) return NextResponse.json({ active: false });
 
   try {
@@ -112,6 +186,14 @@ async function handleQuickOp(
     });
     const session = sandbox.currentSession();
     if (session.status !== "running") throw new Error("stopped");
+
+    if (!generator) {
+      const detected = await detectFrameworkFromSession(session, signal);
+      if (detected) {
+        generator = detected;
+        port = frameworkPort(generator);
+      }
+    }
 
     const previewUrl = session.domain(port);
 
@@ -133,33 +215,45 @@ async function handleQuickOp(
         });
       }
 
-      // Fast no-op after the first install.
-      const bridgeJustInjected = await ensureReloadBridge(
-        generator,
-        session,
-        signal,
-      );
-
       // Framework migrations: if the dev flags in package.json changed, the
-      // server has to be restarted to pick them up.
-      if (frameworkSpec(generator)?.patchScripts) {
-        const didPatch = await patchPackageScripts(session, signal);
-        if (didPatch) {
-          await restartDevServer(
-            session,
-            await detectPackageManager(session, signal),
-            port,
-            generator,
-            previewUrl,
-            signal,
-          );
-          return NextResponse.json({
-            sandboxName,
-            previewUrl,
-            uncommittedSynced: true,
-            serverRestarted: true,
-          });
+      // server has to be restarted to pick them up. Only check if package.json was modified.
+      if (
+        uncommittedFile.path === "package.json" ||
+        uncommittedFile.path.endsWith("/package.json")
+      ) {
+        if (frameworkSpec(generator)?.patchScripts) {
+          const didPatch = await patchPackageScripts(session, signal);
+          if (didPatch) {
+            await restartDevServer(
+              session,
+              await detectPackageManager(session, signal),
+              port,
+              generator,
+              previewUrl,
+              signal,
+            );
+            return NextResponse.json({
+              sandboxName,
+              previewUrl,
+              uncommittedSynced: true,
+              serverRestarted: true,
+            });
+          }
         }
+      }
+
+      // Reload bridge: only check/inject if layout or root route was modified.
+      let bridgeJustInjected = false;
+      if (
+        /layout\.[^/]+$|__root\.[^/]+$|_document\.[^/]+$/.test(
+          uncommittedFile.path,
+        )
+      ) {
+        bridgeJustInjected = await ensureReloadBridge(
+          generator,
+          session,
+          signal,
+        );
       }
 
       return NextResponse.json({
@@ -243,31 +337,21 @@ async function* streamCreate(
   cookieHeader: string,
   signal: AbortSignal,
 ): AsyncGenerator<object> {
-  const {
-    repository,
-    branch,
-    token,
-    provider,
-    generator,
-    uncommittedFile,
-    spProjectId,
-  } = body;
+  const { repository, branch, token, provider, uncommittedFile, spProjectId } =
+    body;
   if (!spProjectId) throw new Error("spProjectId is required");
 
   const auth = getSandboxAuth(body);
-  const port = frameworkPort(generator);
-  const spec = frameworkSpec(generator);
+  let generator = body.generator;
+  let port = frameworkPort(generator);
+  let spec = frameworkSpec(generator);
 
   yield { step: "Checking session" };
-  const latestSha = await getLatestCommitSha(
-    provider,
-    repository,
-    branch,
-    token,
-    signal,
-  );
-  const { sandboxName: cachedName, commitSha: cachedSha } =
-    await getCachedPreview(spProjectId, cookieHeader);
+  const [latestSha, { sandboxName: cachedName, commitSha: cachedSha }] =
+    await Promise.all([
+      getLatestCommitSha(provider, repository, branch, token, signal),
+      getCachedPreview(spProjectId, cookieHeader),
+    ]);
 
   // ── 1. Try to reuse existing sandbox ──
   if (cachedName) {
@@ -283,10 +367,19 @@ async function* streamCreate(
       const isRunning = running.status === "running";
 
       if (isRunning) {
+        const detected = await detectFrameworkFromSession(running, signal);
+        if (detected) {
+          generator = detected;
+          port = frameworkPort(generator);
+          spec = frameworkSpec(generator);
+        }
         const previewUrl = running.domain(port);
         const isUpToDate = !latestSha || cachedSha === latestSha;
 
-        if (isUpToDate && (await isDevServerAlive(previewUrl, signal))) {
+        if (
+          isUpToDate &&
+          (await isDevServerAlive(previewUrl, signal, running, port))
+        ) {
           await syncSandboxPreviewState(
             spProjectId,
             {
@@ -310,7 +403,6 @@ async function* streamCreate(
       // Either the code is stale / the dev server died, or the session was
       // stopped and has to be resumed. Both paths end in the same restart.
       let activeSession = running;
-      let previewUrl = running.domain(port);
 
       if (!isRunning) {
         yield { step: "Resuming sandbox" };
@@ -322,8 +414,15 @@ async function* streamCreate(
           fetch: cleanVercelFetch,
         });
         activeSession = resumed.currentSession();
-        previewUrl = activeSession.domain(port);
       }
+
+      const detected = await detectFrameworkFromSession(activeSession, signal);
+      if (detected) {
+        generator = detected;
+        port = frameworkPort(generator);
+        spec = frameworkSpec(generator);
+      }
+      const previewUrl = activeSession.domain(port);
 
       if (latestSha && cachedSha !== latestSha) {
         yield { step: "Pulling commits" };
@@ -343,6 +442,11 @@ async function* streamCreate(
         );
       }
 
+      if (spec?.needsHugoToolchain) {
+        await installGoIfNeeded(activeSession, signal);
+        await installHugoIfNeeded(activeSession, signal);
+      }
+
       await ensureReloadBridge(generator, activeSession, signal);
       yield { step: "Starting server" };
       await restartDevServer(
@@ -357,7 +461,7 @@ async function* streamCreate(
       let ready = false;
       for await (const evt of waitForServerStream(
         previewUrl,
-        SERVER_READY_TIMEOUT_MS,
+        35_000,
         signal,
         activeSession,
         port,
@@ -366,7 +470,9 @@ async function* streamCreate(
           ready = true;
           break;
         }
-        yield { step: "Waiting for server" };
+        if (evt.log) {
+          logger.info("[sandbox/resume] devserver output", { output: evt.log });
+        }
       }
 
       if (!ready) {
@@ -398,10 +504,13 @@ async function* streamCreate(
   }
 
   // ── 2. Cold start: clone → install → start ──
+  const initialPorts = Array.from(
+    new Set([port, 1313, 4321, 3000, 5173]),
+  ).slice(0, 4);
   let sandbox: Sandbox;
   try {
-    sandbox = await Sandbox.create({
-      ports: [port],
+    sandbox = await createSandboxWithResources({
+      ports: initialPorts,
       timeout: COLD_START_TIMEOUT_MS,
       signal,
       fetch: cleanVercelFetch,
@@ -421,8 +530,8 @@ async function* streamCreate(
     ) {
       yield { step: "Cleaning unused snapshots" };
       await cleanupOldSnapshots(auth);
-      sandbox = await Sandbox.create({
-        ports: [port],
+      sandbox = await createSandboxWithResources({
+        ports: initialPorts,
         timeout: COLD_START_TIMEOUT_MS,
         signal,
         fetch: cleanVercelFetch,
@@ -434,20 +543,48 @@ async function* streamCreate(
   }
   const sandboxName = sandbox.name;
   const session = sandbox.currentSession();
-  const previewUrl = session.domain(port);
 
   yield { step: "Cloning repository" };
   await cloneRepository(session, repository, branch, provider, token, signal);
+
+  const detected = await detectFrameworkFromSession(session, signal);
+  if (detected) {
+    generator = detected;
+    port = frameworkPort(generator);
+    spec = frameworkSpec(generator);
+  }
+  const previewUrl = session.domain(port);
 
   yield { step: "Installing dependencies" };
   const pm = await detectPackageManager(session, signal);
   await installDeps(session, pm, signal);
 
   if (spec?.needsHugoToolchain) {
-    yield { step: "Installing Go" };
-    await installGoIfNeeded(session, signal);
-    yield { step: "Installing Hugo" };
-    await installHugoIfNeeded(session, signal);
+    const isGoInstalled = await session.runCommand({
+      cmd: "sh",
+      args: [
+        "-c",
+        "(which go 2>/dev/null || [ -x ./go/bin/go ]) && echo OK || echo MISSING",
+      ],
+      signal,
+    });
+    if (!(await isGoInstalled.stdout()).includes("OK")) {
+      yield { step: "Installing Go" };
+      await installGoIfNeeded(session, signal);
+    }
+
+    const isHugoInstalled = await session.runCommand({
+      cmd: "sh",
+      args: [
+        "-c",
+        "(which hugo 2>/dev/null || [ -x ./node_modules/.bin/hugo ]) && echo OK || echo MISSING",
+      ],
+      signal,
+    });
+    if (!(await isHugoInstalled.stdout()).includes("OK")) {
+      yield { step: "Installing Hugo" };
+      await installHugoIfNeeded(session, signal);
+    }
   }
 
   if (uncommittedFile) {
@@ -477,7 +614,9 @@ async function* streamCreate(
       ready = true;
       break;
     }
-    yield { step: "Waiting for server" };
+    if (evt.log) {
+      logger.info("[sandbox/cold] devserver output", { output: evt.log });
+    }
   }
 
   if (!ready) {

@@ -242,19 +242,12 @@ async function handleQuickOp(
         }
       }
 
-      // Reload bridge: only check/inject if layout or root route was modified.
-      let bridgeJustInjected = false;
-      if (
-        /layout\.[^/]+$|__root\.[^/]+$|_document\.[^/]+$/.test(
-          uncommittedFile.path,
-        )
-      ) {
-        bridgeJustInjected = await ensureReloadBridge(
-          generator,
-          session,
-          signal,
-        );
-      }
+      // Fast no-op (~15ms) after the first install.
+      const bridgeJustInjected = await ensureReloadBridge(
+        generator,
+        session,
+        signal,
+      );
 
       return NextResponse.json({
         sandboxName,

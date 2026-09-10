@@ -24,10 +24,10 @@ async function ensureNextjsBridge(
     cmd: "sh",
     args: [
       "-c",
-      'p=$(find app src/app -maxdepth 1 -type f -name "layout.*" 2>/dev/null | head -1); ' +
+      'p=$(find app src/app -maxdepth 2 -type f -name "layout.*" 2>/dev/null | head -1); ' +
         '[ -z "$p" ] && echo NOTFOUND && exit 0; ' +
         'd=$(dirname "$p"); ' +
-        'if grep -q SitepinsBridge "$p" && [ -f "$d/_sp-bridge.tsx" ] && grep -q "router.refresh" "$d/_sp-bridge.tsx"; ' +
+        'if grep -q SitepinsBridge "$p" && [ -f "$d/_sp-bridge.tsx" ] && grep -q "router.refresh" "$d/_sp-bridge.tsx" && ! grep -q "speculationrules" "$d/_sp-bridge.tsx"; ' +
         'then echo "DONE"; else echo "PATCH:$p"; fi',
     ],
     signal,
@@ -113,7 +113,7 @@ async function ensureTanstackBridge(
         'p=$(find src/routes app/routes routes -maxdepth 1 -type f -name "__root.*" 2>/dev/null | head -1); ' +
         '[ -z "$p" ] && echo NOTFOUND && exit 0; ' +
         'd=$(dirname "$p"); ' +
-        'if grep -q SitepinsBridge "$p" && [ -f "$d/-sp-bridge.tsx" ]; ' +
+        'if grep -q SitepinsBridge "$p" && [ -f "$d/-sp-bridge.tsx" ] && ! grep -q "speculationrules" "$d/-sp-bridge.tsx"; ' +
         'then echo "DONE"; else echo "PATCH:$p"; fi',
     ],
     signal,

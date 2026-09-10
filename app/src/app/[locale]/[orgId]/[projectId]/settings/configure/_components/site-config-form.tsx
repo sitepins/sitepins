@@ -419,8 +419,8 @@ export const ConfigForm = ({
                         index === displayStep
                           ? "text-primary"
                           : index < displayStep
-                            ? "text-text-dark"
-                            : "text-text-muted",
+                            ? "text-text-strong"
+                            : "text-muted-foreground",
                       )}
                     >
                       {step}
@@ -740,7 +740,7 @@ export const ConfigForm = ({
           {/* Help description — below buttons on mobile, left on md+ */}
           <div className="flex items-center justify-center md:order-1 md:justify-start">
             <CircleQuestionMark className="me-2 hidden size-5 shrink-0 sm:inline-block" />
-            <p className="text-text-dark text-sm">
+            <p className="text-text-strong text-sm">
               {tProjectSettingsConfigureProject("help.text")}{" "}
               <Link
                 target="_blank"

@@ -367,7 +367,7 @@ export default function DirectoryView({
           )}
         >
           {sortedFiles.length > 0 && (
-            <div className="border-border bg-light text-text-dark hidden grid-cols-12 rounded-lg border px-6 py-2.5 font-semibold md:grid 2xl:px-8">
+            <div className="border-border bg-light text-text-strong hidden grid-cols-12 rounded-lg border px-6 py-2.5 font-semibold md:grid 2xl:px-8">
               {isCodePath ? (
                 <>
                   <div className="text-h6 text-primary col-span-5 flex">

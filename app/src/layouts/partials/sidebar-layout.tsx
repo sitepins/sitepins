@@ -148,7 +148,7 @@ export function SidebarMenu({
   items,
   listClassName,
   itemClassName,
-  linkClassName = "text-text-dark hover:bg-background/50 flex items-center gap-1.5 rounded-lg py-2.5 pe-3 ps-4 text-sm font-medium transition-colors",
+  linkClassName = "text-text-strong hover:bg-background/50 flex items-center gap-1.5 rounded-lg py-2.5 pe-3 ps-4 text-sm font-medium transition-colors",
   iconClassName = "size-5",
   labelClassName,
   activeClassName = "bg-background",

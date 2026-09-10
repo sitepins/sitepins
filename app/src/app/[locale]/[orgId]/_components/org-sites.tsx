@@ -185,7 +185,7 @@ function EmptyState() {
 function TableHeader() {
   const tOrgSites = useTranslations("org-sites");
   return (
-    <div className="bg-light text-text-dark hidden grid-cols-12 rounded-lg px-8 py-2.5 font-semibold md:grid">
+    <div className="bg-light text-text-strong hidden grid-cols-12 rounded-lg px-8 py-2.5 font-semibold md:grid">
       <div className="text-h6 col-span-6 flex">{tOrgSites("site_name")}</div>
       <div className="text-h6 col-span-4 text-start">
         {tOrgSites("repository")}

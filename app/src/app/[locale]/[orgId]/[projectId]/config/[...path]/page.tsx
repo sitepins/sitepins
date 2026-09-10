@@ -63,7 +63,7 @@ export default function Configuration(
             <h2 className="text-center text-xl font-medium">
               Nothing to see here
             </h2>
-            <p className="text-text-dark max-w-md">
+            <p className="text-text-strong max-w-md">
               There is no configuration available for this content. Please
               create a schema first to configure this content.
             </p>

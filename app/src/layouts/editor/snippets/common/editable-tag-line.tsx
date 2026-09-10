@@ -131,7 +131,7 @@ const FallbackEditableTagLine = ({
           setValue(val);
           onChange(val);
         }}
-        className="text-text-dark font-mono text-xs"
+        className="text-text-strong font-mono text-xs"
       />
     </div>
   );

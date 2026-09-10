@@ -360,7 +360,7 @@ export default function VercelConnectForm({
   const securityCard = (
     <Card className="border-warning bg-warning/10 border">
       <CardContent className="space-y-2 p-4">
-        <strong className="text-text-dark mb-4 block text-sm">
+        <strong className="text-text-strong mb-4 block text-sm">
           {tOrgSandbox("security_title")}
         </strong>
         {SANDBOX_NOTICE_KEYS.map((key) => (

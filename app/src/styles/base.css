@@ -39,7 +39,7 @@ body[data-scroll-locked] {
 }
 
 body {
-  @apply bg-background font-primary text-text text-base leading-relaxed font-normal;
+  @apply bg-background font-primary text-text-default text-base leading-relaxed font-normal;
 }
 
 h1,
@@ -48,7 +48,7 @@ h3,
 h4,
 h5,
 h6 {
-  @apply text-text-dark leading-tight font-bold;
+  @apply text-text-strong leading-tight font-bold;
 }
 
 h1,

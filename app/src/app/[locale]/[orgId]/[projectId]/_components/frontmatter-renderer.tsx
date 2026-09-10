@@ -1041,7 +1041,7 @@ export default function FrontmatterRenderer({
                     {item.label}
                   </PreviewLabel>
                   <Textarea
-                    className="text-text-dark h-auto min-h-10"
+                    className="text-text-strong h-auto min-h-10"
                     rows={value?.length > 100 ? 3 : 1}
                     required={item.isRequired}
                     value={value || ""}
@@ -1227,7 +1227,7 @@ export default function FrontmatterRenderer({
                         })}
                       </Reorder.Group>
                     ) : (
-                      <div className="bg-light text-text-dark">
+                      <div className="bg-light text-text-strong">
                         <p className="rounded-lg py-3 text-center font-semibold">
                           {tEditor("renderer.no_items")}
                         </p>
@@ -1293,7 +1293,7 @@ export default function FrontmatterRenderer({
                     </div>
                     <div className="border-border space-y-4 rounded-lg border p-4">
                       {values?.length <= 0 ? (
-                        <div className="bg-light text-text-dark">
+                        <div className="bg-light text-text-strong">
                           <p className="rounded-lg py-3 text-center font-semibold">
                             {tEditor("renderer.no_items")}
                           </p>

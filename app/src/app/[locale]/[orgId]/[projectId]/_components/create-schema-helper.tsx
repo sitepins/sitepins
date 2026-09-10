@@ -1002,7 +1002,7 @@ export function CreateSchemaNestedEditor({
               <Button
                 type="button"
                 variant="outline"
-                className="text-muted-foreground hover:bg-muted/30 hover:text-text-dark w-full border-2 border-dashed py-2 text-sm"
+                className="text-muted-foreground hover:bg-muted/30 hover:text-text-strong w-full border-2 border-dashed py-2 text-sm"
                 onClick={() => setIsAdding(true)}
               >
                 {tSchema("nested.add_button")}

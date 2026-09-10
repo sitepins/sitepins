@@ -101,7 +101,7 @@ export default function OrgSwitcher({
               className="size-8 rounded-full object-cover"
             />
           ) : (
-            <span className="bg-background text-text-dark wrap-break-words flex size-8 flex-none items-center justify-center rounded-md capitalize">
+            <span className="bg-background text-text-strong wrap-break-words flex size-8 flex-none items-center justify-center rounded-md capitalize">
               {defaultOrgs?.org_name ? defaultOrgs.org_name[0] : "O"}
             </span>
           )}
@@ -111,7 +111,7 @@ export default function OrgSwitcher({
               isResponsive ? "hidden md:block" : "block",
             )}
           >
-            <span className="text-text-dark block truncate font-medium">
+            <span className="text-text-strong block truncate font-medium">
               {defaultOrgs?.org_name ?? tOrgSwitcher("default_org")}
             </span>
             <PlanLabel

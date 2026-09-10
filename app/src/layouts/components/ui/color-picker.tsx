@@ -417,19 +417,19 @@ export function ColorPicker({ color = "#000000", onChange }: ColorPickerProps) {
             <TabsList className="h-9 w-full">
               <TabsTrigger
                 value="hex"
-                className="data-active:bg-background dark:data-active:bg-input/30 data-active:text-text h-full"
+                className="data-active:bg-background dark:data-active:bg-input/30 data-active:text-text-default h-full"
               >
                 Hex
               </TabsTrigger>
               <TabsTrigger
                 value="rgba"
-                className="data-active:bg-background dark:data-active:bg-input/30 data-active:text-text h-full"
+                className="data-active:bg-background dark:data-active:bg-input/30 data-active:text-text-default h-full"
               >
                 RGBA
               </TabsTrigger>
               <TabsTrigger
                 value="hsla"
-                className="data-active:bg-background dark:data-active:bg-input/30 data-active:text-text h-full"
+                className="data-active:bg-background dark:data-active:bg-input/30 data-active:text-text-default h-full"
               >
                 HSLA
               </TabsTrigger>

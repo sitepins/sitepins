@@ -247,7 +247,7 @@ export default function AISettings() {
 
       <Card className="border-warning bg-warning/10 border">
         <CardContent className="space-y-2 p-4">
-          <strong className="text-text-dark mb-4 block text-sm">
+          <strong className="text-text-strong mb-4 block text-sm">
             {tDashboardAiAgent("security_title")}
           </strong>
           {SECURITY_NOTICE_KEYS.map((key, i) => (

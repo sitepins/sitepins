@@ -16,25 +16,25 @@
   --popover-foreground: var(--text-default-color);
 
   --primary: var(--primary-color);
-  --primary-foreground: var(--text-foreground-color);
+  --primary-foreground: var(--text-primary-color);
 
   --muted: var(--muted-color);
   --muted-foreground: var(--text-muted-color);
 
   --accent: var(--accent-color);
-  --accent-foreground: var(--text-foreground-color);
+  --accent-foreground: var(--text-status-color);
 
-  --destructive: var(--danger-color);
-  --destructive-foreground: var(--text-foreground-color);
+  --destructive: var(--destructive-color);
+  --destructive-foreground: var(--text-status-color);
 
   --success: var(--success-color);
-  --success-foreground: var(--text-foreground-color);
+  --success-foreground: var(--text-status-color);
 
   --warning: var(--warning-color);
-  --warning-foreground: var(--text-foreground-color);
+  --warning-foreground: var(--text-status-color);
 
-  --text-color: var(--text-default-color);
-  --text-dark: var(--text-dark-color);
+  --text-default: var(--text-default-color);
+  --text-strong: var(--text-strong-color);
 }
 
 /* Theme color variables for inline usage */
@@ -61,8 +61,8 @@
   --color-popover-foreground: var(--popover-foreground);
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
-  --color-text: var(--text-color);
-  --color-text-dark: var(--text-dark);
+  --color-text-default: var(--text-default);
+  --color-text-strong: var(--text-strong);
 
   --font-primary: var(--font-primary);
   --font-secondary: var(--font-secondary);

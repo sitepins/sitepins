@@ -85,7 +85,7 @@ export default function SidebarProfileSetting() {
                 height={32}
               />
               <span className="flex-1">
-                <span className="text-text-dark wrap-break-words line-clamp-1 block flex-1 break-all whitespace-normal">
+                <span className="text-text-strong wrap-break-words line-clamp-1 block flex-1 break-all whitespace-normal">
                   {auth?.user.full_name ?? tCommon("labels.user")}
                 </span>
                 <span className="line-clamp-1 text-xs">{auth?.user.email}</span>

@@ -53,7 +53,7 @@ export default function DashboardSidebar({ orgs }: DashboardSidebarProps) {
           items={items}
           listClassName="flex-1 space-y-1"
           iconClassName="size-5 stroke-[1.5]"
-          labelClassName="text-text-dark flex-1"
+          labelClassName="text-text-strong flex-1"
         />
       </div>
     </SidebarLayout>

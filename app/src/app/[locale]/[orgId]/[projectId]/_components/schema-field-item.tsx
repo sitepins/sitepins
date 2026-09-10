@@ -435,7 +435,7 @@ export function FieldItem({
                             <Button
                               type="button"
                               variant="outline"
-                              className="text-muted-foreground hover:bg-muted/30 hover:text-text-dark w-full border-2 border-dashed py-2 text-xs"
+                              className="text-muted-foreground hover:bg-muted/30 hover:text-text-strong w-full border-2 border-dashed py-2 text-xs"
                               onClick={() => {
                                 setIsAddingOption(true);
                                 setNewOption("");

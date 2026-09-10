@@ -155,7 +155,7 @@ export default function LoginWithPassword({
 
           <div className="text-end">
             <Link
-              className="text-text-dark my-2 inline-block text-sm hover:underline"
+              className="text-text-strong my-2 inline-block text-sm hover:underline"
               href={"/forgot-password"}
             >
               {tAuth("forgot_password")}

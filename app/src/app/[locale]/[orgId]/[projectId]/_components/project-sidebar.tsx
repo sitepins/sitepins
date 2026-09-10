@@ -152,7 +152,7 @@ export default function ProjectSidebar({
                 items={mainItems}
                 iconClassName="size-5 stroke-[1.5]"
                 listClassName="space-y-1"
-                labelClassName="text-text-dark flex-1"
+                labelClassName="text-text-strong flex-1"
               />
               {navChildren}
             </motion.div>
@@ -182,7 +182,7 @@ export default function ProjectSidebar({
                 items={settingsItems}
                 listClassName="space-y-1 mt-3"
                 iconClassName="size-5 stroke-[1.5]"
-                labelClassName="text-text-dark"
+                labelClassName="text-text-strong"
               />
             </motion.div>
           )}

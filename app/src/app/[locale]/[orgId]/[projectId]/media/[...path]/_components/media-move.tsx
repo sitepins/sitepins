@@ -358,7 +358,7 @@ export default function MediaMove({
       <DialogContent className="max-h-[80vh] sm:max-w-125">
         <DialogHeader>
           <DialogTitle>{tMedia("move_item")}</DialogTitle>
-          <DialogDescription className="text-text-dark/70">
+          <DialogDescription className="text-text-strong/70">
             {tMedia("move_item_desc")}
           </DialogDescription>
         </DialogHeader>

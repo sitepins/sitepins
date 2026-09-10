@@ -69,7 +69,7 @@ export default function ProjectSwitcher({
           fallbackLabel="S"
         />
         <div className="flex-1 overflow-hidden">
-          <div className="text-text-dark max-w-45 min-w-0 truncate text-sm font-medium capitalize">
+          <div className="text-text-strong max-w-45 min-w-0 truncate text-sm font-medium capitalize">
             {currentProject?.project_name ?? tDashboardSwitcher("default_site")}
           </div>
           {currentProject && branch && (

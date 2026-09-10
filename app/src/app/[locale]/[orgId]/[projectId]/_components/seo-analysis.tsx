@@ -307,7 +307,7 @@ export default function SeoAnalysis({
                     <span>{category.title}</span>
                     <Badge
                       variant="muted"
-                      className="bg-background/80 text-text ms-auto text-xs font-normal"
+                      className="bg-background/80 text-text-default ms-auto text-xs font-normal"
                     >
                       {category.count}
                     </Badge>
@@ -420,7 +420,7 @@ export default function SeoAnalysis({
             >
               <Lock className="text-muted-foreground size-4 shrink-0" />
               <span className="min-w-0">
-                <span className="text-text block font-medium">
+                <span className="text-text-default block font-medium">
                   {tEditorSeo("insights.teaser", {
                     count: INSIGHT_KEYS.length,
                   })}

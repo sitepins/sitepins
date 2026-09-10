@@ -545,7 +545,7 @@ export default function CodeEditor({
 
         {/* Status bar */}
         <div className="border-border bg-light shrink-0 border-t px-4 py-2">
-          <div className="text-text flex items-center justify-between text-xs">
+          <div className="text-text-default flex items-center justify-between text-xs">
             <div className="flex items-center gap-4">
               <span>{tEditor("code.encoding")}</span>
               <span>

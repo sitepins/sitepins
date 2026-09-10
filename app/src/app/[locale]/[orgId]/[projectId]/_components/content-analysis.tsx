@@ -28,11 +28,11 @@ export default function ContentAnalysis({ content }: { content: string }) {
         </AccordionTrigger>
         <AccordionContent>
           <div className="space-y-2 pb-4">
-            <p className="text-text flex items-center justify-between text-sm font-medium">
+            <p className="text-text-default flex items-center justify-between text-sm font-medium">
               <span>{tEditorSeo("word_count")}</span>
               <span className="bg-light rounded-md px-2 py-1">{wordCount}</span>
             </p>
-            <p className="text-text flex items-center justify-between text-sm font-medium">
+            <p className="text-text-default flex items-center justify-between text-sm font-medium">
               <span>{tEditorSeo("reading_time")}</span>
               <span>~{readingTime(content)}</span>
             </p>

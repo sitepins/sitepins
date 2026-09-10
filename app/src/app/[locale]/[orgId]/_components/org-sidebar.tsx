@@ -113,7 +113,7 @@ export default function OrgSidebar({ orgs }: { orgs: TOrg[] }) {
                 items={menuItems}
                 listClassName="flex-1 space-y-1"
                 iconClassName="size-5 stroke-[1.5]"
-                labelClassName="text-text-dark flex-1"
+                labelClassName="text-text-strong flex-1"
               />
             </motion.div>
           ) : (
@@ -139,7 +139,7 @@ export default function OrgSidebar({ orgs }: { orgs: TOrg[] }) {
                 items={settingsMenuItems}
                 listClassName="space-y-1 mt-3"
                 iconClassName="size-5 stroke-[1.5]"
-                labelClassName="text-text-dark"
+                labelClassName="text-text-strong"
               />
             </motion.div>
           )}

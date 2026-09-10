@@ -82,7 +82,7 @@ export default function MoveProject({
             <div className="text-muted-foreground text-sm">
               {tProjectSettingsGeneralMove("current_org")}
             </div>
-            <div className="text-text-dark mt-1 text-base font-medium">
+            <div className="text-text-strong mt-1 text-base font-medium">
               {currentOrg?.org_name || org_id}
             </div>
           </div>

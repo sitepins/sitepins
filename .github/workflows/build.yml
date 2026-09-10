@@ -1,0 +1,31 @@
+name: build
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: corepack enable
+      - run: pnpm install
+      - name: Build-time env for the web app
+        run: |
+          printf '%s\n' \
+            'NEXT_PUBLIC_BACKEND_URL=https://sitepins.cloudhostwp.com/api/v1' \
+            'NEXT_PUBLIC_HP_WS_URL=wss://sitepins.cloudhostwp.com/api/v1/editor/collab' \
+            'NEXT_PUBLIC_GITHUB_APP_NAME=dig-designs-sitepins' \
+            'NEXT_PUBLIC_BUCKET_URL=https://pub-b2493a34d0c0466491efc75e0e072e74.r2.dev' \
+            > app/.env
+      - run: pnpm -r build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sitepins-build
+          include-hidden-files: true
+          path: |
+            app/.next
+            api/dist

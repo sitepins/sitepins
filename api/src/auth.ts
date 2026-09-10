@@ -101,6 +101,7 @@ export const auth = betterAuth({
     client,
     usePlural: true,
     debugLogs: false,
+    transaction: false,
   }),
   session: {
     expiresIn: 60 * 60 * 24 * 7, // 7 days

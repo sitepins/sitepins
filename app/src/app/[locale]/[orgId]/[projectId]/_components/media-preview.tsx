@@ -1,6 +1,6 @@
 import MediaPopupList from "@/components/media-popup-list";
-import { Button } from "@/components/ui/button";
 import { MediaPreviewBox } from "@/components/media-preview-box";
+import { Button } from "@/components/ui/button";
 import { Camera, Trash2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useRef } from "react";
@@ -19,24 +19,45 @@ export default function MediaPreview({
   const buttonRef = useRef<HTMLButtonElement>(null);
   const tMedia = useTranslations("media");
 
+  const fileName = (() => {
+    if (!value) return "";
+    try {
+      const clean = value.split("?")[0].split("#")[0];
+      const segment = clean.split("/").filter(Boolean).pop() || value;
+      return decodeURIComponent(segment);
+    } catch {
+      return value.split("/").filter(Boolean).pop() || value;
+    }
+  })();
+
   return (
-    <div className="w-full gap-x-4 lg:inline-flex">
+    <div className="w-full items-start gap-x-4 lg:inline-flex">
       {value ? (
-        <div
-          className={
-            "group after:bg-primary/40 relative w-full max-w-sm rounded-lg after:invisible after:absolute after:top-0 after:left-0 after:z-20 after:hidden after:h-full after:w-full after:origin-center after:scale-0 after:rounded-[inherit] after:opacity-0 after:transition-all after:duration-300 after:content-[''] hover:after:visible hover:after:scale-100 hover:after:opacity-100"
-          }
-        >
-          <MediaPreviewBox value={value}>
-            <MediaPopupList
-              ref={buttonRef}
-              name={name}
-              path={value}
-              type="button"
-              onChangeHandler={handleChange}
-              className="invisible absolute top-1/2 left-1/2 z-30 hidden -translate-x-1/2 -translate-y-1/2 cursor-pointer opacity-0 transition-opacity duration-300 group-hover:visible group-hover:opacity-100 md:block"
-            />
-          </MediaPreviewBox>
+        <div className="flex w-full max-w-sm flex-col gap-1.5">
+          <div
+            className={
+              "group after:bg-primary/40 relative w-full rounded-lg after:invisible after:absolute after:top-0 after:left-0 after:z-20 after:hidden after:h-full after:w-full after:origin-center after:scale-0 after:rounded-[inherit] after:opacity-0 after:transition-all after:duration-300 after:content-[''] hover:after:visible hover:after:scale-100 hover:after:opacity-100"
+            }
+          >
+            <MediaPreviewBox value={value}>
+              <MediaPopupList
+                ref={buttonRef}
+                name={name}
+                path={value}
+                type="button"
+                onChangeHandler={handleChange}
+                className="invisible absolute top-1/2 left-1/2 z-30 hidden -translate-x-1/2 -translate-y-1/2 cursor-pointer opacity-0 transition-opacity duration-300 group-hover:visible group-hover:opacity-100 md:block"
+              />
+            </MediaPreviewBox>
+          </div>
+          {fileName && (
+            <p
+              className="text-muted-foreground mb-2 truncate text-xs font-medium"
+              title={value}
+            >
+              {fileName}
+            </p>
+          )}
         </div>
       ) : (
         <MediaPopupList

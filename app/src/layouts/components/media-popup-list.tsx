@@ -27,11 +27,13 @@ import { useAppDispatch } from "@/redux/store";
 import { TFiles, TImage } from "@/types";
 import {
   CloudUpload,
+  ExternalLink,
   FolderClosed,
   Loader2,
   Search as SearchIcon,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
+import Link from "next/link";
 import { useParams } from "next/navigation";
 import { isUrl } from "platejs";
 import {
@@ -234,9 +236,23 @@ const MediaPopupList = ({
   const [pendingFiles, setPendingFiles] = useState<File[]>([]);
   const dispatch = useAppDispatch();
   const { popupBreadcrumbs: breadcrumbs } = useSelector(selectMediaInfo);
-
   const tMedia = useTranslations("media");
   const tCommon = useTranslations("common");
+
+  const orgId = Array.isArray(params?.orgId) ? params.orgId[0] : params?.orgId;
+  const projectId = Array.isArray(params?.projectId)
+    ? params.projectId[0]
+    : params?.projectId;
+
+  const currentMediaPath = sanitizedPath(
+    config.media || "",
+    ...breadcrumbs.map((b) => b.name),
+  );
+
+  const mediaLibraryUrl =
+    orgId && projectId
+      ? `/${orgId}/${projectId}/media/${currentMediaPath}`
+      : "";
 
   const handleProcessFiles = async (inputFiles: File[]) => {
     setPendingFiles(inputFiles);
@@ -451,9 +467,30 @@ const MediaPopupList = ({
           )}
         >
           <DialogHeader>
-            <DialogTitle>
-              {isPreviewOpen ? tMedia("preview") : tMedia("media_library")}
-            </DialogTitle>
+            <div className="flex items-center gap-2">
+              <DialogTitle>
+                {isPreviewOpen ? tMedia("preview") : tMedia("media_library")}
+              </DialogTitle>
+              {!isPreviewOpen && mediaLibraryUrl && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-muted-foreground hover:text-foreground size-7"
+                  asChild
+                >
+                  <Link
+                    href={mediaLibraryUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                    title={`${tMedia("media_library")}: ${currentMediaPath}`}
+                  >
+                    <ExternalLink className="size-4" />
+                    <span className="sr-only">{tMedia("media_library")}</span>
+                  </Link>
+                </Button>
+              )}
+            </div>
             <DialogDescription className="sr-only">
               {tMedia("browse_media_desc")}
             </DialogDescription>
@@ -550,8 +587,8 @@ const MediaPopupList = ({
           </div>
 
           <div className="flex w-full flex-col gap-2 overflow-hidden sm:flex-row sm:items-center sm:justify-between sm:gap-4">
-            <div className="w-full min-w-0 flex-1 shrink-0 overflow-x-auto">
-              <Breadcrumb className="w-full max-w-full py-2">
+            <div className="flex min-w-0 flex-1 items-center gap-1.5 overflow-x-auto">
+              <Breadcrumb className="max-w-full py-2">
                 <BreadcrumbList className="flex-nowrap whitespace-nowrap">
                   <BreadcrumbItem>
                     <FolderClosed className="size-4" />
@@ -602,6 +639,25 @@ const MediaPopupList = ({
                   ))}
                 </BreadcrumbList>
               </Breadcrumb>
+              {mediaLibraryUrl && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-muted-foreground hover:text-foreground size-6 shrink-0"
+                  asChild
+                >
+                  <Link
+                    href={mediaLibraryUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                    title={`${tMedia("media_library")}: ${currentMediaPath}`}
+                  >
+                    <ExternalLink className="size-3.5" />
+                    <span className="sr-only">{tMedia("media_library")}</span>
+                  </Link>
+                </Button>
+              )}
             </div>
 
             <div className="relative w-full sm:max-w-xs">

@@ -8,6 +8,7 @@ import { deleteFile } from "@/lib/s3-utils";
 import { TPagination } from "@/types";
 import type { QueryFilter, UpdateQuery } from "mongoose";
 import { PipelineStage } from "mongoose";
+import { Organization } from "../organization/organization.model";
 import { ProjectContent } from "../project-content/project-content.model";
 import { ProjectLog } from "../project-log/project-log.model";
 import { ProjectPreview } from "../project-preview/project-preview.model";
@@ -220,7 +221,11 @@ const getProjectByOrgId = async ({ org_id }: { org_id: string }) => {
 
 // get own project
 const getProjectByUserIdService = async ({ user_id }: { user_id: string }) => {
-  const project = await Project.find({ user_id });
+  const userOrgs = await Organization.find({ owner: user_id }).select("org_id");
+  const orgIds = userOrgs.map((o) => o.org_id);
+  const project = await Project.find({
+    $or: [{ user_id }, { org_id: { $in: orgIds } }],
+  });
   return project;
 };
 

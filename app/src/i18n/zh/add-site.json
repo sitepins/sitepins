@@ -1,13 +1,9 @@
 {
   "add-site": {
-    "scaling_fast": "您的业务正在快速发展！",
-    "create_new_org_to_add": "创建新组织以添加更多网站。",
-    "org_usage": "组织使用配额",
     "sites": "网站数量",
     "unlimited": "无限制",
     "quota_limit_reached": "已达配额上限",
     "maybe_later": "稍后再说",
-    "create_new_org": "创建新组织",
     "add_new_site": "添加新网站",
     "create_new_site": "创建新网站",
     "import_site_desc": "选择导入网站的方式。",
@@ -30,9 +26,12 @@
     "site_url_placeholder": "https://example.com",
     "back": "返回",
     "create_site": "创建网站",
-    "limit_reached": "已达上限",
-    "private_site_limit_reached": "私有网站数量已达上限。升级您的套餐计划以创建更多私有网站。",
+    "limit_reached_title": "您的业务正在快速发展！",
+    "limit_reached_desc": "您已达到当前套餐的项目上限。升级您的账户以添加更多项目。",
+    "limit_reached_button": "已达上限",
+    "limit_reached_private_desc": "私有网站数量已达上限。升级您的套餐计划以创建更多私有网站。",
     "project_created_success": "项目创建成功",
-    "something_went_wrong": "出错了！"
+    "something_went_wrong": "出错了！",
+    "plan_usage": "套餐使用情况"
   }
 }

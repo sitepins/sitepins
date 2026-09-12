@@ -1,13 +1,9 @@
 {
   "add-site": {
-    "scaling_fast": "Dự án của bạn đang mở rộng nhanh chóng!",
-    "create_new_org_to_add": "Tạo tổ chức mới để thêm nhiều trang web hơn.",
-    "org_usage": "Mức sử dụng của tổ chức",
     "sites": "Trang web",
     "unlimited": "Không giới hạn",
     "quota_limit_reached": "Đã đạt giới hạn dung lượng",
     "maybe_later": "Để sau",
-    "create_new_org": "Tạo tổ chức mới",
     "add_new_site": "Thêm trang web mới",
     "create_new_site": "Tạo trang web mới",
     "import_site_desc": "Chọn phương thức nhập trang web của bạn.",
@@ -30,9 +26,12 @@
     "site_url_placeholder": "https://example.com",
     "back": "Quay lại",
     "create_site": "Tạo trang web",
-    "limit_reached": "Đã đạt giới hạn",
-    "private_site_limit_reached": "Đã đạt giới hạn số trang web riêng tư. Hãy nâng cấp gói của bạn để tạo thêm.",
+    "limit_reached_title": "Dự án của bạn đang mở rộng nhanh chóng!",
+    "limit_reached_desc": "Bạn đã đạt đến số lượng dự án tối đa cho gói hiện tại của mình. Nâng cấp tài khoản để thêm nhiều dự án hơn.",
+    "limit_reached_button": "Đã đạt giới hạn",
+    "limit_reached_private_desc": "Đã đạt giới hạn số trang web riêng tư. Hãy nâng cấp gói của bạn để tạo thêm.",
     "project_created_success": "Đã tạo dự án thành công",
-    "something_went_wrong": "Đã xảy ra lỗi!"
+    "something_went_wrong": "Đã xảy ra lỗi!",
+    "plan_usage": "Sử dụng gói"
   }
 }

@@ -1,13 +1,9 @@
 {
   "add-site": {
-    "scaling_fast": "Você está crescendo rápido!",
-    "create_new_org_to_add": "Crie uma nova organização para adicionar mais sites.",
-    "org_usage": "Uso da organização",
     "sites": "Sites",
     "unlimited": "Ilimitado",
     "quota_limit_reached": "Limite de cota atingido",
     "maybe_later": "Talvez mais tarde",
-    "create_new_org": "Criar nova organização",
     "add_new_site": "Adicionar novo site",
     "create_new_site": "Criar novo site",
     "import_site_desc": "Escolha como deseja importar seu site.",
@@ -30,9 +26,12 @@
     "site_url_placeholder": "https://example.com",
     "back": "Voltar",
     "create_site": "Criar site",
-    "limit_reached": "Limite atingido",
-    "private_site_limit_reached": "Limite de sites privados atingido. Faça upgrade do seu plano para criar mais sites privados.",
+    "limit_reached_title": "Você está crescendo rápido!",
+    "limit_reached_desc": "Você atingiu o número máximo de projetos para seu plano atual. Faça upgrade da sua conta para adicionar mais projetos.",
+    "limit_reached_button": "Limite atingido",
+    "limit_reached_private_desc": "Limite de sites privados atingido. Faça upgrade do seu plano para criar mais sites privados.",
     "project_created_success": "Projeto criado com sucesso",
-    "something_went_wrong": "Algo deu errado!"
+    "something_went_wrong": "Algo deu errado!",
+    "plan_usage": "Uso do plano"
   }
 }

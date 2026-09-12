@@ -5,6 +5,7 @@ import { nanoId } from "@/lib/nanoId";
 import { requireUser } from "@/lib/requireUser";
 import { sendResponse } from "@/lib/sendResponse";
 import { Request, Response } from "express";
+import { Organization } from "../organization/organization.model";
 import { projectService } from "./project.service";
 
 // get projects
@@ -23,7 +24,7 @@ const getAllProjectController = catchAsync(
       statusCode: 200,
       result: project.result,
       meta: project.meta,
-      message: "data get successfully",
+      message: "project get successfully",
     });
   },
 );
@@ -50,13 +51,19 @@ const getProjectByUserIdController = catchAsync(
     const requester = requireUser(req);
     const targetId = (req.params.userId as string) || requester.user_id;
 
-    // Only platform admins may read someone else's project list.
+    // Platform admins, the user themselves, or members of an organization owned by targetId may read the project list.
     if (targetId !== requester.user_id && requester.role !== ENUM_ROLE.ADMIN) {
-      throw new ApiError(
-        "You are not authorized to access this resource",
-        403,
-        "",
-      );
+      const isMember = await Organization.exists({
+        owner: targetId,
+        "members.user_id": requester.user_id,
+      });
+      if (!isMember) {
+        throw new ApiError(
+          "You are not authorized to access this resource",
+          403,
+          "",
+        );
+      }
     }
 
     const project = await projectService.getProjectByUserIdService({

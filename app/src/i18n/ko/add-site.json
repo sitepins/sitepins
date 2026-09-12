@@ -1,13 +1,9 @@
 {
   "add-site": {
-    "scaling_fast": "빠르게 성장하고 계시네요!",
-    "create_new_org_to_add": "더 많은 사이트를 추가하려면 새 조직을 생성하세요.",
-    "org_usage": "조직 사용량",
     "sites": "사이트",
     "unlimited": "무제한",
     "quota_limit_reached": "할당량 제한에 도달했습니다",
     "maybe_later": "나중에 하기",
-    "create_new_org": "새 조직 생성",
     "add_new_site": "새 사이트 추가",
     "create_new_site": "새 사이트 만들기",
     "import_site_desc": "사이트를 가져올 방식을 선택하세요.",
@@ -30,9 +26,12 @@
     "site_url_placeholder": "https://example.com",
     "back": "뒤로",
     "create_site": "사이트 생성",
-    "limit_reached": "한도 도달",
-    "private_site_limit_reached": "비공개 사이트 생성 한도에 도달했습니다. 플랜을 업그레이드하여 비공개 사이트를 추가하세요.",
+    "limit_reached_title": "빠르게 성장하고 계시네요!",
+    "limit_reached_desc": "현재 플랜의 최대 프로젝트 수에 도달했습니다. 프로젝트를 더 추가하려면 계정을 업그레이드하세요.",
+    "limit_reached_button": "한도 도달",
+    "limit_reached_private_desc": "비공개 사이트 생성 한도에 도달했습니다. 플랜을 업그레이드하여 비공개 사이트를 추가하세요.",
     "project_created_success": "프로젝트가 성공적으로 생성되었습니다",
-    "something_went_wrong": "오류가 발생했습니다!"
+    "something_went_wrong": "오류가 발생했습니다!",
+    "plan_usage": "플랜 사용량"
   }
 }

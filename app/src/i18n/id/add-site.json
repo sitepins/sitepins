@@ -1,13 +1,9 @@
 {
   "add-site": {
-    "scaling_fast": "Anda berkembang dengan cepat!",
-    "create_new_org_to_add": "Buat organisasi baru untuk menambahkan lebih banyak situs.",
-    "org_usage": "Penggunaan Organisasi",
     "sites": "Situs",
     "unlimited": "Tak Terbatas",
     "quota_limit_reached": "Batas kuota tercapai",
     "maybe_later": "Mungkin Nanti",
-    "create_new_org": "Buat Organisasi Baru",
     "add_new_site": "Tambah Situs Baru",
     "create_new_site": "Buat Situs Baru",
     "import_site_desc": "Pilih cara untuk mengimpor situs Anda.",
@@ -30,9 +26,12 @@
     "site_url_placeholder": "https://example.com",
     "back": "Kembali",
     "create_site": "Buat Situs",
-    "limit_reached": "Batas Tercapai",
-    "private_site_limit_reached": "Batas situs privat tercapai. Tingkatkan paket Anda untuk membuat lebih banyak situs privat.",
+    "limit_reached_title": "Anda berkembang dengan cepat!",
+    "limit_reached_desc": "Anda telah mencapai jumlah proyek maksimum untuk paket Anda saat ini. Tingkatkan akun Anda untuk menambahkan lebih banyak proyek.",
+    "limit_reached_button": "Batas Tercapai",
+    "limit_reached_private_desc": "Batas situs privat tercapai. Tingkatkan paket Anda untuk membuat lebih banyak situs privat.",
     "project_created_success": "Proyek berhasil dibuat",
-    "something_went_wrong": "Terjadi kesalahan!"
+    "something_went_wrong": "Terjadi kesalahan!",
+    "plan_usage": "Penggunaan Paket"
   }
 }

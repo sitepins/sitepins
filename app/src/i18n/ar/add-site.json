@@ -1,13 +1,9 @@
 {
   "add-site": {
-    "scaling_fast": "مؤسستك تنمو بسرعة!",
-    "create_new_org_to_add": "أنشئ منظمة جديدة لإضافة المزيد من المواقع.",
-    "org_usage": "استخدام المنظمة",
     "sites": "المواقع",
     "unlimited": "غير محدود",
     "quota_limit_reached": "تم الوصول إلى الحد الأقصى للمساحة",
     "maybe_later": "ربما لاحقاً",
-    "create_new_org": "إنشاء منظمة جديدة",
     "add_new_site": "إضافة موقع جديد",
     "create_new_site": "إنشاء موقع جديد",
     "import_site_desc": "اختر طريقة استيراد موقعك.",
@@ -30,9 +26,12 @@
     "site_url_placeholder": "https://example.com",
     "back": "رجوع",
     "create_site": "إنشاء الموقع",
-    "limit_reached": "تم الوصول إلى الحد المسموح",
-    "private_site_limit_reached": "لقد وصلت إلى الحد الأقصى للمواقع الخاصة. قم بترقية خطتك لإنشاء المزيد من المواقع الخاصة.",
+    "limit_reached_title": "مؤسستك تنمو بسرعة!",
+    "limit_reached_desc": "لقد وصلت إلى الحد الأقصى للمشاريع في خطتك الحالية. قم بترقية حسابك لإضافة المزيد من المشاريع.",
+    "limit_reached_button": "تم الوصول إلى الحد المسموح",
+    "limit_reached_private_desc": "لقد وصلت إلى الحد الأقصى للمواقع الخاصة. قم بترقية خطتك لإنشاء المزيد من المواقع الخاصة.",
     "project_created_success": "تم إنشاء المشروع بنجاح",
-    "something_went_wrong": "حدث خطأ ما!"
+    "something_went_wrong": "حدث خطأ ما!",
+    "plan_usage": "استخدام الخطة"
   }
 }

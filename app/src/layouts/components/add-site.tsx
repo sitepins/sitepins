@@ -62,27 +62,25 @@ import { isSiteCreationPlanLimitError } from "@/lib/utils/site-creation-error";
 import { projectSchema } from "@/lib/validate";
 import { useGetGitHubBranchesQuery as useGitHubBranches } from "@/redux/features/github";
 import { useGetGitLabBranchesQuery } from "@/redux/features/gitlab/gitlab-api";
-import { useGetOrgQuery, useGetOrgsQuery } from "@/redux/features/orgs/org-api";
+import { useGetOrgQuery } from "@/redux/features/orgs/org-api";
 import { selectCurrentPackage } from "@/redux/features/plan/slice";
 import {
   useAddProjectMutation,
-  useGetProjectsQuery,
+  useGetAllSitesOwnedByUserQuery,
 } from "@/redux/features/project/project-api";
 import { useAppSelector } from "@/redux/store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SiGithub, SiGitlab } from "@icons-pack/react-simple-icons";
-import { ExternalLink, Loader2, Plus } from "lucide-react";
+import { ExternalLink, Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod/v4";
-import AddOrg from "./add-org";
 import FormError from "./form-error";
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
@@ -132,12 +130,7 @@ export default function AddSite({
   const { data: org } = useGetOrgQuery(orgId ? orgId?.slice(4) : "", {
     skip: !orgId,
   });
-  const { data: orgs = [] } = useGetOrgsQuery();
-  const { data: projects } = useGetProjectsQuery(orgId ? orgId?.slice(4) : "", {
-    skip: !orgId,
-  });
 
-  const activeProjects = projects?.filter((p) => p.status !== "archived") || [];
   const { currentPackage } = useAppSelector(selectCurrentPackage);
   const { canAccessProPlusFeatures } = useOwnerPlan();
   const { isOpen: internalOpen, onOpenChange: internalOnOpenChange } =
@@ -146,8 +139,6 @@ export default function AddSite({
   const isOpen = controlledOpen !== undefined ? controlledOpen : internalOpen;
   const onOpenChange = controlledOnOpenChange || internalOnOpenChange;
   const [showUpgradeDialog, setShowUpgradeDialog] = useState(false);
-  const [showAddOrg, setShowAddOrg] = useState(false);
-  const [showUpgradeOrg, setShowUpgradeOrg] = useState(false);
   const [repoOpen, setRepoOpen] = useState(false);
   const [creationError, setCreationError] = useState<string | null>(null);
   const [isPlanLimitError, setIsPlanLimitError] = useState(false);
@@ -273,6 +264,21 @@ export default function AddSite({
     }
   };
 
+  const { data: auth } = authClient.useSession();
+  const userId = auth?.user?.user_id;
+
+  const ownerId = org?.owner ?? userId;
+  const { data: ownSites } = useGetAllSitesOwnedByUserQuery(
+    { userId: ownerId! },
+    { skip: !ownerId },
+  );
+  const activeOwnedSites = useMemo(() => {
+    return ownSites?.filter((p) => p.status !== "archived") || [];
+  }, [ownSites]);
+  const privateOwnedSites = useMemo(() => {
+    return activeOwnedSites.filter((p) => p.visibility === "private");
+  }, [activeOwnedSites]);
+
   const checkSiteLimit = (count: number) => {
     // No org context yet — nothing to add a site to.
     if (!org) return true;
@@ -281,24 +287,10 @@ export default function AddSite({
     const owner = (org.ownerData || []).find(
       (owner) => owner.user_id === org.owner,
     );
-    return count >= getPlanLimits(owner?.active_package).org_site_limit;
+    return count >= getPlanLimits(owner?.active_package).site_limit;
   };
 
-  const isSiteLimitReached = checkSiteLimit(activeProjects.length);
-
-  const { data: auth } = authClient.useSession();
-  const userId = auth?.user?.user_id;
-
-  // Check if user can add new org based on their package limit
-  const canAddOrg = useMemo(() => {
-    if (!currentPackage || !userId) return false;
-    const limit = getPlanLimits(currentPackage).org_limit;
-    const ownOrgs =
-      orgs?.filter(
-        (org) => org.owner === userId && org.status !== "archived",
-      ) || [];
-    return (ownOrgs?.length ?? 0) < limit;
-  }, [currentPackage, orgs, userId]);
+  const isSiteLimitReached = checkSiteLimit(activeOwnedSites.length);
 
   if (isSiteLimitReached) {
     return (
@@ -311,9 +303,11 @@ export default function AddSite({
           )}
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>{tAddSite("scaling_fast")}</AlertDialogTitle>
+              <AlertDialogTitle>
+                {tAddSite("limit_reached_title")}
+              </AlertDialogTitle>
               <AlertDialogDescription>
-                {tAddSite("create_new_org_to_add")}
+                {tAddSite("limit_reached_desc")}
               </AlertDialogDescription>
             </AlertDialogHeader>
 
@@ -321,13 +315,13 @@ export default function AddSite({
               <div className="w-full">
                 <div className="mb-3 flex items-center justify-between text-sm font-semibold">
                   <span className="text-muted-foreground">
-                    {tAddSite("org_usage")}
+                    {tAddSite("plan_usage")}
                   </span>
                   <span className="text-primary">
-                    {activeProjects.length} /{" "}
-                    {getPlanLimits(currentPackage).org_site_limit === Infinity
+                    {activeOwnedSites.length} /{" "}
+                    {getPlanLimits(currentPackage).site_limit === Infinity
                       ? tAddSite("unlimited")
-                      : getPlanLimits(currentPackage).org_site_limit}{" "}
+                      : getPlanLimits(currentPackage).site_limit}{" "}
                     {tAddSite("sites")}
                   </span>
                 </div>
@@ -351,20 +345,7 @@ export default function AddSite({
               >
                 {tAddSite("maybe_later")}
               </AlertDialogCancel>
-              {canAddOrg ? (
-                <AlertDialogAction
-                  onClick={() => {
-                    onOpenChange(false);
-                    setShowAddOrg(true);
-                  }}
-                  className="group sm:w-44"
-                >
-                  <Plus className="me-1 h-4 w-4" />
-                  {tAddSite("create_new_org")}
-                </AlertDialogAction>
-              ) : (
-                <QuotaUpgradeAction />
-              )}
+              <QuotaUpgradeAction />
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
@@ -373,18 +354,6 @@ export default function AddSite({
           open={showUpgradeDialog}
           onOpenChange={setShowUpgradeDialog}
           contextKey="gitlab"
-        />
-
-        <AddOrg
-          open={showAddOrg}
-          onOpenChange={setShowAddOrg}
-          className="hidden"
-        />
-
-        <UpgradeDialog
-          open={showUpgradeOrg}
-          onOpenChange={setShowUpgradeOrg}
-          contextKey="org_limit"
         />
       </>
     );
@@ -472,14 +441,11 @@ export default function AddSite({
                     );
                     if (!owner) return;
                     const active_package = owner.active_package;
-                    const privateCount =
-                      activeProjects.filter((p) => p.visibility === "private")
-                        .length || 0;
                     if (
-                      privateCount >=
-                      getPlanLimits(active_package).org_private_site_limit
+                      privateOwnedSites.length >=
+                      getPlanLimits(active_package).private_site_limit
                     ) {
-                      setCreationError(tAddSite("private_site_limit_reached"));
+                      setCreationError(tAddSite("limit_reached_private_desc"));
                       setIsPlanLimitError(true);
                       return;
                     }
@@ -819,7 +785,7 @@ export default function AddSite({
                 }
               >
                 {isSiteLimitReached
-                  ? tAddSite("limit_reached")
+                  ? tAddSite("limit_reached_button")
                   : tAddSite("create_site")}
               </Button>
             </DialogFooter>
@@ -831,18 +797,6 @@ export default function AddSite({
         open={showUpgradeDialog}
         onOpenChange={setShowUpgradeDialog}
         contextKey="gitlab"
-      />
-
-      <AddOrg
-        open={showAddOrg}
-        onOpenChange={setShowAddOrg}
-        className="hidden"
-      />
-
-      <UpgradeDialog
-        open={showUpgradeOrg}
-        onOpenChange={setShowUpgradeOrg}
-        contextKey="org_limit"
       />
     </>
   );

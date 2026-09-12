@@ -1,13 +1,9 @@
 {
   "add-site": {
-    "scaling_fast": "Sie wachsen schnell!",
-    "create_new_org_to_add": "Erstellen Sie eine neue Organisation, um weitere Websites hinzuzufügen.",
-    "org_usage": "Organisationsnutzung",
     "sites": "Websites",
     "unlimited": "Unbegrenzt",
     "quota_limit_reached": "Kontingentgrenze erreicht",
     "maybe_later": "Vielleicht später",
-    "create_new_org": "Neue Organisation erstellen",
     "add_new_site": "Neue Website hinzufügen",
     "create_new_site": "Neue Website erstellen",
     "import_site_desc": "Wählen Sie, wie Sie Ihre Website importieren möchten.",
@@ -30,9 +26,12 @@
     "site_url_placeholder": "https://example.com",
     "back": "Zurück",
     "create_site": "Website erstellen",
-    "limit_reached": "Limit erreicht",
-    "private_site_limit_reached": "Limit für private Websites erreicht. Upgraden Sie Ihren Plan, um mehr private Websites zu erstellen.",
+    "limit_reached_title": "Sie wachsen schnell!",
+    "limit_reached_desc": "Sie haben die maximale Anzahl von Projekten für Ihren aktuellen Tarif erreicht. Upgraden Sie Ihr Konto, um weitere Projekte hinzuzufügen.",
+    "limit_reached_button": "Limit erreicht",
+    "limit_reached_private_desc": "Limit für private Websites erreicht. Upgraden Sie Ihren Plan, um mehr private Websites zu erstellen.",
     "project_created_success": "Projekt erfolgreich erstellt",
-    "something_went_wrong": "Etwas ist schiefgelaufen!"
+    "something_went_wrong": "Etwas ist schiefgelaufen!",
+    "plan_usage": "Tarifnutzung"
   }
 }

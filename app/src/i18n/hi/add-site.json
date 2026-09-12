@@ -1,13 +1,9 @@
 {
   "add-site": {
-    "scaling_fast": "आप तेज़ी से बढ़ रहे हैं!",
-    "create_new_org_to_add": "अधिक साइटें जोड़ने के लिए एक नया संगठन बनाएं।",
-    "org_usage": "संगठन का उपयोग",
     "sites": "साइटें",
     "unlimited": "असीमित",
     "quota_limit_reached": "कोटा सीमा पूरी हो गई",
     "maybe_later": "शायद बाद में",
-    "create_new_org": "नया संगठन बनाएं",
     "add_new_site": "नई साइट जोड़ें",
     "create_new_site": "नई साइट बनाएं",
     "import_site_desc": "अपनी साइट आयात करने का तरीका चुनें।",
@@ -30,9 +26,12 @@
     "site_url_placeholder": "https://example.com",
     "back": "वापस",
     "create_site": "साइट बनाएं",
-    "limit_reached": "सीमा पूरी हो गई",
-    "private_site_limit_reached": "निजी साइट की सीमा समाप्त हो गई है। अधिक निजी साइटें बनाने के लिए अपनी योजना अपग्रेड करें।",
+    "limit_reached_title": "आप तेज़ी से बढ़ रहे हैं!",
+    "limit_reached_desc": "आप अपने वर्तमान प्लान के लिए अधिकतम प्रोजेक्ट सीमा तक पहुँच चुके हैं। अधिक प्रोजेक्ट जोड़ने के लिए अपने खाते को अपग्रेड करें।",
+    "limit_reached_button": "सीमा पूरी हो गई",
+    "limit_reached_private_desc": "निजी साइट की सीमा समाप्त हो गई है। अधिक निजी साइटें बनाने के लिए अपनी योजना अपग्रेड करें।",
     "project_created_success": "प्रोजेक्ट सफलतापूर्वक बनाया गया",
-    "something_went_wrong": "कुछ गड़बड़ हुई!"
+    "something_went_wrong": "कुछ गड़बड़ हुई!",
+    "plan_usage": "प्लान उपयोग"
   }
 }

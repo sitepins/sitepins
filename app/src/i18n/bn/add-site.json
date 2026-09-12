@@ -1,13 +1,9 @@
 {
   "add-site": {
-    "scaling_fast": "আপনার প্রবৃদ্ধি দ্রুত বাড়ছে!",
-    "create_new_org_to_add": "আরও সাইট যোগ করতে একটি নতুন সংস্থা তৈরি করুন।",
-    "org_usage": "সংস্থার ব্যবহার সীমা",
     "sites": "সাইটসমূহ",
     "unlimited": "সীমাহীন",
     "quota_limit_reached": "কোটা সীমা পূর্ণ হয়েছে",
     "maybe_later": "পরে করব",
-    "create_new_org": "নতুন সংস্থা তৈরি",
     "add_new_site": "নতুন সাইট যোগ করুন",
     "create_new_site": "নতুন সাইট তৈরি",
     "import_site_desc": "সাইট ইম্পোর্ট করার পদ্ধতি বেছে নিন।",
@@ -30,9 +26,12 @@
     "site_url_placeholder": "https://example.com",
     "back": "পেছনে",
     "create_site": "সাইট তৈরি করুন",
-    "limit_reached": "সীমা পূর্ণ হয়েছে",
-    "private_site_limit_reached": "প্রাইভেট সাইটের সীমা পূর্ণ হয়েছে। আরও প্রাইভেট সাইট তৈরি করতে আপনার প্ল্যান আপগ্রেড করুন।",
+    "limit_reached_title": "আপনার প্রবৃদ্ধি দ্রুত বাড়ছে!",
+    "limit_reached_desc": "আপনি আপনার বর্তমান প্ল্যানের জন্য সর্বোচ্চ সংখ্যক প্রজেক্ট সীমায় পৌঁছে গেছেন। আরও প্রজেক্ট যোগ করতে আপগ্রেড করুন।",
+    "limit_reached_button": "সীমা পূর্ণ হয়েছে",
+    "limit_reached_private_desc": "প্রাইভেট সাইটের সীমা পূর্ণ হয়েছে। আরও প্রাইভেট সাইট তৈরি করতে আপনার প্ল্যান আপগ্রেড করুন।",
     "project_created_success": "প্রজেক্ট সফলভাবে তৈরি হয়েছে",
-    "something_went_wrong": "কিছু একটা ভুল হয়েছে!"
+    "something_went_wrong": "কিছু একটা ভুল হয়েছে!",
+    "plan_usage": "প্ল্যান ব্যবহার"
   }
 }

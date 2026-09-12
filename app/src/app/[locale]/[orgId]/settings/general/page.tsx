@@ -6,9 +6,10 @@ import { useGetOrgQuery } from "@/redux/features/orgs/org-api";
 import { use } from "react";
 import ArchiveOrg from "./_components/archive-org";
 import DeleteOrg from "./_components/delete-org";
+import LeaveOrg from "./_components/leave-org";
+import OrgAvatar from "./_components/org-avatar";
 import EditOrg from "./_components/org-form";
 import { GeneralSettingsSkeleton } from "./_components/org-general-skeleton";
-import OrgAvatar from "./_components/org-avatar";
 
 export default function GeneralSettings(
   props: PageProps<"/[locale]/[orgId]/settings/general">,
@@ -45,6 +46,8 @@ export default function GeneralSettings(
           <DeleteOrg id={org.org_id} variant={"destructive"} />
         </>
       )}
+
+      {!isOwner && <LeaveOrg id={org.org_id} variant={"destructive"} />}
     </>
   );
 }

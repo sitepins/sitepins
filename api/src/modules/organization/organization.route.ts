@@ -63,6 +63,14 @@ organizationRouter.patch(
   organizationController.removeMemberController,
 );
 
+// leave organization
+organizationRouter.patch(
+  "/leave/:org_id",
+  authMiddleware.verifyAuth(),
+  orgMiddleware(ENUM_PERMISSIONS.VIEW_MEMBERS),
+  organizationController.leaveOrganizationController,
+);
+
 // update organization
 organizationRouter.patch(
   "/:org_id",

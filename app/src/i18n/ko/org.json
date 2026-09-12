@@ -54,6 +54,17 @@
         "description": "사진을 추가하여 조직을 돋보이게 만드세요.",
         "demo_error": "데모 모드에서는 조직 이미지를 변경할 수 없습니다.",
         "success": "조직 썸네일이 성공적으로 업데이트되었습니다."
+      },
+      "leave": {
+        "title": "Leave Organization",
+        "description": "Revoke your access to this organization. You will need an invite from an owner or admin to rejoin.",
+        "leave_org_btn": "Leave Organization",
+        "dialog_title": "Leave Organization?",
+        "dialog_desc": "Are you sure you want to leave this organization? You will immediately lose access to all its projects, media, and settings.",
+        "placeholder": "type CONFIRM to confirm",
+        "demo_error": "You cannot leave organizations in demo mode.",
+        "success": "You have left the organization.",
+        "error": "Failed to leave the organization."
       }
     },
     "members": {
@@ -90,7 +101,11 @@
         "error_delete_suffix": "이 사용자를 삭제할 권한이 없습니다.",
         "error_update_fn": "업데이트 기능을 사용할 수 없습니다",
         "success_update": "멤버 역할이 성공적으로 변경되었습니다.",
-        "error_generic": "오류가 발생했습니다"
+        "error_generic": "오류가 발생했습니다",
+        "leave_org": "Leave Organization",
+        "leave_warning": "Are you sure you want to leave this organization? You will immediately lose access to all projects and settings in this organization.",
+        "demo_error_leave": "You cannot leave organizations in demo mode.",
+        "success_leave": "You have left the organization."
       }
     },
     "sandbox": {

@@ -1,6 +1,8 @@
 import { ENUM_ROLE_ORG } from "@/enums/roles";
+import ApiError from "@/errors/ApiError";
 import { decrypt, encrypt } from "@/lib/encrypt";
 import { decorateOrganization } from "@/lib/extensionGuards";
+import { logger } from "@/lib/logger";
 import { sendMail } from "@/lib/mailer";
 import { nanoId } from "@/lib/nanoId";
 import { assertAssignableRole } from "@/lib/orgRoles";
@@ -16,7 +18,6 @@ import {
   TOrganizationType,
   TSandboxIntegration,
 } from "./organization.type";
-import { logger } from "@/lib/logger";
 
 function decryptOrgSandboxToken<
   T extends { sandbox?: TSandboxIntegration | null },
@@ -547,6 +548,52 @@ const removeTeamMemberService = async ({
   };
 };
 
+// leave organization
+const leaveOrganizationService = async ({
+  org_id,
+  loggedInUserId,
+}: {
+  org_id: string;
+  loggedInUserId: string;
+}) => {
+  const organization = await Organization.findOne({
+    org_id,
+    "members.user_id": loggedInUserId,
+  });
+
+  if (!organization) {
+    throw new ApiError("User is not a member of this organization.", 404, "");
+  }
+
+  if (organization.owner === loggedInUserId) {
+    throw new ApiError(
+      "Organization owner cannot leave the organization.",
+      400,
+      "",
+    );
+  }
+
+  await Organization.findOneAndUpdate(
+    {
+      org_id,
+      "members.user_id": loggedInUserId,
+    },
+    {
+      $pull: {
+        members: {
+          user_id: loggedInUserId,
+        },
+      },
+    },
+  );
+
+  return {
+    user_id: loggedInUserId,
+    org_id,
+    left: true,
+  };
+};
+
 // organization update service
 const updateOrganizationService = async ({
   organization,
@@ -658,6 +705,7 @@ export const organizationService = {
   addTeamMemberService,
   updateRoleService,
   removeTeamMemberService,
+  leaveOrganizationService,
   updateOrganizationStatusService,
   deleteOrganizationService,
 };

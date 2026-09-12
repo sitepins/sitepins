@@ -1,8 +1,5 @@
 "use client";
 
-import { errorMessageOr } from "@/lib/utils/error";
-import { UpgradeCta } from "@/components/upgrade-cta";
-import { useOwnerPlan } from "@/hooks/use-owner-plan";
 import Avatar from "@/components/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -38,11 +35,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { toast } from "@/components/ui/toast";
+import { UpgradeCta } from "@/components/upgrade-cta";
 import { useDialog } from "@/hooks/use-dialog";
+import { useOwnerPlan } from "@/hooks/use-owner-plan";
 import { useOrgMember, usePermission } from "@/hooks/use-permission";
+import { authClient } from "@/lib/auth/auth-client";
 import { IS_DEMO } from "@/lib/constant";
 import { ENUM_PERMISSIONS } from "@/lib/roles";
 import { cn } from "@/lib/utils/cn";
+import { errorMessageOr } from "@/lib/utils/error";
 import { addNewTeamMemberSchema } from "@/lib/validate";
 import {
   useAddMemberMutation,
@@ -52,9 +54,7 @@ import { TMember, TOrg } from "@/redux/features/orgs/type";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
-import _Link from "next/link";
 import { Controller, useForm } from "react-hook-form";
-import { toast } from "@/components/ui/toast";
 import { z } from "zod";
 import MemberActions from "./org-member-actions";
 
@@ -63,6 +63,8 @@ export default function OrgMembers(org: TOrg) {
 
   const { canAccessProFeatures } = useOwnerPlan();
   const { isOwner } = useOrgMember();
+  const { data: auth } = authClient.useSession();
+  const currentUserId = auth?.user?.user_id ?? auth?.user?.id;
 
   const [updateRoleMember, { isLoading: isUpdating }] =
     useUpdateMemberRoleMutation();
@@ -106,6 +108,7 @@ export default function OrgMembers(org: TOrg) {
               isUpdating={isUpdating}
               orgId={org_id}
               onUpdateRole={updateRoleMember}
+              currentUserId={currentUserId}
             />
           ))}
         </div>
@@ -133,6 +136,7 @@ function MemberListItem({
   isUpdating,
   orgId,
   onUpdateRole,
+  currentUserId,
 }: {
   member: TMember;
   owner: string;
@@ -140,11 +144,17 @@ function MemberListItem({
   isUpdating: boolean;
   orgId: string;
   onUpdateRole: ReturnType<typeof useUpdateMemberRoleMutation>[0];
+  currentUserId?: string;
 }) {
   const [first_name, last_name] = member.full_name?.split(" ") ?? [];
   const avatarFallBack =
     first_name?.charAt(0).toUpperCase() + last_name?.charAt(0).toUpperCase();
   const tOrgMembers = useTranslations("org.members");
+
+  const isCurrentUser = !!currentUserId && member.user_id === currentUserId;
+  const isOrgOwner = owner === member.user_id;
+  const canShowActions =
+    (canManageMembers && !isOrgOwner) || (isCurrentUser && !isOrgOwner);
 
   return (
     <div className="group hover:bg-muted/50 flex flex-col gap-4 px-4 py-4 transition-colors md:flex-row md:items-center md:justify-between">
@@ -177,13 +187,14 @@ function MemberListItem({
               : tOrgMembers(`roles.${member.role}`)}
           </span>
         </div>
-        {canManageMembers && (
+        {canShowActions && (
           <MemberActions
             member={member}
             owner={owner}
             isUpdating={isUpdating}
             org_id={orgId}
             onUpdateRole={onUpdateRole}
+            isCurrentUser={isCurrentUser}
           />
         )}
       </div>

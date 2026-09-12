@@ -54,6 +54,17 @@
         "description": "上传图片为您的组织设置专属图标。",
         "demo_error": "演示模式下无法更改组织头像。",
         "success": "组织头像更新成功。"
+      },
+      "leave": {
+        "title": "Leave Organization",
+        "description": "Revoke your access to this organization. You will need an invite from an owner or admin to rejoin.",
+        "leave_org_btn": "Leave Organization",
+        "dialog_title": "Leave Organization?",
+        "dialog_desc": "Are you sure you want to leave this organization? You will immediately lose access to all its projects, media, and settings.",
+        "placeholder": "type CONFIRM to confirm",
+        "demo_error": "You cannot leave organizations in demo mode.",
+        "success": "You have left the organization.",
+        "error": "Failed to leave the organization."
       }
     },
     "members": {
@@ -90,7 +101,11 @@
         "error_delete_suffix": "您无权删除此用户。",
         "error_update_fn": "更新功能不可用",
         "success_update": "成员角色已成功更新。",
-        "error_generic": "出错了"
+        "error_generic": "出错了",
+        "leave_org": "Leave Organization",
+        "leave_warning": "Are you sure you want to leave this organization? You will immediately lose access to all projects and settings in this organization.",
+        "demo_error_leave": "You cannot leave organizations in demo mode.",
+        "success_leave": "You have left the organization."
       }
     },
     "sandbox": {

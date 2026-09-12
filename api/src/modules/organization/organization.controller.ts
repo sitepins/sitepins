@@ -124,6 +124,24 @@ const removeMemberController = catchAsync(
   },
 );
 
+// Leave organization
+const leaveOrganizationController = catchAsync(
+  async (req: Request, res: Response) => {
+    const org_id = req.params.org_id as string;
+    const result = await organizationService.leaveOrganizationService({
+      loggedInUserId: requireUserId(req),
+      org_id,
+    });
+
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: "Left organization successfully",
+      result,
+    });
+  },
+);
+
 // Update team member
 const updateRoleController = catchAsync(async (req: Request, res: Response) => {
   const org_id = req.params.org_id as string;
@@ -212,6 +230,7 @@ export const organizationController = {
   ensureDefaultOrganizationController,
   addMemberController,
   removeMemberController,
+  leaveOrganizationController,
   updateRoleController,
   updateOrganizationController,
   updateOrganizationStatusController,

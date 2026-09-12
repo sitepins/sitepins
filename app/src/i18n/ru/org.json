@@ -54,6 +54,17 @@
         "description": "Сделайте организацию узнаваемой, загрузив изображение.",
         "demo_error": "В демо-режиме нельзя изменить логотип.",
         "success": "Логотип организации успешно обновлен."
+      },
+      "leave": {
+        "title": "Leave Organization",
+        "description": "Revoke your access to this organization. You will need an invite from an owner or admin to rejoin.",
+        "leave_org_btn": "Leave Organization",
+        "dialog_title": "Leave Organization?",
+        "dialog_desc": "Are you sure you want to leave this organization? You will immediately lose access to all its projects, media, and settings.",
+        "placeholder": "type CONFIRM to confirm",
+        "demo_error": "You cannot leave organizations in demo mode.",
+        "success": "You have left the organization.",
+        "error": "Failed to leave the organization."
       }
     },
     "members": {
@@ -90,7 +101,11 @@
         "error_delete_suffix": "У вас нет прав на удаление этого пользователя.",
         "error_update_fn": "Функция обновления недоступна",
         "success_update": "Роль участника успешно обновлена.",
-        "error_generic": "Что-то пошло не так"
+        "error_generic": "Что-то пошло не так",
+        "leave_org": "Leave Organization",
+        "leave_warning": "Are you sure you want to leave this organization? You will immediately lose access to all projects and settings in this organization.",
+        "demo_error_leave": "You cannot leave organizations in demo mode.",
+        "success_leave": "You have left the organization."
       }
     },
     "sandbox": {

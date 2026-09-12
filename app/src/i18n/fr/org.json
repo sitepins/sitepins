@@ -54,6 +54,17 @@
         "description": "Personnalisez votre organisation en ajoutant une image de profil.",
         "demo_error": "Impossible de modifier l'organisation en mode démo.",
         "success": "Miniature de l'organisation mise à jour avec succès."
+      },
+      "leave": {
+        "title": "Leave Organization",
+        "description": "Revoke your access to this organization. You will need an invite from an owner or admin to rejoin.",
+        "leave_org_btn": "Leave Organization",
+        "dialog_title": "Leave Organization?",
+        "dialog_desc": "Are you sure you want to leave this organization? You will immediately lose access to all its projects, media, and settings.",
+        "placeholder": "type CONFIRM to confirm",
+        "demo_error": "You cannot leave organizations in demo mode.",
+        "success": "You have left the organization.",
+        "error": "Failed to leave the organization."
       }
     },
     "members": {
@@ -90,7 +101,11 @@
         "error_delete_suffix": "Vous n'êtes pas autorisé à supprimer cet utilisateur.",
         "error_update_fn": "Fonction de mise à jour indisponible",
         "success_update": "Rôle du membre mis à jour avec succès.",
-        "error_generic": "Une erreur est survenue"
+        "error_generic": "Une erreur est survenue",
+        "leave_org": "Leave Organization",
+        "leave_warning": "Are you sure you want to leave this organization? You will immediately lose access to all projects and settings in this organization.",
+        "demo_error_leave": "You cannot leave organizations in demo mode.",
+        "success_leave": "You have left the organization."
       }
     },
     "sandbox": {

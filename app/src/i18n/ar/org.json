@@ -54,6 +54,17 @@
         "description": "اجعل منظمتك مميزة بإضافة صورة رمزية.",
         "demo_error": "لا يمكنك تحديث المنظمة في الوضع التجريبي.",
         "success": "تم تحديث الصورة المصغرة للمنظمة بنجاح."
+      },
+      "leave": {
+        "title": "Leave Organization",
+        "description": "Revoke your access to this organization. You will need an invite from an owner or admin to rejoin.",
+        "leave_org_btn": "Leave Organization",
+        "dialog_title": "Leave Organization?",
+        "dialog_desc": "Are you sure you want to leave this organization? You will immediately lose access to all its projects, media, and settings.",
+        "placeholder": "type CONFIRM to confirm",
+        "demo_error": "You cannot leave organizations in demo mode.",
+        "success": "You have left the organization.",
+        "error": "Failed to leave the organization."
       }
     },
     "members": {
@@ -90,7 +101,11 @@
         "error_delete_suffix": "ليس لديك الصلاحية لحذف هذا المستخدم.",
         "error_update_fn": "خاصية التحديث غير متوفرة",
         "success_update": "تم تحديث دور العضو بنجاح.",
-        "error_generic": "حدث خطأ ما"
+        "error_generic": "حدث خطأ ما",
+        "leave_org": "Leave Organization",
+        "leave_warning": "Are you sure you want to leave this organization? You will immediately lose access to all projects and settings in this organization.",
+        "demo_error_leave": "You cannot leave organizations in demo mode.",
+        "success_leave": "You have left the organization."
       }
     },
     "sandbox": {

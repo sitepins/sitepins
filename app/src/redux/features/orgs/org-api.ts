@@ -132,6 +132,17 @@ export const orgApi = api.injectEndpoints({
         { type: "Org", id },
       ],
     }),
+    // Leave organization
+    leaveOrg: builder.mutation<unknown, string>({
+      query: (org_id) => ({
+        url: `/organization/leave/${org_id}`,
+        method: "PATCH",
+      }),
+      invalidatesTags: (result, error, org_id) => [
+        { type: "Orgs" },
+        { type: "Org", id: org_id },
+      ],
+    }),
   }),
 });
 
@@ -147,4 +158,5 @@ export const {
   useUpdateOrgStatusMutation,
   useUpdateOrgMutation,
   useDeleteOrgMutation,
+  useLeaveOrgMutation,
 } = orgApi;

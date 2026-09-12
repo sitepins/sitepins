@@ -54,6 +54,17 @@
         "description": "Personalisieren Sie Ihre Organisation mit einem Bild.",
         "demo_error": "Im Demo-Modus kann das Bild nicht geändert werden.",
         "success": "Organisationsbild erfolgreich aktualisiert."
+      },
+      "leave": {
+        "title": "Leave Organization",
+        "description": "Revoke your access to this organization. You will need an invite from an owner or admin to rejoin.",
+        "leave_org_btn": "Leave Organization",
+        "dialog_title": "Leave Organization?",
+        "dialog_desc": "Are you sure you want to leave this organization? You will immediately lose access to all its projects, media, and settings.",
+        "placeholder": "type CONFIRM to confirm",
+        "demo_error": "You cannot leave organizations in demo mode.",
+        "success": "You have left the organization.",
+        "error": "Failed to leave the organization."
       }
     },
     "members": {
@@ -90,7 +101,11 @@
         "error_delete_suffix": "Sie sind nicht berechtigt, diesen Benutzer zu löschen.",
         "error_update_fn": "Aktualisierungsfunktion nicht verfügbar",
         "success_update": "Rolle des Mitglieds erfolgreich aktualisiert.",
-        "error_generic": "Etwas ist schiefgelaufen"
+        "error_generic": "Etwas ist schiefgelaufen",
+        "leave_org": "Leave Organization",
+        "leave_warning": "Are you sure you want to leave this organization? You will immediately lose access to all projects and settings in this organization.",
+        "demo_error_leave": "You cannot leave organizations in demo mode.",
+        "success_leave": "You have left the organization."
       }
     },
     "sandbox": {

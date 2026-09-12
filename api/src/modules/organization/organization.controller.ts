@@ -9,7 +9,7 @@ const getOrganizationsByUserController = catchAsync(
   async (req: Request, res: Response) => {
     const organization =
       await organizationService.getOrganizationsByUserService(
-        (req.params.userId as string) || requireUserId(req),
+        requireUserId(req),
       );
 
     sendResponse(res, {
@@ -26,8 +26,6 @@ const getOrganizationByIdController = catchAsync(
   async (req: Request, res: Response) => {
     const organization = await organizationService.getOrganizationService({
       org_id: req.params.org_id as string,
-      // Always the session user. `?owner_id=` let a caller ask for the org as
-      // seen by someone else.
       userId: requireUserId(req),
     });
 

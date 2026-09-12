@@ -115,12 +115,23 @@ const getOrganizationService = async ({
   userId,
 }: {
   org_id: string;
-  userId: string;
+  userId?: string;
 }) => {
+  const matchStage =
+    typeof userId === "string"
+      ? { $and: [{ org_id }, { members: { $elemMatch: { user_id: userId } } }] }
+      : { org_id };
+
   const result = await Organization.aggregate([
     {
-      $match: {
-        $and: [{ org_id }, { members: { $elemMatch: { user_id: userId } } }],
+      $match: matchStage,
+    },
+    {
+      $lookup: {
+        from: "projects",
+        localField: "org_id",
+        foreignField: "org_id",
+        as: "projects",
       },
     },
     {
@@ -133,6 +144,7 @@ const getOrganizationService = async ({
     },
     {
       $addFields: {
+        projectCount: { $size: "$projects" },
         members: {
           $map: {
             input: "$members",
@@ -204,6 +216,7 @@ const getOrganizationService = async ({
       $project: {
         __v: 0,
         users: 0,
+        projects: 0,
       },
     },
   ]);
@@ -670,9 +683,13 @@ const deleteOrganizationService = async ({
   userId,
 }: {
   org_id: string;
-  userId: string;
+  userId?: string;
 }) => {
-  const organization = await Organization.findOne({ org_id, owner: userId });
+  const filter: Record<string, unknown> = { org_id };
+  if (typeof userId === "string") {
+    filter.owner = userId;
+  }
+  const organization = await Organization.findOne(filter);
   if (!organization) {
     throw Error("Organization not found");
   }
@@ -688,10 +705,7 @@ const deleteOrganizationService = async ({
   await ProjectPreview.deleteMany({ project_id: { $in: projectIds } });
   await ProjectContent.deleteMany({ project_id: { $in: projectIds } });
 
-  const deleteOrganization = await Organization.findOneAndDelete({
-    org_id,
-    owner: userId,
-  });
+  const deleteOrganization = await Organization.findOneAndDelete(filter);
   await Project.deleteMany({ org_id });
   return deleteOrganization;
 };

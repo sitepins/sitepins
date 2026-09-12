@@ -1,8 +1,9 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { Request, Response } from "express";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const findOneMock = vi.fn();
 const findOneAndUpdateMock = vi.fn();
+const aggregateMock = vi.fn();
 const userFindOneMock = vi.fn();
 const sendMailMock = vi.fn();
 
@@ -10,6 +11,7 @@ vi.mock("@/modules/organization/organization.model", () => ({
   Organization: {
     findOne: (...args: unknown[]) => findOneMock(...args),
     findOneAndUpdate: (...args: unknown[]) => findOneAndUpdateMock(...args),
+    aggregate: (...args: unknown[]) => aggregateMock(...args),
   },
 }));
 
@@ -33,15 +35,17 @@ vi.mock("@/lib/logger", () => ({
 
 function makeReqRes({
   userId,
+  role,
   params = {},
   body = {},
 }: {
   userId?: string;
+  role?: string;
   params?: Record<string, string>;
   body?: Record<string, unknown>;
 }) {
   const req = {
-    user: userId ? { user_id: userId } : undefined,
+    user: userId ? { user_id: userId, role } : undefined,
     params,
     body,
   } as unknown as Request;
@@ -56,6 +60,7 @@ function makeReqRes({
 beforeEach(() => {
   findOneMock.mockReset();
   findOneAndUpdateMock.mockReset();
+  aggregateMock.mockReset();
   userFindOneMock.mockReset();
   sendMailMock.mockReset();
 });
@@ -244,6 +249,62 @@ describe("Organization Module", () => {
             org_name: "Test Org",
           },
         });
+      });
+    });
+
+    describe("getOrganizationService", () => {
+      it("filters by org_id and user membership when userId is provided", async () => {
+        aggregateMock.mockResolvedValueOnce([
+          { org_id: "org-123", org_name: "Test Org" },
+        ]);
+
+        const { organizationService } =
+          await import("./organization.service.js");
+
+        const result = await organizationService.getOrganizationService({
+          org_id: "org-123",
+          userId: "user-1",
+        });
+
+        expect(result).toEqual(
+          expect.objectContaining({ org_id: "org-123", org_name: "Test Org" }),
+        );
+        expect(aggregateMock).toHaveBeenCalledWith(
+          expect.arrayContaining([
+            expect.objectContaining({
+              $match: {
+                $and: [
+                  { org_id: "org-123" },
+                  { members: { $elemMatch: { user_id: "user-1" } } },
+                ],
+              },
+            }),
+          ]),
+        );
+      });
+
+      it("filters only by org_id when userId is not provided", async () => {
+        aggregateMock.mockResolvedValueOnce([
+          { org_id: "org-123", org_name: "Test Org" },
+        ]);
+
+        const { organizationService } =
+          await import("./organization.service.js");
+
+        const result = await organizationService.getOrganizationService({
+          org_id: "org-123",
+        });
+
+        expect(result).toEqual(
+          expect.objectContaining({ org_id: "org-123", org_name: "Test Org" }),
+        );
+        expect(aggregateMock).toHaveBeenCalledWith(
+          expect.arrayContaining([
+            expect.objectContaining({
+              $match: { org_id: "org-123" },
+            }),
+          ]),
+        );
       });
     });
   });

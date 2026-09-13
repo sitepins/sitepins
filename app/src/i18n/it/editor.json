@@ -181,7 +181,13 @@
       "description_placeholder": "Aggiungi una descrizione estesa opzionale...",
       "submit": "Commit",
       "default_message": "Aggiorna file",
-      "rename_message": "Rinomina {oldPath} in {newPath}"
+      "rename_message": "Rinomina {oldPath} in {newPath}",
+      "ai": {
+        "generate": "Genera automaticamente con l'IA",
+        "generating": "Generazione in corso...",
+        "success": "Messaggio di commit generato con l'IA",
+        "error": "Impossibile generare il messaggio di commit"
+      }
     },
     "renderer": {
       "loading_options": "Caricamento opzioni...",
@@ -200,9 +206,7 @@
       "select_prompt": "Seleziona un file per iniziare a modificare"
     },
     "code": {
-      "edited": "Modificato",
       "unsaved": "• Non salvato",
-      "discard_changes": "Scarta modifiche",
       "discard_title": "Scartare le modifiche?",
       "discard_button": "Scarta",
       "commit": "Commit",
@@ -218,7 +222,32 @@
       "lines_count": "{count, plural, =1 {# riga} other {# righe}}",
       "characters_count": "{count, plural, =1 {# carattere} other {# caratteri}}",
       "error_loading_title": "Errore durante il caricamento del file",
-      "error_loading_desc": "Impossibile caricare il file per la modifica."
+      "error_loading_desc": "Impossibile caricare il file per la modifica.",
+      "ai": {
+        "copilot_button": "Copilota IA",
+        "inline_title": "Copilota codice IA",
+        "inline_placeholder": "Chiedi all'IA di modificare, refattorizzare o generare codice...",
+        "target_selection": "Selezione",
+        "target_file": "Intero file",
+        "accept": "Accetta",
+        "discard": "Scarta",
+        "run": "Esegui",
+        "quick_fix": "Trova e correggi bug",
+        "quick_refactor": "Refactoring codice",
+        "quick_comments": "Aggiungi commenti",
+        "explain_title": "Spiegazione del codice",
+        "explain_loading": "Analisi del codice con IA in corso...",
+        "generating": "Generazione risposta",
+        "copy": "Copia",
+        "copied": "Copiato",
+        "changes_applied": "Modifiche IA applicate all'editor",
+        "no_code_to_explain": "Nessun codice trovato da spiegare",
+        "quick_explain": "Spiega codice",
+        "review_title": "Rivedi le modifiche",
+        "review_desc": "Confronto delle modifiche dell'IA con il codice originale",
+        "diff_inline": "Diff unificato in linea",
+        "diff_split": "Confronto affiancato"
+      }
     },
     "seo": {
       "slug": "Slug",
@@ -364,6 +393,19 @@
           "toc_present": "Sommario",
           "em_dash_overuse": "Uso eccessivo di trattini lunghi"
         }
+      },
+      "ai": {
+        "fix": "Correggi con l'IA",
+        "fixing": "Generazione correzione",
+        "suggestion": "Suggerimento IA",
+        "apply_fix": "Applica",
+        "apply_to_editor": "Applica all'editor",
+        "applied": "Applicato!",
+        "copy_fix": "Copia",
+        "copied": "Copiato!",
+        "fix_applied": "Correzione IA applicata",
+        "content_applied": "Contenuto aggiornato nell'editor",
+        "error": "Impossibile elaborare la richiesta IA"
       }
     },
     "mismatch": {

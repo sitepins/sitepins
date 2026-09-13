@@ -181,7 +181,13 @@
       "description_placeholder": "Add an optional extended description..",
       "submit": "Commit",
       "default_message": "Update file",
-      "rename_message": "Rename {oldPath} to {newPath}"
+      "rename_message": "Rename {oldPath} to {newPath}",
+      "ai": {
+        "generate": "Auto-generate with AI",
+        "generating": "Generating...",
+        "success": "Generated commit message with AI",
+        "error": "Failed to generate commit message"
+      }
     },
     "renderer": {
       "loading_options": "Loading options...",
@@ -200,9 +206,7 @@
       "select_prompt": "Select a file to start editing"
     },
     "code": {
-      "edited": "Edited",
       "unsaved": "• Unsaved",
-      "discard_changes": "Discard changes",
       "discard_title": "Discard Changes?",
       "discard_button": "Discard",
       "commit": "Commit",
@@ -218,7 +222,32 @@
       "lines_count": "{count, plural, =1 {# line} other {# lines}}",
       "characters_count": "{count, plural, =1 {# character} other {# characters}}",
       "error_loading_title": "Error loading file",
-      "error_loading_desc": "Could not load the file for editing."
+      "error_loading_desc": "Could not load the file for editing.",
+      "ai": {
+        "copilot_button": "AI Copilot",
+        "inline_title": "AI Code Copilot",
+        "inline_placeholder": "Ask AI to edit, refactor, or generate code...",
+        "target_selection": "Selection",
+        "target_file": "Entire file",
+        "accept": "Accept",
+        "discard": "Discard",
+        "run": "Run",
+        "quick_fix": "Find & Fix Bugs",
+        "quick_refactor": "Refactor Code",
+        "quick_comments": "Add Comments",
+        "explain_title": "Code Explanation",
+        "explain_loading": "Analyzing code with AI...",
+        "generating": "Generating response",
+        "copy": "Copy",
+        "copied": "Copied",
+        "changes_applied": "AI changes applied to editor",
+        "no_code_to_explain": "No code found to explain",
+        "quick_explain": "Explain Code",
+        "review_title": "Review Changes",
+        "review_desc": "Comparing AI changes against original code",
+        "diff_inline": "Unified Inline Diff",
+        "diff_split": "Side-by-Side Diff"
+      }
     },
     "seo": {
       "slug": "Slug",
@@ -364,6 +393,19 @@
           "toc_present": "Table of Contents",
           "em_dash_overuse": "Em Dash Overuse"
         }
+      },
+      "ai": {
+        "fix": "Fix with AI",
+        "fixing": "Generating fix",
+        "suggestion": "AI Suggestion",
+        "apply_fix": "Apply",
+        "apply_to_editor": "Apply to Editor",
+        "applied": "Applied!",
+        "copy_fix": "Copy",
+        "copied": "Copied!",
+        "fix_applied": "Applied AI fix",
+        "content_applied": "Content updated in editor",
+        "error": "Failed to process AI request"
       }
     },
     "mismatch": {

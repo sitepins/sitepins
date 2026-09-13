@@ -1,6 +1,20 @@
 {
   "search": {
-    "placeholder": "Einstellungen, Organisationen, Tarife suchen...",
+    "placeholder": "Suchen oder KI fragen...",
+    "ask_ai_copilot": "AI Copilot fragen",
+    "ask_about_query": "AI Copilot fragen: \"{query}\"",
+    "create_in_collection": "Neuen Eintrag in {collection} erstellen",
+    "ai_placeholder": "Frag mich alles über deine Website, Inhalte oder das CMS...",
+    "ai_send": "Senden",
+    "copilot_title": "AI Copilot",
+    "copilot_subtitle": "Frag mich alles — ich kenne die Struktur und Sammlungen deines Projekts.",
+    "suggestion_1": "Wie erstelle ich einen neuen Blogbeitrag?",
+    "suggestion_2": "Was ist die Website-Konfiguration und wie bearbeite ich sie?",
+    "suggestion_3": "Wie lade ich ein neues Teammitglied ein?",
+    "suggestion_4": "Erkläre die Ordnerstruktur dieses Projekts",
+    "copy": "Kopieren",
+    "copied": "Kopiert!",
+    "new_query": "Neues Gespräch",
     "groupLabels": {
       "organizations": "Organisationen",
       "preferences": "Einstellungen",

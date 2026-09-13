@@ -19,6 +19,7 @@ type PreviewLabelProps = React.LabelHTMLAttributes<HTMLLabelElement> & {
   children?: React.ReactNode;
   length?: number;
   maxLength?: number;
+  action?: React.ReactNode;
   isIgnored?: boolean;
   type?: string;
   name?: string;
@@ -44,6 +45,7 @@ export function PreviewLabel({
   className,
   length,
   maxLength,
+  action,
   // Field specific props to avoid spreading to DOM
   isIgnored: _isIgnored,
   type: _type,
@@ -80,9 +82,18 @@ export function PreviewLabel({
   };
 
   return (
-    <Label className={cn("mb-2 flex capitalize", className)} {...props}>
-      {children}
-      {isRequired && <span className="text-destructive">*</span>}
+    <Label
+      className={cn(
+        "mb-2 flex items-center justify-between capitalize",
+        className,
+      )}
+      {...props}
+    >
+      <span className="flex items-center gap-1.5">
+        {children}
+        {isRequired && <span className="text-destructive">*</span>}
+        {action}
+      </span>
       {currentLength !== undefined && maxLength !== undefined && (
         <Badge variant={getBadgeVariant()} className="ms-auto">
           {currentLength}/{maxLength}

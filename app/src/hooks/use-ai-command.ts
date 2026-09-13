@@ -57,15 +57,11 @@ export const useAiCommand = () => {
     ...options,
   });
 
-  const chat = {
-    ...baseChat,
-  };
-
   React.useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    editor.setOption(AIChatPlugin, "chat", chat as any);
+    editor.setOption(AIChatPlugin, "chat", baseChat as any);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chat.status, chat.messages, chat.error]);
+  }, [baseChat.status, baseChat.messages, baseChat.error]);
 
-  return chat;
+  return baseChat;
 };

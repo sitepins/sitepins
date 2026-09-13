@@ -1,6 +1,5 @@
 "use client";
 
-import { useHydrated } from "@/hooks/use-hydrated";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -21,11 +20,12 @@ import {
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/switch";
+import { toast } from "@/components/ui/toast";
+import { useHydrated } from "@/hooks/use-hydrated";
 import { aiProviders } from "@/lib/constant";
-import { Eye, EyeOff, Trash } from "lucide-react";
+import { ArrowUpRight, Eye, EyeOff, Trash } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { ChangeEvent, useMemo, useState } from "react";
-import { toast } from "@/components/ui/toast";
 
 // --- Types ---
 type TAICredential = {
@@ -53,6 +53,16 @@ export default function AISettings() {
     deleteKey,
     autocomplete,
     toggleAutocomplete,
+    editorAi,
+    toggleEditorAi,
+    codeAi,
+    toggleCodeAi,
+    commitAi,
+    toggleCommitAi,
+    seoAi,
+    toggleSeoAi,
+    searchAi,
+    toggleSearchAi,
     isHydrated,
   } = useAISettings(tDashboardAiAgent);
 
@@ -105,6 +115,11 @@ export default function AISettings() {
     }
   };
 
+  const handleDeleteKey = () => {
+    setExplicitCustom(false);
+    deleteKey();
+  };
+
   return (
     <>
       <Card>
@@ -148,9 +163,12 @@ export default function AISettings() {
                         href={currentProviderDocsUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-muted-foreground hover:text-primary text-xs underline-offset-4 transition-colors hover:underline"
+                        className="text-muted-foreground hover:text-primary group inline-flex items-center gap-1 text-xs transition-colors"
                       >
-                        {tDashboardAiAgent("find_model_id")} ↗
+                        <span className="underline-offset-4 hover:underline">
+                          {tDashboardAiAgent("find_model_id")}
+                        </span>
+                        <ArrowUpRight className="size-3.5 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                       </a>
                     )}
                   </div>
@@ -207,24 +225,90 @@ export default function AISettings() {
               </div>
             </div>
 
-            <div className="border-border bg-background flex flex-row items-center justify-between rounded-lg border p-4">
-              <div className="space-y-0.5">
-                <label className="text-base font-medium">
-                  {tDashboardAiAgent("copilot_title")}
-                </label>
-                <p className="text-muted-foreground text-xs">
-                  {tDashboardAiAgent("copilot_description")}
-                </p>
+            <div className="space-y-3">
+              <div className="border-border bg-background flex flex-row items-center justify-between rounded-lg border p-4">
+                <div className="space-y-0.5 pe-4">
+                  <label className="text-base font-medium">
+                    {tDashboardAiAgent("search_ai_title")}
+                  </label>
+                  <p className="text-muted-foreground text-xs">
+                    {tDashboardAiAgent("search_ai_description")}
+                  </p>
+                </div>
+                <Switch checked={searchAi} onCheckedChange={toggleSearchAi} />
               </div>
-              <Switch
-                checked={autocomplete}
-                onCheckedChange={toggleAutocomplete}
-              />
+
+              <div className="border-border bg-background flex flex-row items-center justify-between rounded-lg border p-4">
+                <div className="space-y-0.5 pe-4">
+                  <label className="text-base font-medium">
+                    {tDashboardAiAgent("editor_ai_title")}
+                  </label>
+                  <p className="text-muted-foreground text-xs">
+                    {tDashboardAiAgent("editor_ai_description")}
+                  </p>
+                </div>
+                <Switch checked={editorAi} onCheckedChange={toggleEditorAi} />
+              </div>
+
+              <div className="border-border bg-background flex flex-row items-center justify-between rounded-lg border p-4">
+                <div className="space-y-0.5 pe-4">
+                  <label className="text-base font-medium">
+                    {tDashboardAiAgent("copilot_title")}
+                  </label>
+                  <p className="text-muted-foreground text-xs">
+                    {tDashboardAiAgent("copilot_description")}
+                  </p>
+                </div>
+                <Switch
+                  checked={autocomplete}
+                  onCheckedChange={toggleAutocomplete}
+                />
+              </div>
+
+              <div className="border-border bg-background flex flex-row items-center justify-between rounded-lg border p-4">
+                <div className="space-y-0.5 pe-4">
+                  <label className="text-base font-medium">
+                    {tDashboardAiAgent("seo_ai_title")}
+                  </label>
+                  <p className="text-muted-foreground text-xs">
+                    {tDashboardAiAgent("seo_ai_description")}
+                  </p>
+                </div>
+                <Switch checked={seoAi} onCheckedChange={toggleSeoAi} />
+              </div>
+
+              <div className="border-border bg-background flex flex-row items-center justify-between rounded-lg border p-4">
+                <div className="space-y-0.5 pe-4">
+                  <label className="text-base font-medium">
+                    {tDashboardAiAgent("code_ai_title")}
+                  </label>
+                  <p className="text-muted-foreground text-xs">
+                    {tDashboardAiAgent("code_ai_description")}
+                  </p>
+                </div>
+                <Switch checked={codeAi} onCheckedChange={toggleCodeAi} />
+              </div>
+
+              <div className="border-border bg-background flex flex-row items-center justify-between rounded-lg border p-4">
+                <div className="space-y-0.5 pe-4">
+                  <label className="text-base font-medium">
+                    {tDashboardAiAgent("commit_ai_title")}
+                  </label>
+                  <p className="text-muted-foreground text-xs">
+                    {tDashboardAiAgent("commit_ai_description")}
+                  </p>
+                </div>
+                <Switch checked={commitAi} onCheckedChange={toggleCommitAi} />
+              </div>
             </div>
           </CardContent>
           <CardFooter className="flex justify-between">
             {initialAiCredential.apiKey && (
-              <Button variant="destructive" onClick={deleteKey} type="button">
+              <Button
+                variant="destructive"
+                onClick={handleDeleteKey}
+                type="button"
+              >
                 <Trash className="me-2 size-4" />
                 {tDashboardAiAgent("delete_key")}
               </Button>
@@ -233,7 +317,7 @@ export default function AISettings() {
               disabled={
                 !aiCredential.provider ||
                 !aiCredential.model ||
-                (!aiCredential.apiKey && !initialAiCredential.apiKey) ||
+                !aiCredential.apiKey.trim() ||
                 !isDirty
               }
               type="submit"
@@ -324,9 +408,24 @@ function useAISettings(t: (key: string) => string) {
     { provider: "", model: "", apiKey: "" },
   );
 
-  const [autocomplete, setAutocomplete] = useState<boolean>(false);
-  const [initialAutocomplete, setInitialAutocomplete] =
-    useState<boolean>(false);
+  const [autocomplete, setAutocomplete] = useState<boolean>(true);
+  const [initialAutocomplete, setInitialAutocomplete] = useState<boolean>(true);
+
+  const [editorAi, setEditorAi] = useState<boolean>(true);
+  const [initialEditorAi, setInitialEditorAi] = useState<boolean>(true);
+
+  const [codeAi, setCodeAi] = useState<boolean>(true);
+  const [initialCodeAi, setInitialCodeAi] = useState<boolean>(true);
+
+  const [commitAi, setCommitAi] = useState<boolean>(true);
+  const [initialCommitAi, setInitialCommitAi] = useState<boolean>(true);
+
+  const [seoAi, setSeoAi] = useState<boolean>(true);
+  const [initialSeoAi, setInitialSeoAi] = useState<boolean>(true);
+
+  const [searchAi, setSearchAi] = useState<boolean>(true);
+  const [initialSearchAi, setInitialSearchAi] = useState<boolean>(true);
+
   const isHydrated = useHydrated();
 
   // localStorage is unreadable on the server, so the form seeds itself on the
@@ -334,18 +433,53 @@ function useAISettings(t: (key: string) => string) {
   const [isSeeded, setIsSeeded] = useState(false);
   if (isHydrated && !isSeeded) {
     setIsSeeded(true);
+    const loadedProvider = localStorage.getItem("sitepins-ai-provider") || "";
+    let loadedModel = localStorage.getItem("sitepins-ai-model") || "";
+    if (loadedProvider === "groq") {
+      if (loadedModel === "qwen3.8-27b") loadedModel = "qwen/qwen3.8-27b";
+      else if (loadedModel === "qwen3.6-27b") loadedModel = "qwen/qwen3.6-27b";
+      else if (
+        loadedModel === "qwen3-32b" ||
+        loadedModel === "gemma2-9b-it" ||
+        loadedModel === "llama-3.3-70b-versatile" ||
+        loadedModel === "llama-3.1-8b-instant"
+      ) {
+        loadedModel = "openai/gpt-oss-120b";
+      }
+      if (loadedModel !== localStorage.getItem("sitepins-ai-model")) {
+        localStorage.setItem("sitepins-ai-model", loadedModel);
+      }
+    }
     const loaded = {
-      provider: localStorage.getItem("sitepins-ai-provider") || "",
-      model: localStorage.getItem("sitepins-ai-model") || "",
+      provider: loadedProvider,
+      model: loadedModel,
       apiKey: localStorage.getItem("sitepins-ai-apiKey") || "",
     };
     const loadedAutocomplete =
-      localStorage.getItem("sitepins-ai-autocomplete") === "true";
+      localStorage.getItem("sitepins-ai-autocomplete") !== "false";
+    const loadedEditorAi =
+      localStorage.getItem("sitepins-ai-editor") !== "false";
+    const loadedCodeAi = localStorage.getItem("sitepins-ai-code") !== "false";
+    const loadedCommitAi =
+      localStorage.getItem("sitepins-ai-commit") !== "false";
+    const loadedSeoAi = localStorage.getItem("sitepins-ai-seo") !== "false";
+    const loadedSearchAi =
+      localStorage.getItem("sitepins-ai-search") !== "false";
 
     setAiCredential(loaded);
     setInitialAiCredential(loaded);
     setAutocomplete(loadedAutocomplete);
     setInitialAutocomplete(loadedAutocomplete);
+    setEditorAi(loadedEditorAi);
+    setInitialEditorAi(loadedEditorAi);
+    setCodeAi(loadedCodeAi);
+    setInitialCodeAi(loadedCodeAi);
+    setCommitAi(loadedCommitAi);
+    setInitialCommitAi(loadedCommitAi);
+    setSeoAi(loadedSeoAi);
+    setInitialSeoAi(loadedSeoAi);
+    setSearchAi(loadedSearchAi);
+    setInitialSearchAi(loadedSearchAi);
   }
 
   const [showKey, setShowKey] = useState<boolean>(false);
@@ -354,8 +488,36 @@ function useAISettings(t: (key: string) => string) {
     const credDirty =
       JSON.stringify(aiCredential) !== JSON.stringify(initialAiCredential);
     const autoDirty = autocomplete !== initialAutocomplete;
-    return credDirty || autoDirty;
-  }, [aiCredential, initialAiCredential, autocomplete, initialAutocomplete]);
+    const editorAiDirty = editorAi !== initialEditorAi;
+    const codeAiDirty = codeAi !== initialCodeAi;
+    const commitAiDirty = commitAi !== initialCommitAi;
+    const seoAiDirty = seoAi !== initialSeoAi;
+    const searchAiDirty = searchAi !== initialSearchAi;
+    return (
+      credDirty ||
+      autoDirty ||
+      editorAiDirty ||
+      codeAiDirty ||
+      commitAiDirty ||
+      seoAiDirty ||
+      searchAiDirty
+    );
+  }, [
+    aiCredential,
+    initialAiCredential,
+    autocomplete,
+    initialAutocomplete,
+    editorAi,
+    initialEditorAi,
+    codeAi,
+    initialCodeAi,
+    commitAi,
+    initialCommitAi,
+    seoAi,
+    initialSeoAi,
+    searchAi,
+    initialSearchAi,
+  ]);
 
   // Derived state for models based on selected provider
   const models = useMemo(() => {
@@ -371,28 +533,48 @@ function useAISettings(t: (key: string) => string) {
     e.preventDefault();
 
     try {
-      if (aiCredential.provider) {
-        localStorage.setItem("sitepins-ai-provider", aiCredential.provider);
-      } else {
-        localStorage.removeItem("sitepins-ai-provider");
-      }
+      const trimmedKey = aiCredential.apiKey.trim();
+      if (trimmedKey) {
+        localStorage.setItem("sitepins-ai-apiKey", trimmedKey);
+        if (aiCredential.provider) {
+          localStorage.setItem("sitepins-ai-provider", aiCredential.provider);
+        } else {
+          localStorage.removeItem("sitepins-ai-provider");
+        }
 
-      if (aiCredential.model) {
-        localStorage.setItem("sitepins-ai-model", aiCredential.model);
+        if (aiCredential.model) {
+          localStorage.setItem("sitepins-ai-model", aiCredential.model);
+        } else {
+          localStorage.removeItem("sitepins-ai-model");
+        }
       } else {
+        localStorage.removeItem("sitepins-ai-apiKey");
+        localStorage.removeItem("sitepins-ai-provider");
         localStorage.removeItem("sitepins-ai-model");
       }
 
-      if (aiCredential.apiKey) {
-        localStorage.setItem("sitepins-ai-apiKey", aiCredential.apiKey);
-      } else {
-        localStorage.removeItem("sitepins-ai-apiKey");
-      }
-
       localStorage.setItem("sitepins-ai-autocomplete", String(autocomplete));
+      localStorage.setItem("sitepins-ai-editor", String(editorAi));
+      localStorage.setItem("sitepins-ai-code", String(codeAi));
+      localStorage.setItem("sitepins-ai-commit", String(commitAi));
+      localStorage.setItem("sitepins-ai-seo", String(seoAi));
+      localStorage.setItem("sitepins-ai-search", String(searchAi));
 
-      setInitialAiCredential(aiCredential);
+      window.dispatchEvent(new Event("storage"));
+      window.dispatchEvent(new CustomEvent("sitepins:ai-settings-changed"));
+
+      const savedAiCredential = trimmedKey
+        ? { ...aiCredential, apiKey: trimmedKey }
+        : { provider: "", model: "", apiKey: "" };
+
+      setAiCredential(savedAiCredential);
+      setInitialAiCredential(savedAiCredential);
       setInitialAutocomplete(autocomplete);
+      setInitialEditorAi(editorAi);
+      setInitialCodeAi(codeAi);
+      setInitialCommitAi(commitAi);
+      setInitialSeoAi(seoAi);
+      setInitialSearchAi(searchAi);
       toast.success(t("save_success"));
     } catch {
       toast.error(t("save_error"));
@@ -416,11 +598,124 @@ function useAISettings(t: (key: string) => string) {
   };
 
   const deleteKey = () => {
-    setAiCredential({ provider: "", model: "", apiKey: "" });
+    try {
+      localStorage.removeItem("sitepins-ai-apiKey");
+      localStorage.removeItem("sitepins-ai-provider");
+      localStorage.removeItem("sitepins-ai-model");
+
+      window.dispatchEvent(new Event("storage"));
+      window.dispatchEvent(new CustomEvent("sitepins:ai-settings-changed"));
+
+      const reset = { provider: "", model: "", apiKey: "" };
+      setAiCredential(reset);
+      setInitialAiCredential(reset);
+      setShowKey(false);
+      toast.success(t("delete_key_success"));
+    } catch {
+      toast.error(t("save_error"));
+    }
   };
 
   const toggleAutocomplete = (checked: boolean) => {
     setAutocomplete(checked);
+    try {
+      localStorage.setItem("sitepins-ai-autocomplete", String(checked));
+      setInitialAutocomplete(checked);
+      window.dispatchEvent(new Event("storage"));
+      window.dispatchEvent(new CustomEvent("sitepins:ai-settings-changed"));
+      toast.success(
+        checked
+          ? t("copilot_enabled") || "Autocomplete enabled"
+          : t("copilot_disabled") || "Autocomplete disabled",
+      );
+    } catch {
+      // Storage unavailable
+    }
+  };
+
+  const toggleEditorAi = (checked: boolean) => {
+    setEditorAi(checked);
+    try {
+      localStorage.setItem("sitepins-ai-editor", String(checked));
+      setInitialEditorAi(checked);
+      window.dispatchEvent(new Event("storage"));
+      window.dispatchEvent(new CustomEvent("sitepins:ai-settings-changed"));
+      toast.success(
+        checked
+          ? t("editor_ai_enabled") || "Editor AI enabled"
+          : t("editor_ai_disabled") || "Editor AI disabled",
+      );
+    } catch {
+      // Storage unavailable
+    }
+  };
+
+  const toggleCodeAi = (checked: boolean) => {
+    setCodeAi(checked);
+    try {
+      localStorage.setItem("sitepins-ai-code", String(checked));
+      setInitialCodeAi(checked);
+      window.dispatchEvent(new Event("storage"));
+      window.dispatchEvent(new CustomEvent("sitepins:ai-settings-changed"));
+      toast.success(
+        checked
+          ? t("code_ai_enabled") || "Code editor AI enabled"
+          : t("code_ai_disabled") || "Code editor AI disabled",
+      );
+    } catch {
+      // Storage unavailable
+    }
+  };
+
+  const toggleCommitAi = (checked: boolean) => {
+    setCommitAi(checked);
+    try {
+      localStorage.setItem("sitepins-ai-commit", String(checked));
+      setInitialCommitAi(checked);
+      window.dispatchEvent(new Event("storage"));
+      window.dispatchEvent(new CustomEvent("sitepins:ai-settings-changed"));
+      toast.success(
+        checked
+          ? t("commit_ai_enabled") || "Git commit generator enabled"
+          : t("commit_ai_disabled") || "Git commit generator disabled",
+      );
+    } catch {
+      // Storage unavailable
+    }
+  };
+
+  const toggleSeoAi = (checked: boolean) => {
+    setSeoAi(checked);
+    try {
+      localStorage.setItem("sitepins-ai-seo", String(checked));
+      setInitialSeoAi(checked);
+      window.dispatchEvent(new Event("storage"));
+      window.dispatchEvent(new CustomEvent("sitepins:ai-settings-changed"));
+      toast.success(
+        checked
+          ? t("seo_ai_enabled") || "SEO & metadata assistant enabled"
+          : t("seo_ai_disabled") || "SEO & metadata assistant disabled",
+      );
+    } catch {
+      // Storage unavailable
+    }
+  };
+
+  const toggleSearchAi = (checked: boolean) => {
+    setSearchAi(checked);
+    try {
+      localStorage.setItem("sitepins-ai-search", String(checked));
+      setInitialSearchAi(checked);
+      window.dispatchEvent(new Event("storage"));
+      window.dispatchEvent(new CustomEvent("sitepins:ai-settings-changed"));
+      toast.success(
+        checked
+          ? t("search_ai_enabled") || "Search AI Copilot enabled"
+          : t("search_ai_disabled") || "Search AI Copilot disabled",
+      );
+    } catch {
+      // Storage unavailable
+    }
   };
 
   return {
@@ -436,6 +731,16 @@ function useAISettings(t: (key: string) => string) {
     initialAiCredential,
     autocomplete,
     toggleAutocomplete,
+    editorAi,
+    toggleEditorAi,
+    codeAi,
+    toggleCodeAi,
+    commitAi,
+    toggleCommitAi,
+    seoAi,
+    toggleSeoAi,
+    searchAi,
+    toggleSearchAi,
     isHydrated,
   };
 }

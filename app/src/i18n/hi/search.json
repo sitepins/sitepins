@@ -1,6 +1,20 @@
 {
   "search": {
-    "placeholder": "सेटिंग्स, संगठन, मूल्य निर्धारण खोजें...",
+    "placeholder": "खोजें या AI से पूछें...",
+    "ask_ai_copilot": "AI Copilot से पूछें",
+    "ask_about_query": "AI Copilot से पूछें: \"{query}\"",
+    "create_in_collection": "{collection} में नई प्रविष्टि बनाएं",
+    "ai_placeholder": "अपनी साइट, सामग्री या CMS के बारे में कुछ भी पूछें...",
+    "ai_send": "भेजें",
+    "copilot_title": "AI Copilot",
+    "copilot_subtitle": "कुछ भी पूछें — मुझे आपके प्रोजेक्ट की संरचना और संग्रह पता हैं।",
+    "suggestion_1": "नया ब्लॉग पोस्ट कैसे बनाएं?",
+    "suggestion_2": "साइट कॉन्फ़िगरेशन क्या है और इसे कैसे संपादित करें?",
+    "suggestion_3": "नए टीम सदस्य को कैसे आमंत्रित करें?",
+    "suggestion_4": "इस प्रोजेक्ट की फ़ोल्डर संरचना समझाएं",
+    "copy": "कॉपी",
+    "copied": "कॉपी हो गया!",
+    "new_query": "नई बातचीत",
     "groupLabels": {
       "organizations": "संगठन",
       "preferences": "प्राथमिकताएं",

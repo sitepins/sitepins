@@ -181,7 +181,13 @@
       "description_placeholder": "添加可选的详细描述..",
       "submit": "提交",
       "default_message": "更新文件",
-      "rename_message": "将 {oldPath} 重命名为 {newPath}"
+      "rename_message": "将 {oldPath} 重命名为 {newPath}",
+      "ai": {
+        "generate": "使用 AI 自动生成",
+        "generating": "生成中...",
+        "success": "已使用 AI 生成提交信息",
+        "error": "生成提交信息失败"
+      }
     },
     "renderer": {
       "loading_options": "正在加载选项...",
@@ -200,9 +206,7 @@
       "select_prompt": "选择一个文件开始编辑"
     },
     "code": {
-      "edited": "已编辑",
       "unsaved": "• 未保存",
-      "discard_changes": "放弃更改",
       "discard_title": "放弃更改？",
       "discard_button": "放弃",
       "commit": "提交",
@@ -218,7 +222,32 @@
       "lines_count": "{count, plural, other {# 行}}",
       "characters_count": "{count, plural, other {# 个字符}}",
       "error_loading_title": "加载文件出错",
-      "error_loading_desc": "无法加载该文件进行编辑。"
+      "error_loading_desc": "无法加载该文件进行编辑。",
+      "ai": {
+        "copilot_button": "AI Copilot",
+        "inline_title": "AI 代码助手",
+        "inline_placeholder": "让 AI 编辑、重构或生成代码...",
+        "target_selection": "选中文本",
+        "target_file": "整个文件",
+        "accept": "接受",
+        "discard": "放弃",
+        "run": "运行",
+        "quick_fix": "查找并修复错误",
+        "quick_refactor": "重构代码",
+        "quick_comments": "添加注释",
+        "explain_title": "代码解释",
+        "explain_loading": "正在通过 AI 分析代码...",
+        "generating": "正在生成回复",
+        "copy": "复制",
+        "copied": "已复制",
+        "changes_applied": "AI 更改已应用到编辑器",
+        "no_code_to_explain": "未找到要解释的代码",
+        "quick_explain": "解释代码",
+        "review_title": "审核更改",
+        "review_desc": "将 AI 更改与原始代码进行对比",
+        "diff_inline": "统一内联对比",
+        "diff_split": "并排对比"
+      }
     },
     "seo": {
       "slug": "Slug",
@@ -364,6 +393,19 @@
           "toc_present": "目录",
           "em_dash_overuse": "破折号过多"
         }
+      },
+      "ai": {
+        "fix": "使用 AI 修复",
+        "fixing": "正在生成修复建议",
+        "suggestion": "AI 建议",
+        "apply_fix": "应用",
+        "apply_to_editor": "应用到编辑器",
+        "applied": "已应用！",
+        "copy_fix": "复制",
+        "copied": "已复制！",
+        "fix_applied": "已应用 AI 修复",
+        "content_applied": "已在编辑器中更新内容",
+        "error": "处理 AI 请求失败"
       }
     },
     "mismatch": {

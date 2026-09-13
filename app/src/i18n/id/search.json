@@ -1,6 +1,20 @@
 {
   "search": {
-    "placeholder": "Cari pengaturan, organisasi, harga...",
+    "placeholder": "Cari atau tanya AI...",
+    "ask_ai_copilot": "Tanya AI Copilot",
+    "ask_about_query": "Tanya AI Copilot: \"{query}\"",
+    "create_in_collection": "Buat entri baru di {collection}",
+    "ai_placeholder": "Tanyakan apa saja tentang situs, konten, atau CMS Anda...",
+    "ai_send": "Kirim",
+    "copilot_title": "AI Copilot",
+    "copilot_subtitle": "Tanyakan apa saja — saya tahu struktur dan koleksi proyek Anda.",
+    "suggestion_1": "Bagaimana cara membuat blog post baru?",
+    "suggestion_2": "Apa itu konfigurasi situs dan bagaimana cara mengeditnya?",
+    "suggestion_3": "Bagaimana cara mengundang anggota tim baru?",
+    "suggestion_4": "Jelaskan struktur folder proyek ini",
+    "copy": "Salin",
+    "copied": "Disalin!",
+    "new_query": "Percakapan baru",
     "groupLabels": {
       "organizations": "Organisasi",
       "preferences": "Preferensi",

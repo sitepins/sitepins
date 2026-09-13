@@ -1,12 +1,12 @@
-import { logger } from "@/lib/logger";
-import { getAuth } from "@/lib/auth/auth-server";
 import { BaseEditorKit } from "@/editor/plugins/editor-base-kit";
 import { TChatMessage } from "@/hooks/use-ai-command";
+import { handleAiRouteError } from "@/lib/ai/ai-error-handler";
+import {
+  getSafeMaxOutputTokens,
+  resolveLanguageModel,
+} from "@/lib/ai/ai-provider";
+import { getAuth } from "@/lib/auth/auth-server";
 import { markdownJoinerTransform } from "@/lib/utils/markdown-joiner-transform";
-import { AnthropicProvider, createAnthropic } from "@ai-sdk/anthropic";
-import { createGoogle, GoogleProvider } from "@ai-sdk/google";
-import { createOpenAI, OpenAIProvider } from "@ai-sdk/openai";
-import { createXai, XaiProvider } from "@ai-sdk/xai";
 import {
   createUIMessageStream,
   createUIMessageStreamResponse,
@@ -44,33 +44,19 @@ export async function POST(req: NextRequest) {
     value: children,
   });
 
-  if (!apiKey) {
-    return NextResponse.json(
-      { error: "Missing AI Gateway API key." },
-      { status: 401 },
-    );
+  let resolved: ReturnType<typeof resolveLanguageModel>;
+  try {
+    resolved = resolveLanguageModel({
+      apiKey,
+      model,
+      provider,
+    });
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : "Missing AI API key.";
+    return NextResponse.json({ error: message }, { status: 401 });
   }
 
   const isSelecting = editor.api.isExpanded();
-
-  let aiProvider:
-    GoogleProvider | AnthropicProvider | OpenAIProvider | XaiProvider;
-
-  switch (provider) {
-    case "grok":
-      aiProvider = createXai({ apiKey });
-      break;
-    case "gemini":
-      aiProvider = createGoogle({ apiKey });
-      break;
-    case "anthropic":
-      aiProvider = createAnthropic({ apiKey });
-      break;
-    case "openai":
-    default:
-      aiProvider = createOpenAI({ apiKey });
-      break;
-  }
 
   try {
     const stream = createUIMessageStream<TChatMessage>({
@@ -79,13 +65,18 @@ export async function POST(req: NextRequest) {
 
         const stream = streamText({
           experimental_transform: markdownJoinerTransform(),
-          model: aiProvider(model),
+          model: resolved.model,
+          maxOutputTokens: getSafeMaxOutputTokens(
+            resolved.provider,
+            resolved.modelName,
+            2048,
+          ),
           // Not used
           prompt: "",
           tools: {
             comment: getCommentTool(editor, {
               messagesRaw,
-              model: aiProvider(model),
+              model: resolved.model,
               writer,
             }),
           },
@@ -129,7 +120,7 @@ export async function POST(req: NextRequest) {
                     role: "user",
                   },
                 ],
-                model: aiProvider(model),
+                model: resolved.model,
               };
             }
           },
@@ -141,11 +132,7 @@ export async function POST(req: NextRequest) {
 
     return createUIMessageStreamResponse({ stream });
   } catch (error) {
-    logger.error("AI command request failed", error);
-    return NextResponse.json(
-      { error: "Failed to process AI request" },
-      { status: 500 },
-    );
+    return handleAiRouteError(error, "AI command request failed");
   }
 }
 

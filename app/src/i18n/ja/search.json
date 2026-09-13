@@ -1,6 +1,20 @@
 {
   "search": {
-    "placeholder": "設定、組織、プランなどを検索...",
+    "placeholder": "検索またはAIに質問...",
+    "ask_ai_copilot": "AIコパイロットに質問",
+    "ask_about_query": "AIコパイロットに質問: \"{query}\"",
+    "create_in_collection": "{collection}に新しいエントリを作成",
+    "ai_placeholder": "サイト、コンテンツ、CMSについて何でも聞いてください...",
+    "ai_send": "送信",
+    "copilot_title": "AIコパイロット",
+    "copilot_subtitle": "何でも聞いてください — プロジェクトの構造とコレクションを把握しています。",
+    "suggestion_1": "新しいブログ投稿を作成するには？",
+    "suggestion_2": "サイト設定とは何ですか？どう編集しますか？",
+    "suggestion_3": "新しいチームメンバーを招待するには？",
+    "suggestion_4": "このプロジェクトのフォルダ構造を説明して",
+    "copy": "コピー",
+    "copied": "コピーしました！",
+    "new_query": "新しい会話",
     "groupLabels": {
       "organizations": "組織",
       "preferences": "環境設定",

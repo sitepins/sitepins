@@ -181,7 +181,13 @@
       "description_placeholder": "Ajoutez une description étendue optionnelle..",
       "submit": "Valider",
       "default_message": "Mettre à jour le fichier",
-      "rename_message": "Renommer {oldPath} en {newPath}"
+      "rename_message": "Renommer {oldPath} en {newPath}",
+      "ai": {
+        "generate": "Générer automatiquement avec l'IA",
+        "generating": "Génération en cours...",
+        "success": "Message de validation généré avec l'IA",
+        "error": "Échec de la génération du message de validation"
+      }
     },
     "renderer": {
       "loading_options": "Chargement des options...",
@@ -200,9 +206,7 @@
       "select_prompt": "Sélectionnez un fichier pour commencer l'édition"
     },
     "code": {
-      "edited": "Modifié",
       "unsaved": "• Non enregistré",
-      "discard_changes": "Annuler les modifications",
       "discard_title": "Annuler les modifications ?",
       "discard_button": "Annuler",
       "commit": "Valider",
@@ -218,7 +222,32 @@
       "lines_count": "{count, plural, one {# ligne} other {# lignes}}",
       "characters_count": "{count, plural, one {# caractère} other {# caractères}}",
       "error_loading_title": "Erreur de chargement du fichier",
-      "error_loading_desc": "Impossible de charger le fichier pour l'édition."
+      "error_loading_desc": "Impossible de charger le fichier pour l'édition.",
+      "ai": {
+        "copilot_button": "Copilote IA",
+        "inline_title": "Copilote de code IA",
+        "inline_placeholder": "Demandez à l'IA de modifier, refactoriser ou générer du code...",
+        "target_selection": "Sélection",
+        "target_file": "Fichier entier",
+        "accept": "Accepter",
+        "discard": "Ignorer",
+        "run": "Exécuter",
+        "quick_fix": "Trouver et corriger les bugs",
+        "quick_refactor": "Refactoriser le code",
+        "quick_comments": "Ajouter des commentaires",
+        "explain_title": "Explication du code",
+        "explain_loading": "Analyse du code avec l'IA...",
+        "generating": "Génération de la réponse",
+        "copy": "Copier",
+        "copied": "Copié",
+        "changes_applied": "Modifications IA appliquées à l'éditeur",
+        "no_code_to_explain": "Aucun code trouvé à expliquer",
+        "quick_explain": "Expliquer le code",
+        "review_title": "Vérifier les modifications",
+        "review_desc": "Comparaison des modifications IA avec le code original",
+        "diff_inline": "Diff unifié en ligne",
+        "diff_split": "Comparaison côte à côte"
+      }
     },
     "seo": {
       "slug": "Slug",
@@ -364,6 +393,19 @@
           "toc_present": "Table des Matières",
           "em_dash_overuse": "Excès de Tirets Cadratins"
         }
+      },
+      "ai": {
+        "fix": "Corriger avec l'IA",
+        "fixing": "Génération de la correction",
+        "suggestion": "Suggestion de l'IA",
+        "apply_fix": "Appliquer",
+        "apply_to_editor": "Appliquer à l'éditeur",
+        "applied": "Appliqué !",
+        "copy_fix": "Copier",
+        "copied": "Copié !",
+        "fix_applied": "Correction de l'IA appliquée",
+        "content_applied": "Contenu mis à jour dans l'éditeur",
+        "error": "Échec du traitement de la demande de l'IA"
       }
     },
     "mismatch": {

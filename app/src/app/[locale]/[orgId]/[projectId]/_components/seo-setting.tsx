@@ -1,14 +1,28 @@
 "use client";
 
+import { AiUpgrade } from "@/components/ai-upgrade";
 import { Button } from "@/components/ui/button";
+import { toast } from "@/components/ui/toast";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { UpgradeDialog } from "@/components/upgrade-dialog";
+import { getAICredential } from "@/editor/plugins/copilot-kit";
 import { revertToOriginal } from "@/editor/utils/plate-utils";
+import { useAiAccess } from "@/hooks/use-ai-access";
 import { useDebounce } from "@/hooks/use-debounce";
 import { useHydrated } from "@/hooks/use-hydrated";
 import { useOwnerPlan } from "@/hooks/use-owner-plan";
 import { getDirection } from "@/lib/i18n/direction";
-import { stringValue } from "@/lib/utils/frontmatter-value";
 import {
+  isWrappedValue,
+  parseArrayItems,
+  stringValue,
+} from "@/lib/utils/frontmatter-value";
+import {
+  CATEGORY_KEYS,
   getSeoScore,
   KEYWORD_KEYS,
   META_DESC_KEYS,
@@ -18,7 +32,7 @@ import {
 } from "@/lib/utils/seo-validate";
 import { useGetProjectQuery } from "@/redux/features/project/project-api";
 import { TField, TState } from "@/types";
-import { ChartSpline } from "lucide-react";
+import { ChartSpline, Loader2, Sparkles } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useLocale, useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
@@ -37,12 +51,73 @@ import LinkAnalysis from "./link-analysis";
 import SearchPreview from "./search-preview";
 import SeoAnalysis from "./seo-analysis";
 
+function applyFieldUpdate(
+  currentData: Record<string, unknown>,
+  fieldName: string,
+  newValue: unknown,
+  schema?: TField[],
+): Record<string, unknown> {
+  const existing = currentData[fieldName];
+  const fieldDef = schema?.find(
+    (f) =>
+      f.name === fieldName || f.name.toLowerCase() === fieldName.toLowerCase(),
+  );
+  const isArrayType =
+    fieldDef?.type === "Array" ||
+    fieldDef?.type === "gallery" ||
+    Array.isArray(existing) ||
+    (isWrappedValue(existing) && Array.isArray(existing.value)) ||
+    KEYWORD_KEYS.some((k) => k.toLowerCase() === fieldName.toLowerCase()) ||
+    CATEGORY_KEYS.some((k) => k.toLowerCase() === fieldName.toLowerCase()) ||
+    ["tags", "tag", "categories", "category", "keywords", "keyword"].includes(
+      fieldName.toLowerCase(),
+    );
+
+  let formattedValue = newValue;
+
+  if (isArrayType) {
+    const items = parseArrayItems(newValue);
+    if (
+      fieldDef?.type === "string" &&
+      !Array.isArray(existing) &&
+      typeof existing === "string"
+    ) {
+      formattedValue = items.join(", ");
+    } else {
+      formattedValue = items.map((item) => ({
+        value: item,
+        id: crypto.randomUUID(),
+      }));
+    }
+  } else if (Array.isArray(newValue)) {
+    formattedValue = newValue.map((item) => {
+      if (isWrappedValue(item)) return item;
+      return { value: item, id: crypto.randomUUID() };
+    });
+  }
+
+  if (isWrappedValue(existing)) {
+    return {
+      ...currentData,
+      [fieldName]: {
+        ...existing,
+        value: formattedValue,
+      },
+    };
+  }
+  return {
+    ...currentData,
+    [fieldName]: formattedValue,
+  };
+}
+
 export default function SeoSetting({
   schema,
   data,
   setState,
   content,
   onSlugChange,
+  onUpdateContent,
   resetKey,
   isSidebarOpen,
   onSidebarOpenChange,
@@ -52,6 +127,7 @@ export default function SeoSetting({
   setState: Dispatch<SetStateAction<TState | undefined>>;
   content: string;
   onSlugChange?: (newSlug: string) => void;
+  onUpdateContent?: (content: string) => void;
   resetKey?: number;
   isSidebarOpen: boolean;
   onSidebarOpenChange: (open: boolean) => void;
@@ -83,9 +159,6 @@ export default function SeoSetting({
   const [focusKeyword, setFocusKeyword] = useState("");
   const hydrated = useHydrated();
   const portalContainer = hydrated ? document.body : null;
-  // State, not a ref: `displayData` reads this during render, and a memo
-  // cannot depend on a ref.
-  const [pendingSlug, setPendingSlug] = useState<string | null>(null);
 
   // The target keyphrase is a per-file editor preference, so it is kept in
   // localStorage rather than written into the user's frontmatter.
@@ -130,22 +203,34 @@ export default function SeoSetting({
   const [slugResetKey, setSlugResetKey] = useState(`${filename}:${resetKey}`);
   if (slugResetKey !== `${filename}:${resetKey}`) {
     setSlugResetKey(`${filename}:${resetKey}`);
-    setPendingSlug(null);
     setVirtualSlug(filename);
   }
 
   const displayData = useMemo(() => {
     if (hasSlugInFrontmatter) return data;
-    const currentSlug = pendingSlug ?? virtualSlug;
     return {
       ...data,
-      slug: { value: currentSlug, id: "00000000-0000-4000-8000-000000000000" },
+      slug: { value: virtualSlug, id: "00000000-0000-4000-8000-000000000000" },
     };
-  }, [data, hasSlugInFrontmatter, virtualSlug, pendingSlug]);
+  }, [data, hasSlugInFrontmatter, virtualSlug]);
 
   const handleSetData: Dispatch<SetStateAction<TState | undefined>> =
     useCallback(
       (updater) => {
+        if (!hasSlugInFrontmatter) {
+          const previewNext =
+            typeof updater === "function"
+              ? updater({ data } as TState)
+              : updater;
+          if (previewNext?.data && "slug" in previewNext.data) {
+            const newSlugVal = stringValue(previewNext.data.slug);
+            if (newSlugVal !== undefined && newSlugVal !== virtualSlug) {
+              setVirtualSlug(newSlugVal);
+              onSlugChange?.(newSlugVal);
+            }
+          }
+        }
+
         setState((prev) => {
           const next = typeof updater === "function" ? updater(prev) : updater;
 
@@ -157,10 +242,6 @@ export default function SeoSetting({
             !prev?.data || !Object.keys(prev.data).some((k) => k === "slug");
 
           if (wasVirtual && next.data && "slug" in next.data) {
-            // Intercept the slug update
-            const newSlugVal = stringValue(next.data.slug) ?? null;
-            setPendingSlug(newSlugVal);
-
             // Remove slug from the data to be saved to state
             const { slug: _slug, ...restData } = next.data;
             return { ...next, data: restData };
@@ -169,22 +250,278 @@ export default function SeoSetting({
           return next;
         });
       },
-      [setState],
+      [data, hasSlugInFrontmatter, onSlugChange, setState, virtualSlug],
     );
-
-  // Notifying the parent has to happen after commit, so this one stays an
-  // effect: `onSlugChange` is a callback into another component.
-  useEffect(() => {
-    if (pendingSlug !== null) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setPendingSlug(null);
-      setVirtualSlug(pendingSlug);
-      onSlugChange?.(pendingSlug);
-    }
-  }, [pendingSlug, onSlugChange, setVirtualSlug]);
 
   // Runs with the panel closed too — the button's score badge reads from it.
   const debouncedContent = useDebounce(content, 600);
+
+  const { checkAiAccess, isAiSeoEnabled } = useAiAccess();
+  const [generatingField, setGeneratingField] = useState<string | null>(null);
+
+  const handleApplyFix = useCallback(
+    (field: string, value: unknown) => {
+      if (field === "focusKeyword") {
+        handleFocusKeywordChange(String(value));
+        toast.success(tEditorSeo("ai.fix_applied"));
+        return;
+      }
+
+      if (field === "content" || field === "body" || field === "markdown") {
+        const newContent = String(value);
+        onUpdateContent?.(newContent);
+        window.dispatchEvent(
+          new CustomEvent("sitepins:editor-content-update", {
+            detail: { content: newContent, mode: "replace" },
+          }),
+        );
+        toast.success(
+          tEditorSeo("ai.content_applied") || "Content updated in editor",
+        );
+        return;
+      }
+
+      if (field === "slug") {
+        if (!hasSlugInFrontmatter) {
+          const newSlugVal = String(value);
+          setVirtualSlug(newSlugVal);
+          onSlugChange?.(newSlugVal);
+          toast.success(tEditorSeo("ai.fix_applied"));
+          return;
+        }
+      }
+
+      handleSetData((prev) => {
+        if (!prev) return prev;
+        let nextData = { ...(prev.data || {}) };
+
+        const normalized = field.toLowerCase();
+        const isTitleField =
+          normalized === "title" ||
+          META_TITLE_KEYS.some((k) => k.toLowerCase() === normalized);
+        const isDescField =
+          normalized === "description" ||
+          META_DESC_KEYS.some((k) => k.toLowerCase() === normalized);
+        const isKeywordField = KEYWORD_KEYS.some(
+          (k) => k.toLowerCase() === normalized,
+        );
+        const isCategoryField = CATEGORY_KEYS.some(
+          (k) => k.toLowerCase() === normalized,
+        );
+
+        const actualKey =
+          Object.keys(nextData).find((k) => {
+            const kNorm = k.toLowerCase();
+            if (kNorm === normalized) return true;
+            if (
+              isTitleField &&
+              META_TITLE_KEYS.some((tk) => tk.toLowerCase() === kNorm)
+            )
+              return true;
+            if (
+              isDescField &&
+              META_DESC_KEYS.some((dk) => dk.toLowerCase() === kNorm)
+            )
+              return true;
+            if (
+              isKeywordField &&
+              KEYWORD_KEYS.some((kk) => kk.toLowerCase() === kNorm)
+            )
+              return true;
+            if (
+              isCategoryField &&
+              CATEGORY_KEYS.some((ck) => ck.toLowerCase() === kNorm)
+            )
+              return true;
+            return false;
+          }) ||
+          schema?.find((f) => {
+            const fNorm = f.name.toLowerCase();
+            if (fNorm === normalized) return true;
+            if (
+              isTitleField &&
+              META_TITLE_KEYS.some((tk) => tk.toLowerCase() === fNorm)
+            )
+              return true;
+            if (
+              isDescField &&
+              META_DESC_KEYS.some((dk) => dk.toLowerCase() === fNorm)
+            )
+              return true;
+            if (
+              isKeywordField &&
+              KEYWORD_KEYS.some((kk) => kk.toLowerCase() === fNorm)
+            )
+              return true;
+            if (
+              isCategoryField &&
+              CATEGORY_KEYS.some((ck) => ck.toLowerCase() === fNorm)
+            )
+              return true;
+            return false;
+          })?.name ||
+          field;
+
+        nextData = applyFieldUpdate(nextData, actualKey, value, schema);
+        return { ...prev, data: nextData };
+      });
+
+      toast.success(tEditorSeo("ai.fix_applied"));
+    },
+    [
+      handleSetData,
+      hasSlugInFrontmatter,
+      handleFocusKeywordChange,
+      onSlugChange,
+      onUpdateContent,
+      schema,
+      tEditorSeo,
+    ],
+  );
+
+  const handleGenerateField = useCallback(
+    async (fieldName: string) => {
+      if (!isAiSeoEnabled || !checkAiAccess()) {
+        return;
+      }
+
+      setGeneratingField(fieldName);
+      try {
+        const cred = getAICredential();
+        const res = await fetch("/api/ai/metadata", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            apiKey: cred?.apiKey,
+            provider: cred?.provider,
+            model: cred?.model,
+            content: content || debouncedContent || "",
+            currentData: revertToOriginal(displayData),
+            schema,
+            filename,
+            focusKeyword,
+            targetField: fieldName,
+          }),
+        });
+
+        if (!res.ok) {
+          const errorData = await res.json().catch(() => ({}));
+          throw new Error(errorData.error || tEditorSeo("ai.error"));
+        }
+
+        const data = await res.json();
+        const generatedVal =
+          data.value ??
+          data[fieldName] ??
+          Object.values(data).find((v) => v !== undefined);
+
+        if (generatedVal === undefined || generatedVal === null) {
+          throw new Error(tEditorSeo("ai.error"));
+        }
+
+        if (fieldName === "slug") {
+          if (!hasSlugInFrontmatter) {
+            const newSlugVal = String(generatedVal);
+            setVirtualSlug(newSlugVal);
+            onSlugChange?.(newSlugVal);
+            toast.success(tEditorSeo("ai.fix_applied"));
+            return;
+          }
+        }
+
+        handleSetData((prev) => {
+          if (!prev) return prev;
+          let nextData = { ...(prev.data || {}) };
+
+          const normalized = fieldName.toLowerCase();
+          const actualKey =
+            Object.keys(nextData).find((k) => k.toLowerCase() === normalized) ||
+            fieldName;
+
+          nextData = applyFieldUpdate(
+            nextData,
+            actualKey,
+            generatedVal,
+            schema,
+          );
+          return { ...prev, data: nextData };
+        });
+
+        toast.success(tEditorSeo("ai.fix_applied"));
+      } catch (err: unknown) {
+        const msg = err instanceof Error ? err.message : tEditorSeo("ai.error");
+        toast.error(msg);
+      } finally {
+        setGeneratingField(null);
+      }
+    },
+    [
+      checkAiAccess,
+      content,
+      debouncedContent,
+      displayData,
+      filename,
+      focusKeyword,
+      handleSetData,
+      hasSlugInFrontmatter,
+      isAiSeoEnabled,
+      onSlugChange,
+      schema,
+      tEditorSeo,
+    ],
+  );
+
+  const renderFieldAction = useCallback(
+    (field: TField, _value: unknown) => {
+      if (!isAiSeoEnabled) return null;
+      if (field.type === "boolean" || field.type === "object") return null;
+
+      const isGenerating = generatingField === field.name;
+      const labelText = tEditorSeo("ai.fix");
+
+      return (
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              disabled={generatingField !== null}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                handleGenerateField(field.name);
+              }}
+              className="text-muted-foreground hover:text-primary hover:bg-primary/10 -my-1 size-6 shrink-0 rounded-md p-0 transition-colors"
+              aria-label={labelText}
+            >
+              {isGenerating ? (
+                <Loader2 className="text-primary size-3 animate-spin" />
+              ) : (
+                <Sparkles className="size-3" />
+              )}
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent side="top" className="text-xs">
+            {labelText}
+          </TooltipContent>
+        </Tooltip>
+      );
+    },
+    [isAiSeoEnabled, generatingField, handleGenerateField, tEditorSeo],
+  );
+
+  useEffect(() => {
+    const handleAiSeo = (e: Event) => {
+      e.preventDefault();
+      onSidebarOpenChange(true);
+    };
+
+    window.addEventListener("sitepins:ai-seo-autofill", handleAiSeo);
+    return () => {
+      window.removeEventListener("sitepins:ai-seo-autofill", handleAiSeo);
+    };
+  }, [onSidebarOpenChange]);
 
   const {
     results,
@@ -362,7 +699,7 @@ export default function SeoSetting({
                   animate={{ x: 0 }}
                   exit={{ x: isRtl ? "-100%" : "100%" }}
                   transition={{ type: "spring", bounce: 0, duration: 0.3 }}
-                  className="bg-light border-border fixed inset-e-0 top-17.25 z-70 h-[calc(100svh-67px)] w-full max-w-105 border-s shadow-lg 2xl:shadow-none"
+                  className="bg-light border-border fixed inset-e-0 top-17.25 z-70 h-[calc(100svh-67px)] w-full max-w-105 border-s shadow-lg 2xl:z-30 2xl:shadow-none"
                 >
                   <div className="dark:[&_input]:bg-input/30 dark:[&_textarea]:bg-input/30 h-full space-y-4 overflow-y-auto p-5 [&_input]:bg-white [&_textarea]:bg-white">
                     <SearchPreview
@@ -375,6 +712,7 @@ export default function SeoSetting({
                       data={displayData}
                       setData={handleSetData}
                       strictMode={true}
+                      renderFieldAction={renderFieldAction}
                     />
                     <SeoAnalysis
                       results={results}
@@ -391,6 +729,8 @@ export default function SeoSetting({
                           ? handleFocusKeywordChange
                           : undefined
                       }
+                      onApplyFix={handleApplyFix}
+                      content={content || debouncedContent}
                     />
                     <div className="mt-8 space-y-3">
                       <h3 className="text-sm font-normal">
@@ -410,6 +750,7 @@ export default function SeoSetting({
           </AnimatePresence>,
           portalContainer,
         )}
+      <AiUpgrade />
     </div>
   );
 }

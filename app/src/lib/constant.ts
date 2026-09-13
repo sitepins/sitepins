@@ -49,6 +49,31 @@ export type TAIProvider = {
 
 export const aiProviders: TAIProvider[] = [
   {
+    provider: "Groq (Ultra-Fast & Free)",
+    value: "groq",
+    models: [
+      "openai/gpt-oss-120b",
+      "openai/gpt-oss-20b",
+      "qwen/qwen3.8-27b",
+      "qwen/qwen3.6-27b",
+    ],
+    docsUrl: "https://console.groq.com/docs/models",
+  },
+  {
+    provider: "OpenRouter (Free Models & All LLMs)",
+    value: "openrouter",
+    models: [
+      "meta-llama/llama-3.3-70b-instruct:free",
+      "google/gemini-2.0-flash-exp:free",
+      "deepseek/deepseek-r1:free",
+      "mistralai/mistral-small-24b-instruct-2501:free",
+      "qwen/qwen-2.5-coder-32b-instruct:free",
+      "anthropic/claude-3.7-sonnet",
+      "openai/gpt-4o-mini",
+    ],
+    docsUrl: "https://openrouter.ai/models",
+  },
+  {
     provider: "OpenAI (ChatGPT)",
     value: "openai",
     models: ["gpt-5.5", "gpt-4.1", "gpt-4o-mini"],

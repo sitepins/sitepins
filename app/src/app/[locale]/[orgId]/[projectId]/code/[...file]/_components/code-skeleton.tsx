@@ -16,14 +16,16 @@ export default function CodeSkeleton() {
             <Skeleton className="hidden h-5 w-20 rounded-full md:block" />
           </div>
 
-          {/* Right: preview + reset + commit */}
-          <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+          {/* Right: preview + ai copilot + reset + commit (4 buttons) */}
+          <div className="flex shrink-0 items-center gap-1.5 sm:gap-2.5">
             {/* Preview button */}
             <Skeleton className="size-9 rounded-md sm:w-24" />
+            {/* AI Copilot button */}
+            <Skeleton className="size-9 rounded-md sm:w-28" />
             {/* Reset button */}
             <Skeleton className="size-9 rounded-md sm:w-20" />
             {/* Commit button */}
-            <Skeleton className="h-9 w-22 rounded-md" />
+            <Skeleton className="h-9 w-22 rounded-md sm:w-24" />
           </div>
         </div>
 

@@ -157,7 +157,7 @@ function ComboboxContent({
       align={align}
       alignOffset={alignOffset}
       anchor={resolvedAnchor}
-      className="isolate z-50"
+      className="isolate z-150"
     >
       <ComboboxPrimitive.Popup
         data-slot="combobox-content"

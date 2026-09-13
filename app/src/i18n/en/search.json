@@ -1,6 +1,20 @@
 {
   "search": {
-    "placeholder": "Search settings, Orgs, Pricing...",
+    "placeholder": "Search or ask AI...",
+    "ask_ai_copilot": "Ask AI Copilot",
+    "ask_about_query": "Ask AI Copilot: \"{query}\"",
+    "create_in_collection": "Create new entry in {collection}",
+    "ai_placeholder": "Ask anything about your site, content, or CMS...",
+    "ai_send": "Send",
+    "copilot_title": "AI Copilot",
+    "copilot_subtitle": "Ask anything — I know your project's content structure and collections.",
+    "suggestion_1": "How do I create a new blog post?",
+    "suggestion_2": "What is site configuration and how do I edit it?",
+    "suggestion_3": "How do I invite a new team member?",
+    "suggestion_4": "Explain the folder structure of this project",
+    "copy": "Copy",
+    "copied": "Copied!",
+    "new_query": "New conversation",
     "groupLabels": {
       "organizations": "Organizations",
       "preferences": "Preferences",

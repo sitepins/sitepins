@@ -181,7 +181,13 @@
       "description_placeholder": "أضف وصفًا موسعًا اختياريًا..",
       "submit": "ارتكاب",
       "default_message": "تحديث الملف",
-      "rename_message": "أعد تسمية {oldPath} إلى {newPath}"
+      "rename_message": "أعد تسمية {oldPath} إلى {newPath}",
+      "ai": {
+        "generate": "إنشاء تلقائي بالذكاء الاصطناعي",
+        "generating": "جارٍ الإنشاء...",
+        "success": "تم إنشاء رسالة الالتزام بالذكاء الاصطناعي",
+        "error": "فشل إنشاء رسالة الالتزام"
+      }
     },
     "renderer": {
       "loading_options": "جارٍ تحميل الخيارات...",
@@ -200,9 +206,7 @@
       "select_prompt": "حدد ملفًا لبدء التحرير"
     },
     "code": {
-      "edited": "تم تحريره",
       "unsaved": "• غير محفوظة",
-      "discard_changes": "تجاهل التغييرات",
       "discard_title": "هل تريد تجاهل التغييرات؟",
       "discard_button": "تجاهل",
       "commit": "ارتكاب",
@@ -218,7 +222,32 @@
       "lines_count": "{count, plural, =1 {# سطر} other {# أسطر}}",
       "characters_count": "{count, plural, =1 {# حرف} other {# أحرف}}",
       "error_loading_title": "خطأ في تحميل الملف",
-      "error_loading_desc": "لا يمكن تحميل الملف للتحرير."
+      "error_loading_desc": "لا يمكن تحميل الملف للتحرير.",
+      "ai": {
+        "copilot_button": "مساعد الذكاء الاصطناعي",
+        "inline_title": "مساعد الكود بالذكاء الاصطناعي",
+        "inline_placeholder": "اطلب من الذكاء الاصطناعي تعديل أو إعادة صياغة أو إنشاء الكود...",
+        "target_selection": "التحديد",
+        "target_file": "الملف بأكمله",
+        "accept": "قبول",
+        "discard": "تراجع",
+        "run": "تنفيذ",
+        "quick_fix": "البحث عن الأخطاء وإصلاحها",
+        "quick_refactor": "إعادة هيكلة الكود",
+        "quick_comments": "إضافة تعليقات",
+        "explain_title": "شرح الكود",
+        "explain_loading": "جاري تحليل الكود بواسطة الذكاء الاصطناعي...",
+        "generating": "جاري توليد الرد",
+        "copy": "نسخ",
+        "copied": "تم النسخ",
+        "changes_applied": "تم تطبيق تغييرات الذكاء الاصطناعي على المحرر",
+        "no_code_to_explain": "لم يتم العثور على كود للشرح",
+        "quick_explain": "شرح الكود",
+        "review_title": "مراجعة التغييرات",
+        "review_desc": "مقارنة تغييرات الذكاء الاصطناعي مع الكود الأصلي",
+        "diff_inline": "فروقات مضمنة موحدة",
+        "diff_split": "مقارنة جنبًا إلى جنب"
+      }
     },
     "seo": {
       "slug": "سبيكة",
@@ -364,6 +393,19 @@
           "toc_present": "جدول المحتويات",
           "em_dash_overuse": "الإفراط في استخدام إم داش"
         }
+      },
+      "ai": {
+        "fix": "إصلاح بالذكاء الاصطناعي",
+        "fixing": "جارٍ إنشاء الإصلاح",
+        "suggestion": "اقتراح الذكاء الاصطناعي",
+        "apply_fix": "تطبيق",
+        "apply_to_editor": "تطبيق على المحرر",
+        "applied": "تم التطبيق!",
+        "copy_fix": "نسخ",
+        "copied": "تم النسخ!",
+        "fix_applied": "تم تطبيق إصلاح الذكاء الاصطناعي",
+        "content_applied": "تم تحديث المحتوى في المحرر",
+        "error": "فشل في معالجة طلب الذكاء الاصطناعي"
       }
     },
     "mismatch": {

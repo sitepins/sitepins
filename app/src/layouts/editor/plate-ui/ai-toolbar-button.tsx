@@ -1,7 +1,6 @@
 "use client";
 
-import { useOwnerPlan } from "@/hooks/use-owner-plan";
-import { openAiUpsellDialog } from "@/hooks/use-upgrade-dialog";
+import { useAiAccess } from "@/hooks/use-ai-access";
 import { AIChatPlugin } from "@platejs/ai/react";
 import { useEditorPlugin } from "platejs/react";
 import type * as React from "react";
@@ -11,9 +10,10 @@ export function AIToolbarButton(
   props: React.ComponentProps<typeof ToolbarButton>,
 ) {
   const { api } = useEditorPlugin(AIChatPlugin);
-  const { canAccessProFeatures: canAccessAi } = useOwnerPlan();
-
+  const { checkAiAccess, isEditorAiEnabled } = useAiAccess();
   const { onClick, onMouseDown, ...restProps } = props;
+
+  if (!isEditorAiEnabled) return null;
 
   const handleMouseDown: React.MouseEventHandler<HTMLButtonElement> = (
     event,
@@ -24,29 +24,14 @@ export function AIToolbarButton(
     }
   };
 
-  if (!canAccessAi) {
-    return (
-      <ToolbarButton
-        {...restProps}
-        onClick={(event) => {
-          onClick?.(event);
-          if (event.defaultPrevented) return;
-          api.aiChat.hide();
-          openAiUpsellDialog();
-        }}
-        onMouseDown={handleMouseDown}
-      />
-    );
-  }
-
   return (
     <ToolbarButton
       {...restProps}
       onClick={(event) => {
         onClick?.(event);
         if (event.defaultPrevented) return;
-        if (!localStorage.getItem("sitepins-ai-model")) {
-          window.open("/dashboard/ai-agent", "_blank");
+        if (!checkAiAccess()) {
+          api.aiChat.hide();
           return;
         }
         api.aiChat.show();

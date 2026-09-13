@@ -181,7 +181,13 @@
       "description_placeholder": "Thêm mô tả mở rộng tùy chọn..",
       "submit": "Cam kết",
       "default_message": "Cập nhật tập tin",
-      "rename_message": "Đổi tên {oldPath} thành {newPath}"
+      "rename_message": "Đổi tên {oldPath} thành {newPath}",
+      "ai": {
+        "generate": "Tự động tạo bằng AI",
+        "generating": "Đang tạo...",
+        "success": "Đã tạo thông điệp cam kết bằng AI",
+        "error": "Không thể tạo thông điệp cam kết"
+      }
     },
     "renderer": {
       "loading_options": "Đang tải tùy chọn...",
@@ -200,9 +206,7 @@
       "select_prompt": "Chọn một tập tin để bắt đầu chỉnh sửa"
     },
     "code": {
-      "edited": "Đã chỉnh sửa",
       "unsaved": "• Chưa lưu",
-      "discard_changes": "Hủy thay đổi",
       "discard_title": "Hủy thay đổi?",
       "discard_button": "Loại bỏ",
       "commit": "Cam kết",
@@ -218,7 +222,32 @@
       "lines_count": "{count, plural, other {# dòng}}",
       "characters_count": "{count, plural, other {# ký tự}}",
       "error_loading_title": "Lỗi tải tập tin",
-      "error_loading_desc": "Không thể tải tập tin để chỉnh sửa."
+      "error_loading_desc": "Không thể tải tập tin để chỉnh sửa.",
+      "ai": {
+        "copilot_button": "Trợ lý AI",
+        "inline_title": "Trợ lý Code AI",
+        "inline_placeholder": "Yêu cầu AI chỉnh sửa, tái cấu trúc hoặc tạo mã...",
+        "target_selection": "Lựa chọn",
+        "target_file": "Toàn bộ tệp",
+        "accept": "Chấp nhận",
+        "discard": "Hủy bỏ",
+        "run": "Chạy",
+        "quick_fix": "Tìm & sửa lỗi",
+        "quick_refactor": "Tái cấu trúc mã",
+        "quick_comments": "Thêm nhận xét",
+        "explain_title": "Giải thích mã",
+        "explain_loading": "Đang phân tích mã bằng AI...",
+        "generating": "Đang tạo phản hồi",
+        "copy": "Sao chép",
+        "copied": "Đã sao chép",
+        "changes_applied": "Đã áp dụng thay đổi của AI vào trình chỉnh sửa",
+        "no_code_to_explain": "Không tìm thấy mã nào để giải thích",
+        "quick_explain": "Giải thích mã",
+        "review_title": "Xem lại thay đổi",
+        "review_desc": "So sánh thay đổi của AI với mã gốc",
+        "diff_inline": "So sánh dòng hợp nhất",
+        "diff_split": "So sánh song song"
+      }
     },
     "seo": {
       "slug": "Sên",
@@ -364,6 +393,19 @@
           "toc_present": "Mục Lục",
           "em_dash_overuse": "Lạm Dụng Gạch Ngang Dài"
         }
+      },
+      "ai": {
+        "fix": "Sửa bằng AI",
+        "fixing": "Đang tạo bản sửa",
+        "suggestion": "Gợi ý của AI",
+        "apply_fix": "Áp dụng",
+        "apply_to_editor": "Áp dụng vào trình soạn thảo",
+        "applied": "Đã áp dụng!",
+        "copy_fix": "Sao chép",
+        "copied": "Đã sao chép!",
+        "fix_applied": "Đã áp dụng sửa đổi của AI",
+        "content_applied": "Nội dung đã được cập nhật trong trình soạn thảo",
+        "error": "Không thể xử lý yêu cầu AI"
       }
     },
     "mismatch": {

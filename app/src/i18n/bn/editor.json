@@ -181,7 +181,13 @@
       "description_placeholder": "একটি ঐচ্ছিক বিস্তারিত বিবরণ যোগ করুন..",
       "submit": "কমিট",
       "default_message": "ফাইল আপডেট করুন",
-      "rename_message": "{oldPath} থেকে {newPath}-এ নামকরণ করুন"
+      "rename_message": "{oldPath} থেকে {newPath}-এ নামকরণ করুন",
+      "ai": {
+        "generate": "এআই দিয়ে স্বয়ংক্রিয়ভাবে তৈরি করুন",
+        "generating": "তৈরি হচ্ছে...",
+        "success": "এআই দিয়ে কমিট বার্তা তৈরি হয়েছে",
+        "error": "কমিট বার্তা তৈরি করতে ব্যর্থ হয়েছে"
+      }
     },
     "renderer": {
       "loading_options": "অপশন লোড হচ্ছে...",
@@ -200,9 +206,7 @@
       "select_prompt": "সম্পাদনা শুরু করতে একটি ফাইল নির্বাচন করুন"
     },
     "code": {
-      "edited": "সম্পাদিত",
       "unsaved": "• অসংরক্ষিত",
-      "discard_changes": "পরিবর্তনগুলো বাতিল করুন",
       "discard_title": "পরিবর্তনগুলো বাতিল করবেন?",
       "discard_button": "বাতিল করুন",
       "commit": "কমিট",
@@ -218,7 +222,32 @@
       "lines_count": "{count, plural, =1 {# লাইন} other {# লাইন}}",
       "characters_count": "{count, plural, =1 {# অক্ষর} other {# অক্ষর}}",
       "error_loading_title": "ফাইল লোড করতে ত্রুটি হয়েছে",
-      "error_loading_desc": "সম্পাদনার জন্য ফাইলটি লোড করা যায়নি।"
+      "error_loading_desc": "সম্পাদনার জন্য ফাইলটি লোড করা যায়নি।",
+      "ai": {
+        "copilot_button": "এআই কোপাইলট",
+        "inline_title": "এআই কোড কোপাইলট",
+        "inline_placeholder": "কোড সম্পাদনা, রিফ্যাক্টর বা তৈরি করতে এআই-কে বলুন...",
+        "target_selection": "নির্বাচন",
+        "target_file": "সম্পূর্ণ ফাইল",
+        "accept": "গ্রহণ করুন",
+        "discard": "বাতিল করুন",
+        "run": "চালান",
+        "quick_fix": "বাগ খুঁজুন ও ঠিক করুন",
+        "quick_refactor": "কোড রিফ্যাক্টর করুন",
+        "quick_comments": "মন্তব্য যোগ করুন",
+        "explain_title": "কোড ব্যাখ্যা",
+        "explain_loading": "এআই দিয়ে কোড বিশ্লেষণ করা হচ্ছে...",
+        "generating": "উত্তর তৈরি হচ্ছে",
+        "copy": "কপি",
+        "copied": "কপি করা হয়েছে",
+        "changes_applied": "সম্পাদকে এআই পরিবর্তন প্রয়োগ করা হয়েছে",
+        "no_code_to_explain": "ব্যাখ্যা করার জন্য কোনো কোড পাওয়া যায়নি",
+        "quick_explain": "কোড ব্যাখ্যা করুন",
+        "review_title": "পরিবর্তন পর্যালোচনা",
+        "review_desc": "মূল কোডের সাথে এআই পরিবর্তনের তুলনা",
+        "diff_inline": "ইউনিফাইড ইনলাইন ডিফল্ট",
+        "diff_split": "পাশাপাশি তুলনা"
+      }
     },
     "seo": {
       "slug": "Slug",
@@ -364,6 +393,19 @@
           "toc_present": "সূচিপত্র",
           "em_dash_overuse": "অতিরিক্ত এম ড্যাশ"
         }
+      },
+      "ai": {
+        "fix": "এআই দিয়ে ঠিক করুন",
+        "fixing": "সংশোধন তৈরি হচ্ছে",
+        "suggestion": "এআই পরামর্শ",
+        "apply_fix": "প্রয়োগ করুন",
+        "apply_to_editor": "এডিটরে প্রয়োগ করুন",
+        "applied": "প্রয়োগ করা হয়েছে!",
+        "copy_fix": "অনুলিপি করুন",
+        "copied": "অনুলিপি করা হয়েছে!",
+        "fix_applied": "এআই সমাধান প্রয়োগ করা হয়েছে",
+        "content_applied": "এডিটরে বিষয়বস্তু আপডেট করা হয়েছে",
+        "error": "এআই অনুরোধ প্রক্রিয়াকরণ করতে ব্যর্থ হয়েছে"
       }
     },
     "mismatch": {

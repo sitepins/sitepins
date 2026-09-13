@@ -1,3 +1,4 @@
+import { AiUpgrade } from "@/components/ai-upgrade";
 import { toast } from "@/components/ui/toast";
 import { useDebouncedCallback } from "@/hooks/use-debounce-callback";
 import useMounted from "@/hooks/use-mounted";
@@ -9,10 +10,9 @@ import { MarkdownPlugin } from "@platejs/markdown";
 import { YjsPlugin } from "@platejs/yjs/react";
 import { useTranslations } from "next-intl";
 import { usePathname } from "next/navigation";
-import { TElement } from "platejs";
+import { KEYS, TElement } from "platejs";
 import { Plate, usePlateEditor } from "platejs/react";
 import { useEffect, useRef } from "react";
-import { AiUpgrade } from "./plate-ui/ai-upgrade";
 import { Editor, EditorContainer } from "./plate-ui/editor";
 import { EditorKit, MyEditor } from "./plugins/editor-kit";
 import { YjsKit } from "./plugins/yjs.kit";
@@ -298,9 +298,63 @@ export const RichEditor = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isRawMode]);
 
+  // Listen for programmatic external content updates (e.g. AI SEO content fixes)
+  useEffect(() => {
+    const handleContentUpdate = (e: Event) => {
+      const customEvent = e as CustomEvent<{
+        content: string;
+        mode?: "replace" | "append";
+      }>;
+      if (!editor || !customEvent.detail?.content) return;
+      try {
+        const newMd = customEvent.detail.content;
+        const cleanNodes = editor
+          .getApi(MarkdownPlugin)
+          .markdown.deserialize(newMd, { withoutMdx: true });
+
+        const newChildren =
+          cleanNodes.length > 0
+            ? cleanNodes
+            : [{ children: [{ text: "" }], type: "p" }];
+
+        isRemoteUpdate.current = true;
+        editor.tf.withoutNormalizing(() => {
+          for (let i = editor.children.length - 1; i >= 0; i--) {
+            editor.tf.removeNodes({ at: [i] });
+          }
+          newChildren.forEach((node: TSlateNode, i: number) => {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            editor.tf.insertNodes(node as any, { at: [i] });
+          });
+        });
+
+        onUpdateMarkdown(newMd);
+        setTimeout(() => {
+          isRemoteUpdate.current = false;
+        }, 100);
+      } catch (err) {
+        logger.error(
+          "Failed to update rich editor content from external event",
+          err,
+        );
+      }
+    };
+
+    window.addEventListener(
+      "sitepins:editor-content-update",
+      handleContentUpdate,
+    );
+    return () => {
+      window.removeEventListener(
+        "sitepins:editor-content-update",
+        handleContentUpdate,
+      );
+    };
+  }, [editor, onUpdateMarkdown]);
+
   const recursiveFilter = (nodes: TSlateNode[]): TSlateNode[] => {
     return nodes
-      .filter((n) => n.type !== "slash_input")
+      .filter((n) => n.type !== "slash_input" && n.type !== KEYS.aiChat)
       .map((n) =>
         n.children ? { ...n, children: recursiveFilter(n.children) } : n,
       );

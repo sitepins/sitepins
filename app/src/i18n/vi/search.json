@@ -1,6 +1,20 @@
 {
   "search": {
-    "placeholder": "Tìm kiếm cài đặt, tổ chức, gói cước...",
+    "placeholder": "Tìm kiếm hoặc hỏi AI...",
+    "ask_ai_copilot": "Hỏi AI Copilot",
+    "ask_about_query": "Hỏi AI Copilot: \"{query}\"",
+    "create_in_collection": "Tạo mục mới trong {collection}",
+    "ai_placeholder": "Hỏi bất cứ điều gì về trang web, nội dung hoặc CMS của bạn...",
+    "ai_send": "Gửi",
+    "copilot_title": "AI Copilot",
+    "copilot_subtitle": "Hỏi bất cứ điều gì — tôi biết cấu trúc và bộ sưu tập của dự án bạn.",
+    "suggestion_1": "Làm thế nào để tạo bài viết blog mới?",
+    "suggestion_2": "Cấu hình trang web là gì và chỉnh sửa như thế nào?",
+    "suggestion_3": "Làm thế nào để mời một thành viên mới vào nhóm?",
+    "suggestion_4": "Giải thích cấu trúc thư mục của dự án này",
+    "copy": "Sao chép",
+    "copied": "Đã sao chép!",
+    "new_query": "Cuộc trò chuyện mới",
     "groupLabels": {
       "organizations": "Tổ chức",
       "preferences": "Tùy chọn",

@@ -181,7 +181,13 @@
       "description_placeholder": "Füge eine optionale erweiterte Beschreibung hinzu..",
       "submit": "Commit",
       "default_message": "Datei aktualisieren",
-      "rename_message": "{oldPath} in {newPath} umbenennen"
+      "rename_message": "{oldPath} in {newPath} umbenennen",
+      "ai": {
+        "generate": "Automatisch mit KI generieren",
+        "generating": "Wird generiert...",
+        "success": "Commit-Nachricht mit KI generiert",
+        "error": "Fehler beim Generieren der Commit-Nachricht"
+      }
     },
     "renderer": {
       "loading_options": "Optionen werden geladen...",
@@ -200,9 +206,7 @@
       "select_prompt": "Wähle eine Datei aus, um mit der Bearbeitung zu beginnen"
     },
     "code": {
-      "edited": "Bearbeitet",
       "unsaved": "• Nicht gespeichert",
-      "discard_changes": "Änderungen verwerfen",
       "discard_title": "Änderungen verwerfen?",
       "discard_button": "Verwerfen",
       "commit": "Committen",
@@ -218,7 +222,32 @@
       "lines_count": "{count, plural, =1 {# Zeile} other {# Zeilen}}",
       "characters_count": "{count, plural, =1 {# Zeichen} other {# Zeichen}}",
       "error_loading_title": "Fehler beim Laden der Datei",
-      "error_loading_desc": "Die Datei konnte nicht zum Bearbeiten geladen werden."
+      "error_loading_desc": "Die Datei konnte nicht zum Bearbeiten geladen werden.",
+      "ai": {
+        "copilot_button": "KI-Copilot",
+        "inline_title": "KI-Code-Copilot",
+        "inline_placeholder": "Bitten Sie die KI, Code zu bearbeiten, umzustrukturieren oder zu generieren...",
+        "target_selection": "Auswahl",
+        "target_file": "Ganze Datei",
+        "accept": "Übernehmen",
+        "discard": "Verwerfen",
+        "run": "Ausführen",
+        "quick_fix": "Fehler finden & beheben",
+        "quick_refactor": "Code umgestalten",
+        "quick_comments": "Kommentare hinzufügen",
+        "explain_title": "Code-Erklärung",
+        "explain_loading": "Code wird mit KI analysiert...",
+        "generating": "Antwort wird generiert",
+        "copy": "Kopieren",
+        "copied": "Kopiert",
+        "changes_applied": "KI-Änderungen im Editor angewendet",
+        "no_code_to_explain": "Kein Code zum Erklären gefunden",
+        "quick_explain": "Code erklären",
+        "review_title": "Änderungen überprüfen",
+        "review_desc": "Vergleich der KI-Änderungen mit dem Originalcode",
+        "diff_inline": "Einheitlicher Inline-Diff",
+        "diff_split": "Nebeneinander-Vergleich"
+      }
     },
     "seo": {
       "slug": "Slug",
@@ -364,6 +393,19 @@
           "toc_present": "Inhaltsverzeichnis",
           "em_dash_overuse": "Zu viele Gedankenstriche"
         }
+      },
+      "ai": {
+        "fix": "Mit KI beheben",
+        "fixing": "Korrektur wird generiert",
+        "suggestion": "KI-Vorschlag",
+        "apply_fix": "Anwenden",
+        "apply_to_editor": "Auf Editor anwenden",
+        "applied": "Angewendet!",
+        "copy_fix": "Kopieren",
+        "copied": "Kopiert!",
+        "fix_applied": "KI-Korrektur angewendet",
+        "content_applied": "Inhalt im Editor aktualisiert",
+        "error": "Fehler beim Verarbeiten der KI-Anfrage"
       }
     },
     "mismatch": {

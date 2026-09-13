@@ -8,7 +8,13 @@ import { GhostText } from "../plate-ui/ghost-text";
 import { MarkdownKit } from "./markdown-kit";
 
 export function getAICredential():
-  | { provider: string; model: string; apiKey: string; autocomplete: boolean }
+  | {
+      provider: string;
+      model: string;
+      apiKey: string;
+      autocomplete: boolean;
+      editorAi: boolean;
+    }
   | undefined {
   if (typeof window !== "object") return undefined;
   try {
@@ -16,7 +22,8 @@ export function getAICredential():
     const model = localStorage.getItem("sitepins-ai-model");
     const apiKey = localStorage.getItem("sitepins-ai-apiKey");
     const autocomplete =
-      localStorage.getItem("sitepins-ai-autocomplete") === "true";
+      localStorage.getItem("sitepins-ai-autocomplete") !== "false";
+    const editorAi = localStorage.getItem("sitepins-ai-editor") !== "false";
 
     if (
       typeof provider !== "string" ||
@@ -30,6 +37,7 @@ export function getAICredential():
       model,
       apiKey,
       autocomplete,
+      editorAi,
     };
   } catch {}
   return undefined;

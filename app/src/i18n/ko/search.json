@@ -1,6 +1,20 @@
 {
   "search": {
-    "placeholder": "설정, 조직, 요금제 검색...",
+    "placeholder": "검색하거나 AI에게 질문...",
+    "ask_ai_copilot": "AI 코파일럿에게 질문",
+    "ask_about_query": "AI 코파일럿에게 질문: \"{query}\"",
+    "create_in_collection": "{collection}에 새 항목 만들기",
+    "ai_placeholder": "사이트, 콘텐츠 또는 CMS에 대해 무엇이든 물어보세요...",
+    "ai_send": "전송",
+    "copilot_title": "AI 코파일럿",
+    "copilot_subtitle": "무엇이든 질문하세요 — 프로젝트 구조와 컬렉션을 알고 있습니다.",
+    "suggestion_1": "새 블로그 포스트를 어떻게 만드나요?",
+    "suggestion_2": "사이트 설정이란 무엇이며 어떻게 편집하나요?",
+    "suggestion_3": "새 팀원을 어떻게 초대하나요?",
+    "suggestion_4": "이 프로젝트의 폴더 구조를 설명해주세요",
+    "copy": "복사",
+    "copied": "복사됨!",
+    "new_query": "새 대화",
     "groupLabels": {
       "organizations": "조직",
       "preferences": "환경설정",

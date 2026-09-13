@@ -1,14 +1,15 @@
 "use client";
 
+import { useIsEditorAiEnabled } from "@/hooks/use-ai-access";
 import {
   BoldIcon,
   Code2Icon,
   ItalicIcon,
   WandSparklesIcon,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { KEYS } from "platejs";
 import { useEditorReadOnly, useEditorSelector } from "platejs/react";
-import { useTranslations } from "next-intl";
 import { AIToolbarButton } from "./ai-toolbar-button";
 import { LinkToolbarButton } from "./link-toolbar-button";
 import { MarkToolbarButton } from "./mark-toolbar-button";
@@ -18,6 +19,8 @@ import { TurnIntoToolbarButton } from "./turn-into-toolbar-button";
 export function FloatingToolbarButtons() {
   const tEditorToolbar = useTranslations("editor.toolbar");
   const readOnly = useEditorReadOnly();
+  const editorAi = useIsEditorAiEnabled();
+
   const isRootBlock = useEditorSelector(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (editor: any) => {
@@ -32,7 +35,7 @@ export function FloatingToolbarButtons() {
     <>
       {!readOnly && (
         <>
-          {isRootBlock && (
+          {isRootBlock && editorAi && (
             <ToolbarGroup>
               <AIToolbarButton tooltip={tEditorToolbar("ai_commands")}>
                 <WandSparklesIcon />

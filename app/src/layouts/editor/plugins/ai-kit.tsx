@@ -1,6 +1,7 @@
 "use client";
 
 import { useAiCommand } from "@/hooks/use-ai-command";
+import { logger } from "@/lib/logger";
 import { withAIBatch } from "@platejs/ai";
 import {
   AIChatPlugin,
@@ -10,10 +11,9 @@ import {
   useChatChunk,
 } from "@platejs/ai/react";
 import { getPluginType, KEYS, PathApi } from "platejs";
-import { usePluginOption } from "platejs/react";
+import * as React from "react";
 import { AILoadingBar, AIMenu } from "../plate-ui/ai-menu";
 import { AIAnchorElement, AILeaf } from "../plate-ui/ai-node";
-import { CursorOverlayKit } from "./cursor-overlay-kit";
 import { MarkdownKit } from "./markdown-kit";
 
 export const aiChatPlugin = AIChatPlugin.extend({
@@ -35,30 +35,54 @@ export const aiChatPlugin = AIChatPlugin.extend({
   useHooks: ({ editor, getOption }) => {
     useAiCommand();
 
-    const mode = usePluginOption(AIChatPlugin, "mode");
-    const toolName = usePluginOption(AIChatPlugin, "toolName");
+    const contentRef = React.useRef("");
+
     useChatChunk({
       onChunk: ({ chunk, isFirst, nodes, text: content }) => {
-        if (isFirst && mode === "insert") {
-          editor.tf.withoutSaving(() => {
-            editor.tf.insertNodes(
-              {
-                children: [{ text: "" }],
-                type: getPluginType(editor, KEYS.aiChat),
-              },
-              {
-                at: PathApi.next(editor.selection!.focus.path.slice(0, 1)),
-              },
-            );
-          });
+        contentRef.current = content;
+
+        const currentMode =
+          editor.getOption(AIChatPlugin, "mode") ?? getOption("mode");
+
+        if (isFirst) {
+          if (currentMode === "insert") {
+            try {
+              const existingAnchor = editor
+                .getApi(AIChatPlugin)
+                .aiChat.node({ anchor: true });
+
+              if (!existingAnchor) {
+                const selection =
+                  editor.selection ??
+                  editor.getOption(AIChatPlugin, "chatSelection");
+                const blockPath = selection?.focus?.path?.slice(0, 1) ?? [
+                  Math.max(0, editor.children.length - 1),
+                ];
+
+                editor.tf.withoutSaving(() => {
+                  editor.tf.insertNodes(
+                    {
+                      children: [{ text: "" }],
+                      type: getPluginType(editor, KEYS.aiChat),
+                    },
+                    {
+                      at: PathApi.next(blockPath),
+                    },
+                  );
+                });
+              }
+            } catch (err) {
+              logger.warn("Failed to insert AI anchor node", err);
+            }
+          }
           editor.setOption(AIChatPlugin, "streaming", true);
         }
 
-        if (mode === "insert" && nodes.length > 0) {
+        if (currentMode === "insert" && nodes.length > 0) {
           withAIBatch(
             editor,
             () => {
-              if (!getOption("streaming")) return;
+              if (!editor.getOption(AIChatPlugin, "streaming")) return;
               editor.tf.withScrolling(() => {
                 streamInsertChunk(editor, chunk, {
                   textProps: {
@@ -70,22 +94,31 @@ export const aiChatPlugin = AIChatPlugin.extend({
             { split: isFirst },
           );
         }
+      },
+      onFinish: ({ content }) => {
+        const finalContent = content || contentRef.current;
+        const currentMode = editor.getOption(AIChatPlugin, "mode");
+        const currentToolName = editor.getOption(AIChatPlugin, "toolName");
 
-        if (toolName === "edit" && mode === "chat") {
+        if (
+          currentToolName === "edit" &&
+          currentMode === "chat" &&
+          finalContent
+        ) {
           withAIBatch(
             editor,
             () => {
               try {
-                applyAISuggestions(editor, content);
-              } catch {}
+                applyAISuggestions(editor, finalContent);
+              } catch (err) {
+                logger.error("Failed to apply AI suggestions", err);
+              }
             },
-            {
-              split: isFirst,
-            },
+            { split: true },
           );
         }
-      },
-      onFinish: () => {
+
+        contentRef.current = "";
         editor.getApi(AIChatPlugin).aiChat.stop();
       },
     });
@@ -93,7 +126,6 @@ export const aiChatPlugin = AIChatPlugin.extend({
 });
 
 export const AIKit = [
-  ...CursorOverlayKit,
   ...MarkdownKit,
   AIPlugin.withComponent(AILeaf),
   aiChatPlugin,

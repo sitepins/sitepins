@@ -108,11 +108,17 @@ export function AIMenu() {
 
   React.useEffect(() => {
     if (streaming) {
-      const anchor = api.aiChat.node({ anchor: true });
       setTimeout(() => {
-        const anchorDom = editor.api.toDOMNode(anchor![0])!;
-        if (anchorDom) {
-          setAnchorRect(anchorDom.getBoundingClientRect());
+        try {
+          const anchor = api.aiChat.node({ anchor: true });
+          if (!anchor?.[0]) return;
+
+          const anchorDom = editor.api.toDOMNode(anchor[0]);
+          if (anchorDom) {
+            setAnchorRect(anchorDom.getBoundingClientRect());
+          }
+        } catch {
+          // Anchor node may no longer be in the DOM
         }
       }, 0);
     }
@@ -447,9 +453,20 @@ export const AIMenuItems = ({
           editor: PlateEditor;
           input: string;
         }) => {
-          const ancestorNode = editor.api.block({ highest: true });
+          let ancestorNode = editor.api.block({ highest: true });
+          if (!ancestorNode) {
+            const lastIndex = Math.max(0, editor.children.length - 1);
+            ancestorNode = editor.api.node([lastIndex]);
+          }
 
           if (!ancestorNode) return;
+
+          if (!editor.selection && ancestorNode) {
+            const endPoint = editor.api.end(ancestorNode[1]);
+            if (endPoint) {
+              editor.tf.select(endPoint);
+            }
+          }
 
           const isEmpty =
             NodeApi.string(ancestorNode[0] as TNode).trim().length === 0;

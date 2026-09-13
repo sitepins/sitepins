@@ -1,6 +1,20 @@
 {
   "search": {
-    "placeholder": "Поиск по настройкам, организациям, тарифам...",
+    "placeholder": "Поиск или вопрос ИИ...",
+    "ask_ai_copilot": "Спросить AI Copilot",
+    "ask_about_query": "Спросить AI Copilot: \"{query}\"",
+    "create_in_collection": "Создать новую запись в {collection}",
+    "ai_placeholder": "Спрашивайте всё о вашем сайте, контенте или CMS...",
+    "ai_send": "Отправить",
+    "copilot_title": "AI Copilot",
+    "copilot_subtitle": "Спросите что угодно — я знаю структуру и коллекции вашего проекта.",
+    "suggestion_1": "Как создать новую запись в блоге?",
+    "suggestion_2": "Что такое конфигурация сайта и как ее изменить?",
+    "suggestion_3": "Как пригласить нового участника в команду?",
+    "suggestion_4": "Объясни структуру папок этого проекта",
+    "copy": "Копировать",
+    "copied": "Скопировано!",
+    "new_query": "Новый разговор",
     "groupLabels": {
       "organizations": "Организации",
       "preferences": "Настройки",

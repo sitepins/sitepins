@@ -181,7 +181,13 @@
       "description_placeholder": "Tambahkan deskripsi tambahan opsional..",
       "submit": "Berkomitmen",
       "default_message": "Perbarui berkas",
-      "rename_message": "Ganti nama {oldPath} menjadi {newPath}"
+      "rename_message": "Ganti nama {oldPath} menjadi {newPath}",
+      "ai": {
+        "generate": "Buat otomatis dengan AI",
+        "generating": "Membuat...",
+        "success": "Pesan komit berhasil dibuat dengan AI",
+        "error": "Gagal membuat pesan komit"
+      }
     },
     "renderer": {
       "loading_options": "Memuat opsi...",
@@ -200,9 +206,7 @@
       "select_prompt": "Pilih file untuk mulai mengedit"
     },
     "code": {
-      "edited": "Diedit",
       "unsaved": "• Belum disimpan",
-      "discard_changes": "Buang perubahan",
       "discard_title": "Buang Perubahan?",
       "discard_button": "Buang",
       "commit": "Berkomitmen",
@@ -218,7 +222,32 @@
       "lines_count": "{count, plural, =1 {# baris} other {# baris}}",
       "characters_count": "{count, plural, =1 {# karakter} other {# karakter}}",
       "error_loading_title": "Terjadi kesalahan saat memuat berkas",
-      "error_loading_desc": "Tidak dapat memuat file untuk diedit."
+      "error_loading_desc": "Tidak dapat memuat file untuk diedit.",
+      "ai": {
+        "copilot_button": "Kopilot AI",
+        "inline_title": "Kopilot Kode AI",
+        "inline_placeholder": "Minta AI untuk mengedit, refaktor, atau membuat kode...",
+        "target_selection": "Pilihan",
+        "target_file": "Seluruh berkas",
+        "accept": "Terima",
+        "discard": "Buang",
+        "run": "Jalankan",
+        "quick_fix": "Temukan & Perbaiki Bug",
+        "quick_refactor": "Refaktor Kode",
+        "quick_comments": "Tambah Komentar",
+        "explain_title": "Penjelasan Kode",
+        "explain_loading": "Menganalisis kode dengan AI...",
+        "generating": "Membuat tanggapan",
+        "copy": "Salin",
+        "copied": "Disalin",
+        "changes_applied": "Perubahan AI diterapkan ke editor",
+        "no_code_to_explain": "Tidak ada kode yang ditemukan untuk dijelaskan",
+        "quick_explain": "Jelaskan Kode",
+        "review_title": "Tinjau Perubahan",
+        "review_desc": "Membandingkan perubahan AI dengan kode asli",
+        "diff_inline": "Diff Sebaris Terpadu",
+        "diff_split": "Bandingan Berdampingan"
+      }
     },
     "seo": {
       "slug": "Siput",
@@ -364,6 +393,19 @@
           "toc_present": "Daftar Isi",
           "em_dash_overuse": "Tanda Pisah Berlebihan"
         }
+      },
+      "ai": {
+        "fix": "Perbaiki dengan AI",
+        "fixing": "Membuat perbaikan",
+        "suggestion": "Saran AI",
+        "apply_fix": "Terapkan",
+        "apply_to_editor": "Terapkan ke Editor",
+        "applied": "Diterapkan!",
+        "copy_fix": "Salin",
+        "copied": "Disalin!",
+        "fix_applied": "Perbaikan AI diterapkan",
+        "content_applied": "Konten diperbarui di editor",
+        "error": "Gagal memproses permintaan AI"
       }
     },
     "mismatch": {

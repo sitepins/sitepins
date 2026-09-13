@@ -1,6 +1,20 @@
 {
   "search": {
-    "placeholder": "搜索设置、组织、价格方案...",
+    "placeholder": "搜索或询问 AI...",
+    "ask_ai_copilot": "询问 AI Copilot",
+    "ask_about_query": "询问 AI Copilot：\"{query}\"",
+    "create_in_collection": "在 {collection} 中创建新条目",
+    "ai_placeholder": "询问关于您的网站、内容或 CMS 的任何问题...",
+    "ai_send": "发送",
+    "copilot_title": "AI Copilot",
+    "copilot_subtitle": "随便问 — 我了解您项目的结构和内容集合。",
+    "suggestion_1": "如何创建新博客文章？",
+    "suggestion_2": "什么是站点配置？如何进行编辑？",
+    "suggestion_3": "如何邀请新的团队成员？",
+    "suggestion_4": "解释这个项目的文件夹结构",
+    "copy": "复制",
+    "copied": "已复制！",
+    "new_query": "新对话",
     "groupLabels": {
       "organizations": "组织",
       "preferences": "偏好设置",

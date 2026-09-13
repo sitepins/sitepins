@@ -1,6 +1,20 @@
 {
   "search": {
-    "placeholder": "Pesquisar configurações, organizações, planos...",
+    "placeholder": "Pesquisar ou perguntar à IA...",
+    "ask_ai_copilot": "Perguntar ao Copiloto IA",
+    "ask_about_query": "Perguntar ao Copiloto IA: \"{query}\"",
+    "create_in_collection": "Criar nova entrada em {collection}",
+    "ai_placeholder": "Pergunte qualquer coisa sobre seu site, conteúdo ou CMS...",
+    "ai_send": "Enviar",
+    "copilot_title": "Copiloto IA",
+    "copilot_subtitle": "Pergunte qualquer coisa — conheço a estrutura e coleções do seu projeto.",
+    "suggestion_1": "Como criar um novo post de blog?",
+    "suggestion_2": "O que é a configuração do site e como editá-la?",
+    "suggestion_3": "Como convidar um novo membro para a equipe?",
+    "suggestion_4": "Explique a estrutura de pastas deste projeto",
+    "copy": "Copiar",
+    "copied": "Copiado!",
+    "new_query": "Nova conversa",
     "groupLabels": {
       "organizations": "Organizações",
       "preferences": "Preferências",

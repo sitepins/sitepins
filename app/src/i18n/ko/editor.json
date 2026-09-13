@@ -181,7 +181,13 @@
       "description_placeholder": "선택적 확장 설명을 추가하세요..",
       "submit": "커밋",
       "default_message": "파일 업데이트",
-      "rename_message": "{oldPath}의 이름을 {newPath}로 바꾸기"
+      "rename_message": "{oldPath}의 이름을 {newPath}로 바꾸기",
+      "ai": {
+        "generate": "AI로 자동 생성",
+        "generating": "생성 중...",
+        "success": "AI로 커밋 메시지를 생성했습니다",
+        "error": "커밋 메시지 생성 실패"
+      }
     },
     "renderer": {
       "loading_options": "옵션 로드 중...",
@@ -200,9 +206,7 @@
       "select_prompt": "편집을 시작할 파일을 선택하세요"
     },
     "code": {
-      "edited": "수정됨",
       "unsaved": "• 저장되지 않음",
-      "discard_changes": "변경사항 취소",
       "discard_title": "변경사항을 취소하시겠습니까?",
       "discard_button": "폐기",
       "commit": "커밋",
@@ -218,7 +222,32 @@
       "lines_count": "{count, plural, other {#줄}}",
       "characters_count": "{count, plural, other {#자}}",
       "error_loading_title": "파일을 로드하는 중에 오류가 발생했습니다",
-      "error_loading_desc": "편집할 파일을 로드할 수 없습니다."
+      "error_loading_desc": "편집할 파일을 로드할 수 없습니다.",
+      "ai": {
+        "copilot_button": "AI 코파일럿",
+        "inline_title": "AI 코드 코파일럿",
+        "inline_placeholder": "AI에게 코드 편집, 리팩터링 또는 생성을 요청하세요...",
+        "target_selection": "선택 영역",
+        "target_file": "전체 파일",
+        "accept": "적용",
+        "discard": "취소",
+        "run": "실행",
+        "quick_fix": "버그 찾기 및 수정",
+        "quick_refactor": "코드 리팩터링",
+        "quick_comments": "주석 추가",
+        "explain_title": "코드 설명",
+        "explain_loading": "AI로 코드 분석 중...",
+        "generating": "응답 생성 중",
+        "copy": "복사",
+        "copied": "복사됨",
+        "changes_applied": "AI 변경 사항이 편집기에 적용되었습니다",
+        "no_code_to_explain": "설명할 코드가 없습니다",
+        "quick_explain": "코드 설명",
+        "review_title": "변경 사항 검토",
+        "review_desc": "원본 코드와 AI 변경 사항 비교",
+        "diff_inline": "통합 인라인 차이",
+        "diff_split": "나란히 비교"
+      }
     },
     "seo": {
       "slug": "슬러그",
@@ -364,6 +393,19 @@
           "toc_present": "목차",
           "em_dash_overuse": "줄표 과다 사용"
         }
+      },
+      "ai": {
+        "fix": "AI로 수정",
+        "fixing": "수정안 생성 중",
+        "suggestion": "AI 제안",
+        "apply_fix": "적용",
+        "apply_to_editor": "에디터에 적용",
+        "applied": "적용됨!",
+        "copy_fix": "복사",
+        "copied": "복사됨!",
+        "fix_applied": "AI 수정 적용됨",
+        "content_applied": "에디터에 콘텐츠가 업데이트되었습니다",
+        "error": "AI 요청 처리 실패"
       }
     },
     "mismatch": {

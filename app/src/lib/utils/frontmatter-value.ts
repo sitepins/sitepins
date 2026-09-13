@@ -52,3 +52,99 @@ export const arrayAt = (
   key: string | number,
 ): unknown[] | undefined =>
   Array.isArray(node[key]) ? (node[key] as unknown[]) : undefined;
+
+/**
+ * Extracts raw item strings from any text format:
+ * - JSON array strings: `["tag1", "tag2"]`
+ * - Markdown code blocks (e.g. ```yaml\ntags:\n  - tag1\n  - tag2\n```)
+ * - YAML / Markdown bullet lists (`- tag`, `* tag`, `• tag`)
+ * - Comma, newline, or semicolon delimited strings
+ */
+export function extractArrayItemsFromText(text: string): string[] {
+  if (!text || typeof text !== "string") return [];
+
+  const trimmed = text.trim();
+
+  // 1. If it's a JSON array string: e.g. ["tag1", "tag2"]
+  if (trimmed.startsWith("[") && trimmed.endsWith("]")) {
+    try {
+      const parsed = JSON.parse(trimmed);
+      if (Array.isArray(parsed)) {
+        return parseArrayItems(parsed);
+      }
+    } catch {
+      // Fall through to other extraction methods
+    }
+  }
+
+  // 2. Extract content from markdown code fences if present (e.g. ```yaml ... ```)
+  const codeBlockMatch = text.match(/```(?:yaml|json)?\s*([\s\S]*?)\s*```/i);
+  const targetText = codeBlockMatch ? codeBlockMatch[1] : text;
+
+  // 3. Extract from YAML/markdown bullet points: e.g. "- tag" or "* tag"
+  const bulletMatches = targetText.match(/^\s*[-*•]\s*(.+)$/gm);
+  if (bulletMatches && bulletMatches.length > 0) {
+    return bulletMatches
+      .map((line) =>
+        line
+          .replace(/^\s*[-*•]\s*/, "")
+          .replace(/^["']+|["']+$/g, "")
+          .trim(),
+      )
+      .filter((item) => {
+        const lower = item.toLowerCase();
+        return (
+          Boolean(item) &&
+          !lower.endsWith(":") &&
+          !lower.startsWith("```") &&
+          !["yaml", "json", "tags", "keywords", "categories"].includes(lower)
+        );
+      });
+  }
+
+  // 4. Fallback to delimiter splitting (comma, semicolon, newline)
+  return targetText
+    .split(/[,;\n]+/)
+    .map((item) =>
+      item
+        .trim()
+        .replace(/^[\s\-*•"']+|[\s"']+$/g, "")
+        .trim(),
+    )
+    .filter((item) => {
+      const lower = item.toLowerCase();
+      return (
+        Boolean(item) &&
+        !lower.endsWith(":") &&
+        !lower.startsWith("```") &&
+        !["yaml", "json", "tags", "keywords", "categories"].includes(lower)
+      );
+    });
+}
+
+/**
+ * Normalizes any array or text payload into a clean string array.
+ */
+export function parseArrayItems(val: unknown): string[] {
+  if (Array.isArray(val)) {
+    return val
+      .map((item) => {
+        if (typeof item === "string") {
+          return item.trim().replace(/^["']|["']$/g, "");
+        }
+        if (typeof item === "object" && item !== null && "value" in item) {
+          return String((item as { value: unknown }).value)
+            .trim()
+            .replace(/^["']|["']$/g, "");
+        }
+        return String(item).trim();
+      })
+      .filter(Boolean);
+  }
+
+  if (typeof val === "string") {
+    return extractArrayItemsFromText(val);
+  }
+
+  return [];
+}

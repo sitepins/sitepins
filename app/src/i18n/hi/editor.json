@@ -181,7 +181,13 @@
       "description_placeholder": "एक वैकल्पिक विस्तृत विवरण जोड़ें..",
       "submit": "कमिट करें",
       "default_message": "फ़ाइल अपडेट करें",
-      "rename_message": "{oldPath} का नाम बदलकर {newPath} करें"
+      "rename_message": "{oldPath} का नाम बदलकर {newPath} करें",
+      "ai": {
+        "generate": "एआई के साथ स्वतः उत्पन्न करें",
+        "generating": "उत्पन्न किया जा रहा है...",
+        "success": "एआई के साथ कमिट संदेश उत्पन्न किया गया",
+        "error": "कमिट संदेश उत्पन्न करने में विफल"
+      }
     },
     "renderer": {
       "loading_options": "विकल्प लोड हो रहे हैं...",
@@ -200,9 +206,7 @@
       "select_prompt": "संपादन शुरू करने के लिए एक फ़ाइल चुनें"
     },
     "code": {
-      "edited": "संपादित",
       "unsaved": "• बिना सहेजा गया",
-      "discard_changes": "परिवर्तन खारिज करें",
       "discard_title": "परिवर्तन खारिज करें?",
       "discard_button": "खारिज करें",
       "commit": "कमिट करें",
@@ -218,7 +222,32 @@
       "lines_count": "{count, plural, =1 {# पंक्ति} other {# पंक्तियाँ}}",
       "characters_count": "{count, plural, =1 {# वर्ण} other {# वर्ण}}",
       "error_loading_title": "फ़ाइल लोड करने में त्रुटि",
-      "error_loading_desc": "संपादन के लिए फ़ाइल लोड नहीं की जा सकी।"
+      "error_loading_desc": "संपादन के लिए फ़ाइल लोड नहीं की जा सकी।",
+      "ai": {
+        "copilot_button": "एआई कोपायलट",
+        "inline_title": "एआई कोड कोपायलट",
+        "inline_placeholder": "कोड संपादित, रीफैक्टर या जनरेट करने के लिए एआई से कहें...",
+        "target_selection": "चयन",
+        "target_file": "पूरी फाइल",
+        "accept": "स्वीकार करें",
+        "discard": "खारिज करें",
+        "run": "चलाएं",
+        "quick_fix": "बग खोजें और ठीक करें",
+        "quick_refactor": "कोड रिफैक्टर करें",
+        "quick_comments": "टिप्पणियाँ जोड़ें",
+        "explain_title": "कोड स्पष्टीकरण",
+        "explain_loading": "एआई के साथ कोड का विश्लेषण किया जा रहा है...",
+        "generating": "उत्तर तैयार हो रहा है",
+        "copy": "कॉपी करें",
+        "copied": "कॉपी हो गया",
+        "changes_applied": "एआई परिवर्तन एडिटर में लागू किए गए",
+        "no_code_to_explain": "समझाने के लिए कोई कोड नहीं मिला",
+        "quick_explain": "कोड समझाएं",
+        "review_title": "परिवर्तनों की समीक्षा करें",
+        "review_desc": "मूल कोड के साथ AI परिवर्तनों की तुलना",
+        "diff_inline": "एकीकृत इनलाइन अंतर",
+        "diff_split": "आमने-सामने तुलना"
+      }
     },
     "seo": {
       "slug": "स्लग (Slug)",
@@ -364,6 +393,19 @@
           "toc_present": "विषय सूची (TOC)",
           "em_dash_overuse": "एम डैश का अत्यधिक उपयोग"
         }
+      },
+      "ai": {
+        "fix": "एआई के साथ ठीक करें",
+        "fixing": "समाधान उत्पन्न हो रहा है",
+        "suggestion": "एआई सुझाव",
+        "apply_fix": "लागू करें",
+        "apply_to_editor": "संपादक में लागू करें",
+        "applied": "लागू किया गया!",
+        "copy_fix": "कॉपी करें",
+        "copied": "कॉपी किया गया!",
+        "fix_applied": "एआई सुधार लागू किया गया",
+        "content_applied": "संपादक में सामग्री अपडेट की गई",
+        "error": "एआई अनुरोध संसाधित करने में विफल"
       }
     },
     "mismatch": {

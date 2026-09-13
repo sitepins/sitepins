@@ -1,27 +1,27 @@
 "use client";
 
-import { errorMessageOr } from "@/lib/utils/error";
-import { logger } from "@/lib/logger";
+import { toast } from "@/components/ui/toast";
 import { revertToOriginal } from "@/editor/utils/plate-utils";
 import { useCommitLogic } from "@/hooks/use-commit-logic";
 import { useIsChanged } from "@/hooks/use-is-changed";
-import { unwrapValue } from "@/lib/utils/frontmatter-value";
 import { useOwnerPlan } from "@/hooks/use-owner-plan";
 import { useSandboxPreview } from "@/hooks/use-sandbox-preview";
 import { useSaveAsDraft } from "@/hooks/use-save-as-draft";
 import { useSnippets } from "@/hooks/use-snippets";
 import { useVercelIntegration } from "@/hooks/use-vercel-integration";
+import { logger } from "@/lib/logger";
 import { contentFormatter, format } from "@/lib/utils/content-serializer";
+import { errorMessageOr } from "@/lib/utils/error";
+import { unwrapValue } from "@/lib/utils/frontmatter-value";
 import { isConfigFile } from "@/lib/utils/is-config-file";
 import { selectConfig } from "@/redux/features/config/slice";
 import { useDeleteProjectContentMutation } from "@/redux/features/project-content/project-content-api";
 import { useAppSelector } from "@/redux/store";
 import { TField, TFrontmatterData, TState } from "@/types";
-import { useParams, useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { useParams, useRouter } from "next/navigation";
 import { memo, useCallback, useEffect, useRef, useState } from "react";
 import type { Socket } from "socket.io-client";
-import { toast } from "@/components/ui/toast";
 import CommitModal from "./commit-modal";
 import EditorHeader from "./editor-header";
 import PreventNavigation from "./prevent-navigation";
@@ -215,6 +215,22 @@ const EditorWrapper: React.FC<EditorWrapperProps> = memo(
       };
     }, [getProcessedStateData, markdownContent, fmType, startWith, filePath]);
 
+    const getBaselineFile = useCallback(() => {
+      if (!baseline) return undefined;
+      const formattedContent = contentFormatter({
+        data: revertToOriginal(baseline.data ?? {}),
+        page_content: baseline.page_content ?? contentRef ?? "",
+        format: fmType,
+        startWith,
+        originalContent: "",
+      });
+
+      return {
+        path: filePath,
+        content: formattedContent,
+      };
+    }, [baseline, contentRef, fmType, startWith, filePath]);
+
     const { triggerCommitSync } = useSandboxPreview({
       // Debounce restarts whenever editable state changes.
       contentVersion: `${markdownContent}|${JSON.stringify(state?.data ?? null)}`,
@@ -315,6 +331,27 @@ const EditorWrapper: React.FC<EditorWrapperProps> = memo(
 
     const [resetKey, setResetKey] = useState(0);
     const [isSeoSidebarOpen, setIsSeoSidebarOpen] = useState(false);
+    const [autoGenerateCommitAi, setAutoGenerateCommitAi] = useState(false);
+
+    useEffect(() => {
+      const handleAiCommit = (e: Event) => {
+        e.preventDefault();
+        setAutoGenerateCommitAi(true);
+        setShowCommitModal(true);
+      };
+
+      const handleAiSeo = (e: Event) => {
+        e.preventDefault();
+        setIsSeoSidebarOpen(true);
+      };
+
+      window.addEventListener("sitepins:ai-commit", handleAiCommit);
+      window.addEventListener("sitepins:ai-seo-autofill", handleAiSeo);
+      return () => {
+        window.removeEventListener("sitepins:ai-commit", handleAiCommit);
+        window.removeEventListener("sitepins:ai-seo-autofill", handleAiSeo);
+      };
+    }, [setShowCommitModal]);
 
     const handleReset = useCallback(() => {
       isResettingRef.current = true;
@@ -360,6 +397,7 @@ const EditorWrapper: React.FC<EditorWrapperProps> = memo(
                 setState={setState}
                 content={markdownContent}
                 onSlugChange={onSlugChange}
+                onUpdateContent={onUpdateMarkdown}
                 resetKey={resetKey}
                 isSidebarOpen={isSeoSidebarOpen}
                 onSidebarOpenChange={setIsSeoSidebarOpen}
@@ -383,9 +421,16 @@ const EditorWrapper: React.FC<EditorWrapperProps> = memo(
 
         <CommitModal
           isOpen={showCommitModal}
-          onClose={() => setShowCommitModal(false)}
+          onClose={() => {
+            setShowCommitModal(false);
+            setAutoGenerateCommitAi(false);
+          }}
           onCommit={handleCommit}
           isLoading={pending}
+          filePath={filePath}
+          getUncommittedContent={getUncommittedFile}
+          getBaselineContent={getBaselineFile}
+          autoGenerateAi={autoGenerateCommitAi}
         />
       </>
     );

@@ -1,6 +1,20 @@
 {
   "search": {
-    "placeholder": "সেটিংস, সংস্থা, মূল্য ইত্যাদি খুঁজুন...",
+    "placeholder": "খুঁজুন বা AI-কে জিজ্ঞেস করুন...",
+    "ask_ai_copilot": "AI Copilot-কে জিজ্ঞেস করুন",
+    "ask_about_query": "AI Copilot-কে জিজ্ঞেস করুন: \"{query}\"",
+    "create_in_collection": "{collection}-এ নতুন এন্ট্রি তৈরি করুন",
+    "ai_placeholder": "আপনার সাইট, কন্টেন্ট বা CMS সম্পর্কে যেকোনো কিছু জিজ্ঞেস করুন...",
+    "ai_send": "পাঠান",
+    "copilot_title": "AI Copilot",
+    "copilot_subtitle": "যেকোনো কিছু জিজ্ঞেস করুন — আমি আপনার প্রজেক্টের কাঠামো জানি।",
+    "suggestion_1": "নতুন ব্লগ পোস্ট কীভাবে তৈরি করব?",
+    "suggestion_2": "সাইট কনফিগারেশন কী এবং এটি কীভাবে এডিট করব?",
+    "suggestion_3": "নতুন টিম মেম্বার কীভাবে ইনভাইট করব?",
+    "suggestion_4": "এই প্রজেক্টের ফোল্ডার কাঠামো ব্যাখ্যা করুন",
+    "copy": "কপি",
+    "copied": "কপি হয়েছে!",
+    "new_query": "নতুন কথোপকথন",
     "groupLabels": {
       "organizations": "সংস্থাসমূহ",
       "preferences": "পছন্দসমূহ",

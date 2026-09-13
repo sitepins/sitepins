@@ -201,12 +201,14 @@ export default function FrontmatterRenderer({
   setData,
   showDuplicate,
   strictMode = false,
+  renderFieldAction,
 }: {
   schema: TField[];
   data: TState["data"];
   setData: Dispatch<SetStateAction<TState | undefined>>;
   showDuplicate?: boolean;
   strictMode?: boolean;
+  renderFieldAction?: (field: TField, value: unknown) => React.ReactNode;
 }) {
   const tCommon = useTranslations("common");
   const tEditor = useTranslations("editor");
@@ -930,6 +932,8 @@ export default function FrontmatterRenderer({
                 <div key={item.name}>
                   <PreviewLabel
                     {...item}
+                    value={dateValue}
+                    action={renderFieldAction?.(item, dateValue)}
                     className="border-none bg-transparent p-0 text-sm"
                   >
                     {item.label}
@@ -957,7 +961,12 @@ export default function FrontmatterRenderer({
                 stringValue(fieldValue(currentData, item.name)) ?? "";
               return (
                 <div key={item.name} className="space-y-2">
-                  <PreviewLabel {...item} className="text-sm">
+                  <PreviewLabel
+                    {...item}
+                    value={value}
+                    action={renderFieldAction?.(item, value)}
+                    className="text-sm"
+                  >
                     {item.label}:
                   </PreviewLabel>
                   <ColorPicker
@@ -988,7 +997,12 @@ export default function FrontmatterRenderer({
               if (isHexColor) {
                 return (
                   <div key={item.name} className="space-y-2">
-                    <PreviewLabel {...item} className="text-sm">
+                    <PreviewLabel
+                      {...item}
+                      value={value}
+                      action={renderFieldAction?.(item, value)}
+                      className="text-sm"
+                    >
                       {item.label}:
                     </PreviewLabel>
                     <ColorPicker
@@ -1014,7 +1028,11 @@ export default function FrontmatterRenderer({
                 // Render as dropdown
                 return (
                   <AnimatedListItem key={item.name}>
-                    <PreviewLabel {...item} value={value}>
+                    <PreviewLabel
+                      {...item}
+                      value={value}
+                      action={renderFieldAction?.(item, value)}
+                    >
                       {item.label}
                     </PreviewLabel>
                     <ReferenceDropdown
@@ -1037,7 +1055,11 @@ export default function FrontmatterRenderer({
               // Render as textarea
               return (
                 <AnimatedListItem key={item.name}>
-                  <PreviewLabel {...item} value={value}>
+                  <PreviewLabel
+                    {...item}
+                    value={value}
+                    action={renderFieldAction?.(item, value)}
+                  >
                     {item.label}
                   </PreviewLabel>
                   <Textarea
@@ -1064,7 +1086,13 @@ export default function FrontmatterRenderer({
 
               return (
                 <AnimatedListItem key={item.name}>
-                  <PreviewLabel>{item.label}</PreviewLabel>
+                  <PreviewLabel
+                    {...item}
+                    value={value}
+                    action={renderFieldAction?.(item, value)}
+                  >
+                    {item.label}
+                  </PreviewLabel>
                   <Input
                     onKeyDown={handleKeyDown}
                     required={item.isRequired}
@@ -1120,7 +1148,13 @@ export default function FrontmatterRenderer({
                 stringValue(fieldValue(currentData, item.name)) ?? "";
               return (
                 <AnimatedListItem key={item.name}>
-                  <PreviewLabel {...item}>{item.label}</PreviewLabel>
+                  <PreviewLabel
+                    {...item}
+                    value={media}
+                    action={renderFieldAction?.(item, media)}
+                  >
+                    {item.label}
+                  </PreviewLabel>
                   <MediaPreview
                     value={media}
                     name={generateName({
@@ -1244,7 +1278,13 @@ export default function FrontmatterRenderer({
               if (isDropdown && subType === "string") {
                 return (
                   <AnimatedListItem key={item.name}>
-                    <PreviewLabel {...item}>{item.label}</PreviewLabel>
+                    <PreviewLabel
+                      {...item}
+                      value={values}
+                      action={renderFieldAction?.(item, values)}
+                    >
+                      {item.label}
+                    </PreviewLabel>
                     <ReferenceMultiSelect
                       item={item as Template}
                       value={values as { id: string; value: string }[]}
@@ -1268,6 +1308,8 @@ export default function FrontmatterRenderer({
                     <div className="flex items-center">
                       <PreviewLabel
                         {...item}
+                        value={values}
+                        action={renderFieldAction?.(item, values)}
                         className="mb-0 flex items-center justify-center"
                       >
                         {item.label}

@@ -11,8 +11,8 @@ See the [root README](../README.md) for the project overview, self-hosting quick
 - **Redux Toolkit** (RTK Query) — API state
 - **better-auth** client — talks to the API's better-auth instance
 - **Platejs** — the rich text editor, with `@hocuspocus/provider` for realtime multi-user collaboration against the API's Hocuspocus server
-- **`ai` / `@ai-sdk/openai`** — optional AI writing assistance inside the editor
-- **next-intl** — i18n, 12 locales under `src/i18n/`
+- **Vercel AI SDK (`ai`)** — multi-provider AI engine powering writing assistance, code copilot, commit generation, SEO suggestions, and global search copilot (supporting Groq, OpenRouter, OpenAI, Anthropic, Google Gemini, and xAI)
+- **next-intl** — i18n, 15 locales under `src/i18n/`
 - **Octokit** (`octokit`, `@octokit/auth-app`) — GitHub App authentication
 
 ## Folder structure
@@ -26,12 +26,12 @@ src/
       [orgId]/           # org + project workspace, the editor, settings
       github-installed/  # GitHub App OAuth callback landing page
       gitlab-installed/  # GitLab OAuth callback landing page
-    api/                # Next.js route handlers — git provider OAuth exchange, sandbox control, etc.
+    api/                # Next.js route handlers — git provider OAuth exchange, sandbox control, AI streaming, etc.
   actions/              # server actions
   layouts/              # shared components, editor UI (layouts/editor/), partials
   redux/                # RTK Query API slices, one folder per domain
-  lib/                  # config, auth client, utils
-  hooks/                # e.g. useGitAuth — drives the GitHub/GitLab popup auth flow
+  lib/                  # config, auth client, AI providers, utils
+  hooks/                # e.g. useGitAuth, useAiAccess
   i18n/                 # translation JSON per locale
   contexts/             # React context providers
   config/               # static app config (e.g. templates.json is cloud-only)
@@ -41,41 +41,52 @@ src/
 
 Copy `.env.example` to `.env` and fill in:
 
-| Variable | Required | Purpose |
-| --- | --- | --- |
-| `NEXT_PUBLIC_BACKEND_URL` | ✓ | Base URL of the `api` service |
-| `NEXT_PUBLIC_HP_WS_URL` | ✓ | WebSocket URL for the Hocuspocus collaborative editor (`ws://localhost:4000/api/v1/editor/collab` in dev) |
-| `NEXT_PUBLIC_BUCKET_URL` | ✓ | Public base URL for uploaded media — your S3-compatible bucket's public URL (must match the API's `S3_*` config; see [Media storage setup](../api/README.md#media-storage-s3-compatible)) |
-| `INTERNAL_API_SECRET` | ✓ | Must match the API's copy — authenticates this app's own internal routes |
-| `GITHUB_APP_ID` / `GITHUB_APP_CLIENT_ID` / `GITHUB_APP_CLIENT_SECRET` / `GITHUB_APP_PRIVATE_KEY` / `NEXT_PUBLIC_GITHUB_APP_NAME` | ✓ | GitHub App credentials — see [Setting up a GitHub App](#setting-up-a-github-app) below |
-| `NEXT_PUBLIC_GITLAB_APP_NAME` / `NEXT_PUBLIC_GITLAB_CLIENT_ID` / `GITLAB_CLIENT_SECRET` | ✓ | GitLab OAuth app credentials — see [Setting up a GitLab App](#setting-up-a-gitlab-app) below |
-| `AI_GATEWAY_API_KEY` | optional | Server-side fallback key for the editor's AI assistant, used when a user hasn't set their own (see note below) |
-| `NEXT_PUBLIC_DASHBOARD_HOME` | optional | Where `/dashboard` redirects (defaults to `/dashboard/account`) |
-| `NEXT_PUBLIC_IS_DEMO` / `NEXT_PUBLIC_DEMO_EMAIL` / `NEXT_PUBLIC_DEMO_PASSWORD` | optional | Enables a read-only demo login (pairs with the API's `auth-demo.ts`) |
+| Variable                                                                                                                         | Required | Purpose                                                                                                                                                                                   |
+| -------------------------------------------------------------------------------------------------------------------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `NEXT_PUBLIC_BACKEND_URL`                                                                                                        | ✓        | Base URL of the `api` service                                                                                                                                                             |
+| `NEXT_PUBLIC_HP_WS_URL`                                                                                                          | ✓        | WebSocket URL for the Hocuspocus collaborative editor (`ws://localhost:4000/api/v1/editor/collab` in dev)                                                                                 |
+| `NEXT_PUBLIC_BUCKET_URL`                                                                                                         | ✓        | Public base URL for uploaded media — your S3-compatible bucket's public URL (must match the API's `S3_*` config; see [Media storage setup](../api/README.md#media-storage-s3-compatible)) |
+| `INTERNAL_API_SECRET`                                                                                                            | ✓        | Must match the API's copy — authenticates this app's own internal routes                                                                                                                  |
+| `GITHUB_APP_ID` / `GITHUB_APP_CLIENT_ID` / `GITHUB_APP_CLIENT_SECRET` / `GITHUB_APP_PRIVATE_KEY` / `NEXT_PUBLIC_GITHUB_APP_NAME` | ✓        | GitHub App credentials — see [Setting up a GitHub App](#setting-up-a-github-app) below                                                                                                    |
+| `NEXT_PUBLIC_GITLAB_APP_NAME` / `NEXT_PUBLIC_GITLAB_CLIENT_ID` / `GITLAB_CLIENT_SECRET`                                          | ✓        | GitLab OAuth app credentials — see [Setting up a GitLab App](#setting-up-a-gitlab-app) below                                                                                              |
+| `AI_PROVIDER`                                                                                                                    | optional | Server-level default AI provider (`groq`, `openrouter`, `openai`, `gemini`, `anthropic`, `xai`). Defaults to `groq`.                                                                      |
+| `AI_MODEL`                                                                                                                       | optional | Default model override for the server AI provider (e.g. `llama-3.3-70b-versatile`)                                                                                                        |
+| `AI_API_KEY`                                                                                                                     | optional | Server-side key enabling free AI features for all users without requiring personal keys                                                                                                   |
+| `NEXT_PUBLIC_DASHBOARD_HOME`                                                                                                     | optional | Where `/dashboard` redirects (defaults to `/dashboard/account`)                                                                                                                           |
+| `NEXT_PUBLIC_IS_DEMO` / `NEXT_PUBLIC_DEMO_EMAIL` / `NEXT_PUBLIC_DEMO_PASSWORD`                                                   | optional | Enables a read-only demo login (pairs with the API's `auth-demo.ts`)                                                                                                                      |
 
 ### Branding
 
 A fork or self-hosted instance can override the upstream Sitepins name and links without editing code — all optional, all with sensible defaults (see `src/lib/brand.ts`):
 
-| Variable | Default |
-| --- | --- |
-| `NEXT_PUBLIC_BRAND_NAME` | `Sitepins` |
-| `NEXT_PUBLIC_BRAND_URL` | `https://sitepins.com` |
-| `NEXT_PUBLIC_SUPPORT_URL` | `<BRAND_URL>/contact` |
-| `NEXT_PUBLIC_UPDATES_URL` | `https://updates.sitepins.com` |
-| `NEXT_PUBLIC_COMMUNITY_URL` | `https://discord.gg/KrpvHfqcNA` |
-| `NEXT_PUBLIC_GIT_COMMIT_EMAIL_DOMAIN` | host of `BRAND_URL` |
+| Variable                              | Default                         |
+| ------------------------------------- | ------------------------------- |
+| `NEXT_PUBLIC_BRAND_NAME`              | `Sitepins`                      |
+| `NEXT_PUBLIC_BRAND_URL`               | `https://sitepins.com`          |
+| `NEXT_PUBLIC_SUPPORT_URL`             | `<BRAND_URL>/contact`           |
+| `NEXT_PUBLIC_UPDATES_URL`             | `https://updates.sitepins.com`  |
+| `NEXT_PUBLIC_COMMUNITY_URL`           | `https://discord.gg/KrpvHfqcNA` |
+| `NEXT_PUBLIC_GIT_COMMIT_EMAIL_DOMAIN` | host of `BRAND_URL`             |
 
-Note: the AI writing assistant primarily uses a per-user key — each user pastes their own key at `/dashboard/ai-agent`, stored server-side per account. `AI_GATEWAY_API_KEY` is only a fallback when a user hasn't set one.
+## AI Features
+
+Sitepins includes optional AI assistance across the CMS — rich text writing, editor autocomplete, in-code copilot, git commit generation, SEO metadata, and global search.
+
+- **Privacy-First (BYOK):** Users can supply their own provider and API key at `/dashboard/ai-agent`. Keys are stored locally in browser `localStorage` and never saved to the database.
+- **Server Fallback:** Self-hosters can enable AI out-of-the-box for all users by setting `AI_PROVIDER`, `AI_MODEL`, and `AI_API_KEY` in `.env`.
+- **Supported Providers:** Groq (default), OpenRouter, OpenAI, Google Gemini, Anthropic, and xAI.
+- **Feature Toggles:** Each AI feature can be toggled on or off individually in `/dashboard/ai-agent`.
 
 ## Scripts
 
 ```bash
-pnpm dev      # next dev
-pnpm build    # next build
-pnpm start    # next start
-pnpm lint     # eslint src/**/*.{js,jsx,ts,tsx}
-pnpm format   # prettier -w ./src
+pnpm dev          # next dev (Turbopack)
+pnpm build        # next build
+pnpm start        # next start
+pnpm lint         # eslint src/**/*.{js,jsx,ts,tsx}
+pnpm typecheck    # next typegen && tsc --noEmit
+pnpm test         # vitest run
+pnpm format       # prettier -w ./src
 ```
 
 ## Setting up a GitHub App
@@ -89,14 +100,14 @@ Sitepins commits to your repos on your behalf, so it authenticates as a [GitHub 
 5. **Webhook** — uncheck **Active**. Sitepins doesn't listen for webhook events, so leaving it on just means GitHub retries deliveries against an endpoint that doesn't exist.
 6. **Repository permissions** — set these to the access level shown (anything narrower and API calls in `src/app/api/auth/github/route.ts` start failing with 403s):
 
-   | Permission | Access |
-   | --- | --- |
-   | Administration | Read and write |
-   | Code | Read and write |
-   | Commit statuses | Read-only |
-   | Deployments | Read-only |
-   | Metadata | Read-only (mandatory) |
-   | Pull requests | Read and write |
+   | Permission      | Access                |
+   | --------------- | --------------------- |
+   | Administration  | Read and write        |
+   | Code            | Read and write        |
+   | Commit statuses | Read-only             |
+   | Deployments     | Read-only             |
+   | Metadata        | Read-only (mandatory) |
+   | Pull requests   | Read and write        |
 
 7. **Where can this GitHub App be installed?** — "Any account" if you want your users to install it on their own orgs/repos (the normal case); "Only on this account" if you're self-hosting for a single org.
 

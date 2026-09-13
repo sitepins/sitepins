@@ -1,6 +1,7 @@
 "use client";
 
 import { insertBlock } from "@/editor/utils/transforms";
+import { useIsEditorAiEnabled } from "@/hooks/use-ai-access";
 import { useOwnerPlan } from "@/hooks/use-owner-plan";
 import { AIChatPlugin } from "@platejs/ai/react";
 import {
@@ -15,12 +16,12 @@ import {
   SparklesIcon,
   Table,
 } from "lucide-react";
-import { useAiSlashUpsellItem } from "./ai-slash-upsell";
+import { useTranslations } from "next-intl";
 import { type TComboboxInputElement, KEYS } from "platejs";
 import type { PlateEditor, PlateElementProps } from "platejs/react";
 import { PlateElement } from "platejs/react";
-import { useTranslations } from "next-intl";
 import * as React from "react";
+import { useAiSlashUpsellItem } from "./ai-slash-upsell";
 import {
   InlineCombobox,
   InlineComboboxContent,
@@ -54,7 +55,10 @@ const groups: Group[] = [
         label: "ai",
         value: "AI",
         onSelect: (editor) => {
-          if (!localStorage.getItem("sitepins-ai-model")) {
+          if (
+            !localStorage.getItem("sitepins-ai-model") ||
+            !localStorage.getItem("sitepins-ai-apiKey")
+          ) {
             window.open("/dashboard/ai-agent", "_blank");
             return;
           }
@@ -142,9 +146,14 @@ export function SlashInputElement(
   const { canAccessProFeatures: canAccessAi } = useOwnerPlan();
   const aiUpsellItem = useAiSlashUpsellItem();
 
+  const editorAi = useIsEditorAiEnabled();
+  const availableGroups = editorAi
+    ? groups
+    : groups.filter((group) => group.group !== "ai");
+
   const displayGroups =
-    !canAccessAi && aiUpsellItem
-      ? groups.map((group) => {
+    !canAccessAi && aiUpsellItem && editorAi
+      ? availableGroups.map((group) => {
           if (group.group === "ai") {
             return {
               ...group,
@@ -153,7 +162,7 @@ export function SlashInputElement(
           }
           return group;
         })
-      : groups;
+      : availableGroups;
 
   return (
     <PlateElement {...props} as="span">

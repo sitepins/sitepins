@@ -181,7 +181,13 @@
       "description_placeholder": "任意で詳細な説明を追加..",
       "submit": "コミット",
       "default_message": "ファイルを更新",
-      "rename_message": "{oldPath} を {newPath} に名前変更"
+      "rename_message": "{oldPath} を {newPath} に名前変更",
+      "ai": {
+        "generate": "AIで自動生成",
+        "generating": "生成中...",
+        "success": "AIでコミットメッセージを生成しました",
+        "error": "コミットメッセージの生成に失敗しました"
+      }
     },
     "renderer": {
       "loading_options": "オプションを読み込み中...",
@@ -200,9 +206,7 @@
       "select_prompt": "編集を開始するファイルを選択してください"
     },
     "code": {
-      "edited": "編集済み",
       "unsaved": "● 未保存",
-      "discard_changes": "変更を破棄",
       "discard_title": "変更を破棄しますか？",
       "discard_button": "破棄",
       "commit": "コミット",
@@ -218,7 +222,32 @@
       "lines_count": "{count, plural, other {# 行}}",
       "characters_count": "{count, plural, other {# 文字}}",
       "error_loading_title": "ファイルの読み込みエラー",
-      "error_loading_desc": "編集用のファイルを読み込めませんでした。"
+      "error_loading_desc": "編集用のファイルを読み込めませんでした。",
+      "ai": {
+        "copilot_button": "AI Copilot",
+        "inline_title": "AI コード Copilot",
+        "inline_placeholder": "AIにコードの編集、リファクタリング、生成を依頼...",
+        "target_selection": "選択範囲",
+        "target_file": "ファイル全体",
+        "accept": "適用",
+        "discard": "破棄",
+        "run": "実行",
+        "quick_fix": "バグを検出して修正",
+        "quick_refactor": "コードをリファクタリング",
+        "quick_comments": "コメントを追加",
+        "explain_title": "コードの説明",
+        "explain_loading": "AI でコードを分析中...",
+        "generating": "回答を生成中",
+        "copy": "コピー",
+        "copied": "コピーしました",
+        "changes_applied": "エディタに AI の変更を適用しました",
+        "no_code_to_explain": "説明対象のコードが見つかりません",
+        "quick_explain": "コードを説明",
+        "review_title": "変更を確認",
+        "review_desc": "元のコードとAIの変更を比較",
+        "diff_inline": "統合インライン差分",
+        "diff_split": "左右並列差分"
+      }
     },
     "seo": {
       "slug": "Slug",
@@ -364,6 +393,19 @@
           "toc_present": "目次",
           "em_dash_overuse": "ダッシュの多用"
         }
+      },
+      "ai": {
+        "fix": "AIで修正",
+        "fixing": "修正案を生成中",
+        "suggestion": "AIの提案",
+        "apply_fix": "適用",
+        "apply_to_editor": "エディタに適用",
+        "applied": "適用しました！",
+        "copy_fix": "コピー",
+        "copied": "コピーしました！",
+        "fix_applied": "AIの修正を適用しました",
+        "content_applied": "エディタのコンテンツを更新しました",
+        "error": "AIリクエストの処理に失敗しました"
       }
     },
     "mismatch": {

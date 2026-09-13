@@ -5,6 +5,7 @@ import {
   asNode,
   idOf,
   isWrappedValue,
+  parseArrayItems,
   recordValue,
   stringValue,
   unwrapValue,
@@ -96,5 +97,60 @@ describe("node helpers", () => {
     const node: Record<string, unknown> = { tags: ["a"] };
     arrayAt(node, "tags")?.push("b");
     expect(node.tags).toEqual(["a", "b"]);
+  });
+});
+
+describe("parseArrayItems & extractArrayItemsFromText", () => {
+  it("parses raw arrays and wrapped array values", () => {
+    expect(parseArrayItems(["tag1", "tag2"])).toEqual(["tag1", "tag2"]);
+    expect(parseArrayItems([{ value: "tag1" }, { value: "tag2" }])).toEqual([
+      "tag1",
+      "tag2",
+    ]);
+  });
+
+  it("parses comma and semicolon separated strings", () => {
+    expect(parseArrayItems("tag1, tag2; tag3")).toEqual([
+      "tag1",
+      "tag2",
+      "tag3",
+    ]);
+  });
+
+  it("parses JSON array strings", () => {
+    expect(parseArrayItems('["creative design", "web design"]')).toEqual([
+      "creative design",
+      "web design",
+    ]);
+  });
+
+  it("extracts items from markdown code blocks with YAML bullets", () => {
+    const yamlPrompt = `Add a set of relevant tags to the frontmatter, for example:
+\`\`\`yaml
+tags:
+  - creative design
+  - web design
+  - user experience
+  - lorem ipsum
+  - content strategy
+\`\`\`
+Including appropriate tags introduces the target keywords.`;
+
+    expect(parseArrayItems(yamlPrompt)).toEqual([
+      "creative design",
+      "web design",
+      "user experience",
+      "lorem ipsum",
+      "content strategy",
+    ]);
+  });
+
+  it("extracts items from raw YAML bullets without code blocks", () => {
+    const rawYaml = `tags:
+  - astro
+  - nextjs
+  - tailwind`;
+
+    expect(parseArrayItems(rawYaml)).toEqual(["astro", "nextjs", "tailwind"]);
   });
 });

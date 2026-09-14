@@ -4,6 +4,12 @@
   "author": "sitepins",
   "license": "AGPL-3.0-or-later",
   "description": "backend for sitepins",
+  "main": "dist/server.js",
+  "exports": {
+    "./package.json": "./package.json",
+    "./types": "./src/types/index.d.ts",
+    "./*": "./dist/*.js"
+  },
   "scripts": {
     "dev": "ts-node-dev -r tsconfig-paths/register --respawn --transpile-only ./src/server.ts",
     "start": "node ./dist/server.js",

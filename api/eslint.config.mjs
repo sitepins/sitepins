@@ -5,12 +5,18 @@ export default defineConfig([
   globalIgnores(["dist/**", "node_modules/**", "*.tsbuildinfo"]),
   ...tseslint.configs.recommended,
   {
-    name: "sitepins-backend/rules",
+    languageOptions: {
+      parserOptions: {
+        tsconfigRootDir: import.meta.dirname,
+      },
+    },
+  },
+  {
+    name: "sitepins-api/rules",
     files: ["src/**/*.ts"],
     languageOptions: {
       parserOptions: {
         projectService: true,
-        tsconfigRootDir: import.meta.dirname,
       },
     },
     rules: {

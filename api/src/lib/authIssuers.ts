@@ -19,7 +19,7 @@ export type JwtIssuerEntry = {
 
 const coreIssuer: JwtIssuerEntry = {
   secret: config.jwt_secret,
-  issuer: "sitepins-backend",
+  issuer: "sitepins-api",
 };
 
 const issuers: JwtIssuerEntry[] = [coreIssuer];

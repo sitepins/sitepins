@@ -45,7 +45,7 @@ describe("createToken / verifyToken", () => {
 
   it("accepts a token checked against the correct issuer", () => {
     const token = jwtHelpers.createToken({ id: "u1", role: "admin" }, "s3cret");
-    const decoded = jwtHelpers.verifyToken(token, "s3cret", "sitepins-backend");
+    const decoded = jwtHelpers.verifyToken(token, "s3cret", "sitepins-api");
     expect(decoded.id).toBe("u1");
   });
 

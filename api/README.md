@@ -1,4 +1,4 @@
-# sitepins-backend
+# sitepins-api
 
 Express + MongoDB API for Sitepins: authentication, organizations, projects, git provider tokens, and the realtime collaborative editing server.
 

@@ -6,11 +6,11 @@ async function freshAuthIssuers() {
 }
 
 describe("JWT issuer registry", () => {
-  it("starts with only the core sitepins-backend issuer", async () => {
+  it("starts with only the core sitepins-api issuer", async () => {
     const { getJwtIssuers } = await freshAuthIssuers();
     const issuers = getJwtIssuers();
     expect(issuers).toHaveLength(1);
-    expect(issuers[0].issuer).toBe("sitepins-backend");
+    expect(issuers[0].issuer).toBe("sitepins-api");
   });
 
   it("extensions can register additional trusted issuers", async () => {
@@ -24,6 +24,6 @@ describe("JWT issuer registry", () => {
       issuer: "my-admin-dashboard",
     });
     // core issuer must stay first so it's tried first
-    expect(issuers[0].issuer).toBe("sitepins-backend");
+    expect(issuers[0].issuer).toBe("sitepins-api");
   });
 });

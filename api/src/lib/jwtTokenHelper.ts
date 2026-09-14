@@ -23,7 +23,7 @@ const createToken = (
   return jwt.sign(enhancedPayload, secret as Secret, <SignOptions>{
     algorithm: "HS256",
     expiresIn: expires ? expires : "24h",
-    issuer: "sitepins-backend",
+    issuer: "sitepins-api",
   });
 };
 

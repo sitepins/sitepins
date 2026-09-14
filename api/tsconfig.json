@@ -14,8 +14,6 @@
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
-    "declaration": true,
-    "declarationMap": true,
     "incremental": true,
     "skipLibCheck": true,
     "types": [

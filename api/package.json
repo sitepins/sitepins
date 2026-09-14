@@ -16,28 +16,28 @@
     "format:check": "prettier --check ./src"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "3.1106.0",
-    "@hocuspocus/server": "^4.5.0",
+    "@aws-sdk/client-s3": "3.1131.0",
+    "@hocuspocus/server": "^4.7.0",
     "@opentelemetry/api": "^1.9.1",
-    "axios": "^1.19.0",
+    "axios": "^1.20.0",
     "bcrypt": "^6.0.0",
-    "better-auth": "^1.6.26",
+    "better-auth": "^1.7.4",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
-    "express-rate-limit": "^8.6.2",
+    "express-rate-limit": "^8.7.0",
     "helmet": "^8.3.0",
     "http-status": "^2.1.0",
     "jsonwebtoken": "^9.0.3",
-    "mongoose": "^9.9.1",
-    "multer": "^2.2.0",
+    "mongoose": "^9.10.0",
+    "multer": "^2.3.0",
     "multer-s3": "^3.0.1",
     "nanoid": "^6.0.1",
-    "nodemailer": "^9.0.5",
+    "nodemailer": "^10.0.9",
     "socket.io": "^4.8.3",
     "ws": "^8.21.3",
-    "yjs": "^13.6.31",
-    "zod": "^4.4.3"
+    "yjs": "^13.6.32",
+    "zod": "^4.6.5"
   },
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",
@@ -49,13 +49,13 @@
     "@types/node": "^26",
     "@types/nodemailer": "^8.0.1",
     "@types/ws": "^8.18.1",
-    "eslint": "^10.8.1",
+    "eslint": "^10.10.0",
     "prettier": "3.9.6",
     "ts-node-dev": "^2.0.0",
-    "tsc-alias": "^1.9.1",
+    "tsc-alias": "^1.9.5",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^8.66.0",
-    "vitest": "^4.1.10"
+    "typescript-eslint": "^8.70.0",
+    "vitest": "^5.0.0"
   }
 }

@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "description": "Sitepins — open-source git-based CMS",
-  "packageManager": "pnpm@11.20.0",
+  "packageManager": "pnpm@12.4.1",
   "engines": {
     "node": ">=22"
   },

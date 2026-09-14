@@ -12,7 +12,6 @@ const projectDeleteManyMock = vi.fn();
 const projectContentDeleteManyMock = vi.fn();
 const projectLogDeleteManyMock = vi.fn();
 const projectPreviewDeleteManyMock = vi.fn();
-const deleteBrevoContactMock = vi.fn();
 const sendMailMock = vi.fn();
 
 vi.mock("./user.model", () => ({
@@ -26,6 +25,7 @@ vi.mock("./user.model", () => ({
 
 vi.mock("@/lib/entitlements", () => ({
   runUserDeletionHooks: (...a: unknown[]) => runUserDeletionHooksMock(...a),
+  emitUserUpdate: vi.fn(),
 }));
 
 vi.mock("../git-provider/git-provider.service", () => ({
@@ -63,12 +63,6 @@ vi.mock("../project-preview/project-preview.model", () => ({
   ProjectPreview: {
     deleteMany: (...a: unknown[]) => projectPreviewDeleteManyMock(...a),
   },
-}));
-
-vi.mock("@/lib/brevoConfig", () => ({
-  deleteBrevoContact: (...a: unknown[]) => deleteBrevoContactMock(...a),
-  updateBrevoContact: vi.fn(),
-  updateBrevoContactEmail: vi.fn(),
 }));
 
 vi.mock("@/lib/mailer", () => ({
@@ -143,7 +137,6 @@ beforeEach(() => {
   projectContentDeleteManyMock.mockReset();
   projectLogDeleteManyMock.mockReset();
   projectPreviewDeleteManyMock.mockReset();
-  deleteBrevoContactMock.mockReset();
   sendMailMock.mockReset();
 });
 

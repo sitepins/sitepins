@@ -7,17 +7,15 @@ import { customSession, emailOTP } from "better-auth/plugins";
 import mongoose from "mongoose";
 import { allowedOrigins } from "./config/cors-options";
 import { customEndpoints } from "./lib/autoSignupUser";
-import { createBrevoContact, updateBrevoContact } from "./lib/brevoConfig";
 import { logger } from "./lib/logger";
 import { sendMail } from "./lib/mailer";
 import { verifyEmailWithReoon } from "./lib/emailVerifier";
-import splitName from "./lib/nameSplitter";
 import { escapeRegex } from "./lib/regexEscape";
 import { deleteFile } from "./lib/s3-utils";
 import { generateUserId } from "./lib/userIdGenerator";
 import { otpSchema } from "./modules/authentication/authentication.zod";
 import { organizationService } from "./modules/organization/organization.service";
-import { emitAuthEvent } from "./lib/entitlements";
+import { emitAuthEvent, emitUserRegistration } from "./lib/entitlements";
 import { User } from "./modules/user/user.model";
 import { registerSchema } from "./modules/user/user.zod-schema";
 
@@ -142,19 +140,19 @@ export const auth = betterAuth({
             (user.provider === "Google" || user.provider === "Github") &&
             user.emailVerified
           ) {
-            // Subscribe new user to Brevo audience
+            // Notify extensions of new user registration
             try {
-              const { first_name, last_name } = splitName(
-                (user.full_name as string) || "",
-              );
-              await createBrevoContact({
-                email: user.email,
-                first_name,
-                last_name,
-                subscribed: true,
+              await emitUserRegistration({
+                user: {
+                  id: user.user_id as string,
+                  email: user.email,
+                  full_name: user.full_name as string,
+                  subscribed: true,
+                  provider: user.provider as string | undefined,
+                },
               });
             } catch (error) {
-              logger.error("Failed to subscribe user to Brevo audience", error);
+              logger.error("Failed to emit user registration event", error);
             }
 
             // Send welcome email to new user
@@ -226,19 +224,19 @@ export const auth = betterAuth({
             } catch (error) {
               logger.error("Failed to create default organization", error);
             }
-            // Subscribe new user to Brevo audience
+            // Notify extensions of new user registration
             try {
-              const { first_name, last_name } = splitName(
-                (user.full_name as string) || "",
-              );
-              await createBrevoContact({
-                email: user.email,
-                first_name,
-                last_name,
-                subscribed: !!(user as { subscribed?: unknown }).subscribed,
+              await emitUserRegistration({
+                user: {
+                  id: user.user_id as string,
+                  email: user.email,
+                  full_name: user.full_name as string,
+                  subscribed: !!(user as { subscribed?: unknown }).subscribed,
+                  provider: user.provider as string | undefined,
+                },
               });
             } catch (error) {
-              logger.error("Failed to subscribe user to Brevo audience", error);
+              logger.error("Failed to emit user registration event", error);
             }
             // Send welcome email to new user
             try {
@@ -260,16 +258,6 @@ export const auth = betterAuth({
           const user = await User.findById(session.userId);
 
           if (!user) return;
-
-          try {
-            await updateBrevoContact({
-              email: user.email,
-              updateType: "login",
-              last_login_date: session.createdAt.toISOString(),
-            });
-          } catch (err) {
-            logger.error("Failed to update Brevo contact on login", err);
-          }
 
           try {
             await emitAuthEvent({

@@ -58,15 +58,12 @@ export default {
   reoon_api_key: process.env.REOON_API_KEY,
 
   // ---- Transactional email ----
-  // Provider: "brevo" | "smtp" | "console". Unset = auto-detect: Brevo if
-  // BREVO_API_KEY is set, else SMTP if SMTP_HOST is set, else "console"
-  // (logs the message + OTP/link to stdout).
+  // Provider: "smtp" | "console". Unset = auto-detect: SMTP if SMTP_HOST is set,
+  // else "console" (logs the message + OTP/link to stdout). Extensions can
+  // register custom delivery providers (e.g. Brevo in sp-cloud).
   mail_provider: process.env.MAIL_PROVIDER,
   mail_from_name: process.env.MAIL_FROM_NAME || "Sitepins",
   mail_from_email: process.env.MAIL_FROM_EMAIL,
-
-  // Brevo
-  brevo_api_key: process.env.BREVO_API_KEY,
 
   // SMTP (used when MAIL_PROVIDER=smtp or auto-detected)
   smtp_host: process.env.SMTP_HOST,

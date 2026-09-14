@@ -49,3 +49,57 @@ export const emitAuthEvent = async (event: AuthEvent) => {
     }
   }
 };
+
+// User registration lifecycle events (OAuth signup, email-otp verification).
+export type UserRegistrationEvent = {
+  user: {
+    id?: string;
+    email: string;
+    full_name?: string;
+    subscribed?: boolean;
+    provider?: string;
+  };
+};
+
+export type UserRegistrationHook = (
+  event: UserRegistrationEvent,
+) => Promise<void>;
+
+const userRegistrationHooks: UserRegistrationHook[] = [];
+
+export const onUserRegistration = (hook: UserRegistrationHook) => {
+  userRegistrationHooks.push(hook);
+};
+
+export const emitUserRegistration = async (event: UserRegistrationEvent) => {
+  for (const hook of userRegistrationHooks) {
+    try {
+      await hook(event);
+    } catch (error) {
+      logger.error("user registration hook failed", error);
+    }
+  }
+};
+
+// User profile update events (country change, email change).
+export type UserUpdateEvent =
+  | { type: "country"; email: string; country: string }
+  | { type: "email"; oldEmail: string; newEmail: string };
+
+export type UserUpdateHook = (event: UserUpdateEvent) => Promise<void>;
+
+const userUpdateHooks: UserUpdateHook[] = [];
+
+export const onUserUpdate = (hook: UserUpdateHook) => {
+  userUpdateHooks.push(hook);
+};
+
+export const emitUserUpdate = async (event: UserUpdateEvent) => {
+  for (const hook of userUpdateHooks) {
+    try {
+      await hook(event);
+    } catch (error) {
+      logger.error(`user update hook failed (${event.type})`, error);
+    }
+  }
+};

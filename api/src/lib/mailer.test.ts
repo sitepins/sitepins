@@ -1,45 +1,26 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 // Self-hosted signup depends on this module working with zero mail config
-// (console provider). Provider auto-detection order and the brevo
-// kind->template mapping are the two things most likely to silently regress.
+// (console provider). Extensions can plug in custom senders (e.g. Brevo in sp-cloud).
 
-const {
-  mockConfig,
-  sendBrevoMailMock,
-  createTransportMock,
-  transportSendMailMock,
-} = vi.hoisted(() => ({
-  mockConfig: {
-    mail_provider: undefined as string | undefined,
-    mail_from_name: "Sitepins",
-    mail_from_email: "noreply@example.com",
-    brevo_api_key: undefined as string | undefined,
-    smtp_host: undefined as string | undefined,
-    smtp_port: 587,
-    smtp_secure: false,
-    smtp_user: undefined as string | undefined,
-    smtp_pass: undefined as string | undefined,
-  },
-  sendBrevoMailMock: vi.fn(async (..._args: unknown[]) => undefined),
-  transportSendMailMock: vi.fn(async (..._args: unknown[]) => undefined),
-  createTransportMock: vi.fn(),
-}));
+const { mockConfig, createTransportMock, transportSendMailMock } = vi.hoisted(
+  () => ({
+    mockConfig: {
+      mail_provider: undefined as string | undefined,
+      mail_from_name: "Sitepins",
+      mail_from_email: "noreply@example.com",
+      smtp_host: undefined as string | undefined,
+      smtp_port: 587,
+      smtp_secure: false,
+      smtp_user: undefined as string | undefined,
+      smtp_pass: undefined as string | undefined,
+    },
+    transportSendMailMock: vi.fn(async (..._args: unknown[]) => undefined),
+    createTransportMock: vi.fn(),
+  }),
+);
 
 vi.mock("@/config/variables", () => ({ default: mockConfig }));
-
-vi.mock("./brevoConfig", () => ({
-  sendBrevoMail: (...args: unknown[]) => sendBrevoMailMock(...args),
-  BREVO_MAIL_TEMPLATES: {
-    welcome: 1,
-    otp_sender: 59,
-    pass_reset: 60,
-    delete_account: 32,
-    org_member_added: 61,
-    org_member_updated: 62,
-    org_member_removed: 63,
-  },
-}));
 
 vi.mock("nodemailer", () => ({
   createTransport: (...args: unknown[]) => createTransportMock(...args),
@@ -50,7 +31,6 @@ vi.mock("nodemailer", () => ({
 
 function resetConfig() {
   mockConfig.mail_provider = undefined;
-  mockConfig.brevo_api_key = undefined;
   mockConfig.smtp_host = undefined;
   mockConfig.smtp_port = 587;
   mockConfig.smtp_secure = false;
@@ -70,7 +50,6 @@ const originalLogLevel = process.env.LOG_LEVEL;
 
 beforeEach(() => {
   resetConfig();
-  sendBrevoMailMock.mockClear();
   transportSendMailMock.mockClear();
   createTransportMock.mockReset();
   createTransportMock.mockImplementation(() => ({
@@ -93,12 +72,11 @@ afterEach(() => {
   }
 });
 
-describe("mailer provider auto-detection", () => {
+describe("mailer provider auto-detection & custom sender", () => {
   it("falls back to console when no provider is configured", async () => {
     const { sendMail } = await freshMailer();
     await sendMail({ to: "a@b.com", kind: "otp", params: { otp: "123456" } });
 
-    expect(sendBrevoMailMock).not.toHaveBeenCalled();
     expect(transportSendMailMock).not.toHaveBeenCalled();
     expect(stderrWrites.join("\n")).toContain("123456");
   });
@@ -116,33 +94,11 @@ describe("mailer provider auto-detection", () => {
     );
   });
 
-  it("auto-selects brevo when an API key is configured", async () => {
-    mockConfig.brevo_api_key = "test-key";
-    const { sendMail } = await freshMailer();
-    await sendMail({ to: "a@b.com", kind: "otp", params: { otp: "000000" } });
-
-    expect(sendBrevoMailMock).toHaveBeenCalledWith(
-      expect.objectContaining({ to: "a@b.com", templateId: 59 }),
-    );
-    expect(transportSendMailMock).not.toHaveBeenCalled();
-  });
-
-  it("maps each mail kind to its own brevo template id", async () => {
-    mockConfig.brevo_api_key = "test-key";
-    const { sendMail } = await freshMailer();
-    await sendMail({ to: "a@b.com", kind: "welcome" });
-
-    expect(sendBrevoMailMock).toHaveBeenCalledWith(
-      expect.objectContaining({ templateId: 1 }),
-    );
-  });
-
-  it("auto-selects smtp when smtp_host is set but no brevo key", async () => {
+  it("auto-selects smtp when smtp_host is set", async () => {
     mockConfig.smtp_host = "smtp.example.com";
     const { sendMail } = await freshMailer();
     await sendMail({ to: "a@b.com", kind: "welcome" });
 
-    expect(sendBrevoMailMock).not.toHaveBeenCalled();
     expect(transportSendMailMock).toHaveBeenCalledWith(
       expect.objectContaining({
         to: "a@b.com",
@@ -152,12 +108,39 @@ describe("mailer provider auto-detection", () => {
   });
 
   it("lets an explicit MAIL_PROVIDER override auto-detection", async () => {
-    mockConfig.brevo_api_key = "test-key"; // would otherwise auto-select brevo
+    mockConfig.smtp_host = "smtp.example.com"; // would otherwise auto-select smtp
     mockConfig.mail_provider = "console";
     const { sendMail } = await freshMailer();
     await sendMail({ to: "a@b.com", kind: "welcome" });
 
-    expect(sendBrevoMailMock).not.toHaveBeenCalled();
+    expect(transportSendMailMock).not.toHaveBeenCalled();
     expect(stderrWrites.join("\n")).toContain("[mailer]");
+  });
+
+  it("delegates to custom mail sender when registered by extensions", async () => {
+    const { sendMail, setMailSender } = await freshMailer();
+    const customMock = vi.fn(async () => true);
+    setMailSender(customMock);
+
+    await sendMail({ to: "user@example.com", kind: "welcome" });
+
+    expect(customMock).toHaveBeenCalledWith({
+      to: "user@example.com",
+      kind: "welcome",
+      params: {},
+    });
+    expect(transportSendMailMock).not.toHaveBeenCalled();
+  });
+
+  it("falls back to standard provider if custom mail sender returns false", async () => {
+    mockConfig.smtp_host = "smtp.example.com";
+    const { sendMail, setMailSender } = await freshMailer();
+    const customMock = vi.fn(async () => false);
+    setMailSender(customMock);
+
+    await sendMail({ to: "user@example.com", kind: "welcome" });
+
+    expect(customMock).toHaveBeenCalled();
+    expect(transportSendMailMock).toHaveBeenCalled();
   });
 });

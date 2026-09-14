@@ -86,3 +86,69 @@ describe("auth events", () => {
     expect(seen).toEqual(["password_reset"]);
   });
 });
+
+describe("user registration events", () => {
+  it("delivers registration events to all hooks", async () => {
+    const { onUserRegistration, emitUserRegistration } =
+      await freshEntitlements();
+    const registered: string[] = [];
+    onUserRegistration(async ({ user }) => {
+      registered.push(`first:${user.email}`);
+    });
+    onUserRegistration(async ({ user }) => {
+      registered.push(`second:${user.full_name}`);
+    });
+
+    await emitUserRegistration({
+      user: {
+        id: "u1",
+        email: "test@example.com",
+        full_name: "John Doe",
+        subscribed: true,
+      },
+    });
+
+    expect(registered).toEqual(["first:test@example.com", "second:John Doe"]);
+  });
+
+  it("isolates hook failures during registration", async () => {
+    const { onUserRegistration, emitUserRegistration } =
+      await freshEntitlements();
+    onUserRegistration(async () => {
+      throw new Error("hook error");
+    });
+
+    await expect(
+      emitUserRegistration({
+        user: { email: "test@example.com" },
+      }),
+    ).resolves.toBeUndefined();
+  });
+});
+
+describe("user update events", () => {
+  it("delivers user update events to registered hooks", async () => {
+    const { onUserUpdate, emitUserUpdate } = await freshEntitlements();
+    const updates: string[] = [];
+    onUserUpdate(async (event) => {
+      if (event.type === "country") {
+        updates.push(`${event.type}:${event.country}`);
+      } else if (event.type === "email") {
+        updates.push(`${event.type}:${event.newEmail}`);
+      }
+    });
+
+    await emitUserUpdate({
+      type: "country",
+      email: "test@example.com",
+      country: "US",
+    });
+    await emitUserUpdate({
+      type: "email",
+      oldEmail: "old@example.com",
+      newEmail: "new@example.com",
+    });
+
+    expect(updates).toEqual(["country:US", "email:new@example.com"]);
+  });
+});

@@ -1,21 +1,19 @@
 import config from "@/config/variables";
-import { BREVO_MAIL_TEMPLATES, sendBrevoMail } from "./brevoConfig";
 import { logger } from "@/lib/logger";
 
 // ---------------------------------------------------------------------------
 // Provider-agnostic transactional mailer.
 //
-// The open-source build must work with zero external mail config. Callers
-// send by logical `kind` (never a hardcoded Brevo template id), and the
-// active provider decides how to deliver it:
+// The open-source build works with zero external SaaS mail services. Callers
+// send by logical `kind`, and delivery is handled by:
 //
-//   - brevo   : uses your Brevo transactional templates (numeric ids)
+//   - custom  : registered via setMailSender (e.g. sp-cloud Brevo wrapper)
 //   - smtp    : renders a built-in HTML email and sends via nodemailer
 //   - console : logs the message (incl. OTP / reset link) to stdout so a
-//               self-hoster can complete signup with no mail provider at all
+//               self-hoster can test or complete signup with no SMTP server
 //
-// Provider is chosen by MAIL_PROVIDER, or auto-detected: Brevo if an API key
-// is set, else SMTP if SMTP_HOST is set, else console.
+// Provider is chosen by MAIL_PROVIDER, or auto-detected: SMTP if SMTP_HOST is
+// set, else console. Extensions can register a custom sender via setMailSender.
 // ---------------------------------------------------------------------------
 
 export type MailKind =
@@ -29,31 +27,31 @@ export type MailKind =
 
 type MailParams = Record<string, unknown>;
 
-type MailProvider = "brevo" | "smtp" | "console";
+type MailProvider = "smtp" | "console";
+
+export type CustomMailSender = (opts: {
+  to: string;
+  kind: MailKind;
+  params?: MailParams;
+}) => Promise<boolean | void>;
+
+let customMailSender: CustomMailSender | null = null;
+
+export const setMailSender = (sender: CustomMailSender | null) => {
+  customMailSender = sender;
+};
 
 const FROM_NAME = config.mail_from_name || "Sitepins";
 const FROM_EMAIL = config.mail_from_email || "noreply@example.com";
 
 function resolveProvider(): MailProvider {
   const explicit = config.mail_provider as MailProvider | undefined;
-  if (explicit === "brevo" || explicit === "smtp" || explicit === "console") {
+  if (explicit === "smtp" || explicit === "console") {
     return explicit;
   }
-  if (config.brevo_api_key) return "brevo";
   if (config.smtp_host) return "smtp";
   return "console";
 }
-
-// Maps each logical kind to its Brevo transactional template id.
-const BREVO_TEMPLATE_BY_KIND: Record<MailKind, number> = {
-  welcome: BREVO_MAIL_TEMPLATES.welcome,
-  otp: BREVO_MAIL_TEMPLATES.otp_sender,
-  password_reset: BREVO_MAIL_TEMPLATES.pass_reset,
-  delete_account: BREVO_MAIL_TEMPLATES.delete_account,
-  org_member_added: BREVO_MAIL_TEMPLATES.org_member_added,
-  org_member_updated: BREVO_MAIL_TEMPLATES.org_member_updated,
-  org_member_removed: BREVO_MAIL_TEMPLATES.org_member_removed,
-};
 
 // ---------------------------------------------------------------------------
 // Built-in HTML templates (used by the smtp + console providers). Deliberately
@@ -176,17 +174,14 @@ export async function sendMail({
   kind: MailKind;
   params?: MailParams;
 }): Promise<void> {
-  const provider = resolveProvider();
-
-  if (provider === "brevo") {
-    await sendBrevoMail({
-      to,
-      templateId: BREVO_TEMPLATE_BY_KIND[kind],
-      params,
-    });
-    return;
+  if (customMailSender) {
+    const handled = await customMailSender({ to, kind, params });
+    if (handled !== false) {
+      return;
+    }
   }
 
+  const provider = resolveProvider();
   const { subject, html } = render(kind, params);
 
   if (provider === "smtp") {
@@ -202,7 +197,7 @@ export async function sendMail({
 
   // console provider — no external mail configured.
   logger.warn(
-    `[mailer] No mail provider configured (MAIL_PROVIDER/BREVO_API_KEY/SMTP_HOST unset).\n` +
+    `[mailer] No mail provider configured (MAIL_PROVIDER/SMTP_HOST unset).\n` +
       `[mailer] Would send "${kind}" to ${to} — "${subject}"` +
       (kind === "otp" ? `\n[mailer] OTP: ${String(params.otp ?? "")}` : "") +
       (kind === "password_reset"

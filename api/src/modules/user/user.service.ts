@@ -1,12 +1,7 @@
 import { auth } from "@/auth";
-import {
-  deleteBrevoContact,
-  updateBrevoContact,
-  updateBrevoContactEmail,
-} from "@/lib/brevoConfig";
 import { requireUser } from "@/lib/requireUser";
 import { sendMail } from "@/lib/mailer";
-import { runUserDeletionHooks } from "@/lib/entitlements";
+import { emitUserUpdate, runUserDeletionHooks } from "@/lib/entitlements";
 import { fromNodeHeaders } from "better-auth/node";
 import { Request } from "express";
 import mongoose from "mongoose";
@@ -61,17 +56,17 @@ const updateUserCountryService = async (id: string, country: string) => {
     },
   );
 
-  // Update contact country in Brevo
+  // Notify extensions of country update
   try {
     if (result && result.email) {
-      await updateBrevoContact({
+      await emitUserUpdate({
+        type: "country",
         email: result.email,
-        updateType: "country",
         country,
       });
     }
   } catch (err) {
-    logger.error("Failed to update Brevo contact country", err);
+    logger.error("Failed to emit user update event for country", err);
   }
 
   return result;
@@ -90,12 +85,16 @@ const updateUserEmailService = async (email: string, id: string) => {
     },
   );
 
-  // When email changes, update the email in Brevo
+  // When email changes, notify extensions
   if (oldEmail && oldEmail !== email && result) {
     try {
-      await updateBrevoContactEmail(oldEmail, email);
+      await emitUserUpdate({
+        type: "email",
+        oldEmail,
+        newEmail: email,
+      });
     } catch (err) {
-      logger.error("Failed to update Brevo contact email", err);
+      logger.error("Failed to emit user update event for email", err);
     }
   }
 
@@ -149,15 +148,6 @@ const deleteUserService = async (reason: string, req: Request) => {
     });
 
     await gitProviderService.deleteProviderService(existingUser.user_id);
-
-    // delete contact from Brevo
-    try {
-      if (existingUser.email) {
-        await deleteBrevoContact(existingUser.email);
-      }
-    } catch (err) {
-      logger.error("Failed to delete Brevo contact after user deletion", err);
-    }
 
     // send mail to user
     try {

@@ -23,9 +23,6 @@ importers:
       '@aws-sdk/client-s3':
         specifier: 3.1106.0
         version: 3.1106.0
-      '@getbrevo/brevo':
-        specifier: ^6.0.2
-        version: 6.0.2
       '@hocuspocus/server':
         specifier: ^4.5.0
         version: 4.5.0(y-protocols@1.0.7(yjs@13.6.31))(yjs@13.6.31)
@@ -992,10 +989,6 @@ packages:
 
   '@formatjs/intl-localematcher@0.8.13':
     resolution: {integrity: sha512-kHEAFOkeJSPNi7c5PaKaRjxcBrJwzzt81ifUu+8uve1EDW/VJl83KsxmqgqNZLzcFEhSliZGvx3+pk/RH0IOmg==}
-
-  '@getbrevo/brevo@6.0.2':
-    resolution: {integrity: sha512-yxyacx4wkuWcCbFDdFE3RxklaHSGXEP3d0gZaxPy+9aBquvl4ksr7IQgbRCcF8crx5aRvpStVBLeh5iCbWHJrg==}
-    engines: {node: '>=18.0.0'}
 
   '@hocuspocus/common@4.5.0':
     resolution: {integrity: sha512-hz6IBLLNKOWrWf+8r236CFFhpkcjEVXtZH1XRrkY0b5dYoQgR5gmuV5/5dJm1Vvyc8I70D+SHCvOch2AsRXonA==}
@@ -7541,8 +7534,6 @@ snapshots:
   '@formatjs/intl-localematcher@0.8.13':
     dependencies:
       '@formatjs/fast-memoize': 3.1.7
-
-  '@getbrevo/brevo@6.0.2': {}
 
   '@hocuspocus/common@4.5.0':
     dependencies:

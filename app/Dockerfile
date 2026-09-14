@@ -3,7 +3,7 @@
 #
 # NEXT_PUBLIC_* values are inlined at build time, so pass the ones your
 # deployment needs as build args (see docker-compose.yml).
-FROM node:22-bookworm-slim AS build
+FROM node:24-bookworm-slim AS build
 RUN corepack enable
 WORKDIR /app
 
@@ -28,7 +28,7 @@ ENV NEXT_PUBLIC_BACKEND_URL=$NEXT_PUBLIC_BACKEND_URL \
 
 RUN pnpm --filter sitepins build
 
-FROM node:22-bookworm-slim
+FROM node:24-bookworm-slim
 RUN corepack enable
 ENV NODE_ENV=production
 WORKDIR /app

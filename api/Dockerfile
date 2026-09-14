@@ -1,6 +1,6 @@
 # Sitepins API image. Build context is the repo root:
 #   docker build -f api/Dockerfile -t sitepins-api .
-FROM node:22-bookworm-slim AS build
+FROM node:24-bookworm-slim AS build
 RUN corepack enable
 WORKDIR /app
 
@@ -15,7 +15,7 @@ COPY api ./api
 RUN pnpm --filter sitepins-api build
 RUN pnpm prune --prod
 
-FROM node:22-bookworm-slim
+FROM node:24-bookworm-slim
 ENV NODE_ENV=production
 WORKDIR /app/api
 COPY --from=build /app /app

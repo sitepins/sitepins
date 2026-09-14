@@ -111,10 +111,14 @@ const gitlabBaseQuery: BaseQueryFn<
     let authToken =
       optionToken || config.currentLoginUserToken || config.token || undefined;
 
+    const isStoredToken =
+      !optionToken ||
+      optionToken === config.token ||
+      optionToken === config.currentLoginUserToken;
+
     // Token refresh logic
-    // Only attempt refresh if we have a refresh_token and not using an override optionToken
     if (
-      !optionToken &&
+      isStoredToken &&
       config.refreshToken &&
       isGitLabProvider(config.provider)
     ) {

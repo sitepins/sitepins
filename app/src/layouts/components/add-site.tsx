@@ -176,7 +176,7 @@ export default function AddSite({
     provider,
     token: selectedProvider?.accessToken,
     search: debouncedSearchQuery,
-    skip: IS_DEMO,
+    skip: !isOpen || IS_DEMO,
   });
 
   useEffect(() => {

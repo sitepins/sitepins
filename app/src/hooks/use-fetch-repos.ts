@@ -36,19 +36,21 @@ export const useAllInstallationRepos = (override?: {
         : globalConfig.token),
   };
 
+  const userToken = config.currentLoginUserToken || config.token;
+
   const {
     data: installationsData,
     isLoading: isLoadingInstallations,
     refetch: refetchInstallations,
     isUninitialized: isGithubUninitialized,
   } = useGetGitHubInstallationsQuery(
-    { token: config.token },
+    { token: userToken },
     {
       // GET /user/installations requires a GitHub App user access token.
       // Classic PATs and OAuth App tokens return 401 — skip if no user token.
       skip:
         override?.skip ||
-        !config.token ||
+        !userToken ||
         !isGitHubProvider(config.provider) ||
         !config.currentLoginUserToken,
     },

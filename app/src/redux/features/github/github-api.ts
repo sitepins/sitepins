@@ -53,9 +53,14 @@ const octokitBaseQuery: BaseQueryFn<
     let authToken =
       optionToken || config.currentLoginUserToken || config.token || undefined;
 
+    const isStoredToken =
+      !optionToken ||
+      optionToken === config.token ||
+      optionToken === config.currentLoginUserToken;
+
     // Token refresh logic
     if (
-      !optionToken &&
+      isStoredToken &&
       config.refreshToken &&
       isGitHubProvider(config.provider)
     ) {

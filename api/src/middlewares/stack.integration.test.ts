@@ -16,12 +16,16 @@ const withServer = async (
   app.set("query parser", "simple");
   app.use(express.json());
   build(app);
-  const server = app.listen(0);
+  const server = await new Promise<import("http").Server>((resolve) => {
+    const s = app.listen(0, () => resolve(s));
+  });
   try {
     const { port } = server.address() as AddressInfo;
     await run(`http://127.0.0.1:${port}`);
   } finally {
-    server.close();
+    await new Promise<void>((resolve) => {
+      server.close(() => resolve());
+    });
   }
 };
 
@@ -110,13 +114,19 @@ describe("request middleware stack", () => {
         app.get("/ok", (_req, res) => res.json({ ok: true }));
       },
       async (base) => {
-        const codes = await Promise.all(
-          Array.from({ length: 200 }, () =>
-            fetch(`${base}/ok`, {
-              headers: { "X-Forwarded-For": "203.0.113.9" },
-            }).then((r) => r.status),
-          ),
-        );
+        const codes: number[] = [];
+        const batchSize = 25;
+        for (let i = 0; i < 200; i += batchSize) {
+          const batch = await Promise.all(
+            Array.from({ length: batchSize }, () =>
+              fetch(`${base}/ok`, {
+                headers: { "X-Forwarded-For": "203.0.113.9" },
+              }).then((r) => r.status),
+            ),
+          );
+          codes.push(...batch);
+        }
+        expect(codes.length).toBe(200);
         expect(codes.every((c) => c === 200)).toBe(true);
       },
     );

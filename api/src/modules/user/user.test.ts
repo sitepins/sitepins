@@ -1,5 +1,5 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { Request, Response } from "express";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const userAggregateMock = vi.fn();
 const userFindOneMock = vi.fn();
@@ -77,12 +77,24 @@ vi.mock("@/lib/logger", () => ({
   },
 }));
 
+const accountsDeleteManyMock = vi.fn();
+const sessionsDeleteManyMock = vi.fn();
+
 vi.mock("@/auth", () => ({
   auth: {
     api: {
       setPassword: vi.fn(),
       deleteUser: vi.fn(async () => ({ success: true })),
     },
+  },
+  db: {
+    collection: (name: string) => ({
+      deleteMany: (...a: unknown[]) => {
+        if (name === "accounts") return accountsDeleteManyMock(...a);
+        if (name === "sessions") return sessionsDeleteManyMock(...a);
+        return Promise.resolve();
+      },
+    }),
   },
 }));
 
@@ -202,6 +214,8 @@ describe("User Module", () => {
         const result = await userService.deleteUserService("test reason", req);
 
         expect(runUserDeletionHooksMock).toHaveBeenCalled();
+        expect(accountsDeleteManyMock).toHaveBeenCalled();
+        expect(sessionsDeleteManyMock).toHaveBeenCalled();
         expect(deleteProviderByUserIdServiceMock).toHaveBeenCalledWith("u1");
         expect(organizationDeleteManyMock).toHaveBeenCalledWith(
           { owner: "u1" },

@@ -1,15 +1,16 @@
 "use client";
 
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { usePartnerLoginBridge } from "@/lib/partner-login";
 import { safeInternalPath } from "@/lib/safe-redirect";
-import { ShieldCheck } from "lucide-react";
+import { AlertCircle, ShieldCheck } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { OTPVerifyForm } from "../register/_components/otp-verify-form";
 import { SocialAuth } from "../register/_components/social-auth";
 import { LoginCredential } from "../register/page";
 import LoginWithPassword from "./_components/login-with-password";
-import { useTranslations } from "next-intl";
 
 export type { TRedirectUser } from "@/lib/partner-login";
 
@@ -22,6 +23,31 @@ export default function Login() {
   });
   const from = safeInternalPath(params.get("from"));
   const callbackURL = `/onboarding?from=${encodeURIComponent(from)}`;
+
+  const oauthError = params.get("error");
+  const oauthErrorDescription = params.get("error_description");
+
+  const getOAuthErrorMessage = (code: string | null): string | null => {
+    if (!code) return null;
+    switch (code) {
+      case "unable_to_link_account":
+        return "Unable to link this social account. If you previously had an account with this provider, please contact support or try logging in with your email and password.";
+      case "account_not_linked":
+        return "An account with this email already exists. Please log in with your email and password first.";
+      case "account_already_linked_to_different_user":
+        return "This social account is already linked to a different Sitepins user.";
+      case "email_does_not_match":
+        return "The email associated with this social account does not match your account.";
+      case "access_denied":
+        return "Access was denied or canceled during social login.";
+      default:
+        return (
+          oauthErrorDescription || "Authentication failed. Please try again."
+        );
+    }
+  };
+
+  const errorMessage = getOAuthErrorMessage(oauthError);
 
   const { pending, redirectUser } = usePartnerLoginBridge({
     from,
@@ -58,6 +84,14 @@ export default function Login() {
 
   return (
     <>
+      {errorMessage && (
+        <div className="px-6 pt-4">
+          <Alert variant="destructive">
+            <AlertCircle className="size-4" />
+            <AlertDescription>{errorMessage}</AlertDescription>
+          </Alert>
+        </div>
+      )}
       <SocialAuth title="" redirect_url={callbackURL} />
       <LoginWithPassword
         redirectUser={redirectUser}

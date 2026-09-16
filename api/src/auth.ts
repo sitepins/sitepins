@@ -7,15 +7,15 @@ import { customSession, emailOTP } from "better-auth/plugins";
 import mongoose from "mongoose";
 import { allowedOrigins } from "./config/cors-options";
 import { customEndpoints } from "./lib/autoSignupUser";
+import { verifyEmailWithReoon } from "./lib/emailVerifier";
+import { emitAuthEvent, emitUserRegistration } from "./lib/entitlements";
 import { logger } from "./lib/logger";
 import { sendMail } from "./lib/mailer";
-import { verifyEmailWithReoon } from "./lib/emailVerifier";
 import { escapeRegex } from "./lib/regexEscape";
 import { deleteFile } from "./lib/s3-utils";
 import { generateUserId } from "./lib/userIdGenerator";
 import { otpSchema } from "./modules/authentication/authentication.zod";
 import { organizationService } from "./modules/organization/organization.service";
-import { emitAuthEvent, emitUserRegistration } from "./lib/entitlements";
 import { User } from "./modules/user/user.model";
 import { registerSchema } from "./modules/user/user.zod-schema";
 
@@ -90,6 +90,16 @@ if (!config.better_auth_secret) {
   }
 }
 
+const getAppUrl = (): string | undefined => {
+  if (process.env.APP_URL) return process.env.APP_URL.replace(/\/+$/, "");
+  if (allowedOrigins.length > 0 && allowedOrigins[0]) {
+    return allowedOrigins[0].replace(/\/+$/, "");
+  }
+  return undefined;
+};
+
+const appUrl = getAppUrl();
+
 export const auth = betterAuth({
   basePath: "/api/v1/auth",
   baseURL: process.env.BASE_URL,
@@ -114,6 +124,13 @@ export const auth = betterAuth({
     window: parseInt(process.env.RATELIMIT_WINDOW || "10"), // seconds
     max: parseInt(process.env.RATELIMIT_MAX || "100"), // max requests / window
   },
+  ...(appUrl
+    ? {
+        onAPIError: {
+          errorURL: `${appUrl}/login`,
+        },
+      }
+    : {}),
   databaseHooks: {
     user: {
       create: {
@@ -343,6 +360,29 @@ export const auth = betterAuth({
   user: {
     deleteUser: {
       enabled: true,
+      afterDelete: async (user) => {
+        try {
+          const idCandidates = [
+            user.id,
+            typeof user.id === "string" &&
+            mongoose.Types.ObjectId.isValid(user.id)
+              ? new mongoose.Types.ObjectId(user.id)
+              : null,
+          ].filter(Boolean);
+
+          await db.collection("accounts").deleteMany({
+            userId: { $in: idCandidates },
+          });
+          await db.collection("sessions").deleteMany({
+            userId: { $in: idCandidates },
+          });
+        } catch (err) {
+          logger.error(
+            "Failed to delete user accounts in deleteUser afterDelete hook",
+            err,
+          );
+        }
+      },
     },
     modelName: "user",
     fields: {
@@ -393,6 +433,7 @@ export const auth = betterAuth({
   account: {
     accountLinking: {
       enabled: true, // same email's google/github login will point to same account
+      trustedProviders: ["google", "github"],
     },
   },
   advanced: {

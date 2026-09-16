@@ -1,19 +1,19 @@
-import { auth } from "@/auth";
-import { requireUser } from "@/lib/requireUser";
-import { sendMail } from "@/lib/mailer";
+import { auth, db } from "@/auth";
 import { emitUserUpdate, runUserDeletionHooks } from "@/lib/entitlements";
+import { logger } from "@/lib/logger";
+import { sendMail } from "@/lib/mailer";
+import { requireUser } from "@/lib/requireUser";
 import { fromNodeHeaders } from "better-auth/node";
 import { Request } from "express";
 import mongoose from "mongoose";
 import { gitProviderService } from "../git-provider/git-provider.service";
 import { Organization } from "../organization/organization.model";
-import { ProjectLog } from "../project-log/project-log.model";
 import { ProjectContent } from "../project-content/project-content.model";
+import { ProjectLog } from "../project-log/project-log.model";
 import { ProjectPreview } from "../project-preview/project-preview.model";
 import { Project } from "../project/project.model";
 import { User } from "./user.model";
 import { TUserType } from "./user.type";
-import { logger } from "@/lib/logger";
 
 // get single user data
 const getSingleUserService = async (id: string): Promise<TUserType | null> => {
@@ -127,6 +127,45 @@ const deleteUserService = async (reason: string, req: Request) => {
     if (!success) throw new Error(message);
 
     const existingUser = requireUser(req);
+
+    const userToDelete = await User.findOne({
+      $or: [
+        { user_id: existingUser.user_id },
+        { email: existingUser.email?.toLowerCase() },
+      ],
+    });
+
+    const idCandidates: (string | mongoose.Types.ObjectId)[] = [
+      existingUser.user_id,
+      (existingUser as { id?: string }).id,
+      (existingUser as { _id?: string })._id,
+      userToDelete?._id,
+      userToDelete?._id?.toString(),
+    ].filter(Boolean) as (string | mongoose.Types.ObjectId)[];
+
+    const objectIdCandidates =
+      mongoose?.Types?.ObjectId &&
+      typeof mongoose.Types.ObjectId.isValid === "function"
+        ? idCandidates
+            .filter(
+              (id) =>
+                typeof id === "string" && mongoose.Types.ObjectId.isValid(id),
+            )
+            .map((id) => new mongoose.Types.ObjectId(id as string))
+        : [];
+
+    const allCandidates = [
+      ...new Set([...idCandidates, ...objectIdCandidates]),
+    ];
+
+    if (db && typeof db.collection === "function") {
+      await db
+        .collection("accounts")
+        .deleteMany({ userId: { $in: allCandidates } }, { session });
+      await db
+        .collection("sessions")
+        .deleteMany({ userId: { $in: allCandidates } }, { session });
+    }
 
     await Organization.deleteMany({ owner: existingUser.user_id }, { session });
     await Project.deleteMany({ user_id: existingUser.user_id }, { session });

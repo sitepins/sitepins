@@ -1,10 +1,10 @@
 "use client";
 
-import { logger } from "@/lib/logger";
 import { Button } from "@/components/ui/button";
 import { CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { authClient } from "@/lib/auth/auth-client";
+import { logger } from "@/lib/logger";
 import { SiGithub, SiGoogle } from "@icons-pack/react-simple-icons";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
@@ -24,6 +24,7 @@ export function SocialAuth({
         {
           provider: "google",
           callbackURL: window.location.origin + redirect_url,
+          errorCallbackURL: window.location.origin + "/login",
         },
         {
           onSuccess: (context) => {
@@ -50,6 +51,7 @@ export function SocialAuth({
         {
           provider: "github",
           callbackURL: window.location.origin + redirect_url,
+          errorCallbackURL: window.location.origin + "/login",
         },
         {
           onSuccess: (context) => {

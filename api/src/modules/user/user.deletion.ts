@@ -84,7 +84,12 @@ export const purgeUserData = async ({
   );
 
   await Project.deleteMany({ user_id: userId }, { session });
-  await ProjectLog.deleteMany({ user_id: userId }, { session });
+
+  // delete project logs written from a client-supplied user_id
+  const logOwnerIds = [
+    ...new Set([userId, ...candidates.map((id) => String(id))]),
+  ];
+  await ProjectLog.deleteMany({ user_id: { $in: logOwnerIds } }, { session });
   await ProjectContent.deleteMany({ user_id: userId }, { session });
   await ProjectPreview.deleteMany({ user_id: userId }, { session });
   await UserPreference.deleteMany({ user_id: userId }, { session });

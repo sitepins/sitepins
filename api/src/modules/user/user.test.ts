@@ -292,6 +292,11 @@ describe("User Module", () => {
           { $pull: { members: { user_id: "u1" } } },
           { session: sessionMock },
         );
+        // logs written against the users row's _id go too
+        expect(projectLogDeleteManyMock).toHaveBeenCalledWith(
+          { user_id: { $in: ["u1", "507f1f77bcf86cd799439011"] } },
+          { session: sessionMock },
+        );
         expect(userPreferenceDeleteManyMock).toHaveBeenCalledWith(
           { user_id: "u1" },
           { session: sessionMock },

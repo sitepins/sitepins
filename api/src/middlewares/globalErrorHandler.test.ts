@@ -49,14 +49,40 @@ describe("globalErrorHandler message disclosure", () => {
   });
 
   it("withholds internals from a driver error", () => {
-    const mongoErr = new Error(
-      "E11000 duplicate key error collection: sitepins.users index: email_1",
-    );
-    mongoErr.name = "MongoServerError";
+    const mongoErr = new Error("connection <monitor> to 10.0.0.1:27017 closed");
+    mongoErr.name = "MongoNetworkError";
     const { status, body } = run(mongoErr);
     expect(status).toBe(500);
     expect(body.message).toBe("something went wrong");
-    expect(JSON.stringify(body)).not.toContain("sitepins.users");
+    expect(JSON.stringify(body)).not.toContain("10.0.0.1");
+  });
+
+  it("turns a duplicate key violation into a 409 without leaking the index", () => {
+    const dupErr = new Error(
+      'E11000 duplicate key error collection: sitepins.users index: email_1 dup key: { email: "taken@example.com" }',
+    );
+    dupErr.name = "MongoServerError";
+    Object.assign(dupErr, { code: 11000, keyPattern: { email: 1 } });
+
+    const { status, body } = run(dupErr);
+    expect(status).toBe(409);
+    expect(body.message).toBe("An account with this email already exists");
+    expect(body.errorMessage[0].path).toBe("email");
+
+    const serialized = JSON.stringify(body);
+    expect(serialized).not.toContain("sitepins.users");
+    expect(serialized).not.toContain("email_1");
+    expect(serialized).not.toContain("E11000");
+  });
+
+  it("falls back to a generic message for an unmapped duplicate field", () => {
+    const dupErr = new Error("E11000 duplicate key error");
+    dupErr.name = "MongoServerError";
+    Object.assign(dupErr, { code: 11000, keyPattern: { token: 1 } });
+
+    const { status, body } = run(dupErr);
+    expect(status).toBe(409);
+    expect(body.message).toBe("That value is already in use");
   });
 
   it("withholds internals from a TypeError", () => {

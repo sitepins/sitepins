@@ -34,13 +34,6 @@ userRouter.patch(
   userController.updateUserCountryController,
 );
 
-// update user email
-userRouter.patch(
-  "/update-email/:id",
-  authMiddleware.verifyAuth(ENUM_ROLE.ADMIN),
-  userController.updateUserEmailController,
-);
-
 // delete user
 userRouter.delete(
   "/delete/:id",

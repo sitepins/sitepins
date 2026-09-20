@@ -358,31 +358,14 @@ export const auth = betterAuth({
     autoSignInAfterVerification: true,
   },
   user: {
+    // Deliberately left disabled. Enabling it exposes better-auth's own
+    // POST /api/v1/auth/delete-user, which drops the users row plus its
+    // accounts and sessions and nothing else — no organizations, projects or
+    // billing rows, and no deleted_users archive. Account deletion goes
+    // through DELETE /api/v1/user/delete/:id, which removes everything in one
+    // transaction (modules/user/user.deletion.ts).
     deleteUser: {
-      enabled: true,
-      afterDelete: async (user) => {
-        try {
-          const idCandidates = [
-            user.id,
-            typeof user.id === "string" &&
-            mongoose.Types.ObjectId.isValid(user.id)
-              ? new mongoose.Types.ObjectId(user.id)
-              : null,
-          ].filter(Boolean);
-
-          await db.collection("accounts").deleteMany({
-            userId: { $in: idCandidates },
-          });
-          await db.collection("sessions").deleteMany({
-            userId: { $in: idCandidates },
-          });
-        } catch (err) {
-          logger.error(
-            "Failed to delete user accounts in deleteUser afterDelete hook",
-            err,
-          );
-        }
-      },
+      enabled: false,
     },
     modelName: "user",
     fields: {

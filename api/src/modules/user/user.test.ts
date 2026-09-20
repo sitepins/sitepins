@@ -5,6 +5,10 @@ const userAggregateMock = vi.fn();
 const userFindOneMock = vi.fn();
 const userFindOneAndUpdateMock = vi.fn();
 const userFindOneAndDeleteMock = vi.fn();
+const userDeleteOneMock = vi.fn();
+const userPreferenceDeleteManyMock = vi.fn();
+const authenticationDeleteManyMock = vi.fn();
+const organizationUpdateManyMock = vi.fn();
 const runUserDeletionHooksMock = vi.fn();
 const deleteProviderByUserIdServiceMock = vi.fn();
 const organizationDeleteManyMock = vi.fn();
@@ -20,6 +24,7 @@ vi.mock("./user.model", () => ({
     findOne: (...a: unknown[]) => userFindOneMock(...a),
     findOneAndUpdate: (...a: unknown[]) => userFindOneAndUpdateMock(...a),
     findOneAndDelete: (...a: unknown[]) => userFindOneAndDeleteMock(...a),
+    deleteOne: (...a: unknown[]) => userDeleteOneMock(...a),
   },
 }));
 
@@ -38,6 +43,7 @@ vi.mock("../git-provider/git-provider.service", () => ({
 vi.mock("../organization/organization.model", () => ({
   Organization: {
     deleteMany: (...a: unknown[]) => organizationDeleteManyMock(...a),
+    updateMany: (...a: unknown[]) => organizationUpdateManyMock(...a),
   },
 }));
 
@@ -65,6 +71,18 @@ vi.mock("../project-preview/project-preview.model", () => ({
   },
 }));
 
+vi.mock("../user-preference/user-preference.model", () => ({
+  UserPreference: {
+    deleteMany: (...a: unknown[]) => userPreferenceDeleteManyMock(...a),
+  },
+}));
+
+vi.mock("../authentication/authentication.model", () => ({
+  Authentication: {
+    deleteMany: (...a: unknown[]) => authenticationDeleteManyMock(...a),
+  },
+}));
+
 vi.mock("@/lib/mailer", () => ({
   sendMail: (...a: unknown[]) => sendMailMock(...a),
 }));
@@ -77,6 +95,9 @@ vi.mock("@/lib/logger", () => ({
   },
 }));
 
+const authDeleteUserMock = vi.fn(async (..._a: unknown[]) => ({
+  success: true,
+}));
 const accountsDeleteManyMock = vi.fn();
 const sessionsDeleteManyMock = vi.fn();
 
@@ -84,7 +105,7 @@ vi.mock("@/auth", () => ({
   auth: {
     api: {
       setPassword: vi.fn(),
-      deleteUser: vi.fn(async () => ({ success: true })),
+      deleteUser: (...a: unknown[]) => authDeleteUserMock(...a),
     },
   },
   db: {
@@ -98,20 +119,49 @@ vi.mock("@/auth", () => ({
   },
 }));
 
-vi.mock("mongoose", () => ({
-  default: {
-    createConnection: vi.fn(() => ({
-      on: vi.fn(),
-      model: vi.fn(),
-    })),
-    startSession: vi.fn(async () => ({
-      startTransaction: vi.fn(),
-      commitTransaction: vi.fn(),
-      abortTransaction: vi.fn(),
-      endSession: vi.fn(),
-    })),
-  },
-}));
+const sessionMock = {
+  startTransaction: vi.fn(),
+  commitTransaction: vi.fn(),
+  abortTransaction: vi.fn(),
+  endSession: vi.fn(),
+};
+
+vi.mock("mongoose", () => {
+  const ObjectId = class {
+    value: string;
+    constructor(value: string) {
+      this.value = value;
+    }
+    toString() {
+      return this.value;
+    }
+    static isValid() {
+      return false;
+    }
+  };
+  return {
+    default: {
+      createConnection: vi.fn(() => ({
+        on: vi.fn(),
+        model: vi.fn(),
+      })),
+      startSession: vi.fn(async () => sessionMock),
+      connection: {
+        db: {
+          collection: (name: string) => ({
+            deleteMany: (...a: unknown[]) => {
+              if (name === "accounts") return accountsDeleteManyMock(...a);
+              if (name === "sessions") return sessionsDeleteManyMock(...a);
+              return Promise.resolve();
+            },
+          }),
+        },
+      },
+      Types: { ObjectId },
+    },
+    Types: { ObjectId },
+  };
+});
 
 function makeReqRes({
   userId,
@@ -143,13 +193,24 @@ beforeEach(() => {
   userFindOneAndUpdateMock.mockReset();
   userFindOneAndDeleteMock.mockReset();
   runUserDeletionHooksMock.mockReset();
+  accountsDeleteManyMock.mockReset();
+  sessionsDeleteManyMock.mockReset();
   deleteProviderByUserIdServiceMock.mockReset();
   organizationDeleteManyMock.mockReset();
   projectDeleteManyMock.mockReset();
   projectContentDeleteManyMock.mockReset();
   projectLogDeleteManyMock.mockReset();
   projectPreviewDeleteManyMock.mockReset();
+  userDeleteOneMock.mockReset();
+  userPreferenceDeleteManyMock.mockReset();
+  authenticationDeleteManyMock.mockReset();
+  organizationUpdateManyMock.mockReset();
   sendMailMock.mockReset();
+  authDeleteUserMock.mockClear();
+  sessionMock.startTransaction.mockClear();
+  sessionMock.commitTransaction.mockClear();
+  sessionMock.abortTransaction.mockClear();
+  sessionMock.endSession.mockClear();
 });
 
 describe("User Module", () => {
@@ -201,10 +262,12 @@ describe("User Module", () => {
     });
 
     describe("deleteUserService", () => {
-      it("executes deletion hooks, cleans up related collections, and sends confirmation email", async () => {
+      it("removes every collection the account owns and archives it in one transaction", async () => {
         const mockUser = { user_id: "u1", email: "alice@example.com" };
-        userFindOneMock.mockResolvedValueOnce(mockUser);
-        userFindOneAndDeleteMock.mockResolvedValueOnce(mockUser);
+        userFindOneMock.mockResolvedValueOnce({
+          ...mockUser,
+          _id: "507f1f77bcf86cd799439011",
+        });
 
         const { userService } = await import("./user.service.js");
         const req = {
@@ -213,18 +276,88 @@ describe("User Module", () => {
         } as unknown as Request;
         const result = await userService.deleteUserService("test reason", req);
 
-        expect(runUserDeletionHooksMock).toHaveBeenCalled();
+        expect(userDeleteOneMock).toHaveBeenCalledWith(
+          { user_id: "u1" },
+          { session: sessionMock },
+        );
         expect(accountsDeleteManyMock).toHaveBeenCalled();
         expect(sessionsDeleteManyMock).toHaveBeenCalled();
-        expect(deleteProviderByUserIdServiceMock).toHaveBeenCalledWith("u1");
         expect(organizationDeleteManyMock).toHaveBeenCalledWith(
           { owner: "u1" },
-          expect.anything(),
+          { session: sessionMock },
         );
+        // membership of orgs somebody else owns
+        expect(organizationUpdateManyMock).toHaveBeenCalledWith(
+          { "members.user_id": "u1" },
+          { $pull: { members: { user_id: "u1" } } },
+          { session: sessionMock },
+        );
+        expect(userPreferenceDeleteManyMock).toHaveBeenCalledWith(
+          { user_id: "u1" },
+          { session: sessionMock },
+        );
+        expect(authenticationDeleteManyMock).toHaveBeenCalledWith(
+          { user_id: "u1" },
+          { session: sessionMock },
+        );
+        expect(deleteProviderByUserIdServiceMock).toHaveBeenCalledWith(
+          "u1",
+          sessionMock,
+        );
+        expect(runUserDeletionHooksMock).toHaveBeenCalled();
+        expect(sessionMock.commitTransaction).toHaveBeenCalled();
+        expect(sessionMock.abortTransaction).not.toHaveBeenCalled();
         expect(sendMailMock).toHaveBeenCalledWith({
           to: "alice@example.com",
           kind: "delete_account",
         });
+        expect(result.success).toBe(true);
+      });
+
+      it("does not touch better-auth's own delete endpoint", async () => {
+        // It drops the users row outside any transaction, so a later failure
+        // used to leave an account gone from `users`, missing from
+        // `deleted_users`, and still owning its organization.
+        userFindOneMock.mockResolvedValueOnce({ user_id: "u1" });
+
+        const { userService } = await import("./user.service.js");
+        await userService.deleteUserService("test reason", {
+          user: { user_id: "u1", email: "alice@example.com" },
+          headers: {},
+        } as unknown as Request);
+
+        expect(authDeleteUserMock).not.toHaveBeenCalled();
+      });
+
+      it("keeps the account when the transaction fails", async () => {
+        userFindOneMock.mockResolvedValueOnce({ user_id: "u1" });
+        organizationDeleteManyMock.mockRejectedValueOnce(new Error("db down"));
+
+        const { userService } = await import("./user.service.js");
+
+        await expect(
+          userService.deleteUserService("test reason", {
+            user: { user_id: "u1", email: "alice@example.com" },
+            headers: {},
+          } as unknown as Request),
+        ).rejects.toThrow("db down");
+
+        expect(sessionMock.abortTransaction).toHaveBeenCalled();
+        expect(sessionMock.commitTransaction).not.toHaveBeenCalled();
+        expect(sendMailMock).not.toHaveBeenCalled();
+      });
+
+      it("still reports success when the confirmation email fails", async () => {
+        userFindOneMock.mockResolvedValueOnce({ user_id: "u1" });
+        sendMailMock.mockRejectedValueOnce(new Error("smtp down"));
+
+        const { userService } = await import("./user.service.js");
+        const result = await userService.deleteUserService("test reason", {
+          user: { user_id: "u1", email: "alice@example.com" },
+          headers: {},
+        } as unknown as Request);
+
+        expect(sessionMock.commitTransaction).toHaveBeenCalled();
         expect(result.success).toBe(true);
       });
     });

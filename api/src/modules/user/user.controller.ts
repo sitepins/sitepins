@@ -19,23 +19,6 @@ const getSingleUserController = catchAsync(
   },
 );
 
-// update user email
-const updateUserEmailController = catchAsync(
-  async (req: Request, res: Response) => {
-    const email = req.body.email;
-    const updateEmail = await userService.updateUserEmailService(
-      email,
-      req.params.id as string,
-    );
-    sendResponse(res, {
-      success: true,
-      statusCode: 200,
-      message: "data updated successfully",
-      result: updateEmail,
-    });
-  },
-);
-
 // update user country
 const updateUserCountryController = catchAsync(
   async (req: Request, res: Response) => {
@@ -83,6 +66,5 @@ export const userController = {
   getSingleUserController,
   setPasswordController,
   updateUserCountryController,
-  updateUserEmailController,
   deleteUserController,
 };

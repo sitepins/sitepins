@@ -134,7 +134,7 @@ describe("user update events", () => {
       if (event.type === "country") {
         updates.push(`${event.type}:${event.country}`);
       } else if (event.type === "email") {
-        updates.push(`${event.type}:${event.newEmail}`);
+        updates.push(`${event.type}:${event.userId}:${event.newEmail}`);
       }
     });
 
@@ -145,10 +145,14 @@ describe("user update events", () => {
     });
     await emitUserUpdate({
       type: "email",
+      userId: "@user_old_example_com",
       oldEmail: "old@example.com",
       newEmail: "new@example.com",
     });
 
-    expect(updates).toEqual(["country:US", "email:new@example.com"]);
+    expect(updates).toEqual([
+      "country:US",
+      "email:@user_old_example_com:new@example.com",
+    ]);
   });
 });

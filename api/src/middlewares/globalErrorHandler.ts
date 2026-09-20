@@ -1,5 +1,10 @@
 import config from "@/config/variables";
 import ApiError from "@/errors/ApiError";
+import {
+  duplicateKeyFields,
+  duplicateKeyMessage,
+  isDuplicateKeyError,
+} from "@/errors/duplicateKey";
 import { handleValidationErrors } from "@/errors/handleValidationError";
 import { logger } from "@/lib/logger";
 import { TErrorMessage } from "@/types";
@@ -41,6 +46,16 @@ export const globalErrorhandler: ErrorRequestHandler = (
           },
         ]
       : [];
+  } else if (isDuplicateKeyError(error)) {
+    // caller's problem, not a server fault — used to fall through as a 500
+    statuscode = 409;
+    message = duplicateKeyMessage(error);
+    errorMessage = [
+      {
+        path: duplicateKeyFields(error)[0] ?? "",
+        message,
+      },
+    ];
   } else if (error instanceof Error) {
     // Errors thrown deliberately by services carry user-facing text and are
     // safe to return. Anything else (driver/runtime failures) can embed

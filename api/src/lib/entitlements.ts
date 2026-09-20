@@ -82,9 +82,11 @@ export const emitUserRegistration = async (event: UserRegistrationEvent) => {
 };
 
 // User profile update events (country change, email change).
+// user_id is frozen at signup, so the email event carries it — handlers must
+// not re-derive one from either address.
 export type UserUpdateEvent =
   | { type: "country"; email: string; country: string }
-  | { type: "email"; oldEmail: string; newEmail: string };
+  | { type: "email"; userId: string; oldEmail: string; newEmail: string };
 
 export type UserUpdateHook = (event: UserUpdateEvent) => Promise<void>;
 

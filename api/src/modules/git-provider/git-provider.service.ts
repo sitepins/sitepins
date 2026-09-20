@@ -1,4 +1,5 @@
 import { decrypt, encrypt, tokenIndex } from "@/lib/encrypt";
+import { ClientSession } from "mongoose";
 import { GitProvider } from "./git-provider.model";
 import { TGitProviderType } from "./git-provider.type";
 
@@ -73,8 +74,14 @@ const getProviderService = async (userId: string) => {
   return providers.map((p) => decryptTokens(p));
 };
 
-const deleteProviderService = async (userId: string) => {
-  await GitProvider.findOneAndDelete({ user_id: userId });
+// A user can hold one row per provider (GitHub *and* GitLab), so this deletes
+// all of them — a single-row delete used to leave the second one behind. The
+// session is optional so account deletion can run it inside its transaction.
+const deleteProviderService = async (
+  userId: string,
+  session?: ClientSession,
+) => {
+  await GitProvider.deleteMany({ user_id: userId }, session ? { session } : {});
 };
 
 // Persist rotated OAuth tokens onto the row that currently holds the consumed

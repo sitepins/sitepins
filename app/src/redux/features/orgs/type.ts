@@ -6,7 +6,9 @@ export type TMember = {
   full_name: string;
   image: string;
   email: string;
-  user_id: string;
+  // absent while an invite is pending; filled in when the invitee registers
+  user_id?: string;
+  status?: "active" | "pending";
   delete?: boolean;
 };
 

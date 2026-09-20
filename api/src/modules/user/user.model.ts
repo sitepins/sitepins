@@ -1,8 +1,7 @@
-import { generateUserId } from "@/lib/userIdGenerator";
 import mongoose, { model } from "mongoose";
-import { EProvider, TUserMethods, TUserModel, TUserType } from "./user.type";
+import { EProvider, TUserModel, TUserType } from "./user.type";
 
-const userSchema = new mongoose.Schema<TUserType, TUserModel, TUserMethods>(
+const userSchema = new mongoose.Schema<TUserType, TUserModel>(
   {
     user_id: {
       type: String,
@@ -55,27 +54,6 @@ const userSchema = new mongoose.Schema<TUserType, TUserModel, TUserMethods>(
     timestamps: true,
   },
 );
-
-userSchema.methods.isUserExist = async function (
-  params: string,
-): Promise<Partial<TUserType> | null> {
-  const userId = generateUserId(params);
-  return await User.findOne(
-    {
-      id: userId,
-    },
-    {
-      user_id: 1,
-      email: 1,
-      full_name: 1,
-      password: 1,
-      country: 1,
-      image: 1,
-      verified: 1,
-      role: 1,
-    },
-  );
-};
 
 userSchema.index({
   email: "text",

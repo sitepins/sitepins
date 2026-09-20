@@ -147,8 +147,8 @@ describe("Organization Module", () => {
           .mockResolvedValueOnce(adminOrg) // admin check
           .mockResolvedValueOnce(null); // not already a member
         userFindOneMock
-          .mockResolvedValueOnce({ user_id: "@user_signup_example_com" }) // invitee lookup
-          .mockResolvedValueOnce({ email: "changed@example.com" }); // recipient for mail
+          .mockResolvedValueOnce({ user_id: "Sg7pQ2vKxA" }) // invitee lookup
+          .mockResolvedValueOnce({ email: "admin@example.com" }); // inviter
         findOneAndUpdateMock.mockResolvedValueOnce(adminOrg);
 
         const { organizationService } =
@@ -160,19 +160,19 @@ describe("Organization Module", () => {
             email: "changed@example.com",
             role: "editor",
           },
-          loggedInUserId: "@user_admin_example_com",
+          loggedInUserId: "Adm1nX9yZq",
         } as never);
 
         expect(
           findOneAndUpdateMock.mock.calls[0][1].$push.members,
-        ).toMatchObject({ user_id: "@user_signup_example_com" });
+        ).toMatchObject({ user_id: "Sg7pQ2vKxA", status: "active" });
       });
 
-      it("falls back to the derived id when the invitee has no account", async () => {
+      it("stores an invite with no user_id when the invitee has no account", async () => {
         findOneMock.mockResolvedValueOnce(adminOrg).mockResolvedValueOnce(null);
         userFindOneMock
           .mockResolvedValueOnce(null) // no account yet
-          .mockResolvedValueOnce(null);
+          .mockResolvedValueOnce({ email: "admin@example.com" }); // inviter
         findOneAndUpdateMock.mockResolvedValueOnce(adminOrg);
 
         const { organizationService } =
@@ -181,15 +181,80 @@ describe("Organization Module", () => {
           org_id: "org-1",
           teamMember: {
             user_id: "newcomer@example.com",
-            email: "newcomer@example.com",
+            email: "Newcomer@Example.com",
             role: "editor",
           },
-          loggedInUserId: "@user_admin_example_com",
+          loggedInUserId: "Adm1nX9yZq",
         } as never);
 
-        expect(
-          findOneAndUpdateMock.mock.calls[0][1].$push.members,
-        ).toMatchObject({ user_id: "@user_newcomer_example_com" });
+        const pushed = findOneAndUpdateMock.mock.calls[0][1].$push.members;
+        expect(pushed).toEqual({
+          email: "newcomer@example.com",
+          role: "editor",
+          status: "pending",
+        });
+        expect(pushed.user_id).toBeUndefined();
+      });
+
+      it("rejects an invite with no email address", async () => {
+        findOneMock.mockResolvedValueOnce(adminOrg);
+
+        const { organizationService } =
+          await import("./organization.service.js");
+
+        await expect(
+          organizationService.addTeamMemberService({
+            org_id: "org-1",
+            teamMember: { user_id: "", email: "", role: "editor" },
+            loggedInUserId: "Adm1nX9yZq",
+          } as never),
+        ).rejects.toThrow("An email address is required");
+      });
+
+      it("rejects inviting your own address", async () => {
+        findOneMock.mockResolvedValueOnce(adminOrg);
+        userFindOneMock
+          .mockResolvedValueOnce(null) // invitee has no account
+          .mockResolvedValueOnce({ email: "Admin@Example.com" }); // inviter
+
+        const { organizationService } =
+          await import("./organization.service.js");
+
+        await expect(
+          organizationService.addTeamMemberService({
+            org_id: "org-1",
+            teamMember: {
+              user_id: "admin@example.com",
+              email: "admin@example.com",
+              role: "editor",
+            },
+            loggedInUserId: "Adm1nX9yZq",
+          } as never),
+        ).rejects.toThrow("You cannot add yourself.");
+      });
+
+      it("rejects a second invite to an address already on the member list", async () => {
+        findOneMock
+          .mockResolvedValueOnce(adminOrg) // admin check
+          .mockResolvedValueOnce({ org_id: "org-1" }); // matched by email
+        userFindOneMock
+          .mockResolvedValueOnce(null)
+          .mockResolvedValueOnce({ email: "admin@example.com" });
+
+        const { organizationService } =
+          await import("./organization.service.js");
+
+        await expect(
+          organizationService.addTeamMemberService({
+            org_id: "org-1",
+            teamMember: {
+              user_id: "newcomer@example.com",
+              email: "newcomer@example.com",
+              role: "editor",
+            },
+            loggedInUserId: "Adm1nX9yZq",
+          } as never),
+        ).rejects.toThrow("already a member");
       });
     });
 

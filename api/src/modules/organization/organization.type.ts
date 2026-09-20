@@ -1,7 +1,8 @@
 export type TMember = {
   email: string;
-  user_id: string;
+  user_id?: string;
   role: "admin" | "editor";
+  status?: "active" | "pending";
 };
 
 export type TSandboxIntegration = {

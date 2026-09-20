@@ -26,9 +26,9 @@ class AuthMiddleware {
         const isDemo = config.demo_mode && headers["x-app-context"] === "demo";
 
         const sessionAuth = isDemo ? authDemo : auth;
-        session = await sessionAuth.api.getSession({
+        session = (await sessionAuth.api.getSession({
           headers: fromNodeHeaders(req.headers),
-        });
+        })) as Session | null;
 
         if (!session) {
           // For Admin

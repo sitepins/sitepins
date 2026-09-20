@@ -1,30 +1,10 @@
 import { API_URL, IS_DEMO } from "@/lib/constant";
-import { BetterAuthClientPlugin } from "better-auth";
 import {
   emailOTPClient,
   inferAdditionalFields,
 } from "better-auth/client/plugins";
-import { BetterFetchOption, createAuthClient } from "better-auth/react";
+import { createAuthClient } from "better-auth/react";
 import { toast } from "@/components/ui/toast";
-
-const customSignupClient = () => {
-  return {
-    id: "custom-signup",
-    getActions: ($fetch) => ({
-      createUser: async (
-        data: { email: string; name: string; handoff_token?: string },
-        fetchOptions?: BetterFetchOption,
-      ) => {
-        const res = await $fetch<Session>("/custom-signup", {
-          method: "POST",
-          body: data,
-          ...fetchOptions,
-        });
-        return res;
-      },
-    }),
-  } satisfies BetterAuthClientPlugin;
-};
 
 export const authClient = createAuthClient({
   baseURL: `${API_URL}${IS_DEMO ? "/demo/auth" : "/auth"}`,
@@ -57,7 +37,6 @@ export const authClient = createAuthClient({
         },
       },
     }),
-    customSignupClient(),
   ],
   fetchOptions: {
     credentials: "include", // Important for cross-domain cookies

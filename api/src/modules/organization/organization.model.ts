@@ -34,14 +34,19 @@ const organizationSchema = new mongoose.Schema<TOrganizationType>(
           type: String,
           required: true,
         },
+        // absent until the invitee registers; invites are keyed by email
         user_id: {
           type: String,
-          required: true,
         },
         role: {
           type: String,
           required: true,
           enum: [ENUM_ROLE_ORG.ADMIN, ENUM_ROLE_ORG.EDITOR],
+        },
+        status: {
+          type: String,
+          enum: ["active", "pending"],
+          default: "active",
         },
       },
     ],

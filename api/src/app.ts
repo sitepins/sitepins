@@ -7,8 +7,8 @@ import { toNodeHandler } from "better-auth/node";
 import cors from "cors";
 import express, { Application, NextFunction, Request, Response } from "express";
 import helmet from "helmet";
-import { auth } from "./auth";
-import { authDemo } from "./auth-demo";
+import { getAuth } from "./auth";
+import { getAuthDemo } from "./auth-demo";
 import {
   corsProtectedOptions,
   corsUnprotectedOptions,
@@ -53,10 +53,22 @@ const conditionalCors = (req: Request, res: Response, next: NextFunction) => {
 
 app.use(conditionalCors);
 // must place better auth handlers before express.json()
-app.all("/api/v1/auth/*splat", toNodeHandler(auth));
+let authHandler: ReturnType<typeof toNodeHandler> | null = null;
+app.all("/api/v1/auth/*splat", (req, res) => {
+  if (!authHandler) {
+    authHandler = toNodeHandler(getAuth());
+  }
+  return authHandler(req, res);
+});
 // Demo auth is an anonymous-signup surface — only mount it when DEMO_MODE is on.
 if (config.demo_mode) {
-  app.all("/api/v1/demo/auth/*splat", toNodeHandler(authDemo));
+  let authDemoHandler: ReturnType<typeof toNodeHandler> | null = null;
+  app.all("/api/v1/demo/auth/*splat", (req, res) => {
+    if (!authDemoHandler) {
+      authDemoHandler = toNodeHandler(getAuthDemo());
+    }
+    return authDemoHandler(req, res);
+  });
 }
 
 // Cap request body size to prevent trivial memory-exhaustion DoS. Override

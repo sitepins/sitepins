@@ -6,14 +6,15 @@ import { APIError, createAuthMiddleware } from "better-auth/api";
 import { customSession, emailOTP } from "better-auth/plugins";
 import mongoose from "mongoose";
 import { allowedOrigins } from "./config/cors-options";
-import { customEndpoints } from "./lib/autoSignupUser";
+import { getRegisteredAuthPlugins } from "./lib/authExtensions";
 import { verifyEmailWithReoon } from "./lib/emailVerifier";
 import { emitAuthEvent, emitUserRegistration } from "./lib/entitlements";
 import { logger } from "./lib/logger";
 import { sendMail } from "./lib/mailer";
+import { reconcilePendingInvites } from "./lib/pendingInvites";
 import { escapeRegex } from "./lib/regexEscape";
 import { deleteFile } from "./lib/s3-utils";
-import { generateUserId } from "./lib/userIdGenerator";
+import { createUserId } from "./lib/userIdGenerator";
 import { otpSchema } from "./modules/authentication/authentication.zod";
 import { organizationService } from "./modules/organization/organization.service";
 import { User } from "./modules/user/user.model";
@@ -100,140 +101,59 @@ const getAppUrl = (): string | undefined => {
 
 const appUrl = getAppUrl();
 
-export const auth = betterAuth({
-  basePath: "/api/v1/auth",
-  baseURL: process.env.BASE_URL,
-  secret: config.better_auth_secret,
-  trustedOrigins: allowedOrigins,
-  database: mongodbAdapter(db, {
-    client,
-    usePlural: true,
-    debugLogs: false,
-  }),
-  session: {
-    expiresIn: 60 * 60 * 24 * 7, // 7 days
-    updateAge: 60 * 60 * 24, // 1 day (every 1 day the session expiration is updated)
-    cookieCache: {
-      enabled: true,
-      maxAge: 5 * 60, // Cache duration in seconds
-    },
-  },
-  appName: "Sitepins",
-  rateLimit: {
-    // enabled: true, // enabled only if you want to test it in development
-    window: parseInt(process.env.RATELIMIT_WINDOW || "10"), // seconds
-    max: parseInt(process.env.RATELIMIT_MAX || "100"), // max requests / window
-  },
-  ...(appUrl
-    ? {
-        onAPIError: {
-          errorURL: `${appUrl}/login`,
-        },
-      }
-    : {}),
-  databaseHooks: {
-    user: {
-      create: {
-        before: async (user) => {
-          return {
-            data: {
-              ...user,
-              user_id: generateUserId(user.email),
-              full_name: user.name,
-            },
-          };
-        },
-        after: async (user) => {
-          // Initialize default organization for new user
-          try {
-            await organizationService.ensureDefaultOrganizationService(
-              user.user_id as string,
-            );
-          } catch (error) {
-            logger.error("Failed to create default organization", error);
-          }
-
-          if (
-            (user.provider === "Google" || user.provider === "Github") &&
-            user.emailVerified
-          ) {
-            // Notify extensions of new user registration
-            try {
-              await emitUserRegistration({
-                user: {
-                  id: user.user_id as string,
-                  email: user.email,
-                  full_name: user.full_name as string,
-                  subscribed: true,
-                  provider: user.provider as string | undefined,
-                },
-              });
-            } catch (error) {
-              logger.error("Failed to emit user registration event", error);
-            }
-
-            // Send welcome email to new user
-            try {
-              await sendMail({
-                to: user.email,
-                kind: "welcome",
-              });
-            } catch (error) {
-              logger.error("Failed to send welcome email to new user", error);
-            }
-          }
-        },
+const createAuthInstance = () =>
+  betterAuth({
+    basePath: "/api/v1/auth",
+    baseURL: process.env.BASE_URL,
+    secret: config.better_auth_secret,
+    trustedOrigins: allowedOrigins,
+    database: mongodbAdapter(db, {
+      client,
+      usePlural: true,
+      debugLogs: false,
+    }),
+    session: {
+      expiresIn: 60 * 60 * 24 * 7, // 7 days
+      updateAge: 60 * 60 * 24, // 1 day (every 1 day the session expiration is updated)
+      cookieCache: {
+        enabled: true,
+        maxAge: 5 * 60, // Cache duration in seconds
       },
-      update: {
-        before: async (user, ctx) => {
-          // Auto-delete old display picture when updating to a new one, or clearing it
-          if (user.image !== undefined) {
+    },
+    appName: "Sitepins",
+    rateLimit: {
+      // enabled: true, // enabled only if you want to test it in development
+      window: parseInt(process.env.RATELIMIT_WINDOW || "10"), // seconds
+      max: parseInt(process.env.RATELIMIT_MAX || "100"), // max requests / window
+    },
+    ...(appUrl
+      ? {
+          onAPIError: {
+            errorURL: `${appUrl}/login`,
+          },
+        }
+      : {}),
+    databaseHooks: {
+      user: {
+        create: {
+          before: async (user) => {
+            return {
+              data: {
+                ...user,
+                user_id: await createUserId(),
+                full_name: user.name,
+              },
+            };
+          },
+          after: async (user) => {
+            // Link invites addressed to this email before anything else reads them
             try {
-              // Get the authenticated user ID from the session context
-              const identifier = (
-                ctx as { context?: { session?: { user?: { id?: unknown } } } }
-              )?.context?.session?.user?.id;
-
-              if (!identifier) {
-                return { data: user };
-              }
-
-              // Search by MongoDB _id (which better-auth uses for user.id in session)
-              const existingUser = await User.findById(identifier);
-
-              if (existingUser && existingUser.image) {
-                const oldImageValue = existingUser.image;
-                const newImageValue = user.image;
-
-                if (
-                  oldImageValue !== newImageValue &&
-                  isOurBucketImage(oldImageValue)
-                ) {
-                  const key = getS3Key(oldImageValue);
-
-                  if (key) {
-                    await deleteFile(key).catch((err) => {
-                      logger.error(`Failed to delete old image (${key})`, err);
-                    });
-                  }
-                }
-              }
+              await reconcilePendingInvites(user.email, user.user_id as string);
             } catch (error) {
-              logger.error("Error in image cleanup before update", error);
+              logger.error("Failed to reconcile pending org invites", error);
             }
-          }
 
-          return { data: user };
-        },
-        after: async (user, ctx) => {
-          const initDefaultOrg =
-            (ctx?.body as { initDefaultOrg?: boolean } | undefined)
-              ?.initDefaultOrg || false;
-          if (
-            (ctx?.path === "/email-otp/verify-email" && user.emailVerified) ||
-            initDefaultOrg
-          ) {
-            // Initialize a organization
+            // Initialize default organization for new user
             try {
               await organizationService.ensureDefaultOrganizationService(
                 user.user_id as string,
@@ -241,325 +161,333 @@ export const auth = betterAuth({
             } catch (error) {
               logger.error("Failed to create default organization", error);
             }
-            // Notify extensions of new user registration
-            try {
-              await emitUserRegistration({
-                user: {
-                  id: user.user_id as string,
-                  email: user.email,
-                  full_name: user.full_name as string,
-                  subscribed: !!(user as { subscribed?: unknown }).subscribed,
-                  provider: user.provider as string | undefined,
-                },
-              });
-            } catch (error) {
-              logger.error("Failed to emit user registration event", error);
+
+            if (
+              (user.provider === "Google" || user.provider === "Github") &&
+              user.emailVerified
+            ) {
+              // Notify extensions of new user registration
+              try {
+                await emitUserRegistration({
+                  user: {
+                    id: user.user_id as string,
+                    email: user.email,
+                    full_name: user.full_name as string,
+                    subscribed: true,
+                    provider: user.provider as string | undefined,
+                  },
+                });
+              } catch (error) {
+                logger.error("Failed to emit user registration event", error);
+              }
+
+              // Send welcome email to new user
+              try {
+                await sendMail({
+                  to: user.email,
+                  kind: "welcome",
+                });
+              } catch (error) {
+                logger.error("Failed to send welcome email to new user", error);
+              }
             }
-            // Send welcome email to new user
-            try {
-              await sendMail({
-                to: user.email,
-                kind: "welcome",
-              });
-            } catch (error) {
-              logger.error("Failed to send welcome email to new user", error);
-            }
-          }
-        },
-      },
-    },
-    session: {
-      create: {
-        // called after every successfully login
-        after: async (session) => {
-          const user = await User.findById(session.userId);
-
-          if (!user) return;
-
-          try {
-            await emitAuthEvent({
-              type: "login",
-              userId: user.user_id as string,
-              ip: session.ipAddress || "",
-              date: session.createdAt.toISOString(),
-            });
-          } catch (err) {
-            logger.error("Failed to update user Log contact on login", err);
-          }
-        },
-      },
-    },
-  },
-  hooks: {
-    before: createAuthMiddleware(async (ctx) => {
-      if (process.env.NODE_ENV !== "production") {
-        ctx.context.skipOriginCheck = true;
-      }
-      if (ctx.path === "/sign-up/email") {
-        const payload = {
-          full_name: ctx.body.name,
-          email: ctx.body.email,
-          password: ctx.body.password,
-          subscribed: !!ctx.body.subscribed,
-        };
-        const { success, error } = registerSchema.safeParse(payload);
-        if (!success) {
-          throw new APIError("BAD_REQUEST", {
-            message: error.issues.map((issue) => issue.message)[0],
-          });
-        }
-
-        // Check if user already exists
-        const email = payload.email.trim();
-        const existingUser = await User.findOne({
-          email: { $regex: new RegExp(`^${escapeRegex(email)}$`, "i") },
-        });
-
-        if (existingUser) {
-          throw new APIError("BAD_REQUEST", {
-            message: "User already exists with this email",
-          });
-        }
-
-        // Verify email before creating user
-        const { isValid, reason } = await verifyEmailWithReoon(payload.email);
-
-        if (!isValid) {
-          throw new APIError("BAD_REQUEST", {
-            message: reason || "Please use a different email",
-          });
-        }
-      }
-
-      if (ctx.path === "/email-otp/verify-email") {
-        // validate otp payload
-        const { success, error } = otpSchema.safeParse(ctx.body);
-        if (!success) {
-          throw new APIError("BAD_REQUEST", {
-            message: error.issues.map((issue) => issue.message)[0],
-          });
-        }
-      }
-
-      // `password` is declared as an additional user field (it predates
-      // credentials moving into better-auth's account table), which means
-      // /update-user would happily write a caller-supplied value straight
-      // onto the user document. Real password changes go through
-      // setPassword/reset, never here.
-      if (ctx.path === "/update-user" && ctx.body?.password !== undefined) {
-        delete ctx.body.password;
-      }
-    }),
-  },
-
-  emailVerification: {
-    sendOnSignUp: true,
-    sendOnSignIn: true,
-    autoSignInAfterVerification: true,
-  },
-  user: {
-    // Deliberately left disabled. Enabling it exposes better-auth's own
-    // POST /api/v1/auth/delete-user, which drops the users row plus its
-    // accounts and sessions and nothing else — no organizations, projects or
-    // billing rows, and no deleted_users archive. Account deletion goes
-    // through DELETE /api/v1/user/delete/:id, which removes everything in one
-    // transaction (modules/user/user.deletion.ts).
-    deleteUser: {
-      enabled: false,
-    },
-    modelName: "user",
-    fields: {
-      name: "full_name",
-      emailVerified: "verified",
-    },
-    additionalFields: {
-      full_name: {
-        type: "string",
-        required: true,
-        input: false,
-        defaultValue: "",
-      },
-      user_id: {
-        type: "string",
-        required: true,
-        input: false,
-        defaultValue: "",
-      },
-      provider: {
-        type: "string",
-        required: true,
-        input: false,
-        defaultValue: "Credentials",
-      },
-      role: {
-        type: "string",
-        required: true,
-        input: false,
-        defaultValue: "user",
-      },
-      password: {
-        type: "string",
-        input: true,
-      },
-      subscribed: {
-        type: "boolean",
-        required: false,
-        input: true,
-        defaultValue: false,
-      },
-      country: {
-        type: "string",
-        input: true,
-      },
-    },
-  },
-  account: {
-    accountLinking: {
-      enabled: true, // same email's google/github login will point to same account
-      trustedProviders: ["google", "github"],
-    },
-  },
-  advanced: {
-    ipAddress: {
-      ipAddressHeaders: [
-        "do-connecting-ip",
-        "cf-connecting-ip",
-        "x-real-ip",
-        "x-forwarded-for",
-      ],
-    },
-    cookiePrefix: "sitepins-app",
-    // Only share the session cookie across subdomains when COOKIE_DOMAIN is
-    // set (e.g. hosted deploys with app + api on different subdomains). A
-    // single-host self-hosted deploy leaves it unset and the cookie is scoped
-    // to the exact host — no hardcoded domain that breaks other people's sites.
-    crossSubDomainCookies: {
-      enabled: Boolean(config.cookie_domain),
-      domain: config.cookie_domain,
-    },
-    defaultCookieAttributes: {
-      // SameSite=None (needed for cross-subdomain) requires Secure; otherwise
-      // Lax is correct and works over plain http in local/self-hosted setups.
-      sameSite: config.cookie_domain ? "none" : "lax",
-      secure:
-        process.env.NODE_ENV === "production" || Boolean(config.cookie_domain),
-      path: "/",
-    },
-  },
-  emailAndPassword: {
-    enabled: true,
-    // Set REQUIRE_EMAIL_VERIFICATION=false to let self-hosted instances skip
-    // the OTP step when no mail provider is configured.
-    requireEmailVerification: config.require_email_verification,
-    autoSignIn: true, // false for not auto signin after signup
-    autoSignInAfterVerification: true, // false for not auto signin after email verification
-    password: {
-      // your custom password hashing function
-      hash: async (password: string) => {
-        const hashPass = await bcrypt.hash(password, config.salt);
-        return hashPass;
-      },
-      // your custom password verification function
-      verify: async ({ password, hash }) => {
-        const isValidPassword = await bcrypt.compare(password, hash);
-        return isValidPassword;
-      },
-    },
-    resetPasswordTokenExpiresIn: 15 * 60, // 15 minutes
-    sendResetPassword: async ({ user, url }) => {
-      try {
-        await sendMail({
-          to: user.email,
-          kind: "password_reset",
-          params: {
-            password_reset: url,
           },
-        });
-      } catch (error) {
-        throw new APIError("INTERNAL_SERVER_ERROR", {
-          message:
-            error instanceof Error
-              ? error.message
-              : "Failed to send mail! Internal Server error",
-        });
-      }
-    },
-    onPasswordReset: async ({ user }) => {
-      try {
-        // user_id is frozen at signup; deriving it would miss a changed email
-        const userId =
-          (user as { user_id?: string }).user_id || generateUserId(user.email);
-        await emitAuthEvent({
-          type: "password_reset",
-          userId,
-          date: new Date().toISOString(),
-        });
-      } catch (error) {
-        logger.error("User log updated failed", error);
-      }
-    },
-  },
-  socialProviders: {
-    github: {
-      clientId: process.env.GITHUB_CLIENT_ID as string,
-      clientSecret: process.env.GITHUB_CLIENT_SECRET as string,
-      disableImplicitSignUp: false,
-      redirectURI: `${process.env.BASE_URL}/api/v1/auth/callback/github`,
-      // Don't override state - let better-auth handle it
-      mapProfileToUser: (profile) => {
-        return {
-          full_name: profile.name || profile.login,
-          provider: "Github",
-        };
+        },
+        update: {
+          before: async (user, ctx) => {
+            // Auto-delete old display picture when updating to a new one, or clearing it
+            if (user.image !== undefined) {
+              try {
+                // Get the authenticated user ID from the session context
+                const identifier = (
+                  ctx as { context?: { session?: { user?: { id?: unknown } } } }
+                )?.context?.session?.user?.id;
+
+                if (!identifier) {
+                  return { data: user };
+                }
+
+                // Search by MongoDB _id (which better-auth uses for user.id in session)
+                const existingUser = await User.findById(identifier);
+
+                if (existingUser && existingUser.image) {
+                  const oldImageValue = existingUser.image;
+                  const newImageValue = user.image;
+
+                  if (
+                    oldImageValue !== newImageValue &&
+                    isOurBucketImage(oldImageValue)
+                  ) {
+                    const key = getS3Key(oldImageValue);
+
+                    if (key) {
+                      await deleteFile(key).catch((err) => {
+                        logger.error(
+                          `Failed to delete old image (${key})`,
+                          err,
+                        );
+                      });
+                    }
+                  }
+                }
+              } catch (error) {
+                logger.error("Error in image cleanup before update", error);
+              }
+            }
+
+            return { data: user };
+          },
+          after: async (user, ctx) => {
+            const initDefaultOrg =
+              (ctx?.body as { initDefaultOrg?: boolean } | undefined)
+                ?.initDefaultOrg || false;
+            if (
+              (ctx?.path === "/email-otp/verify-email" && user.emailVerified) ||
+              initDefaultOrg
+            ) {
+              // Initialize a organization
+              try {
+                await organizationService.ensureDefaultOrganizationService(
+                  user.user_id as string,
+                );
+              } catch (error) {
+                logger.error("Failed to create default organization", error);
+              }
+              // Notify extensions of new user registration
+              try {
+                await emitUserRegistration({
+                  user: {
+                    id: user.user_id as string,
+                    email: user.email,
+                    full_name: user.full_name as string,
+                    subscribed: !!(user as { subscribed?: unknown }).subscribed,
+                    provider: user.provider as string | undefined,
+                  },
+                });
+              } catch (error) {
+                logger.error("Failed to emit user registration event", error);
+              }
+              // Send welcome email to new user
+              try {
+                await sendMail({
+                  to: user.email,
+                  kind: "welcome",
+                });
+              } catch (error) {
+                logger.error("Failed to send welcome email to new user", error);
+              }
+            }
+          },
+        },
+      },
+      session: {
+        create: {
+          // called after every successfully login
+          after: async (session) => {
+            const user = await User.findById(session.userId);
+
+            if (!user) return;
+
+            try {
+              await emitAuthEvent({
+                type: "login",
+                userId: user.user_id as string,
+                ip: session.ipAddress || "",
+                date: session.createdAt.toISOString(),
+              });
+            } catch (err) {
+              logger.error("Failed to update user Log contact on login", err);
+            }
+          },
+        },
       },
     },
-    google: {
-      clientId: process.env.GOOGLE_CLIENT_ID as string,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
-      disableImplicitSignUp: false, // auto signup when when signin with google
-      accessType: "offline", // To always get a refresh token
-      prompt: "select_account consent",
-      // scope: [""], // custom scopes
-      redirectURI: `${process.env.BASE_URL}/api/v1/auth/callback/google`,
-      // Don't override state - let better-auth handle it
-      mapProfileToUser: (profile) => {
-        return {
-          full_name: profile.name,
-          provider: "Google",
-        };
+    hooks: {
+      before: createAuthMiddleware(async (ctx) => {
+        if (process.env.NODE_ENV !== "production") {
+          ctx.context.skipOriginCheck = true;
+        }
+        if (ctx.path === "/sign-up/email") {
+          const payload = {
+            full_name: ctx.body.name,
+            email: ctx.body.email,
+            password: ctx.body.password,
+            subscribed: !!ctx.body.subscribed,
+          };
+          const { success, error } = registerSchema.safeParse(payload);
+          if (!success) {
+            throw new APIError("BAD_REQUEST", {
+              message: error.issues.map((issue) => issue.message)[0],
+            });
+          }
+
+          // Check if user already exists
+          const email = payload.email.trim();
+          const existingUser = await User.findOne({
+            email: { $regex: new RegExp(`^${escapeRegex(email)}$`, "i") },
+          });
+
+          if (existingUser) {
+            throw new APIError("BAD_REQUEST", {
+              message: "User already exists with this email",
+            });
+          }
+
+          // Verify email before creating user
+          const { isValid, reason } = await verifyEmailWithReoon(payload.email);
+
+          if (!isValid) {
+            throw new APIError("BAD_REQUEST", {
+              message: reason || "Please use a different email",
+            });
+          }
+        }
+
+        if (ctx.path === "/email-otp/verify-email") {
+          // validate otp payload
+          const { success, error } = otpSchema.safeParse(ctx.body);
+          if (!success) {
+            throw new APIError("BAD_REQUEST", {
+              message: error.issues.map((issue) => issue.message)[0],
+            });
+          }
+        }
+
+        // `password` is declared as an additional user field (it predates
+        // credentials moving into better-auth's account table), which means
+        // /update-user would happily write a caller-supplied value straight
+        // onto the user document. Real password changes go through
+        // setPassword/reset, never here.
+        if (ctx.path === "/update-user" && ctx.body?.password !== undefined) {
+          delete ctx.body.password;
+        }
+      }),
+    },
+
+    emailVerification: {
+      sendOnSignUp: true,
+      sendOnSignIn: true,
+      autoSignInAfterVerification: true,
+    },
+    user: {
+      // Deliberately left disabled. Enabling it exposes better-auth's own
+      // POST /api/v1/auth/delete-user, which drops the users row plus its
+      // accounts and sessions and nothing else — no organizations, projects or
+      // billing rows, and no deleted_users archive. Account deletion goes
+      // through DELETE /api/v1/user/delete/:id, which removes everything in one
+      // transaction (modules/user/user.deletion.ts).
+      deleteUser: {
+        enabled: false,
+      },
+      modelName: "user",
+      fields: {
+        name: "full_name",
+        emailVerified: "verified",
+      },
+      additionalFields: {
+        full_name: {
+          type: "string",
+          required: true,
+          input: false,
+          defaultValue: "",
+        },
+        user_id: {
+          type: "string",
+          required: true,
+          input: false,
+          defaultValue: "",
+        },
+        provider: {
+          type: "string",
+          required: true,
+          input: false,
+          defaultValue: "Credentials",
+        },
+        role: {
+          type: "string",
+          required: true,
+          input: false,
+          defaultValue: "user",
+        },
+        password: {
+          type: "string",
+          input: true,
+        },
+        subscribed: {
+          type: "boolean",
+          required: false,
+          input: true,
+          defaultValue: false,
+        },
+        country: {
+          type: "string",
+          input: true,
+        },
       },
     },
-  },
-  plugins: [
-    emailOTP({
-      otpLength: OTP_LENGTH,
-      expiresIn: OTP_VALIDITY,
-      allowedAttempts: MAX_ALLOWED_ATTEMPTS,
-      overrideDefaultEmailVerification: true, // override the token based link verification
-      // sendVerificationOnSignUp: true,
-      sendVerificationOTP: async ({ email, otp, type }) => {
+    account: {
+      accountLinking: {
+        enabled: true, // same email's google/github login will point to same account
+        trustedProviders: ["google", "github"],
+      },
+    },
+    advanced: {
+      ipAddress: {
+        ipAddressHeaders: [
+          "do-connecting-ip",
+          "cf-connecting-ip",
+          "x-real-ip",
+          "x-forwarded-for",
+        ],
+      },
+      cookiePrefix: "sitepins-app",
+      // Only share the session cookie across subdomains when COOKIE_DOMAIN is
+      // set (e.g. hosted deploys with app + api on different subdomains). A
+      // single-host self-hosted deploy leaves it unset and the cookie is scoped
+      // to the exact host — no hardcoded domain that breaks other people's sites.
+      crossSubDomainCookies: {
+        enabled: Boolean(config.cookie_domain),
+        domain: config.cookie_domain,
+      },
+      defaultCookieAttributes: {
+        // SameSite=None (needed for cross-subdomain) requires Secure; otherwise
+        // Lax is correct and works over plain http in local/self-hosted setups.
+        sameSite: config.cookie_domain ? "none" : "lax",
+        secure:
+          process.env.NODE_ENV === "production" ||
+          Boolean(config.cookie_domain),
+        path: "/",
+      },
+    },
+    emailAndPassword: {
+      enabled: true,
+      // Set REQUIRE_EMAIL_VERIFICATION=false to let self-hosted instances skip
+      // the OTP step when no mail provider is configured.
+      requireEmailVerification: config.require_email_verification,
+      autoSignIn: true, // false for not auto signin after signup
+      autoSignInAfterVerification: true, // false for not auto signin after email verification
+      password: {
+        // your custom password hashing function
+        hash: async (password: string) => {
+          const hashPass = await bcrypt.hash(password, config.salt);
+          return hashPass;
+        },
+        // your custom password verification function
+        verify: async ({ password, hash }) => {
+          const isValidPassword = await bcrypt.compare(password, hash);
+          return isValidPassword;
+        },
+      },
+      resetPasswordTokenExpiresIn: 15 * 60, // 15 minutes
+      sendResetPassword: async ({ user, url }) => {
         try {
-          if (type === "sign-in") {
-            // Send the OTP for sign in
-          }
-          if (type === "email-verification") {
-            await sendMail({
-              to: email,
-              kind: "otp",
-              params: {
-                otp,
-              },
-            });
-          }
-          if (type === "forget-password") {
-            await sendMail({
-              to: email,
-              kind: "otp",
-              params: {
-                otp,
-              },
-            });
-          }
+          await sendMail({
+            to: user.email,
+            kind: "password_reset",
+            params: {
+              password_reset: url,
+            },
+          });
         } catch (error) {
           throw new APIError("INTERNAL_SERVER_ERROR", {
             message:
@@ -569,18 +497,134 @@ export const auth = betterAuth({
           });
         }
       },
-    }),
-    customEndpoints(),
-    customSession(async ({ user, session }) => {
-      return {
-        user,
-        session: {
-          ...session,
-          serverTime: new Date().toISOString(),
+      onPasswordReset: async ({ user }) => {
+        try {
+          // user_id is opaque and frozen at signup, so look it up, never derive it
+          const userId =
+            (user as { user_id?: string }).user_id ||
+            (await User.findOne({ email: user.email }).select("user_id").lean())
+              ?.user_id;
+          if (!userId) return;
+          await emitAuthEvent({
+            type: "password_reset",
+            userId,
+            date: new Date().toISOString(),
+          });
+        } catch (error) {
+          logger.error("User log updated failed", error);
+        }
+      },
+    },
+    socialProviders: {
+      github: {
+        clientId: process.env.GITHUB_CLIENT_ID as string,
+        clientSecret: process.env.GITHUB_CLIENT_SECRET as string,
+        disableImplicitSignUp: false,
+        redirectURI: `${process.env.BASE_URL}/api/v1/auth/callback/github`,
+        // Don't override state - let better-auth handle it
+        mapProfileToUser: (profile) => {
+          return {
+            full_name: profile.name || profile.login,
+            provider: "Github",
+          };
         },
-      };
-    }),
-  ],
+      },
+      google: {
+        clientId: process.env.GOOGLE_CLIENT_ID as string,
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+        disableImplicitSignUp: false, // auto signup when when signin with google
+        accessType: "offline", // To always get a refresh token
+        prompt: "select_account consent",
+        // scope: [""], // custom scopes
+        redirectURI: `${process.env.BASE_URL}/api/v1/auth/callback/google`,
+        // Don't override state - let better-auth handle it
+        mapProfileToUser: (profile) => {
+          return {
+            full_name: profile.name,
+            provider: "Google",
+          };
+        },
+      },
+    },
+    plugins: [
+      emailOTP({
+        otpLength: OTP_LENGTH,
+        expiresIn: OTP_VALIDITY,
+        allowedAttempts: MAX_ALLOWED_ATTEMPTS,
+        overrideDefaultEmailVerification: true, // override the token based link verification
+        // sendVerificationOnSignUp: true,
+        sendVerificationOTP: async ({ email, otp, type }) => {
+          try {
+            if (type === "sign-in") {
+              // Send the OTP for sign in
+            }
+            if (type === "email-verification") {
+              await sendMail({
+                to: email,
+                kind: "otp",
+                params: {
+                  otp,
+                },
+              });
+            }
+            if (type === "forget-password") {
+              await sendMail({
+                to: email,
+                kind: "otp",
+                params: {
+                  otp,
+                },
+              });
+            }
+          } catch (error) {
+            throw new APIError("INTERNAL_SERVER_ERROR", {
+              message:
+                error instanceof Error
+                  ? error.message
+                  : "Failed to send mail! Internal Server error",
+            });
+          }
+        },
+      }),
+      ...getRegisteredAuthPlugins(),
+      customSession(async ({ user, session }) => {
+        return {
+          user,
+          session: {
+            ...session,
+            serverTime: new Date().toISOString(),
+          },
+        };
+      }),
+    ],
+  });
+
+let _auth: ReturnType<typeof createAuthInstance> | null = null;
+export const getAuth = (): ReturnType<typeof createAuthInstance> => {
+  if (!_auth) {
+    _auth = createAuthInstance();
+  }
+  return _auth;
+};
+
+export const auth = new Proxy({} as ReturnType<typeof createAuthInstance>, {
+  get(_target, prop) {
+    const instance = getAuth();
+    const val = Reflect.get(instance, prop);
+    if (typeof val === "function") {
+      return val.bind(instance);
+    }
+    return val;
+  },
+  has(_target, prop) {
+    return Reflect.has(getAuth(), prop);
+  },
+  ownKeys(_target) {
+    return Reflect.ownKeys(getAuth());
+  },
+  getOwnPropertyDescriptor(_target, prop) {
+    return Reflect.getOwnPropertyDescriptor(getAuth(), prop);
+  },
 });
 
 export type Session = typeof auth.$Infer.Session;

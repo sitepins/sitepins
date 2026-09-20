@@ -220,6 +220,8 @@ export default function MemberActions({
   const tr = useTranslations("org.members.roles");
 
   const isOrgOwner = owner === member.user_id;
+  // a pending invite has no user_id yet, so it is addressed by email
+  const memberRef = member.user_id || member.email;
 
   if (isCurrentUser) {
     if (isOrgOwner) {
@@ -308,7 +310,7 @@ export default function MemberActions({
                     }
                     await onUpdateRole({
                       org_id: org_id,
-                      member_id: member.user_id,
+                      member_id: memberRef,
                       role: role[member.role],
                     }).unwrap();
                     toast.success(tOrgMembersActions("success_update"));
@@ -342,7 +344,7 @@ export default function MemberActions({
 
       <DeleteOrgMember
         org_id={org_id}
-        member_id={member.user_id}
+        member_id={memberRef}
         open={isDeleteOpen}
         onOpenChange={setIsDeleteOpen}
       />

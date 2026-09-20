@@ -31,8 +31,4 @@ export type TLoginResponse<T> = Partial<T> & {
   accessToken: string;
 };
 
-export type TUserMethods = {
-  isUserExist: (params: string) => Promise<Partial<TUserType> | null>;
-};
-
-export type TUserModel = Model<TUserType, object, TUserMethods>;
+export type TUserModel = Model<TUserType>;

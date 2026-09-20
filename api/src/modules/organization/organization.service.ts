@@ -5,7 +5,7 @@ import { decorateOrganization } from "@/lib/extensionGuards";
 import { logger } from "@/lib/logger";
 import { sendMail } from "@/lib/mailer";
 import { nanoId } from "@/lib/nanoId";
-import { escapeRegex } from "@/lib/regexEscape";
+import { emailMatcher } from "@/lib/pendingInvites";
 import { assertAssignableRole } from "@/lib/orgRoles";
 import { deleteFile } from "@/lib/s3-utils";
 import { ProjectContent } from "../project-content/project-content.model";
@@ -331,6 +331,22 @@ const ensureDefaultOrganizationService = async (userId: string) => {
   }
 };
 
+// A member is addressed by user_id once registered, by email while pending.
+const findMember = (
+  organization: { members?: TMember[] } | null,
+  ref: string,
+): TMember | undefined =>
+  (organization?.members ?? []).find(
+    (member) =>
+      (!!member.user_id && member.user_id === ref) ||
+      (!!member.email && emailMatcher(ref).test(member.email)),
+  );
+
+const memberSelector = (member: TMember, ref: string) =>
+  member.user_id
+    ? { "members.user_id": member.user_id }
+    : { "members.email": { $regex: emailMatcher(member.email || ref) } };
+
 //  team member operations
 const addTeamMemberService = async ({
   org_id,
@@ -358,27 +374,33 @@ const addTeamMemberService = async ({
 
   assertAssignableRole(teamMember.role);
 
-  // resolve the account first; derive only for invitees who never registered
+  // an invitee with no account is stored by email alone; signup fills the id in
   const invitedEmail = teamMember.email?.trim().toLowerCase();
-  const invitedUser = invitedEmail
-    ? await User.findOne({
-        email: { $regex: new RegExp(`^${escapeRegex(invitedEmail)}$`, "i") },
-      })
-    : null;
-  const userId =
-    invitedUser?.user_id ??
-    "@user_" +
-      teamMember.user_id
-        ?.replace(/[@.!#$%&'*+-/=?^_`{|}~]/g, "_")
-        .toLowerCase();
 
-  if (loggedInUserId === userId) {
+  if (!invitedEmail) {
+    throw Error("An email address is required to invite a team member.");
+  }
+
+  const matcher = emailMatcher(invitedEmail);
+  const invitedUser = await User.findOne({ email: { $regex: matcher } });
+  const userId = invitedUser?.user_id;
+
+  const inviter = await User.findOne({ user_id: loggedInUserId });
+
+  if (
+    (userId && loggedInUserId === userId) ||
+    (inviter?.email && matcher.test(inviter.email))
+  ) {
     throw Error("You cannot add yourself.");
   }
-  // Check if user already exists
+
+  // match on both, so a pending invite cannot be duplicated by address
   const isUserExistOnMember = await Organization.findOne({
     org_id,
-    "members.user_id": userId,
+    $or: [
+      ...(userId ? [{ "members.user_id": userId }] : []),
+      { "members.email": { $regex: matcher } },
+    ],
   });
 
   if (isUserExistOnMember) {
@@ -390,9 +412,10 @@ const addTeamMemberService = async ({
     {
       $push: {
         members: {
-          user_id: userId,
+          ...(userId ? { user_id: userId } : {}),
           role: teamMember.role,
-          email: teamMember.email,
+          email: invitedEmail,
+          status: userId ? "active" : "pending",
         },
       },
     },
@@ -402,10 +425,8 @@ const addTeamMemberService = async ({
     throw Error("Organization not found.");
   }
 
-  const recipientUser = await User.findOne({ user_id: userId });
-
   // send mail to the invited member
-  const recipientEmail = recipientUser?.email || teamMember.email;
+  const recipientEmail = invitedUser?.email || teamMember.email;
 
   if (recipientEmail) {
     await sendMail({
@@ -447,28 +468,32 @@ const updateRoleService = async ({
 
   assertAssignableRole(teamMember.role);
 
-  const userId = teamMember.user_id;
+  const memberRef = teamMember.user_id;
 
-  if (userId === loggedInUserId) {
+  if (!memberRef) {
+    throw Error("A member identifier is required.");
+  }
+
+  if (memberRef === loggedInUserId) {
     throw Error("You cannot change your own role.");
   }
 
-  const isUserExistOnMember = await Organization.findOne({
-    org_id,
-    "members.user_id": userId,
-  });
+  const isUserExistOnMember = await Organization.findOne({ org_id });
+  const target = findMember(isUserExistOnMember, memberRef);
 
-  if (!isUserExistOnMember) {
+  if (!target) {
     throw Error("User is not a member of this organization.");
   }
 
-  if (isUserExistOnMember.owner === userId) {
+  if (isUserExistOnMember?.owner === target.user_id) {
     throw Error("You cannot change the owner's role.");
   }
 
+  const memberFilter = memberSelector(target, memberRef);
+
   // update only the role
   await Organization.findOneAndUpdate(
-    { org_id, "members.user_id": userId },
+    { org_id, ...memberFilter },
     {
       $set: {
         "members.$.role": teamMember.role,
@@ -476,7 +501,12 @@ const updateRoleService = async ({
     },
   );
 
-  const recipientUser = await User.findOne({ user_id: userId });
+  const recipientUser = await User.findOne({
+    $or: [
+      { user_id: memberRef },
+      { email: { $regex: emailMatcher(memberRef) } },
+    ],
+  });
   const user = await User.findOne({ user_id: loggedInUserId });
 
   // send mail only if both users were found and have emails
@@ -523,34 +553,36 @@ const removeTeamMemberService = async ({
     throw Error("You cannot remove yourself.");
   }
 
-  const organization = await Organization.findOne({
-    org_id,
-    "members.user_id": userId,
-  });
+  const organization = await Organization.findOne({ org_id });
+  const target = findMember(organization, userId);
 
-  if (!organization) {
+  if (!target) {
     throw Error("User is not a member of this organization.");
   }
 
-  if (organization.owner === userId) {
+  if (organization?.owner === target.user_id) {
     throw Error("You cannot remove the owner.");
   }
+
+  const memberFilter = memberSelector(target, userId);
 
   await Organization.findOneAndUpdate(
     {
       org_id,
-      "members.user_id": userId,
+      ...memberFilter,
     },
     {
       $pull: {
-        members: {
-          user_id: userId,
-        },
+        members: target.user_id
+          ? { user_id: target.user_id }
+          : { email: { $regex: emailMatcher(target.email) } },
       },
     },
   );
 
-  const recipientUser = await User.findOne({ user_id: userId });
+  const recipientUser = await User.findOne({
+    $or: [{ user_id: userId }, { email: { $regex: emailMatcher(userId) } }],
+  });
   // send mail only when recipient email exists
   if (recipientUser?.email) {
     await sendMail({

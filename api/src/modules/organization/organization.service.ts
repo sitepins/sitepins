@@ -5,6 +5,7 @@ import { decorateOrganization } from "@/lib/extensionGuards";
 import { logger } from "@/lib/logger";
 import { sendMail } from "@/lib/mailer";
 import { nanoId } from "@/lib/nanoId";
+import { escapeRegex } from "@/lib/regexEscape";
 import { assertAssignableRole } from "@/lib/orgRoles";
 import { deleteFile } from "@/lib/s3-utils";
 import { ProjectContent } from "../project-content/project-content.model";
@@ -357,9 +358,19 @@ const addTeamMemberService = async ({
 
   assertAssignableRole(teamMember.role);
 
+  // resolve the account first; derive only for invitees who never registered
+  const invitedEmail = teamMember.email?.trim().toLowerCase();
+  const invitedUser = invitedEmail
+    ? await User.findOne({
+        email: { $regex: new RegExp(`^${escapeRegex(invitedEmail)}$`, "i") },
+      })
+    : null;
   const userId =
+    invitedUser?.user_id ??
     "@user_" +
-    teamMember.user_id?.replace(/[@.!#$%&'*+-/=?^_`{|}~]/g, "_").toLowerCase();
+      teamMember.user_id
+        ?.replace(/[@.!#$%&'*+-/=?^_`{|}~]/g, "_")
+        .toLowerCase();
 
   if (loggedInUserId === userId) {
     throw Error("You cannot add yourself.");

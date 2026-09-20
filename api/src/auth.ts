@@ -486,7 +486,9 @@ export const auth = betterAuth({
     },
     onPasswordReset: async ({ user }) => {
       try {
-        const userId = generateUserId(user.email);
+        // user_id is frozen at signup; deriving it would miss a changed email
+        const userId =
+          (user as { user_id?: string }).user_id || generateUserId(user.email);
         await emitAuthEvent({
           type: "password_reset",
           userId,

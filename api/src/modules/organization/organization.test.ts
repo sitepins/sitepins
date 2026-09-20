@@ -139,6 +139,60 @@ describe("Organization Module", () => {
       });
     });
 
+    describe("addTeamMemberService", () => {
+      const adminOrg = { org_id: "org-1", members: [] };
+
+      it("uses the invitee's real user_id when their email has changed", async () => {
+        findOneMock
+          .mockResolvedValueOnce(adminOrg) // admin check
+          .mockResolvedValueOnce(null); // not already a member
+        userFindOneMock
+          .mockResolvedValueOnce({ user_id: "@user_signup_example_com" }) // invitee lookup
+          .mockResolvedValueOnce({ email: "changed@example.com" }); // recipient for mail
+        findOneAndUpdateMock.mockResolvedValueOnce(adminOrg);
+
+        const { organizationService } =
+          await import("./organization.service.js");
+        await organizationService.addTeamMemberService({
+          org_id: "org-1",
+          teamMember: {
+            user_id: "changed@example.com",
+            email: "changed@example.com",
+            role: "editor",
+          },
+          loggedInUserId: "@user_admin_example_com",
+        } as never);
+
+        expect(
+          findOneAndUpdateMock.mock.calls[0][1].$push.members,
+        ).toMatchObject({ user_id: "@user_signup_example_com" });
+      });
+
+      it("falls back to the derived id when the invitee has no account", async () => {
+        findOneMock.mockResolvedValueOnce(adminOrg).mockResolvedValueOnce(null);
+        userFindOneMock
+          .mockResolvedValueOnce(null) // no account yet
+          .mockResolvedValueOnce(null);
+        findOneAndUpdateMock.mockResolvedValueOnce(adminOrg);
+
+        const { organizationService } =
+          await import("./organization.service.js");
+        await organizationService.addTeamMemberService({
+          org_id: "org-1",
+          teamMember: {
+            user_id: "newcomer@example.com",
+            email: "newcomer@example.com",
+            role: "editor",
+          },
+          loggedInUserId: "@user_admin_example_com",
+        } as never);
+
+        expect(
+          findOneAndUpdateMock.mock.calls[0][1].$push.members,
+        ).toMatchObject({ user_id: "@user_newcomer_example_com" });
+      });
+    });
+
     describe("removeTeamMemberService", () => {
       it("throws if the logged-in user is not an admin", async () => {
         findOneMock.mockResolvedValueOnce(null);

@@ -36,6 +36,7 @@ import {
   MinusCircle,
   Sparkles,
   Wand2,
+  X,
   XCircle,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -182,6 +183,7 @@ export default function SeoAnalysis({
   content?: string;
 }) {
   const tEditorSeo = useTranslations("editor.seo");
+  const tCommon = useTranslations("common");
   const [showUpgrade, setShowUpgrade] = useState(false);
   const { checkAiAccess, isAiSeoEnabled } = useAiAccess();
 
@@ -311,6 +313,14 @@ export default function SeoAnalysis({
         [key]: { ...prev[key], applied: false },
       }));
     }, 2000);
+  };
+
+  const handleDismissFix = (key: string) => {
+    setFixes((prev) => {
+      const next = { ...prev };
+      delete next[key];
+      return next;
+    });
   };
 
   // Base analysis-summary rows (Pro), labelled via the content schema, then
@@ -578,11 +588,26 @@ export default function SeoAnalysis({
                                         <Sparkles className="size-3.5" />
                                         {tEditorSeo("ai.suggestion")}
                                       </span>
-                                      {targetField && (
-                                        <span className="text-muted-foreground font-mono text-[10px] tracking-wider uppercase">
-                                          {targetField}
-                                        </span>
-                                      )}
+                                      <div className="flex items-center gap-1.5">
+                                        {targetField && (
+                                          <span className="text-muted-foreground font-mono text-[10px] tracking-wider uppercase">
+                                            {targetField}
+                                          </span>
+                                        )}
+                                        <Button
+                                          type="button"
+                                          variant="ghost"
+                                          size="icon-xs"
+                                          className="text-muted-foreground hover:text-foreground -me-1 size-5 cursor-pointer rounded"
+                                          onClick={() =>
+                                            handleDismissFix(result.key)
+                                          }
+                                          title={tCommon("actions.close")}
+                                          aria-label={tCommon("actions.close")}
+                                        >
+                                          <X className="size-3.5" />
+                                        </Button>
+                                      </div>
                                     </div>
                                     {targetField === "content" ? (
                                       <div className="text-foreground bg-background/90 border-border/40 max-h-64 overflow-y-auto rounded border p-2.5 text-xs leading-relaxed select-text">

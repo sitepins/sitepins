@@ -147,7 +147,8 @@ const SafeImage = forwardRef<HTMLImageElement, SafeImageProps>(
             (isLoading ||
               isFetching ||
               (directSrc && finalSrc !== directSrc)) &&
-              !isError
+              !isError &&
+              finalSrc !== PLACEHOLDER_IMAGE
               ? "scale-100 blur-xl grayscale-0"
               : "blur-0 scale-100 grayscale-0",
             className,

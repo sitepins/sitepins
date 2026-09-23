@@ -104,7 +104,7 @@ export function ProjectOverviewThumb({ project }: ProjectOverviewThumbProps) {
         <img
           src={imageUrl}
           alt={`OG image of ${project?.project_name}`}
-          className="w-full object-contain"
+          className="h-full w-full object-cover"
           onLoad={() => setIsImageReady(true)}
           onError={() => setImageUrl(null)}
         />

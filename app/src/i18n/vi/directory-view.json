@@ -7,7 +7,8 @@
       "title": "Tiêu đề",
       "slug": "Slug",
       "last_update": "Cập nhật lần cuối",
-      "status": "Trạng thái"
+      "status": "Trạng thái",
+      "action": "Hành động"
     },
     "not_found": {
       "title": "Không tìm thấy thư mục",

@@ -9,13 +9,7 @@ import { useOwnerPlan } from "@/hooks/use-owner-plan";
 import { cn } from "@/lib/utils/cn";
 import { selectConfig } from "@/redux/features/config/slice";
 import { TFiles } from "@/types";
-import {
-  Code2,
-  CopyIcon,
-  Edit2Icon,
-  EllipsisVertical,
-  Trash2,
-} from "lucide-react";
+import { Code2, CopyIcon, Edit2Icon, Ellipsis, Trash2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useParams } from "next/navigation";
@@ -69,7 +63,7 @@ export default function FileAction({
             variant={"ghost"}
             size={"icon"}
           >
-            <EllipsisVertical className="text-secondary-foreground mx-auto" />
+            <Ellipsis className="text-secondary-foreground mx-auto" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent collisionPadding={8} align="end">

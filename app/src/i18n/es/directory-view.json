@@ -7,7 +7,8 @@
       "title": "Título",
       "slug": "Slug",
       "last_update": "Última actualización",
-      "status": "Estado"
+      "status": "Estado",
+      "action": "Acción"
     },
     "not_found": {
       "title": "Carpeta no encontrada",

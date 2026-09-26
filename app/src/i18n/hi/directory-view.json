@@ -7,7 +7,8 @@
       "title": "शीर्षक",
       "slug": "स्लग (Slug)",
       "last_update": "अंतिम अपडेट",
-      "status": "स्थिति"
+      "status": "स्थिति",
+      "action": "कार्रवाई"
     },
     "not_found": {
       "title": "फ़ोल्डर नहीं मिला",

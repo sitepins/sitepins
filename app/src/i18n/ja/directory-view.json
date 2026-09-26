@@ -7,7 +7,8 @@
       "title": "タイトル",
       "slug": "スラッグ (Slug)",
       "last_update": "最終更新",
-      "status": "ステータス"
+      "status": "ステータス",
+      "action": "アクション"
     },
     "not_found": {
       "title": "フォルダが見つかりません",

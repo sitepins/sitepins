@@ -1,14 +1,13 @@
 "use client";
 
 import { useGitProvider } from "@/hooks/use-git-provider";
-import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import dateFormat from "@/lib/utils/date-format";
 import { isGitLabProvider } from "@/lib/utils/provider-checker";
 import { slugify } from "@/lib/utils/text-converter";
 import { selectConfig } from "@/redux/features/config/slice";
 import { TFiles } from "@/types";
-import { EllipsisVertical, PenLine } from "lucide-react";
+import { PenLine } from "lucide-react";
 import { useInView } from "motion/react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
@@ -47,29 +46,33 @@ export default function FileRow({ file }: { file: TFiles }) {
     return (
       <div
         ref={container}
-        className="border-border/20 grid grid-cols-12 items-center overflow-hidden px-6 *:py-2 2xl:px-8"
+        className="border-border grid-cols-12 items-center overflow-hidden rounded border p-4 px-6 *:py-2 md:grid md:rounded-none md:border-0 md:border-transparent md:p-0"
         key={file.name}
       >
-        <div className="text-secondary-foreground col-span-4 flex h-full items-center overflow-hidden py-0! text-ellipsis">
-          <Skeleton className="h-6 w-4/5" />
+        <div className="text-secondary-foreground col-span-4 flex h-full items-center justify-between overflow-hidden py-0! text-ellipsis md:px-4">
+          <Skeleton className="h-5 w-48 max-w-full" />
+          <div className="md:hidden">
+            <FileAction file={file} className="size-6 [&>svg]:size-4" />
+          </div>
         </div>
         <div className="text-foreground col-span-2 text-sm font-medium">
-          <p className="line-clamp-1">{slugify(path.parse(file.name).name)}</p>
+          <span className="md:hidden">{tDirectoryView("slug")}: </span>
+          <p className="line-clamp-1 inline md:block">
+            {slugify(path.parse(file.name).name)}
+          </p>
         </div>
-        <div className="col-span-4 flex items-center justify-center text-center">
-          <Skeleton className="h-6 w-4/5" />
+        <div className="col-span-4 flex items-center justify-between md:justify-center md:text-center">
+          <Skeleton className="h-5 w-24" />
+
+          <div className="md:hidden">
+            <Skeleton className="h-6 w-20 rounded-full" />
+          </div>
         </div>
-        <div className="col-span-1 text-start">
-          <Skeleton className="h-6 w-4/5" />
+        <div className="col-span-1 hidden text-start md:block">
+          <Skeleton className="h-6 w-20 rounded-full" />
         </div>
-        <div className="col-span-1 text-end">
-          <Button
-            className="text-muted-foreground"
-            variant={"ghost"}
-            size={"icon"}
-          >
-            <EllipsisVertical className="text-secondary-foreground mx-auto" />
-          </Button>
+        <div className="col-span-1 hidden justify-end md:flex md:pe-4">
+          <FileAction file={file} />
         </div>
       </div>
     );
@@ -122,7 +125,7 @@ export default function FileRow({ file }: { file: TFiles }) {
       <div className="col-span-1 hidden text-start md:block">
         <FileStatus draft={!!data?.draft} />
       </div>
-      <div className="col-span-1 hidden text-end md:block lg:text-center">
+      <div className="col-span-1 hidden justify-end md:flex md:pe-4">
         <FileAction file={file} />
       </div>
     </div>

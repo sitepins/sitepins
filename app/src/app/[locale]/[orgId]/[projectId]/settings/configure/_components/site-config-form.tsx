@@ -63,7 +63,7 @@ import { CircleQuestionMark, Sparkles } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useMemo, useState } from "react";
+import { Fragment, useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "@/components/ui/toast";
 import * as z from "zod/v4";
@@ -126,6 +126,32 @@ const folderSuggestion = {
       "`exampleSite/config/_default`, `exampleSite/data`, `exampleSite/hugo.toml`",
   },
 };
+
+function SuggestionText({ text }: { text: string }) {
+  const parts = text.split(/(`[^`]+`)/g);
+
+  return (
+    <span
+      className="text-muted-foreground min-w-0 flex-1 truncate py-0.5 text-xs"
+      title={text.replace(/`/g, "")}
+    >
+      {parts.map((part, index) => {
+        if (part.startsWith("`") && part.endsWith("`") && part.length > 2) {
+          const code = part.slice(1, -1);
+          return (
+            <code
+              key={index}
+              className="border-border bg-muted text-foreground rounded border px-1.5 py-0.5 font-mono text-xs font-medium"
+            >
+              {code}
+            </code>
+          );
+        }
+        return part ? <Fragment key={index}>{part}</Fragment> : null;
+      })}
+    </span>
+  );
+}
 
 function FolderSelector({
   value,
@@ -459,9 +485,7 @@ export const ConfigForm = ({
                           <Sparkles className="text-accent size-3.5 shrink-0" />
                           {tProjectSettingsConfigureProject("form.suggested")}
                         </span>
-                        <span className="min-w-0 flex-1 truncate font-mono break-all">
-                          {suggestions.content}
-                        </span>
+                        <SuggestionText text={suggestions.content} />
                       </FieldDescription>
                     )}
                     <FolderSelector
@@ -500,9 +524,7 @@ export const ConfigForm = ({
                         <Sparkles className="text-accent size-3.5 shrink-0" />
                         {tProjectSettingsConfigureProject("form.suggested")}
                       </span>
-                      <span className="min-w-0 flex-1 truncate font-mono break-all">
-                        {suggestions.media}
-                      </span>
+                      <SuggestionText text={suggestions.media} />
                     </FieldDescription>
                   )}
                   <FolderSelector
@@ -542,9 +564,7 @@ export const ConfigForm = ({
                         <Sparkles className="text-accent size-3.5 shrink-0" />
                         {tProjectSettingsConfigureProject("form.suggested")}
                       </span>
-                      <span className="min-w-0 flex-1 truncate font-mono break-all">
-                        {suggestions.public}
-                      </span>
+                      <SuggestionText text={suggestions.public} />
                     </FieldDescription>
                   )}
                   <FolderSelector
@@ -584,9 +604,7 @@ export const ConfigForm = ({
                         <Sparkles className="text-accent size-3.5 shrink-0" />
                         {tProjectSettingsConfigureProject("form.suggested")}
                       </span>
-                      <span className="min-w-0 flex-1 truncate font-mono break-all">
-                        {suggestions.config}
-                      </span>
+                      <SuggestionText text={suggestions.config} />
                     </FieldDescription>
                   )}
                   <Combobox

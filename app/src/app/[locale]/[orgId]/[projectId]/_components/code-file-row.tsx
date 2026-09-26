@@ -61,7 +61,7 @@ export default function CodeFileRow({ file }: { file: TFiles }) {
           {commitDate ? dateFormat(commitDate) : tDirectoryView("na")}
         </p>
       </div>
-      <div className="col-span-1 hidden text-center md:block">
+      <div className="col-span-1 hidden justify-end md:flex md:pe-4">
         <FileAction file={file} />
       </div>
     </div>

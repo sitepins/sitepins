@@ -37,6 +37,8 @@ export type TCloudSearchItem = {
 export type TCloudSearchGroup = {
   groupLabel: string;
   items: TCloudSearchItem[];
+  /** Long lists (e.g. templates) only appear once the user types. */
+  searchOnly?: boolean;
 };
 
 // extra global-search groups (billing) — none in the open-source build

@@ -8,6 +8,12 @@ import React, { useMemo, useState } from "react";
 interface AiMarkdownProps {
   content: string;
   className?: string;
+  /**
+   * Called instead of a full page load when an in-app link ("/…") is
+   * clicked without modifier keys, so hosts can client-route and close
+   * whatever overlay the answer is shown in.
+   */
+  onInternalLinkClick?: (href: string) => void;
 }
 
 /**
@@ -20,7 +26,11 @@ interface AiMarkdownProps {
  * - Ordered and unordered lists
  * - Horizontal separators
  */
-export function AiMarkdown({ content, className }: AiMarkdownProps) {
+export function AiMarkdown({
+  content,
+  className,
+  onInternalLinkClick,
+}: AiMarkdownProps) {
   const renderedElements = useMemo(() => {
     if (!content) return null;
 
@@ -303,8 +313,20 @@ export function AiMarkdown({ content, className }: AiMarkdownProps) {
     return elements;
   }, [content]);
 
+  const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!onInternalLinkClick) return;
+    if (e.defaultPrevented || e.button !== 0) return;
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    const anchor = (e.target as HTMLElement).closest("a");
+    const href = anchor?.getAttribute("href");
+    if (!href || !href.startsWith("/") || href.startsWith("//")) return;
+    e.preventDefault();
+    onInternalLinkClick(href);
+  };
+
   return (
     <div
+      onClick={handleClick}
       className={cn(
         "text-foreground flex flex-col gap-0.5 font-sans leading-normal break-words",
         className,

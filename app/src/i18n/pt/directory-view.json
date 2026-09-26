@@ -7,7 +7,8 @@
       "title": "Título",
       "slug": "Slug",
       "last_update": "Última atualização",
-      "status": "Status"
+      "status": "Status",
+      "action": "Ação"
     },
     "not_found": {
       "title": "Pasta não encontrada",

@@ -7,7 +7,8 @@
       "title": "Titel",
       "slug": "Slug",
       "last_update": "Letzte Aktualisierung",
-      "status": "Status"
+      "status": "Status",
+      "action": "Aktion"
     },
     "not_found": {
       "title": "Ordner nicht gefunden",

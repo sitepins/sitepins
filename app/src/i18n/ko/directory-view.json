@@ -7,7 +7,8 @@
       "title": "제목",
       "slug": "슬러그 (Slug)",
       "last_update": "최종 업데이트",
-      "status": "상태"
+      "status": "상태",
+      "action": "작업"
     },
     "not_found": {
       "title": "폴더를 찾을 수 없습니다",

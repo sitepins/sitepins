@@ -60,6 +60,7 @@ const ListRow = ({ file }: { file: TFiles }) => {
           <ImageSidebar
             file={file}
             asChild
+            nativeButton={false}
             className="flex h-full w-full cursor-pointer items-center gap-3"
           >
             {isFile ? (
@@ -105,26 +106,31 @@ const ListRow = ({ file }: { file: TFiles }) => {
                 <p className="line-clamp-1 max-w-125 flex-1">{file.name}</p>
               </div>
             ) : (
-              <div className="relative inline-flex items-center">
-                <Link
-                  href={`/${params.orgId}/${params.projectId}/${filepath}`}
-                  className="hover:text-primary relative flex items-center gap-2 transition-colors hover:underline"
-                >
-                  <FolderClosedIcon stroke="currentColor" className="size-8" />
-                  <span className="text-primary relative text-sm font-medium">
-                    {file.name}
-                  </span>
+              <Link
+                href={`/${params.orgId}/${params.projectId}/${filepath}`}
+                className="hover:text-primary group/folder flex h-full w-full cursor-pointer items-center gap-3"
+              >
+                {isNew && (
+                  <Badge variant={"destructive"} className="static block">
+                    {tMedia("new")}
+                  </Badge>
+                )}
 
-                  {isNew && (
-                    <Badge
-                      variant={"destructive"}
-                      className="absolute -inset-e-14 top-0"
-                    >
-                      {tMedia("new")}
-                    </Badge>
-                  )}
-                </Link>
-              </div>
+                <div className="max-w-18.25 flex-1">
+                  <AspectRatio
+                    ratio={16 / 9}
+                    className="bg-light relative flex max-w-18.25 items-center justify-center rounded-sm"
+                  >
+                    <FolderClosedIcon
+                      stroke="currentColor"
+                      className="size-6"
+                    />
+                  </AspectRatio>
+                </div>
+                <p className="line-clamp-1 max-w-125 flex-1 hover:underline">
+                  {file.name}
+                </p>
+              </Link>
             )}
           </ImageSidebar>
         </div>

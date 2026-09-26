@@ -7,7 +7,8 @@
       "title": "标题",
       "slug": "路径别名 (Slug)",
       "last_update": "最后更新",
-      "status": "状态"
+      "status": "状态",
+      "action": "操作"
     },
     "not_found": {
       "title": "未找到文件夹",

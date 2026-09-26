@@ -7,7 +7,8 @@
       "title": "العنوان",
       "slug": "الاسم اللطيف (Slug)",
       "last_update": "آخر تحديث",
-      "status": "الحالة"
+      "status": "الحالة",
+      "action": "الإجراء"
     },
     "not_found": {
       "title": "المجلد غير موجود",

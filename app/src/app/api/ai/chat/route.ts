@@ -1,12 +1,201 @@
 import { handleAiRouteError } from "@/lib/ai/ai-error-handler";
 import {
+  getSafeInputCharLimit,
   getSafeMaxOutputTokens,
   resolveLanguageModel,
 } from "@/lib/ai/ai-provider";
+import {
+  DOCS_BASE_URL,
+  fetchDocExcerpt,
+  findRelevantDocs,
+} from "@/lib/ai/docs-index";
 import { getAuth } from "@/lib/auth/auth-server";
 import { logger } from "@/lib/logger";
 import { streamText } from "ai";
 import { NextRequest, NextResponse } from "next/server";
+
+type TChatFileEntry = {
+  path: string;
+  updated?: string;
+  created?: string;
+  size?: number;
+};
+
+type TChatProjectContext = {
+  projectId?: string;
+  orgId?: string;
+  repoName?: string;
+  framework?: string;
+  contentDir?: string;
+  mediaDir?: string;
+  branch?: string;
+  collections?: Array<{ name: string; path: string; createUrl: string }>;
+  configFiles?: string[];
+  filesByCollection?: Record<string, Array<string | TChatFileEntry>>;
+  totalFiles?: number;
+};
+
+type TReferencedFile = { path: string; content: string; current?: boolean };
+
+const MAX_REFERENCED_FILES = 4;
+
+const formatFileEntry = (f: string | TChatFileEntry): string => {
+  if (typeof f !== "object" || f === null) return `    - ${String(f)}`;
+  const meta = [
+    f.updated ? `updated ${f.updated.slice(0, 10)}` : "",
+    f.created ? `created ${f.created.slice(0, 10)}` : "",
+    f.size ? `${f.size} B` : "",
+  ].filter(Boolean);
+  return `    - ${f.path}${meta.length ? ` (${meta.join(", ")})` : ""}`;
+};
+
+/**
+ * Renders the file tree within a character budget rather than a fixed
+ * per-collection cap, spreading the budget round-robin so one huge collection
+ * cannot hide the others.
+ */
+function buildFileTreeBlock(
+  filesByCollection: NonNullable<TChatProjectContext["filesByCollection"]>,
+  maxChars: number,
+): string {
+  const entries = Object.entries(filesByCollection);
+  const shown: Record<string, string[]> = Object.fromEntries(
+    entries.map(([name]) => [name, []]),
+  );
+  let used = 0;
+  let index = 0;
+  let progressed = true;
+  while (progressed && used < maxChars) {
+    progressed = false;
+    for (const [name, files] of entries) {
+      const file = files[index];
+      if (file === undefined) continue;
+      const line = formatFileEntry(file);
+      if (used + line.length + 1 > maxChars) {
+        progressed = false;
+        break;
+      }
+      shown[name].push(line);
+      used += line.length + 1;
+      progressed = true;
+    }
+    index++;
+  }
+
+  return entries
+    .map(([name, files]) => {
+      const lines = shown[name];
+      const more = files.length - lines.length;
+      return `  [${name}]:\n${lines.join("\n")}${more > 0 ? `\n    … (+${more} more)` : ""}`;
+    })
+    .join("\n\n");
+}
+
+function buildProjectInfo(projectContext: unknown, inputCharLimit: number) {
+  if (!projectContext) return "  No project selected.";
+  const ctx = projectContext as TChatProjectContext;
+
+  const collectionsBlock =
+    ctx.collections && ctx.collections.length > 0
+      ? ctx.collections
+          .map((c) => `  - "${c.name}" (${c.path}) → UI: ${c.createUrl}`)
+          .join("\n")
+      : "  (none)";
+
+  const fileTreeBlock = ctx.filesByCollection
+    ? buildFileTreeBlock(
+        ctx.filesByCollection,
+        Math.max(2_000, Math.floor(inputCharLimit / 3)),
+      )
+    : "  (not available)";
+
+  return `ACTIVE PROJECT:
+  Repo/Name  : ${ctx.repoName || ctx.projectId || "unknown"}
+  Framework  : ${ctx.framework || "Static Site"}
+  Content dir: ${ctx.contentDir || "src/content"}
+  Media dir  : ${ctx.mediaDir || "src/assets"}
+  Branch     : ${ctx.branch || "main"}
+  Org ID     : ${ctx.orgId}
+  Project ID : ${ctx.projectId}
+
+URL TEMPLATES (use exact paths, never strip "${ctx.contentDir || "src/content"}/"):
+  Content: /${ctx.orgId}/${ctx.projectId}/content/<fullRepoFilePath>
+  Code   : /${ctx.orgId}/${ctx.projectId}/code/<fullRepoFilePath>
+  Config : /${ctx.orgId}/${ctx.projectId}/config/<fullRepoFilePath>
+  Media  : /${ctx.orgId}/${ctx.projectId}/media/<folderPath>
+  Settings: /${ctx.orgId}/${ctx.projectId}/settings/
+  Org Members: /${ctx.orgId}/settings/members
+  AI Settings: /dashboard/ai-agent
+
+CONTENT COLLECTIONS:
+${collectionsBlock}
+
+FILES IN REPO${ctx.totalFiles ? ` (${ctx.totalFiles} total)` : ""}:
+${fileTreeBlock}
+${ctx.configFiles?.length ? `\nCONFIG FILES:\n${ctx.configFiles.map((f) => `  - ${f}`).join("\n")}` : ""}`;
+}
+
+function buildReferencedFilesBlock(
+  referencedFiles: unknown,
+  maxChars: number,
+): string {
+  if (!Array.isArray(referencedFiles) || referencedFiles.length === 0) {
+    return "";
+  }
+  const files = (referencedFiles as TReferencedFile[])
+    .filter(
+      (f) => f && typeof f.path === "string" && typeof f.content === "string",
+    )
+    .slice(0, MAX_REFERENCED_FILES);
+  if (files.length === 0) return "";
+
+  const perFile = Math.floor(maxChars / files.length);
+  const blocks = files.map((f) => {
+    const body =
+      f.content.length > perFile
+        ? `${f.content.slice(0, perFile)}\n… (truncated)`
+        : f.content;
+    return `--- ${f.path}${f.current ? " (the file the user is viewing now)" : ""} ---\n${body}`;
+  });
+  return `\nREFERENCED FILES (actual current contents):\n${blocks.join("\n\n")}\n`;
+}
+
+async function buildDocsBlock(question: string): Promise<string> {
+  const docs = findRelevantDocs(question, 2);
+  if (docs.length === 0) return "";
+  const excerpts = await Promise.all(
+    docs.map((doc) => fetchDocExcerpt(doc.path, 2500)),
+  );
+  const blocks = docs.map((doc, i) => {
+    const url = `${DOCS_BASE_URL}${doc.path}`;
+    return `### ${doc.title} — ${url}\n${excerpts[i] || doc.description}`;
+  });
+  return `\nSITEPINS DOCS (official documentation relevant to the question):\n${blocks.join("\n\n")}\n`;
+}
+
+const MAX_ACCOUNT_CONTEXT_CHARS = 2_000;
+
+/**
+ * Optional facts about the signed-in user's account, supplied through the
+ * global search extension point (empty in this build). Informational only.
+ */
+function buildAccountBlock(accountContext: unknown): string {
+  if (typeof accountContext !== "string" || !accountContext.trim()) return "";
+  return `\nUSER ACCOUNT (use it for questions about the user's account, and link to the pages it mentions):\n${accountContext.trim().slice(0, MAX_ACCOUNT_CONTEXT_CHARS)}\n`;
+}
+
+function resolveLanguageName(locale: unknown): string {
+  if (typeof locale !== "string" || !locale || locale === "en") {
+    return "English";
+  }
+  try {
+    return (
+      new Intl.DisplayNames(["en"], { type: "language" }).of(locale) ?? locale
+    );
+  } catch {
+    return "English";
+  }
+}
 
 export async function POST(req: NextRequest) {
   const session = await getAuth(req);
@@ -20,6 +209,9 @@ export async function POST(req: NextRequest) {
     provider,
     model,
     projectContext,
+    referencedFiles,
+    accountContext,
+    locale,
   } = await req.json();
 
   if (!Array.isArray(messages) || messages.length === 0) {
@@ -90,95 +282,49 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: message }, { status: 401 });
   }
 
-  const projectInfo = projectContext
-    ? (() => {
-        const ctx = projectContext as {
-          projectId?: string;
-          orgId?: string;
-          repoName?: string;
-          framework?: string;
-          contentDir?: string;
-          mediaDir?: string;
-          branch?: string;
-          collections?: Array<{
-            name: string;
-            path: string;
-            createUrl: string;
-          }>;
-          configFiles?: string[];
-          filesByCollection?: Record<
-            string,
-            Array<string | { path: string; url: string }>
-          >;
-        };
+  const inputCharLimit = getSafeInputCharLimit(
+    resolved.provider,
+    resolved.modelName,
+    60_000,
+  );
+  const lastUserMessage = safeMessages[safeMessages.length - 1].content;
+  const projectInfo = buildProjectInfo(projectContext, inputCharLimit);
+  const filesBlock = buildReferencedFilesBlock(
+    referencedFiles,
+    Math.floor(inputCharLimit / 3),
+  );
+  const docsBlock = await buildDocsBlock(lastUserMessage);
+  const accountBlock = buildAccountBlock(accountContext);
+  const languageName = resolveLanguageName(locale);
 
-        const collectionsBlock =
-          ctx.collections && ctx.collections.length > 0
-            ? ctx.collections
-                .map((c) => `  - "${c.name}" (${c.path}) → UI: ${c.createUrl}`)
-                .join("\n")
-            : "  (none)";
-
-        const fileTreeBlock = ctx.filesByCollection
-          ? Object.entries(ctx.filesByCollection)
-              .map(([collection, files]) => {
-                const shown = files.slice(0, 15);
-                const more = files.length - shown.length;
-                const list = shown
-                  .map((f) =>
-                    typeof f === "object" && f !== null && "path" in f
-                      ? `    - ${f.path}`
-                      : `    - ${String(f)}`,
-                  )
-                  .join("\n");
-                return `  [${collection}]:\n${list}${more > 0 ? `\n    … (+${more} more)` : ""}`;
-              })
-              .join("\n\n")
-          : "  (not available)";
-
-        return `ACTIVE PROJECT:
-  Repo/Name  : ${ctx.repoName || ctx.projectId || "unknown"}
-  Framework  : ${ctx.framework || "Static Site"}
-  Content dir: ${ctx.contentDir || "src/content"}
-  Media dir  : ${ctx.mediaDir || "src/assets"}
-  Branch     : ${ctx.branch || "main"}
-  Org ID     : ${ctx.orgId}
-  Project ID : ${ctx.projectId}
-
-URL TEMPLATES (use exact paths, never strip "${ctx.contentDir || "src/content"}/"):
-  Content: /${ctx.orgId}/${ctx.projectId}/content/<fullRepoFilePath>
-  Code   : /${ctx.orgId}/${ctx.projectId}/code/<fullRepoFilePath>
-  Config : /${ctx.orgId}/${ctx.projectId}/config/<fullRepoFilePath>
-  Media  : /${ctx.orgId}/${ctx.projectId}/media/<folderPath>
-  Settings: /${ctx.orgId}/${ctx.projectId}/settings/
-  Org Members: /${ctx.orgId}/settings/members
-  AI Settings: /dashboard/ai-agent
-
-CONTENT COLLECTIONS:
-${collectionsBlock}
-
-FILES IN REPO:
-${fileTreeBlock}
-${ctx.configFiles?.length ? `\nCONFIG FILES:\n${ctx.configFiles.map((f) => `  - ${f}`).join("\n")}` : ""}`;
-      })()
-    : "  No project selected.";
+  const ctx = (projectContext ?? {}) as TChatProjectContext;
+  const orgRef = ctx.orgId || "org";
+  const projectRef = ctx.projectId || "proj";
 
   const systemPrompt = `You are Sitepins AI Copilot — an expert assistant inside Sitepins, a Git-backed Headless CMS.
 ${projectInfo}
+${filesBlock}
+${docsBlock}
+${accountBlock}
 
 CORE PRINCIPLES:
 1. CONTINUOUS CONVERSATION CONTEXT:
    - Interpret short follow-ups ("code", "layout", "where?", "how to edit?") in the context of the previous turn!
    - Example: If the user previously asked how to edit homepage content, and now says "layout" or "code", immediately identify the homepage layout/template file (e.g. under Code & Templates or root: layouts/index.html, layouts/_default/baseof.html, or src/pages/index.astro) and provide the direct link under /code/...!
 2. EXACT EDIT URLS:
-   - Always preserve the full file path including parent folder (e.g. "/${(projectContext as { orgId?: string })?.orgId || "org"}/${(projectContext as { projectId?: string })?.projectId || "proj"}/content/${(projectContext as { contentDir?: string })?.contentDir || "src/content"}/...").
+   - FILES IN REPO lists full repository paths. Build links by appending the full path to the URL template, e.g. "/${orgRef}/${projectRef}/content/${ctx.contentDir || "src/content"}/...".
    - NEVER strip or omit the content directory prefix!
-3. FORMAT:
+3. GROUNDING:
+   - When REFERENCED FILES are provided, answer questions about content from them and say which file you used. Do not guess what a file contains if it is not provided — link to it instead.
+   - For "how do I…" questions about Sitepins itself, base the steps on SITEPINS DOCS when provided and end with a link to the relevant docs page. Never invent menu names or settings that are not in the docs or context.
+   - Use the updated/created dates in FILES IN REPO for time-based questions (today is ${new Date().toISOString().slice(0, 10)}).
+4. FORMAT:
    - Render URLs as markdown links: [Edit Homepage](url), [Edit Layout](url), [Go to Media](url).
    - Be concise, direct, and helpful. Use bullet points.
-4. COMMON TOPICS:
+5. COMMON TOPICS:
    - Site Configuration: Explain what site configuration controls (site metadata, theme settings, navigation) and provide direct links to config files under /config/... or project settings.
-   - Team Members: Explain how to invite members with roles and permissions, and link directly to [Organization Members](/${(projectContext as { orgId?: string })?.orgId || "org"}/settings/members).`;
+   - Team Members: Explain how to invite members with roles and permissions, and link directly to [Organization Members](/${orgRef}/settings/members).
+6. LANGUAGE: Always reply in ${languageName}, but keep file paths, URLs and code unchanged.`;
 
   try {
     let streamError: Error | null = null;

@@ -13,15 +13,17 @@ import {
   CommandSeparator,
 } from "@/components/ui/command";
 import { Kbd, KbdGroup } from "@/components/ui/kbd";
-import { getAICredential } from "@/editor/plugins/copilot-kit";
 import { useAiAccess } from "@/hooks/use-ai-access";
 import { useOs } from "@/hooks/use-os";
 import { useOwnerPlan } from "@/hooks/use-owner-plan";
 import { getCloudSearchGroups } from "@/lib/menu-cloud";
+import { useSearchExtensions } from "@/lib/search-extensions";
 import { cn } from "@/lib/utils/cn";
 import { sanitizedPath } from "@/lib/utils/common";
 import isConfigFile from "@/lib/utils/is-config-file";
+import { selectFileMetadata } from "@/redux/features/config/meta-slice";
 import { useGetOrgsQuery } from "@/redux/features/orgs/org-api";
+import { useAppDispatch } from "@/redux/store";
 import { TConfig, TFiles } from "@/types";
 import {
   ArrowLeft,
@@ -41,9 +43,18 @@ import {
 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useTheme } from "next-themes";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import path from "path";
 import * as React from "react";
+import { useSelector, useStore } from "react-redux";
+import {
+  buildSearchIndex,
+  fetchFileContents,
+  getViewedFilePath,
+  requestFileMatches,
+  resolveAiCredential,
+  TAiRequestCredential,
+} from "./global-search-ai";
 
 type OrgSearchBarProps = {
   files?: TFiles[];
@@ -65,6 +76,8 @@ type SearchItem = {
 type SearchItemGroup = {
   groupLabel: string;
   items: SearchItem[];
+  /** Hidden until the user types (long lists such as templates). */
+  searchOnly?: boolean;
 };
 
 type SearchTranslationItem = Omit<SearchItem, "id">;
@@ -76,7 +89,17 @@ type ChatMessage = {
   id: string;
   role: "user" | "assistant";
   content: string;
+  /** Files whose contents were given to the model for this answer. */
+  sources?: Array<{ path: string; href: string }>;
+  /** Pre-answer phase shown while the placeholder is still empty. */
+  status?: "reading";
 };
+
+// Files whose contents are read for one Copilot answer (plus the open file).
+const MAX_RETRIEVED_FILES = 3;
+// Upper bound on file entries sent as Copilot's project map; the API trims
+// further to the model's input budget.
+const MAX_CONTEXT_FILES = 3000;
 
 const flattenFiles = (nodes: TFiles[]): TFiles[] =>
   nodes.reduce((acc: TFiles[], file) => {
@@ -182,9 +205,9 @@ export function GlobalSearch({
   const aiAbortRef = React.useRef<AbortController | null>(null);
   const chatScrollRef = React.useRef<HTMLDivElement>(null);
   const searchInputRef = React.useRef<HTMLInputElement>(null);
-  // Ref so handleAiSend can always read the latest projectContext without
-  // being declared after fileList (which projectContext depends on).
-  const projectContextRef = React.useRef<unknown>(undefined);
+
+  // Edition-specific additions (inert in the open-source build).
+  const ext = useSearchExtensions({ enabled: open });
 
   // Refs for AI conversation with synchronous updates so handleAiSend always has the latest state
   const aiMessagesRef = React.useRef<ChatMessage[]>([]);
@@ -235,7 +258,16 @@ export function GlobalSearch({
   }, [aiMessages.length]);
 
   const router = useRouter();
-  const params = useParams<{ orgId: string; projectId?: string }>();
+  const pathname = usePathname();
+  const dispatch = useAppDispatch();
+  const store = useStore();
+  const fileMeta = useSelector(selectFileMetadata);
+  const params = useParams<{
+    orgId: string;
+    projectId?: string;
+    file?: string[];
+    path?: string[];
+  }>();
   const orgId = params?.orgId;
   const projectId = params?.projectId;
   const { data: orgs } = useGetOrgsQuery();
@@ -246,160 +278,23 @@ export function GlobalSearch({
     SearchTranslationItem
   >;
 
-  // --- AI send ---
-  const handleAiSend = React.useCallback(
-    async (customPrompt?: string) => {
-      if (isStreamingRef.current) return;
+  /** Credentials for one AI request, or undefined if access was refused. */
+  const acquireAiCredential = (): TAiRequestCredential | undefined =>
+    checkAiAccess() ? resolveAiCredential() : undefined;
 
-      const domValue = searchInputRef.current?.value;
-      const promptText = (customPrompt ?? domValue ?? aiInput).trim();
-      if (!promptText) return;
-      if (!checkAiAccess()) return;
-
-      const cred = getAICredential();
-      if (!cred) return;
-
-      isStreamingRef.current = true;
-      setIsAiStreaming(true);
-
-      const userMsg: ChatMessage = {
-        id: `u-${Date.now()}`,
-        role: "user",
-        content: promptText,
-      };
-      const assistantId = `a-${Date.now()}`;
-      const assistantMsg: ChatMessage = {
-        id: assistantId,
-        role: "assistant",
-        content: "",
-      };
-
-      // Filter out empty messages from history to keep conversation clean
-      const prevMessages = aiMessagesRef.current.filter(
-        (m) => m.content && m.content.trim().length > 0,
-      );
-      const newMessages = [...prevMessages, userMsg];
-      setAiMessagesSafe([...newMessages, assistantMsg]);
-      if (searchInputRef.current) {
-        searchInputRef.current.value = "";
-      }
-      setAiInput("");
-
-      const controller = new AbortController();
-      aiAbortRef.current = controller;
-
-      try {
-        const response = await fetch("/api/ai/chat", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          signal: controller.signal,
-          body: JSON.stringify({
-            messages: newMessages.map((m) => ({
-              role: m.role,
-              content: m.content,
-            })),
-            apiKey: cred.apiKey,
-            provider: cred.provider,
-            model: cred.model,
-            projectContext: projectContextRef.current,
-          }),
-        });
-
-        if (!response.ok) {
-          let errMsg = `AI request failed (${response.status})`;
-          try {
-            const errJson = await response.json();
-            if (errJson?.error) errMsg = errJson.error;
-          } catch {
-            // fallback
+  const applyOverride = React.useCallback(
+    (item: SearchItem): SearchItem => {
+      const override = ext.overrides[item.id];
+      return override
+        ? {
+            id: item.id,
+            label: override.label,
+            href: override.href,
+            keywords: item.keywords,
           }
-          throw new Error(errMsg);
-        }
-
-        if (!response.body) {
-          throw new Error("AI response failed (no body received)");
-        }
-
-        const reader = response.body.getReader();
-        const decoder = new TextDecoder();
-        let receivedText = "";
-
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-          const chunk = decoder.decode(value, { stream: true });
-          receivedText += chunk;
-          setAiMessagesSafe((prev) =>
-            prev.map((m) =>
-              m.id === assistantId ? { ...m, content: m.content + chunk } : m,
-            ),
-          );
-        }
-        const finalChunk = decoder.decode();
-        if (finalChunk) {
-          receivedText += finalChunk;
-          setAiMessagesSafe((prev) =>
-            prev.map((m) =>
-              m.id === assistantId
-                ? { ...m, content: m.content + finalChunk }
-                : m,
-            ),
-          );
-        }
-
-        if (!receivedText.trim()) {
-          throw new Error(
-            "No response received from AI. Please check your AI model settings and try again.",
-          );
-        }
-      } catch (err) {
-        if ((err as Error).name === "AbortError") {
-          // Keep partial content if aborted, or remove empty placeholder
-          setAiMessagesSafe((prev) =>
-            prev.filter(
-              (m) =>
-                m.id !== assistantId ||
-                (m.content && m.content.trim().length > 0),
-            ),
-          );
-        } else {
-          setAiMessagesSafe((prev) =>
-            prev.map((m) =>
-              m.id === assistantId
-                ? {
-                    ...m,
-                    content:
-                      (err as Error).message ||
-                      "Sorry, something went wrong. Please check your AI settings and try again.",
-                  }
-                : m,
-            ),
-          );
-        }
-      } finally {
-        isStreamingRef.current = false;
-        setIsAiStreaming(false);
-        aiAbortRef.current = null;
-      }
+        : item;
     },
-    [aiInput, checkAiAccess, setAiMessagesSafe],
-  );
-
-  // Open the inline AI panel, optionally pre-filling & auto-sending
-  const openAiPanel = React.useCallback(
-    (prefill?: string, autoSend = false) => {
-      if (!searchAiEnabled) return;
-      if (!checkAiAccess()) return;
-      setAiOpen(true);
-      if (prefill) {
-        setAiInput(prefill);
-        if (autoSend) {
-          setTimeout(() => handleAiSend(prefill), 50);
-        }
-      }
-      setTimeout(() => searchInputRef.current?.focus(), 50);
-    },
-    [checkAiAccess, handleAiSend, searchAiEnabled],
+    [ext.overrides],
   );
 
   const closeAiPanel = () => {
@@ -463,51 +358,78 @@ export function GlobalSearch({
     return [...contentFiles, ...configFiles, ...codeFiles];
   }, [files, canAccessProFeatures, configs, projectId]);
 
-  // --- Build rich project context for the AI ---
-  // Placed after fileList so we can include the full file tree in the context.
-  // This is sent as `projectContext` to /api/ai/chat.
+  const collections = React.useMemo(
+    () =>
+      (config?.arrangement ?? [])
+        .filter((a) => a.type === "folder" && a.targetPath)
+        .map((a) => ({
+          name: a.groupName,
+          path: a.targetPath,
+          createUrl: `/${orgId}/${projectId}/content/${a.targetPath}`,
+        })),
+    [config?.arrangement, orgId, projectId],
+  );
+
+  // Index shared by AI search and Copilot retrieval; ids are fileList indexes.
+  const searchIndex = React.useMemo(
+    () =>
+      projectId
+        ? buildSearchIndex(fileList, config, collections, fileMeta)
+        : [],
+    [projectId, fileList, config, collections, fileMeta],
+  );
+
+  const viewedFilePath = React.useMemo(
+    () =>
+      getViewedFilePath({
+        pathname,
+        projectId,
+        params,
+        config,
+        knownPaths: new Set(searchIndex.map((f) => f.path)),
+      }),
+    [pathname, projectId, params, config, searchIndex],
+  );
+  const viewedFileKind = viewedFilePath
+    ? resolveFileUrl(
+        `content/${viewedFilePath}`,
+        orgId,
+        projectId!,
+        config,
+      ).includes(`/${projectId}/content/`)
+      ? "content"
+      : "code"
+    : null;
+
+  // --- Rich project context for Copilot (sent as `projectContext`) ---
   const projectContext = React.useMemo(() => {
     if (!projectId || !config) return undefined;
 
-    const collections = config.arrangement
-      ?.filter((a) => a.type === "folder")
-      .map((a) => ({
-        name: a.groupName,
-        path: a.targetPath,
-        createUrl: `/${orgId}/${projectId}/content/${a.targetPath}`,
-      }));
-
-    // Build a file tree grouped by collection — capped at 80 entries total to preserve context budget
-    const MAX_FILES = 80;
     const filesByCollection: Record<
       string,
-      Array<{ path: string; url: string }>
+      Array<{ path: string; updated?: string; created?: string; size?: number }>
     > = {};
-    let count = 0;
 
-    for (const file of fileList) {
-      if (count >= MAX_FILES) break;
-      const normalizedPath = file.path.replace(/^content\//, "");
-      const collection = collections?.find(
-        (c) =>
-          normalizedPath.startsWith(c.path + "/") || normalizedPath === c.path,
+    for (const entry of searchIndex.slice(0, MAX_CONTEXT_FILES)) {
+      const url = resolveFileUrl(
+        `content/${entry.path}`,
+        orgId,
+        projectId,
+        config,
       );
-      const url = resolveFileUrl(file.path, orgId, projectId, config);
-      const isCode = url.includes(`/${projectId}/code/`);
-      const isConfigFileItem = url.includes(`/${projectId}/config/`);
       const bucket =
-        collection?.name ??
-        (isCode
+        entry.collection ??
+        (url.includes(`/${projectId}/code/`)
           ? "Code & Templates"
-          : isConfigFileItem
+          : url.includes(`/${projectId}/config/`)
             ? "Configuration"
             : "_root");
-      if (!filesByCollection[bucket]) filesByCollection[bucket] = [];
-      filesByCollection[bucket].push({
-        path: normalizedPath,
-        url,
+      (filesByCollection[bucket] ??= []).push({
+        path: entry.path,
+        updated: entry.updated,
+        created: entry.created,
+        size: entry.size,
       });
-      count++;
     }
 
     return {
@@ -518,17 +440,12 @@ export function GlobalSearch({
       contentDir: config.content || null,
       mediaDir: config.media || null,
       branch: config.branch || "main",
-      collections: collections || [],
+      collections,
       configFiles: config.configs || [],
       filesByCollection,
+      totalFiles: searchIndex.length,
     };
-  }, [projectId, orgId, config, fileList]);
-
-  // Keep ref in sync so handleAiSend (declared before fileList) can always
-  // read the latest projectContext without a stale closure.
-  React.useEffect(() => {
-    projectContextRef.current = projectContext;
-  }, [projectContext]);
+  }, [projectId, orgId, config, collections, searchIndex]);
 
   const contentRoot = config?.content;
 
@@ -560,17 +477,59 @@ export function GlobalSearch({
     [fileList, contentRoot, orgId, projectId, config],
   );
 
+  // Everything the palette forgets when it closes, including after a
+  // selection navigates away (setOpen alone doesn't fire onOpenChange).
+  const resetPalette = () => {
+    aiAbortRef.current?.abort();
+    setQuery("");
+    setAiOpen(false);
+    setAiMessagesSafe([]);
+    setAiInput("");
+    if (searchInputRef.current) {
+      searchInputRef.current.value = "";
+    }
+  };
+
+  const navigateTo = (href: string, target?: "_blank") => {
+    setOpen(false);
+    resetPalette();
+    if (target === "_blank") {
+      window.open(href, "_blank");
+      return;
+    }
+    const [pathUrl, hash] = href.split("#");
+    if (hash) sessionStorage.setItem("scroll-to-section", hash);
+    router.push(pathUrl.replace(/\/$/, "") || "/");
+  };
+
   const handleFileSelect = (file: TFiles) => {
     setOpen(false);
-    setQuery("");
+    resetPalette();
     const currentOrgId = (params?.orgId as string) || orgId;
     if (!currentOrgId || !projectId) return;
     router.push(resolveFileUrl(file.path, currentOrgId, projectId, config));
   };
 
-  const results = React.useMemo(() => {
-    const q = normalizeSearchString(deferredQuery);
+  const runItem = (item: SearchItem) => {
+    if (item.file) {
+      handleFileSelect(item.file);
+      return;
+    }
+    if (item.id === "quick-toggle-theme") {
+      const nextTheme = resolvedTheme === "dark" ? "light" : "dark";
+      setTheme(nextTheme);
+      setOpen(false);
+      resetPalette();
+      return;
+    }
+    if (item.orgId) {
+      localStorage.setItem("last_working_org_id", item.orgId);
+    }
+    navigateTo(item.href, item.target);
+  };
 
+  // Every palette command, unfiltered; the visible list filters it by query.
+  const commandGroups = React.useMemo<SearchItemGroup[]>(() => {
     const createSearchItem = (
       key: string,
       replacements?: Record<string, string>,
@@ -585,18 +544,71 @@ export function GlobalSearch({
       };
     };
 
-    const getOrgSearchSettings = (orgIdVal: string): SearchItem[] => [
-      createSearchItem("org-general", { orgId: orgIdVal }),
-      createSearchItem("org-members", { orgId: orgIdVal }),
-      createSearchItem("org-sandbox", { orgId: orgIdVal }),
-    ];
-
     const orgKeywords = (tSearch.raw("org_keywords") as string[]) ?? [
       "org",
       "organization",
       "switch",
       "workspace",
     ];
+
+    const orgItems: SearchItem[] = (orgs || []).map((org) => ({
+      id: `switch-org-${org.org_id}`,
+      label: `${org.org_name}`,
+      href: `/org-${org.org_id}`,
+      orgId: org.org_id,
+      keywords: [...orgKeywords, org.org_name],
+    }));
+
+    return [
+      {
+        groupLabel: tSearch("groupLabels.organizations"),
+        items: orgItems,
+      },
+      {
+        groupLabel: tSearch("groupLabels.preferences"),
+        items: [
+          createSearchItem("language"),
+          createSearchItem("theme"),
+          createSearchItem("coauthor"),
+        ],
+      },
+      ...getCloudSearchGroups(locale),
+      {
+        groupLabel: tSearch("groupLabels.organization_settings"),
+        items: orgId
+          ? [
+              createSearchItem("org-general", { orgId }),
+              createSearchItem("org-members", { orgId }),
+              createSearchItem("org-sandbox", { orgId }),
+            ]
+          : [],
+      },
+      {
+        groupLabel: tSearch("groupLabels.ai_agent"),
+        items: [createSearchItem("ai-agent")],
+      },
+      {
+        groupLabel: tSearch("groupLabels.support_updates"),
+        items: [
+          createSearchItem("discord-support"),
+          createSearchItem("updates-feedback"),
+        ],
+      },
+      {
+        groupLabel: tSearch("groupLabels.account"),
+        items: [
+          createSearchItem("display-picture"),
+          createSearchItem("display-name"),
+          createSearchItem("change-password"),
+          createSearchItem("set-password"),
+          createSearchItem("newsletter"),
+        ],
+      },
+    ];
+  }, [orgId, orgs, searchItems, tSearch, locale]);
+
+  const results = React.useMemo(() => {
+    const q = normalizeSearchString(deferredQuery);
 
     const filterItems = (items: SearchItem[]): SearchItem[] =>
       q === ""
@@ -610,57 +622,13 @@ export function GlobalSearch({
             );
           });
 
-    const orgItems: SearchItem[] = (orgs || []).map((org) => ({
-      id: `switch-org-${org.org_id}`,
-      label: `${org.org_name}`,
-      href: `/org-${org.org_id}`,
-      orgId: org.org_id,
-      keywords: [...orgKeywords, org.org_name],
+    const groups: SearchItemGroup[] = commandGroups.map((group) => ({
+      groupLabel: group.groupLabel,
+      items:
+        group.searchOnly && q === ""
+          ? []
+          : filterItems(group.items).map(applyOverride),
     }));
-
-    const groups: SearchItemGroup[] = [
-      {
-        groupLabel: tSearch("groupLabels.organizations"),
-        items: filterItems(orgItems),
-      },
-      {
-        groupLabel: tSearch("groupLabels.preferences"),
-        items: filterItems([
-          createSearchItem("language"),
-          createSearchItem("theme"),
-          createSearchItem("coauthor"),
-        ]),
-      },
-      ...getCloudSearchGroups(locale).map((group) => ({
-        groupLabel: group.groupLabel,
-        items: filterItems(group.items),
-      })),
-      {
-        groupLabel: tSearch("groupLabels.organization_settings"),
-        items: filterItems(orgId ? getOrgSearchSettings(orgId) : []),
-      },
-      {
-        groupLabel: tSearch("groupLabels.ai_agent"),
-        items: filterItems([createSearchItem("ai-agent")]),
-      },
-      {
-        groupLabel: tSearch("groupLabels.support_updates"),
-        items: filterItems([
-          createSearchItem("discord-support"),
-          createSearchItem("updates-feedback"),
-        ]),
-      },
-      {
-        groupLabel: tSearch("groupLabels.account"),
-        items: filterItems([
-          createSearchItem("display-picture"),
-          createSearchItem("display-name"),
-          createSearchItem("change-password"),
-          createSearchItem("set-password"),
-          createSearchItem("newsletter"),
-        ]),
-      },
-    ];
 
     if (projectId && fileSearchItems.length) {
       const filteredFileItems: SearchItem[] = [];
@@ -680,20 +648,249 @@ export function GlobalSearch({
 
     return groups.filter((group) => group.items.length > 0);
   }, [
-    orgId,
-    orgs,
+    commandGroups,
     deferredQuery,
-    searchItems,
     tSearch,
     projectId,
     fileSearchItems,
-    locale,
+    applyOverride,
   ]);
+
+  /**
+   * Picks the files whose contents Copilot should read for this question:
+   * the open file, plus the AI-ranked matches. Best-effort — a failed lookup
+   * just means the answer relies on the file map alone.
+   */
+  const retrieveFilesForQuestion = async (
+    question: string,
+    credential: TAiRequestCredential,
+    signal: AbortSignal,
+  ) => {
+    if (!projectId || !orgId || !config || searchIndex.length === 0) {
+      return { referencedFiles: [], sources: [] };
+    }
+    const paths: string[] = viewedFilePath ? [viewedFilePath] : [];
+    try {
+      const res = await requestFileMatches({
+        query: question,
+        files: searchIndex,
+        credential,
+        signal,
+      });
+      for (const id of res.fileIds.slice(0, MAX_RETRIEVED_FILES)) {
+        const entry = searchIndex[id];
+        if (entry && !paths.includes(entry.path)) paths.push(entry.path);
+      }
+    } catch (err) {
+      if ((err as Error).name === "AbortError") throw err;
+    }
+    const contents = await fetchFileContents({
+      dispatch,
+      getState: store.getState,
+      config,
+      paths,
+    });
+    return {
+      referencedFiles: contents.map((c) => ({
+        ...c,
+        current: c.path === viewedFilePath,
+      })),
+      sources: contents.map((c) => ({
+        path: c.path,
+        href: resolveFileUrl(`content/${c.path}`, orgId, projectId, config),
+      })),
+    };
+  };
+
+  // --- AI send ---
+  const handleAiSend = async (customPrompt?: string) => {
+    if (isStreamingRef.current) return;
+
+    const domValue = searchInputRef.current?.value;
+    const promptText = (customPrompt ?? domValue ?? aiInput).trim();
+    if (!promptText) return;
+    const credential = acquireAiCredential();
+    if (!credential) return;
+
+    isStreamingRef.current = true;
+    setIsAiStreaming(true);
+
+    const userMsg: ChatMessage = {
+      id: `u-${Date.now()}`,
+      role: "user",
+      content: promptText,
+    };
+    const assistantId = `a-${Date.now()}`;
+    const assistantMsg: ChatMessage = {
+      id: assistantId,
+      role: "assistant",
+      content: "",
+      status: projectId ? "reading" : undefined,
+    };
+
+    // Filter out empty messages from history to keep conversation clean
+    const prevMessages = aiMessagesRef.current.filter(
+      (m) => m.content && m.content.trim().length > 0,
+    );
+    const newMessages = [...prevMessages, userMsg];
+    setAiMessagesSafe([...newMessages, assistantMsg]);
+    if (searchInputRef.current) {
+      searchInputRef.current.value = "";
+    }
+    setAiInput("");
+
+    const controller = new AbortController();
+    aiAbortRef.current = controller;
+
+    try {
+      // A short follow-up ("and the layout?") only makes sense with the
+      // previous question, so both steer the file lookup.
+      const previousQuestion = [...prevMessages]
+        .reverse()
+        .find((m) => m.role === "user")?.content;
+      const { referencedFiles, sources } = await retrieveFilesForQuestion(
+        previousQuestion ? `${previousQuestion}\n${promptText}` : promptText,
+        credential,
+        controller.signal,
+      );
+      ext.track("search_copilot_ask", {
+        sources: sources.length,
+        viewing_file: Boolean(viewedFilePath),
+        follow_up: Boolean(previousQuestion),
+      });
+      setAiMessagesSafe((prev) =>
+        prev.map((m) =>
+          m.id === assistantId ? { ...m, status: undefined, sources } : m,
+        ),
+      );
+
+      const response = await fetch("/api/ai/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        signal: controller.signal,
+        body: JSON.stringify({
+          messages: newMessages.map((m) => ({
+            role: m.role,
+            content: m.content,
+          })),
+          ...credential,
+          projectContext,
+          referencedFiles,
+          accountContext: ext.accountContext,
+          locale,
+        }),
+      });
+
+      if (!response.ok) {
+        let errMsg = `AI request failed (${response.status})`;
+        try {
+          const errJson = await response.json();
+          if (errJson?.error) errMsg = errJson.error;
+        } catch {
+          // fallback
+        }
+        throw new Error(errMsg);
+      }
+
+      if (!response.body) {
+        throw new Error("AI response failed (no body received)");
+      }
+
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let receivedText = "";
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        const chunk = decoder.decode(value, { stream: true });
+        receivedText += chunk;
+        setAiMessagesSafe((prev) =>
+          prev.map((m) =>
+            m.id === assistantId ? { ...m, content: m.content + chunk } : m,
+          ),
+        );
+      }
+      const finalChunk = decoder.decode();
+      if (finalChunk) {
+        receivedText += finalChunk;
+        setAiMessagesSafe((prev) =>
+          prev.map((m) =>
+            m.id === assistantId
+              ? { ...m, content: m.content + finalChunk }
+              : m,
+          ),
+        );
+      }
+
+      if (!receivedText.trim()) {
+        throw new Error(
+          "No response received from AI. Please check your AI model settings and try again.",
+        );
+      }
+    } catch (err) {
+      if ((err as Error).name === "AbortError") {
+        // Keep partial content if aborted, or remove empty placeholder
+        setAiMessagesSafe((prev) =>
+          prev.filter(
+            (m) =>
+              m.id !== assistantId ||
+              (m.content && m.content.trim().length > 0),
+          ),
+        );
+      } else {
+        setAiMessagesSafe((prev) =>
+          prev.map((m) =>
+            m.id === assistantId
+              ? {
+                  ...m,
+                  status: undefined,
+                  content:
+                    (err as Error).message ||
+                    "Sorry, something went wrong. Please check your AI settings and try again.",
+                }
+              : m,
+          ),
+        );
+      }
+    } finally {
+      isStreamingRef.current = false;
+      setIsAiStreaming(false);
+      aiAbortRef.current = null;
+    }
+  };
+
+  // Open the inline AI panel, optionally pre-filling & auto-sending
+  const openAiPanel = (prefill?: string, autoSend = false) => {
+    if (!searchAiEnabled) return;
+    if (!checkAiAccess()) return;
+    setAiOpen(true);
+    if (prefill) {
+      setAiInput(prefill);
+      if (autoSend) {
+        setTimeout(() => handleAiSend(prefill), 50);
+      }
+    }
+    setTimeout(() => searchInputRef.current?.focus(), 50);
+  };
 
   const hasQuery = deferredQuery.trim().length >= 1;
   const aiLabel = hasQuery
     ? tSearch("ask_about_query", { query: deferredQuery.trim() })
     : tSearch("ask_ai_copilot");
+
+  const projectSuggestions = !projectId
+    ? []
+    : viewedFilePath
+      ? viewedFileKind === "content"
+        ? [1, 2, 3, 4].map((n) => tSearch(`suggestion_file_${n}`))
+        : [1, 2, 3, 4].map((n) => tSearch(`suggestion_code_${n}`))
+      : [1, 2, 3, 4].map((n) => tSearch(`suggestion_${n}`));
+  // Edition suggestions (e.g. plan questions) fill a row after the project ones.
+  const copilotSuggestions = [
+    ...projectSuggestions,
+    ...ext.suggestions.slice(0, projectSuggestions.length ? 2 : 4),
+  ];
 
   return (
     <div className="flex flex-col gap-4">
@@ -718,16 +915,7 @@ export function GlobalSearch({
         open={open}
         onOpenChange={(v) => {
           setOpen(v);
-          if (!v) {
-            aiAbortRef.current?.abort();
-            setQuery("");
-            setAiOpen(false);
-            setAiMessagesSafe([]);
-            setAiInput("");
-            if (searchInputRef.current) {
-              searchInputRef.current.value = "";
-            }
-          }
+          if (!v) resetPalette();
         }}
       >
         {/* ─── UNIFIED INPUT (search or AI depending on mode) ── */}
@@ -752,7 +940,7 @@ export function GlobalSearch({
                       onClick={() => {
                         aiAbortRef.current?.abort();
                       }}
-                      aria-label="Stop generating"
+                      aria-label={tSearch("stop_generating")}
                       className="text-muted-foreground hover:text-foreground hover:bg-muted/80 flex size-6 cursor-pointer items-center justify-center rounded-md transition-colors"
                     >
                       <Square className="size-3 fill-current" />
@@ -842,6 +1030,7 @@ export function GlobalSearch({
               {searchAiEnabled && (
                 <CommandGroup>
                   <CommandItem
+                    value="ai-ask"
                     onSelect={() =>
                       openAiPanel(
                         query.trim() || undefined,
@@ -864,36 +1053,8 @@ export function GlobalSearch({
                     {result.items.map((item) => (
                       <CommandItem
                         key={item.id}
-                        onSelect={() => {
-                          if (item.file) {
-                            handleFileSelect(item.file);
-                            return;
-                          }
-                          if (item.id === "quick-toggle-theme") {
-                            const nextTheme =
-                              resolvedTheme === "dark" ? "light" : "dark";
-                            setTheme(nextTheme);
-                            setOpen(false);
-                            setQuery("");
-                            return;
-                          }
-                          setOpen(false);
-                          setQuery("");
-                          if (item.target === "_blank") {
-                            window.open(item.href, "_blank");
-                            return;
-                          }
-                          if (item.orgId) {
-                            localStorage.setItem(
-                              "last_working_org_id",
-                              item.orgId,
-                            );
-                          }
-                          const [pathUrl, hash] = item.href.split("#");
-                          if (hash)
-                            sessionStorage.setItem("scroll-to-section", hash);
-                          router.push(pathUrl.replace(/\/$/, "") || "/");
-                        }}
+                        value={item.id}
+                        onSelect={() => runItem(item)}
                       >
                         {item.file ? getFileIcon(item.file) : null}
                         <span>{item.label}</span>
@@ -928,14 +1089,9 @@ export function GlobalSearch({
                       </p>
                     </div>
                     {/* Contextual suggestions only available inside a project */}
-                    {projectId && (
+                    {copilotSuggestions.length > 0 && (
                       <div className="grid w-full grid-cols-2 gap-1.5 text-left">
-                        {[
-                          tSearch("suggestion_1"),
-                          tSearch("suggestion_2"),
-                          tSearch("suggestion_3"),
-                          tSearch("suggestion_4"),
-                        ].map((s, i) => (
+                        {copilotSuggestions.map((s, i) => (
                           <button
                             key={i}
                             type="button"
@@ -965,15 +1121,44 @@ export function GlobalSearch({
                       >
                         <div className="text-muted-foreground flex items-center gap-1 font-mono text-[10px] uppercase">
                           <Sparkles className="size-2.5" />
-                          Copilot
+                          {tSearch("copilot_label")}
                         </div>
                         <div className="border-border bg-muted/40 w-full rounded-xl rounded-tl-sm border p-3 text-xs leading-relaxed">
                           {msg.content ? (
-                            <AiMarkdown content={msg.content} />
+                            <AiMarkdown
+                              content={msg.content}
+                              onInternalLinkClick={(href) => navigateTo(href)}
+                            />
                           ) : (
                             <div className="text-muted-foreground flex items-center gap-2">
                               <Loader2 className="size-3 animate-spin" />
-                              <span>Thinking…</span>
+                              <span>
+                                {msg.status === "reading"
+                                  ? tSearch("ai_reading_files")
+                                  : tSearch("ai_thinking")}
+                              </span>
+                            </div>
+                          )}
+
+                          {msg.sources && msg.sources.length > 0 && (
+                            <div className="mt-2 flex flex-wrap items-center gap-1">
+                              <span className="text-muted-foreground text-[10px]">
+                                {tSearch("ai_sources")}:
+                              </span>
+                              {msg.sources.map((source) => (
+                                <button
+                                  key={source.path}
+                                  type="button"
+                                  onClick={() => navigateTo(source.href)}
+                                  title={source.path}
+                                  className="border-border hover:bg-muted/80 text-muted-foreground hover:text-foreground inline-flex max-w-full cursor-pointer items-center gap-1 rounded border px-1.5 py-0.5 text-[10px] transition-colors"
+                                >
+                                  <FileIcon className="size-2.5 shrink-0" />
+                                  <span className="truncate">
+                                    {path.basename(source.path)}
+                                  </span>
+                                </button>
+                              ))}
                             </div>
                           )}
 

@@ -367,10 +367,10 @@ export default function DirectoryView({
           )}
         >
           {sortedFiles.length > 0 && (
-            <div className="border-border bg-light text-text-strong hidden grid-cols-12 rounded-lg border px-6 py-2.5 font-semibold md:grid 2xl:px-8">
+            <div className="border-border bg-light text-text-strong hidden grid-cols-12 rounded-lg border py-2.5 font-semibold md:grid">
               {isCodePath ? (
                 <>
-                  <div className="text-h6 text-primary col-span-5 flex">
+                  <div className="text-h6 text-primary col-span-5 flex md:px-4">
                     {tDirectoryView("headers.file_name")}
                   </div>
                   <div className="text-h6 text-primary col-span-3 text-start">
@@ -379,11 +379,13 @@ export default function DirectoryView({
                   <div className="text-h6 text-primary col-span-3 text-start">
                     {tDirectoryView("headers.last_modified")}
                   </div>
-                  <div className="text-h6 text-primary col-span-1 text-center"></div>
+                  <div className="text-h6 text-primary col-span-1 flex justify-end md:pe-4">
+                    {tDirectoryView("headers.action")}
+                  </div>
                 </>
               ) : (
                 <>
-                  <div className="text-h6 text-primary col-span-4 flex">
+                  <div className="text-h6 text-primary col-span-4 flex md:px-4">
                     {tDirectoryView("headers.title")}
                   </div>
                   <div className="text-h6 text-primary col-span-2 text-start">
@@ -395,7 +397,9 @@ export default function DirectoryView({
                   <div className="text-h6 text-primary col-span-1 text-start">
                     {tDirectoryView("headers.status")}
                   </div>
-                  <div className="text-h6 text-primary col-span-1 text-start"></div>
+                  <div className="text-h6 text-primary col-span-1 flex justify-end md:pe-4">
+                    {tDirectoryView("headers.action")}
+                  </div>
                 </>
               )}
             </div>

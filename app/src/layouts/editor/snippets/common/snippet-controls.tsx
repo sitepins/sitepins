@@ -1,9 +1,9 @@
 "use client";
 
-import { logger } from "@/lib/logger";
-import { cn } from "@/lib/utils/cn";
 import { useOwnerPlan } from "@/hooks/use-owner-plan";
 import { useSnippets } from "@/hooks/use-snippets";
+import { logger } from "@/lib/logger";
+import { cn } from "@/lib/utils/cn";
 import { MarkdownPlugin } from "@platejs/markdown";
 import { Plus, Trash } from "lucide-react";
 import type { TElement } from "platejs";
@@ -111,7 +111,7 @@ export function SnippetControls({
         isBlock
           ? // Sits in the block header row, so it never covers the tag text.
             "ms-auto -me-1"
-          : "relative -top-[0.07em] mx-1 inline-flex align-middle",
+          : "relative top-[-0.07em] mx-1 inline-flex align-middle",
         className,
       )}
       contentEditable={false}

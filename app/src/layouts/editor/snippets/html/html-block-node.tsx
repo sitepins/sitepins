@@ -5,10 +5,8 @@ import { Eye, EyeOff } from "lucide-react";
 import { useEditorRef } from "platejs/react";
 import { useState } from "react";
 import { BaseSnippetBlock, SnippetTheme } from "../common/base-block-node";
-import {
-  ContentEditableSpan,
-  EditableTagLine,
-} from "../common/editable-tag-line";
+import { EditableTagLine } from "../common/editable-tag-line";
+import { HtmlCodeBody } from "./html-code-body";
 
 // Parse a single attribute value from an HTML tag string.
 // Matches:  attr="value"  attr='value'  attr=value
@@ -106,12 +104,12 @@ export const HtmlBlockElement = ({
   ) : null;
 
   const footerContent = endTag ? (
-    <div
-      contentEditable={false}
-      className="mt-2 font-mono text-sm font-semibold select-none"
-    >
-      <span className={theme.tagText}>{endTag}</span>
-    </div>
+    <EditableTagLine
+      text={endTag.trim()}
+      propName="closing"
+      theme={theme}
+      onChange={() => {}}
+    />
   ) : null;
 
   // Eye toggle — rendered inside the SnippetControls button group (same row as + and trash)
@@ -142,7 +140,7 @@ export const HtmlBlockElement = ({
     isIframe && showPreview ? (
       <div
         contentEditable={false}
-        className="mt-3 w-full overflow-hidden rounded-md border border-emerald-200 dark:border-emerald-800"
+        className="mt-1 w-full overflow-hidden rounded-md border border-emerald-200 dark:border-emerald-800"
       >
         {/* Preview header bar */}
         <div className="flex items-center gap-1.5 border-b border-emerald-200 bg-emerald-100/60 px-2 py-1 dark:border-emerald-800 dark:bg-emerald-950/40">
@@ -188,6 +186,8 @@ export const HtmlBlockElement = ({
       label="BLOCK"
       className={className}
       headerContent={headerContent}
+      hideContent={Boolean(startTag) && !body.trim()}
+      contentClassName="border-none ps-0"
       snippetExtraControls={eyeToggle}
       footerContent={
         <>
@@ -200,16 +200,7 @@ export const HtmlBlockElement = ({
       {/* Hide raw children; render our editable body span instead */}
       <span className="hidden">{children}</span>
 
-      <div
-        className={cn("font-mono whitespace-pre-wrap", theme.text)}
-        contentEditable={false}
-      >
-        <ContentEditableSpan
-          value={body}
-          onChange={(val) => updateText(val)}
-          className="block min-h-[1.5em] outline-none"
-        />
-      </div>
+      <HtmlCodeBody value={body} onChange={(val) => updateText(val)} />
     </BaseSnippetBlock>
   );
 };

@@ -78,7 +78,7 @@ export const JsxBlockElement = ({
         contentClassName="border-none ps-0"
         {...restProps}
       >
-        <div className="ps-0">
+        <div className="min-w-0">
           <EditableTagLine
             text={content || `<${name} />`}
             propName="opening"
@@ -131,18 +131,15 @@ export const JsxBlockElement = ({
         />
       }
       footerContent={
-        !isSelfClosing && (
-          <div className="mt-2">
-            <span className="font-mono text-sm font-semibold text-blue-600 dark:text-blue-400">
-              &lt;/{name || "Component"}&gt;
-            </span>
-          </div>
-        )
+        <EditableTagLine
+          text={`</${name || "Component"}>`}
+          propName="closing"
+          theme={theme}
+          onChange={() => {}}
+        />
       }
     >
-      {!isSelfClosing && (
-        <div className="jsx-block-content w-full">{children}</div>
-      )}
+      <div className="jsx-block-content w-full min-w-0">{children}</div>
     </BaseSnippetBlock>
   );
 };

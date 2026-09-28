@@ -1,6 +1,5 @@
 "use client";
 
-import { cn } from "@/lib/utils/cn";
 import { PlateElement, useEditorRef, withRef } from "platejs/react";
 import { BaseInlineSnippet } from "../common/base-inline-node";
 import { EditableTagLine } from "../common/editable-tag-line";
@@ -13,7 +12,7 @@ const getHugoShortcodeTheme = () => {
     bg: "bg-purple-50/80 dark:bg-purple-950/20",
     border: "border-purple-200 dark:border-purple-800",
     text: "text-purple-800 dark:text-purple-200",
-    badge: "bg-purple-500 text-white",
+    badge: "bg-purple-500",
     tagText: "text-purple-600 dark:text-purple-400",
   };
 };
@@ -41,16 +40,17 @@ export const HugoInlineElement = withRef<typeof PlateElement>(
       <BaseInlineSnippet
         ref={ref}
         theme={theme}
-        className={cn("ring-purple-400", className)}
-        label="CODE"
+        className={className}
         {...props}
+        head={
+          <EditableTagLine
+            text={text}
+            propName="inline"
+            theme={theme}
+            onChange={updateInlineText}
+          />
+        }
       >
-        <EditableTagLine
-          text={text}
-          propName="inline"
-          theme={theme}
-          onChange={updateInlineText}
-        />
         {/* Hide actual children but keep them for Slate data model stability */}
         <span className="hidden">{children}</span>
       </BaseInlineSnippet>

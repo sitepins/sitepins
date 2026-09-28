@@ -213,6 +213,21 @@ function findMatchingClosingIndex(
   return -1;
 }
 
+function inlineChildren(nodes: RootContent[]): RootContent[] {
+  return nodes
+    .flatMap<RootContent>((c) => (c.type === "paragraph" ? c.children : c))
+    .map((c) => {
+      const node = c as unknown as { type: string; children?: RootContent[] };
+      if (node.type === "jsx_block") {
+        node.type = "jsx_inline";
+        if (Array.isArray(node.children)) {
+          node.children = inlineChildren(node.children);
+        }
+      }
+      return c;
+    });
+}
+
 function transformJsxTree(tree: Root) {
   // Ensure inline HTML metadata exists even for trees parsed ad-hoc (inner JSX bodies)
   remarkHtml()(tree);
@@ -229,15 +244,23 @@ function transformJsxTree(tree: Root) {
 
     const newNodes: RootContent[] = [];
     let currentParagraphChildren: PhrasingContent[] = [];
+    const openInline: string[] = [];
 
     for (const child of children) {
       if (isJsxTagNode(child)) {
-        // Closing JSX tags (</Tab>, </Tabs>) are ALWAYS lifted regardless of surrounding text.
-        const isClosingTag = /^<\/[A-Z]/.test(
-          normalizeForTagMatch(nodeValue(child)),
-        );
+        const tag = normalizeForTagMatch(nodeValue(child));
+        const isClosingTag = /^<\/[A-Z]/.test(tag);
+        const tagName = tag.match(/^<\/?([A-Z][\w.]*)/)?.[1] ?? "";
 
-        if (!isClosingTag) {
+        if (isClosingTag) {
+          // Keep a closing tag inline when its opening tag stayed inline.
+          const openAt = openInline.lastIndexOf(tagName);
+          if (openAt !== -1) {
+            openInline.splice(openAt);
+            currentParagraphChildren.push(child);
+            continue;
+          }
+        } else {
           // For opening/self-closing tags, only keep inline if real text has been
           // accumulated BEFORE this node in the current paragraph.
           const hasRealTextBefore = currentParagraphChildren.some((c) => {
@@ -249,6 +272,9 @@ function transformJsxTree(tree: Root) {
           });
 
           if (hasRealTextBefore) {
+            if (!/\/\s*>$/.test(tag) && !isClosingTagFor(tagName, tag)) {
+              openInline.push(tagName);
+            }
             currentParagraphChildren.push(child);
             continue;
           }
@@ -430,9 +456,7 @@ function transformJsxTree(tree: Root) {
               if (parsed.children && parsed.children.length > 0) {
                 // For inline elements, flatten nested paragraphs to maintain valid Slate structure (inline cannot contain block)
                 if (type === "jsx_inline") {
-                  children = parsed.children.flatMap<RootContent>((c) =>
-                    c.type === "paragraph" ? c.children : c,
-                  );
+                  children = inlineChildren(parsed.children);
                 } else {
                   children = parsed.children;
                 }
@@ -471,9 +495,7 @@ function transformJsxTree(tree: Root) {
 
               // For inline elements, flatten nested paragraphs to maintain valid Slate structure
               if (type === "jsx_inline") {
-                children = childTree.children.flatMap<RootContent>((c) =>
-                  c.type === "paragraph" ? c.children : c,
-                );
+                children = inlineChildren(childTree.children);
               } else {
                 children = childTree.children;
               }

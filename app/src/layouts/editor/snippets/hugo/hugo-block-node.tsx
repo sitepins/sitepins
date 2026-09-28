@@ -53,14 +53,12 @@ export const HugoBlockElement = withRef<typeof BaseSnippetBlock>(
         }
         footerContent={
           closing ? (
-            <div className="mt-3">
-              <EditableTagLine
-                text={closing}
-                propName="closing"
-                theme={theme}
-                onChange={(val) => updateNode({ closing: val })}
-              />
-            </div>
+            <EditableTagLine
+              text={closing}
+              propName="closing"
+              theme={theme}
+              onChange={(val) => updateNode({ closing: val })}
+            />
           ) : null
         }
       >

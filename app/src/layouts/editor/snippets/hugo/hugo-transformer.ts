@@ -876,6 +876,15 @@ export function remarkHugo(this: Processor, options: ShortcodeOptions = {}) {
           lastChild.value = lastChild.value.replace(/[\r\n]+$/, "");
         }
       });
+
+      // A root-level inline node is dropped by Slate on mount.
+      for (const node of tree.children) {
+        const meta =
+          node.type === "shortcode"
+            ? getShortcodeMeta(node as ShortcodeNode)
+            : null;
+        if (meta?.isJsxComponent) meta.isBlock = true;
+      }
     }
   }
 
@@ -929,7 +938,9 @@ export function remarkHugo(this: Processor, options: ShortcodeOptions = {}) {
             return closing ? `${opening}\n${closing}` : opening;
           }
 
-          return `${opening}\n${trimmedBody}\n${closing}`;
+          // Without blank lines a JSX closing tag gets absorbed by the body.
+          const gap = meta?.isJsxComponent ? "\n\n" : "\n";
+          return `${opening}${gap}${trimmedBody}${gap}${closing}`;
         }
 
         const body = state.containerPhrasing(

@@ -1,16 +1,13 @@
 "use client";
 
-import { cn } from "@/lib/utils/cn";
-import {
-  PlateElement,
-  useEditorRef,
-  useFocused,
-  useSelected,
-  withRef,
-} from "platejs/react";
+import { PlateElement, useEditorRef, withRef } from "platejs/react";
 import { SnippetTheme } from "../common/base-block-node";
+import {
+  BaseInlineSnippet,
+  InlineBody,
+  InlineClosingTag,
+} from "../common/base-inline-node";
 import { EditableTagLine } from "../common/editable-tag-line";
-import { SnippetControls } from "../common/snippet-controls";
 import { parseJsxString } from "./jsx-parser";
 import type { TText } from "platejs";
 import type { JsxSlateElement } from "./jsx-serialization";
@@ -32,8 +29,6 @@ export const JsxInlineElement = withRef<typeof PlateElement>(
     const { children } = props;
     const element = props.element as JsxSlateElement;
     const editor = useEditorRef();
-    const selected = useSelected();
-    const focused = useFocused();
     const theme = getJsxTheme();
 
     const { name, isSelfClosing } = element;
@@ -82,67 +77,25 @@ export const JsxInlineElement = withRef<typeof PlateElement>(
     };
 
     return (
-      <PlateElement
+      <BaseInlineSnippet
         ref={ref}
-        className={cn(
-          "relative my-1.5 flex w-full flex-col rounded-md border transition-all",
-          theme.border,
-          theme.bg,
-          "font-mono text-sm",
-          selected && focused && "ring-2 ring-blue-400 ring-offset-2",
-          className,
-        )}
+        theme={theme}
+        className={className}
         {...props}
-      >
-        <SnippetControls
-          element={element}
-          isBlock={false}
-          className="inset-e-0.5 top-1/2 -translate-y-1/2"
-          code=""
-        />
-
-        {/* Header: Badge + Opening Tag */}
-        <div
-          contentEditable={false}
-          className="flex items-start gap-2 ps-2.5 pe-8 pt-2 select-none"
-        >
-          <span
-            className={cn(
-              "mt-0.5 rounded-sm px-1 py-px text-[8px] font-bold tracking-wider text-white uppercase",
-              theme.badge,
-            )}
-          >
-            JSX
-          </span>
+        head={
           <EditableTagLine
             text={openingTag}
             propName="inline"
             theme={theme}
             onChange={updateOpeningTag}
-            className="flex-1"
           />
-        </div>
-
-        {/* Content Body */}
-        <div
-          className={cn(
-            "px-4 py-2 font-sans whitespace-pre-wrap outline-none",
-            theme.text,
-          )}
-        >
-          {children}
-        </div>
-
-        {/* Footer: Closing Tag */}
+        }
+      >
+        <InlineBody theme={theme}>{children}</InlineBody>
         {closingTag && (
-          <div
-            contentEditable={false}
-            className="flex justify-end px-2.5 pb-2 select-none"
-          >
-            <span className={theme.tagText}>{closingTag}</span>
-          </div>
+          <InlineClosingTag theme={theme}>{closingTag}</InlineClosingTag>
         )}
-      </PlateElement>
+      </BaseInlineSnippet>
     );
   },
 );

@@ -1,13 +1,38 @@
 "use client";
 
 import { cn } from "@/lib/utils/cn";
-import { CSSProperties, useEffect, useRef, useState } from "react";
+import {
+  CSSProperties,
+  MouseEvent as ReactMouseEvent,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
 type TagLinePropName = "opening" | "closing" | "inline";
 
 export interface EditableTagLineTheme {
   text: string;
   tagText: string;
+}
+
+// execCommand("insertText", "\n") inserts a <br>, which textContent drops.
+function insertNewline(root: HTMLElement) {
+  const sel = window.getSelection();
+  if (!sel?.rangeCount) return;
+  const range = sel.getRangeAt(0);
+  range.deleteContents();
+  const node = document.createTextNode("\n");
+  range.insertNode(node);
+  // A trailing newline renders no line, so the caret would snap back.
+  const after = document.createRange();
+  after.setStartAfter(node);
+  after.setEnd(root, root.childNodes.length);
+  if (!after.toString()) node.after(document.createElement("br"));
+  range.setStartAfter(node);
+  range.collapse(true);
+  sel.removeAllRanges();
+  sel.addRange(range);
 }
 
 export const ContentEditableSpan = ({
@@ -17,6 +42,7 @@ export const ContentEditableSpan = ({
   className,
   onFocus,
   style,
+  multiline = false,
 }: {
   value: string;
   onChange: (val: string) => void;
@@ -24,6 +50,7 @@ export const ContentEditableSpan = ({
   className?: string;
   onFocus?: () => void;
   style?: CSSProperties;
+  multiline?: boolean;
 }) => {
   const ref = useRef<HTMLSpanElement>(null);
   const isFocusedRef = useRef(false);
@@ -91,6 +118,10 @@ export const ContentEditableSpan = ({
         e.stopPropagation();
         if (e.key === "Enter") {
           e.preventDefault();
+          if (multiline) {
+            insertNewline(e.currentTarget);
+            onChange(e.currentTarget.textContent || "");
+          }
         }
       }}
       onKeyUp={(e) => e.stopPropagation()}
@@ -112,9 +143,13 @@ export const ContentEditableSpan = ({
 const FallbackEditableTagLine = ({
   text,
   onChange,
+  inline,
+  theme,
 }: {
   text: string;
   onChange: (val: string) => void;
+  inline: boolean;
+  theme: EditableTagLineTheme;
 }) => {
   const [value, setValue] = useState(text);
   const [syncedText, setSyncedText] = useState(text);
@@ -124,16 +159,27 @@ const FallbackEditableTagLine = ({
   }
 
   return (
-    <div className="inline-block" contentEditable={false}>
+    <span
+      className={cn(
+        "max-w-full align-baseline",
+        inline ? "inline-block" : "block",
+      )}
+      dir="ltr"
+      contentEditable={false}
+    >
       <ContentEditableSpan
         value={value}
         onChange={(val) => {
           setValue(val);
           onChange(val);
         }}
-        className="text-text-strong font-mono text-xs"
+        className={cn(
+          "font-mono wrap-anywhere whitespace-pre-wrap",
+          inline ? "text-[0.875em]" : "text-sm",
+          theme.text,
+        )}
       />
-    </div>
+    </span>
   );
 };
 
@@ -225,6 +271,7 @@ const EditableTagLineContent = ({
   text: _text,
   onChange,
   theme,
+  inline,
 }: {
   prefix: string;
   attributes: string;
@@ -232,6 +279,7 @@ const EditableTagLineContent = ({
   text: string;
   onChange: (val: string) => void;
   theme: EditableTagLineTheme;
+  inline: boolean;
 }) => {
   const [attrValue, setAttrValue] = useState(attributes);
   const [syncedAttributes, setSyncedAttributes] = useState(attributes);
@@ -240,57 +288,76 @@ const EditableTagLineContent = ({
     setAttrValue(attributes);
   }
 
+  const tagClass = cn(
+    "font-semibold whitespace-nowrap select-none",
+    theme.tagText,
+  );
+
+  const focusAttributes = (e: ReactMouseEvent<HTMLSpanElement>) => {
+    const editable = e.currentTarget.querySelector<HTMLElement>(
+      '[contenteditable="true"]',
+    );
+    if (!editable || editable.contains(e.target as Node)) return;
+    e.preventDefault();
+    e.stopPropagation();
+    editable.focus();
+    const range = document.createRange();
+    range.selectNodeContents(editable);
+    range.collapse(false);
+    const sel = window.getSelection();
+    sel?.removeAllRanges();
+    sel?.addRange(range);
+  };
+
+  // Highlighted copy underneath, transparent editable text on top.
   return (
-    <div
-      className={cn("min-w-0 font-mono text-sm", theme.text)}
+    <span
+      className={cn(
+        "max-w-full min-w-0 cursor-text font-mono",
+        inline ? "inline-grid align-baseline text-[0.875em]" : "grid text-sm",
+        theme.text,
+      )}
+      style={{ gridTemplateColumns: "minmax(0, 1fr)" }}
+      dir="ltr"
       contentEditable={false}
+      onMouseDown={focusAttributes}
     >
       <span
-        className={cn(
-          "font-semibold whitespace-nowrap select-none",
-          theme.tagText,
-        )}
+        className="pointer-events-none wrap-anywhere whitespace-pre-wrap select-none"
+        aria-hidden="true"
+        style={{ gridArea: "1/1" }}
       >
-        {prefix}
+        <span className={tagClass}>{prefix}</span>
+        <HighlightedAttributes text={attrValue} theme={theme} />
+        <span className={tagClass}>{suffix}</span>
       </span>
 
-      {/* CSS Grid overlay: both children share the same cell so they always align */}
       <span
-        className="inline-grid min-w-1.25 align-top"
-        style={{ gridTemplateColumns: "1fr" }}
+        className="relative z-10 wrap-anywhere whitespace-pre-wrap text-transparent"
+        style={{ gridArea: "1/1" }}
       >
         <span
-          className="pointer-events-none z-0 wrap-break-word whitespace-pre-wrap select-none"
+          className={cn(tagClass, "pointer-events-none")}
           aria-hidden="true"
-          style={{ gridArea: "1/1" }}
         >
-          {attrValue ? (
-            <HighlightedAttributes text={attrValue} theme={theme} />
-          ) : (
-            <span>&nbsp;</span>
-          )}
+          {prefix}
         </span>
-
         <ContentEditableSpan
           value={attrValue}
           onChange={(val) => {
             setAttrValue(val);
             onChange(`${prefix}${val}${suffix}`);
           }}
-          className="relative z-10 wrap-break-word whitespace-pre-wrap text-transparent caret-stone-900 outline-none dark:caret-stone-100"
-          style={{ gridArea: "1/1" }}
+          className="inline caret-stone-900 outline-none dark:caret-stone-100"
         />
+        <span
+          className={cn(tagClass, "pointer-events-none")}
+          aria-hidden="true"
+        >
+          {suffix}
+        </span>
       </span>
-
-      <span
-        className={cn(
-          "font-semibold whitespace-nowrap select-none",
-          theme.tagText,
-        )}
-      >
-        {suffix}
-      </span>
-    </div>
+    </span>
   );
 };
 
@@ -300,6 +367,7 @@ export interface EditableTagLineProps {
   theme: EditableTagLineTheme;
   onChange: (val: string) => void;
   className?: string;
+  inline?: boolean;
 }
 
 export const EditableTagLine = ({
@@ -308,19 +376,28 @@ export const EditableTagLine = ({
   theme,
   onChange,
   className,
+  inline = propName === "inline",
 }: EditableTagLineProps) => {
+  const Wrapper = inline ? "span" : "div";
+  const wrapperClass = cn(
+    inline && "inline-flex max-w-full min-w-0",
+    className,
+  );
+
   if (propName === "closing") {
     return (
-      <div
+      <Wrapper
         className={cn(
-          "font-mono text-sm font-semibold select-none",
+          "font-mono font-semibold wrap-anywhere select-none",
+          inline ? "text-[0.875em]" : "text-sm",
           theme.tagText,
-          className,
+          wrapperClass,
         )}
+        dir="ltr"
         contentEditable={false}
       >
         {text}
-      </div>
+      </Wrapper>
     );
   }
 
@@ -345,11 +422,20 @@ export const EditableTagLine = ({
     attributes = hugoMatch[2];
     suffix = hugoMatch[3];
   } else {
-    return <FallbackEditableTagLine text={text} onChange={onChange} />;
+    return (
+      <Wrapper className={wrapperClass}>
+        <FallbackEditableTagLine
+          text={text}
+          onChange={onChange}
+          inline={inline}
+          theme={theme}
+        />
+      </Wrapper>
+    );
   }
 
   return (
-    <div className={className}>
+    <Wrapper className={wrapperClass}>
       <EditableTagLineContent
         prefix={prefix}
         attributes={attributes}
@@ -357,7 +443,8 @@ export const EditableTagLine = ({
         text={text}
         onChange={onChange}
         theme={theme}
+        inline={inline}
       />
-    </div>
+    </Wrapper>
   );
 };

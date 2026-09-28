@@ -10,76 +10,103 @@ export interface BaseInlineSnippetProps extends React.ComponentProps<
   typeof PlateElement
 > {
   theme: SnippetTheme;
-  label?: string; // e.g. "CODE", "JSX"
-  value?: string;
-  onValueChange?: (value: string) => void;
-  rightControls?: React.ReactNode;
+  hideBadge?: boolean;
+  head?: React.ReactNode;
 }
 
-const _TypeBadge = ({ theme }: { theme: SnippetTheme }) => {
-  return (
-    <span
-      className={cn(
-        "rounded px-1.5 py-0.5 text-[10px] font-bold tracking-wider uppercase",
-        theme.badge,
-      )}
-      contentEditable={false}
-    >
-      {theme.type}
-    </span>
+const pillClass = (theme: SnippetTheme) =>
+  cn(
+    "inline-flex max-w-full items-baseline rounded-md border px-1 py-px align-baseline leading-[1.4] transition-shadow",
+    theme.border,
+    theme.bg,
   );
-};
 
 export const BaseInlineSnippet = withRef<
   typeof PlateElement,
   BaseInlineSnippetProps
->(({ className, theme, label = "CODE", children, ...props }, ref) => {
+>(({ className, theme, hideBadge, head, children, ...props }, ref) => {
   const { element } = props;
   const selected = useSelected();
   const focused = useFocused();
+  const isActive = selected && focused;
 
   return (
     <PlateElement
       ref={ref}
+      as="span"
       className={cn(
-        "relative inline-flex items-center gap-1.5 rounded-md border-2 transition-all",
-        theme.border,
-        theme.bg,
-        "py-1 ps-2.5 pe-10 font-mono text-sm leading-none",
-        selected && focused && "ring-2 ring-purple-400 ring-offset-2",
+        "group/snippet relative mx-px inline align-baseline",
         className,
       )}
       {...props}
+      attributes={{
+        ...props.attributes,
+        "data-selected": isActive ? "true" : undefined,
+      }}
     >
-      <SnippetControls
-        element={element}
-        isBlock={false}
-        className="inset-e-0.5 top-1/2 -translate-y-1/2 scale-75"
-        code=""
-      />
+      <SnippetControls element={element} isBlock={false} code="" />
 
       <span
         contentEditable={false}
-        className={cn(
-          "self-center rounded-sm px-1 py-px text-[9px] font-bold tracking-wider text-white uppercase",
-          theme.badge,
-        )}
+        className={cn(pillClass(theme), isActive && "ring-primary/40 ring-2")}
       >
-        {theme.type}
+        {!hideBadge && (
+          // h-lh is one tag line tall, so the badge centres on the first line.
+          <span className="me-1 inline-flex h-lh shrink-0 items-center self-start text-[0.875em]">
+            <span
+              className={cn(
+                "rounded-[3px] px-1 text-[9px] leading-normal font-bold tracking-wider text-white uppercase select-none",
+                theme.badge,
+              )}
+            >
+              {theme.type}
+            </span>
+          </span>
+        )}
+        {head}
       </span>
 
-      {label && label !== "CODE" && (
-        <span
-          className="text-[9px] font-medium tracking-wide text-slate-500 uppercase dark:text-slate-400"
-          contentEditable={false}
-        >
-          {label}
-        </span>
-      )}
-
-      <div className="inline-flex items-center leading-none whitespace-pre">
-        {children}
-      </div>
+      {children}
     </PlateElement>
   );
 });
+
+export const InlineBody = ({
+  theme,
+  className,
+  children,
+}: {
+  theme: SnippetTheme;
+  className?: string;
+  children: React.ReactNode;
+}) => (
+  <span
+    className={cn(
+      "text-text-default mx-px rounded-sm [box-decoration-break:clone] px-0.5 [-webkit-box-decoration-break:clone]",
+      theme.bg,
+      className,
+    )}
+  >
+    {children}
+  </span>
+);
+
+export const InlineClosingTag = ({
+  theme,
+  children,
+}: {
+  theme: SnippetTheme;
+  children: React.ReactNode;
+}) => (
+  <span contentEditable={false} className={pillClass(theme)}>
+    <span
+      dir="ltr"
+      className={cn(
+        "font-mono text-[0.875em] font-semibold whitespace-nowrap select-none",
+        theme.tagText,
+      )}
+    >
+      {children}
+    </span>
+  </span>
+);

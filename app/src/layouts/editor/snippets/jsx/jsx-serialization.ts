@@ -175,8 +175,20 @@ export const serializeJsx = (
   });
 
   const tagContent = [name, ...attrParts].filter(Boolean).join(" ");
-  const openingSelfClosing = `<${tagContent}/>`;
-  const openingNonSelfClosing = `<${tagContent}>`;
+
+  // Rebuilding from `attributes` mangles expression props like `data={[1]}`.
+  const sourceTagBody = (() => {
+    const clean = (content || "")
+      .replace(/[\u200B\u200C\u200D\uFEFF]/g, "")
+      .trim();
+    if (!name || !clean.startsWith(`<${name}`) || !clean.endsWith(">")) {
+      return null;
+    }
+    return clean.replace(/\s*\/?\s*>$/, "").slice(1);
+  })();
+  const tagBody = sourceTagBody ?? tagContent;
+  const openingSelfClosing = `<${tagBody}/>`;
+  const openingNonSelfClosing = `<${tagBody}>`;
 
   // Plate JSX snippets store the editable tag line as a child text node.
   // Treat that as UI state, not semantic children.

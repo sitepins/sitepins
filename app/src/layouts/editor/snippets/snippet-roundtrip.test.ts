@@ -149,6 +149,80 @@ describe("jsx components", () => {
   it("keeps an inline component with boolean attributes stable", () => {
     expectStable(`Text with <Badge dismissible /> inline.`);
   });
+
+  it("keeps inline components nested inside an inline component", () => {
+    const src = `Press <Tooltip content="Outer">hover over <Kbd>Ctrl</Kbd> + <Kbd>K</Kbd> to open</Tooltip> now.`;
+    const editor = createSlateEditor({ plugins: Kit, value: [] });
+    const nodes = editor
+      .getApi(MarkdownPlugin)
+      .markdown.deserialize(src, { withoutMdx: true });
+
+    expect(nodes).toHaveLength(1);
+    const tooltip = (nodes[0].children as TElement[]).find(
+      (c) => c.name === "Tooltip",
+    );
+    expect(tooltip).toMatchObject({
+      type: "jsx_inline",
+      isSelfClosing: false,
+    });
+    const kbds = (tooltip!.children as TElement[]).filter(
+      (c) => c.name === "Kbd",
+    );
+    expect(kbds.map((k) => k.type)).toEqual(["jsx_inline", "jsx_inline"]);
+
+    expect(roundTrip(src).trim()).toBe(src);
+    expectStable(src);
+  });
+
+  it("keeps inline components placed back to back", () => {
+    const src = `Tags <Tag>first</Tag><Tag>second</Tag> end.`;
+    expect(roundTrip(src).trim()).toBe(src);
+  });
+
+  it("keeps expression attributes verbatim", () => {
+    const src = `<Chart data={[1, 2, 3, 4]} options={{ responsive: true, legend: { position: "bottom" } }} height={320} />`;
+    const out = roundTrip(src);
+
+    expect(out).toContain(`data={[1, 2, 3, 4]}`);
+    expect(out).toContain(
+      `options={{ responsive: true, legend: { position: "bottom" } }}`,
+    );
+    expect(out).toContain(`height={320}`);
+    expectStable(src);
+  });
+
+  it("keeps a standalone component with expression props after normalization", () => {
+    const src = `Intro.\n\n<Chart data={[1, 2, 3, 4]} height={320} />\n\nOutro.`;
+    const parser = createSlateEditor({ plugins: Kit, value: [] });
+    const value = parser
+      .getApi(MarkdownPlugin)
+      .markdown.deserialize(src, { withoutMdx: true });
+    const editor = createSlateEditor({ plugins: Kit, value });
+    editor.tf.normalize({ force: true });
+
+    const chart = (editor.children as TElement[]).find(
+      (n) => n.name === "Chart",
+    );
+    expect(chart?.type).toBe("jsx_block");
+  });
+
+  it("keeps single-quoted attributes in their source form", () => {
+    const src = `<Notice type='warn' title="Hi">\nBody.\n</Notice>`;
+    expect(roundTrip(src)).toContain(`<Notice type='warn' title="Hi">`);
+    expectStable(src);
+  });
+
+  it("keeps deeply nested block components stable", () => {
+    expectStable(
+      `<Tabs>\n\n<Tab label="First">\n\nContent.\n\n<Notice type="warning">\n\nNested.\n\n<Card title="x">\n\nDeep <Icon name="arrow" /> icon.\n\n</Card>\n\n</Notice>\n\n</Tab>\n\n<Tab label="Second">\n\n<YouTube id="abc" />\n\n</Tab>\n\n</Tabs>`,
+    );
+  });
+
+  it("keeps a block component with an inline component, list and code", () => {
+    expectStable(
+      `<Notice type="info">\n\nThe **body** with <A href="/docs">a link</A> and \`code\`.\n\n- One\n- Two\n\n</Notice>`,
+    );
+  });
 });
 
 describe("raw html", () => {
@@ -162,6 +236,48 @@ describe("raw html", () => {
 
   it("keeps inline markup stable", () => {
     expectStable(`Text with <strong>bold</strong> inside.`);
+  });
+
+  it("keeps nested inline markup verbatim", () => {
+    const src = `Tags <span class="note"><strong>bold</strong> and <em>italic</em> inside</span> and a <br> break.`;
+    expect(roundTrip(src).trim()).toBe(src);
+  });
+
+  it("keeps a large nested HTML section in one block, verbatim", () => {
+    const src = `<section class="pricing" id="pricing" data-analytics="pricing-table">
+  <div class="row justify-center">
+    <h2 id="t" class="mb-4">Simple pricing</h2>
+    <p class="mb-8">Choose the plan that fits your team.</p>
+  </div>
+  <div class="grid gap-6 md:grid-cols-3">
+    <div class="rounded-xl border p-6">
+      <ul class="mt-4 space-y-2">
+        <li>1 project</li>
+        <li>Community support</li>
+      </ul>
+      <a href="/signup?plan=starter&utm_source=pricing" class="btn">Get started</a>
+    </div>
+  </div>
+  <table class="mt-12 w-full">
+    <thead><tr><th>Feature</th><th>Pro</th></tr></thead>
+    <tbody>
+      <tr><td>Projects</td><td>Unlimited</td></tr>
+    </tbody>
+  </table>
+</section>`;
+    const editor = createSlateEditor({ plugins: Kit, value: [] });
+    const nodes = editor
+      .getApi(MarkdownPlugin)
+      .markdown.deserialize(src, { withoutMdx: true });
+
+    expect(nodes).toHaveLength(1);
+    expect((nodes[0] as { value?: string }).value).toBe(src);
+    expectStable(src);
+  });
+
+  it("keeps a details/summary block stable", () => {
+    const src = `<details>\n<summary>Click to expand</summary>\nHidden content.\n</details>`;
+    expect(roundTrip(src).trim()).toBe(src);
   });
 
   it("keeps direct HTML attributes in their source form", () => {

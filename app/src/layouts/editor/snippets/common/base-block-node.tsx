@@ -37,23 +37,23 @@ export interface BaseSnippetBlockProps extends React.ComponentProps<
   hideContent?: boolean;
 }
 
-const TypeBadge = ({
+export const TypeBadge = ({
   theme,
-  label,
+  className,
 }: {
   theme: SnippetTheme;
-  label?: string;
+  className?: string;
 }) => {
   return (
     <span
       className={cn(
-        "rounded px-1.5 py-0.5 text-[10px] font-bold tracking-wider uppercase",
+        "inline-block shrink-0 rounded-sm px-1.5 py-px text-[10px] leading-4 font-bold tracking-wider text-white uppercase select-none",
         theme.badge,
-        "text-white",
+        className,
       )}
       contentEditable={false}
     >
-      {label || theme.type}
+      {theme.type}
     </span>
   );
 };
@@ -87,69 +87,57 @@ export const BaseSnippetBlock = withRef<
       <PlateElement
         ref={ref}
         className={cn(
-          "relative block w-full max-w-full min-w-0 overflow-hidden rounded-lg border-2 font-mono text-sm shadow-sm",
-          hideContent ? "my-1 p-3" : "my-3 p-4",
+          "group/snippet relative my-3 block w-full max-w-full min-w-0 overflow-hidden rounded-lg border shadow-xs",
           theme.bg,
           theme.border,
-          theme.text,
-          selected && focused && "ring-primary ring-2 ring-offset-2", // Generalized ring color or use theme
+          "text-text-default",
+          selected &&
+            focused &&
+            "ring-primary/40 ring-offset-background ring-2 ring-offset-1",
           className,
         )}
         {...props}
       >
-        <SnippetControls
-          element={element}
-          extraControls={snippetExtraControls}
-        />
-
-        {rightControls}
-
-        <div className={cn(!hideContent && "mb-3")}>
-          <div className="mb-2 flex items-center gap-2" contentEditable={false}>
-            <TypeBadge theme={theme} label={theme.type} />
-            {label && (
-              <span className="text-[10px] tracking-wide text-slate-500 uppercase dark:text-slate-400">
-                {label}
-              </span>
-            )}
-            {titleExtra && (
-              <div className="ms-auto" contentEditable={false}>
-                {titleExtra}
-              </div>
-            )}
-          </div>
-          {getHeaderContent(headerContent)}
-        </div>
-
         <div
           className={cn(
-            "my-3 w-full overflow-hidden border-s-2 ps-2",
+            "flex min-h-9 items-center gap-2 border-b px-3 py-1.5",
             theme.border,
-            contentClassName,
-            hideContent && "hidden",
           )}
+          contentEditable={false}
         >
-          <div className="flex w-full min-w-0 flex-col items-start">
-            {children}
-          </div>
+          <TypeBadge theme={theme} />
+          {label && (
+            <span className="text-muted-foreground truncate text-[10px] font-medium tracking-wide uppercase select-none">
+              {label}
+            </span>
+          )}
+          {titleExtra}
+          <SnippetControls
+            element={element}
+            extraControls={snippetExtraControls}
+          />
+          {rightControls}
         </div>
-        {footerContent && (
-          <div className="w-full min-w-0">
-            <div className="flex w-full min-w-0 flex-col items-start">
-              {footerContent}
+
+        <div className="flex min-w-0 flex-col gap-2 px-3 py-2.5">
+          {headerContent && <div className="min-w-0">{headerContent}</div>}
+
+          <div
+            className={cn(
+              "w-full min-w-0 border-s-2 ps-3",
+              theme.border,
+              contentClassName,
+              hideContent && "hidden",
+            )}
+          >
+            <div className="flex w-full min-w-0 flex-col items-stretch">
+              {children}
             </div>
           </div>
-        )}
+
+          {footerContent && <div className="min-w-0">{footerContent}</div>}
+        </div>
       </PlateElement>
     );
   },
 );
-
-function getHeaderContent(content: React.ReactNode) {
-  if (!content) return null;
-  return (
-    <div className="min-w-0 flex-1">
-      <div className="flex flex-col items-start">{content}</div>
-    </div>
-  );
-}

@@ -1,26 +1,21 @@
 "use client";
 
-import { cn } from "@/lib/utils/cn";
-import {
-  PlateElement,
-  useEditorRef,
-  useFocused,
-  useSelected,
-  withRef,
-} from "platejs/react";
+import { PlateElement, useEditorRef, withRef } from "platejs/react";
 import { SnippetTheme } from "../common/base-block-node";
+import {
+  BaseInlineSnippet,
+  InlineBody,
+  InlineClosingTag,
+} from "../common/base-inline-node";
 import {
   ContentEditableSpan,
   EditableTagLine,
 } from "../common/editable-tag-line";
-import { SnippetControls } from "../common/snippet-controls";
 
 export const HtmlInlineElement = withRef<typeof PlateElement>(
   ({ className, ...props }, ref) => {
     const { children, element } = props;
     const editor = useEditorRef();
-    const selected = useSelected();
-    const focused = useFocused();
 
     const theme: SnippetTheme = {
       type: "HTML",
@@ -85,67 +80,41 @@ export const HtmlInlineElement = withRef<typeof PlateElement>(
     };
 
     return (
-      <PlateElement
+      <BaseInlineSnippet
         ref={ref}
-        className={cn(
-          "relative inline-flex items-baseline gap-1.5 rounded-md border-2 transition-all",
-          theme.border,
-          theme.bg,
-          "py-1 ps-2.5 pe-10 font-mono text-sm",
-          selected && focused && "ring-2 ring-emerald-400 ring-offset-2",
-          className,
-        )}
+        theme={theme}
+        hideBadge={isClosingTag}
+        className={className}
         {...props}
+        head={
+          <EditableTagLine
+            text={openingTag}
+            propName={isClosingTag ? "closing" : "inline"}
+            inline
+            theme={theme}
+            onChange={(_val) => updateInlineText(content)}
+          />
+        }
       >
-        <SnippetControls
-          element={element}
-          isBlock={false}
-          className="inset-e-1 top-1/2 -translate-y-1/2"
-          code=""
-        />
-        {!isClosingTag && (
-          <span
-            contentEditable={false}
-            className={cn(
-              "self-center rounded-sm px-1 py-px text-[9px] font-bold tracking-wider text-white uppercase",
-              theme.badge,
-            )}
-          >
-            HTML
-          </span>
-        )}
-
-        {/* Opening tag - non-editable */}
-        <EditableTagLine
-          text={openingTag}
-          propName={isClosingTag ? "closing" : "inline"}
-          theme={theme}
-          onChange={(_val) => updateInlineText(content)}
-        />
-
         {/* Content between tags - editable */}
         {content && (
-          <span contentEditable={false} className="inline-flex min-w-1.25">
-            <ContentEditableSpan
-              value={content}
-              onChange={(val) => updateInlineText(val)}
-              className={cn("outline-none", theme.text)}
-            />
+          <span contentEditable={false}>
+            <InlineBody theme={theme}>
+              <ContentEditableSpan
+                value={content}
+                onChange={(val) => updateInlineText(val)}
+                className="inline outline-none"
+              />
+            </InlineBody>
           </span>
         )}
 
-        {/* Closing tag - non-editable */}
         {closingTag && (
-          <span
-            contentEditable={false}
-            className={cn("inline-flex", theme.tagText)}
-          >
-            {closingTag}
-          </span>
+          <InlineClosingTag theme={theme}>{closingTag}</InlineClosingTag>
         )}
 
         <span className="hidden">{children}</span>
-      </PlateElement>
+      </BaseInlineSnippet>
     );
   },
 );

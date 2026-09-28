@@ -30,6 +30,88 @@ import {
 const demoFmType = (value: unknown): string | undefined =>
   (value as { fmType?: string })?.fmType;
 
+async function loadGitHubSnippets(
+  entries: TGitHubContentEntry | TGitHubContentEntry[],
+  ref: string | undefined,
+): Promise<MdxSnippet[]> {
+  if (!Array.isArray(entries)) {
+    store.dispatch(updateConfig({ snippets: [] }));
+    return [];
+  }
+
+  const { config } = store.getState();
+  const authHeaders: Record<string, string> = {
+    accept: "application/vnd.github.raw+json",
+    "X-GitHub-Api-Version": GITHUB_API_VERSION,
+  };
+  if (config.currentLoginUserToken) {
+    authHeaders.Authorization = `Bearer ${config.currentLoginUserToken}`;
+  }
+
+  const snippetFiles = entries.filter((file) => file.type === "file");
+
+  const snippetResults = await Promise.all<MdxSnippet | null>(
+    snippetFiles.map(async (file) => {
+      try {
+        const hasToken = Boolean(config.currentLoginUserToken);
+        const baseUrl = hasToken ? file.url : file.download_url;
+
+        if (!baseUrl) {
+          return null;
+        }
+
+        let requestUrl = baseUrl;
+
+        if (hasToken) {
+          try {
+            const url = new URL(baseUrl);
+            const refValue = ref ?? config.branch;
+            if (refValue && !url.searchParams.has("ref")) {
+              url.searchParams.set("ref", refValue);
+            }
+            requestUrl = url.toString();
+          } catch {
+            const refValue = ref ?? config.branch;
+            if (refValue) {
+              const separator = baseUrl.includes("?") ? "&" : "?";
+              requestUrl = `${baseUrl}${separator}ref=${encodeURIComponent(refValue)}`;
+            }
+          }
+        }
+
+        const response = await fetch(requestUrl, {
+          headers: hasToken ? authHeaders : { accept: authHeaders.accept },
+        });
+
+        if (!response.ok) {
+          logger.warn("Failed to fetch snippet", undefined, {
+            filePath: file.path,
+            status: response.status,
+          });
+          return null;
+        }
+
+        const decoded = await response.text();
+
+        return parseSnippetFile(decoded, file.path);
+      } catch (error) {
+        logger.warn("Failed to load snippet", error, {
+          filePath: file.path,
+        });
+        return null;
+      }
+    }),
+  );
+
+  const snippets = snippetResults.filter(
+    (snippet): snippet is MdxSnippet => snippet !== null,
+  );
+
+  store.dispatch(updateConfig({ snippets }));
+
+  return snippets;
+}
+
 export const githubContentApi = githubApi.injectEndpoints({
   overrideExisting: true,
   endpoints: (builder) => ({
@@ -304,10 +386,27 @@ export const githubContentApi = githubApi.injectEndpoints({
       MdxSnippet[],
       Omit<TGitHubOption<"GET /repos/{owner}/{repo}/contents/{path}">, "path">
     >({
-      query: ({ owner, repo, ref, ...rest }) => ({
-        endpoint: "GET /repos/{owner}/{repo}/contents/{path}",
-        options: { owner, repo, path: SNIPPET_FOLDER, ref, ...rest },
-      }),
+      async queryFn(arg, _api, _extraOptions, fetchWithBQ) {
+        const { owner, repo, ref, ...rest } = arg;
+        const result = await fetchWithBQ({
+          endpoint: "GET /repos/{owner}/{repo}/contents/{path}",
+          options: { owner, repo, path: SNIPPET_FOLDER, ref, ...rest },
+        });
+
+        if (result.error) {
+          // A repo without a snippet folder simply has no snippets.
+          if (result.error.status !== 404) return { error: result.error };
+          store.dispatch(updateConfig({ snippets: [] }));
+          return { data: [] };
+        }
+
+        return {
+          data: await loadGitHubSnippets(
+            result.data as TGitHubContentEntry | TGitHubContentEntry[],
+            arg.ref,
+          ),
+        };
+      },
       providesTags: (_result, _error, arg) => [
         {
           type: "GitHubContent",
@@ -315,92 +414,6 @@ export const githubContentApi = githubApi.injectEndpoints({
         },
         { type: "GitHubContent" }, // Add general tag for easier invalidation
       ],
-      async transformResponse(
-        baseQueryReturnValue: TGitHubContentEntry | TGitHubContentEntry[],
-        _meta,
-        arg,
-      ): Promise<MdxSnippet[]> {
-        if (!Array.isArray(baseQueryReturnValue)) {
-          store.dispatch(updateConfig({ snippets: [] }));
-          return [];
-        }
-
-        const { config } = store.getState();
-        const authHeaders: Record<string, string> = {
-          accept: "application/vnd.github.raw+json",
-          "X-GitHub-Api-Version": GITHUB_API_VERSION,
-        };
-        if (config.currentLoginUserToken) {
-          authHeaders.Authorization = `Bearer ${config.currentLoginUserToken}`;
-        }
-
-        const snippetFiles = baseQueryReturnValue.filter(
-          (file) => file.type === "file",
-        );
-
-        const snippetResults = await Promise.all<MdxSnippet | null>(
-          snippetFiles.map(async (file) => {
-            try {
-              const hasToken = Boolean(config.currentLoginUserToken);
-              const baseUrl = hasToken ? file.url : file.download_url;
-
-              if (!baseUrl) {
-                return null;
-              }
-
-              let requestUrl = baseUrl;
-
-              if (hasToken) {
-                try {
-                  const url = new URL(baseUrl);
-                  const refValue = arg.ref ?? config.branch;
-                  if (refValue && !url.searchParams.has("ref")) {
-                    url.searchParams.set("ref", refValue);
-                  }
-                  requestUrl = url.toString();
-                } catch {
-                  const refValue = arg.ref ?? config.branch;
-                  if (refValue) {
-                    const separator = baseUrl.includes("?") ? "&" : "?";
-                    requestUrl = `${baseUrl}${separator}ref=${encodeURIComponent(refValue)}`;
-                  }
-                }
-              }
-
-              const response = await fetch(requestUrl, {
-                headers: hasToken
-                  ? authHeaders
-                  : { accept: authHeaders.accept },
-              });
-
-              if (!response.ok) {
-                logger.warn("Failed to fetch snippet", undefined, {
-                  filePath: file.path,
-                  status: response.status,
-                });
-                return null;
-              }
-
-              const decoded = await response.text();
-
-              return parseSnippetFile(decoded, file.path);
-            } catch (error) {
-              logger.warn("Failed to load snippet", error, {
-                filePath: file.path,
-              });
-              return null;
-            }
-          }),
-        );
-
-        const snippets = snippetResults.filter(
-          (snippet): snippet is MdxSnippet => snippet !== null,
-        );
-
-        store.dispatch(updateConfig({ snippets }));
-
-        return snippets;
-      },
     }),
 
     getGitHubSiteConfig: builder.query<

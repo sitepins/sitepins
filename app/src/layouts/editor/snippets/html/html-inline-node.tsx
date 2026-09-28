@@ -12,6 +12,50 @@ import {
   EditableTagLine,
 } from "../common/editable-tag-line";
 
+export interface InlineHtmlParts {
+  isClosingTag: boolean;
+  openingTag: string;
+  content: string;
+  closingTag: string;
+}
+
+export function splitInlineHtml(text: string): InlineHtmlParts {
+  if (text.trim().startsWith("</")) {
+    return {
+      isClosingTag: true,
+      openingTag: text,
+      content: "",
+      closingTag: "",
+    };
+  }
+  const full = text.match(
+    /^(<[a-zA-Z0-9-]+[^>]*>)([\s\S]*?)(<\/[a-zA-Z0-9-]+>)$/,
+  );
+  if (full) {
+    return {
+      isClosingTag: false,
+      openingTag: full[1],
+      content: full[2],
+      closingTag: full[3],
+    };
+  }
+  const open = text.match(/^(<[a-zA-Z0-9-]+[^>]*>)([\s\S]*)$/);
+  return {
+    isClosingTag: false,
+    openingTag: open ? open[1] : text,
+    content: open ? open[2] : "",
+    closingTag: "",
+  };
+}
+
+export function joinInlineHtml(
+  parts: InlineHtmlParts,
+  changes: Partial<Pick<InlineHtmlParts, "openingTag" | "content">> = {},
+): string {
+  const { openingTag, content, closingTag } = { ...parts, ...changes };
+  return openingTag + content + closingTag;
+}
+
 export const HtmlInlineElement = withRef<typeof PlateElement>(
   ({ className, ...props }, ref) => {
     const { children, element } = props;
@@ -30,53 +74,18 @@ export const HtmlInlineElement = withRef<typeof PlateElement>(
     const textNode = element.children?.[0];
     const rawText = textNode && "text" in textNode ? textNode.text : "";
     const text = typeof rawText === "string" ? rawText : "";
-    const isClosingTag = String(text).trim().startsWith("</");
+    const { isClosingTag, openingTag, content, closingTag } =
+      splitInlineHtml(text);
 
-    // Parse the HTML to extract opening tag, content, and closing tag
-    // Match: <tag ...> content </tag>
-    const fullMatch =
-      !isClosingTag &&
-      text.match(/^(<[a-zA-Z0-9-]+[^>]*>)([\s\S]*?)(<\/[a-zA-Z0-9-]+>)$/);
-
-    let openingTag = "";
-    let content = "";
-    let closingTag = "";
-
-    if (fullMatch) {
-      // Has opening tag, content, and closing tag
-      openingTag = fullMatch[1];
-      content = fullMatch[2];
-      closingTag = fullMatch[3];
-    } else if (!isClosingTag) {
-      // Try to match just opening tag without closing (self-contained or no closing)
-      const openMatch = text.match(/^(<[a-zA-Z0-9-]+[^>]*>)([\s\S]*)$/);
-      if (openMatch) {
-        openingTag = openMatch[1];
-        content = openMatch[2];
-        closingTag = "";
-      } else {
-        // Fallback: treat entire text as opening tag
-        openingTag = text;
-        content = "";
-        closingTag = "";
-      }
-    } else {
-      // It's a closing tag
-      openingTag = text;
-      content = "";
-      closingTag = "";
-    }
-
-    const updateInlineText = (newContent: string) => {
+    const updateInlineText = (
+      parts: Partial<Pick<InlineHtmlParts, "openingTag" | "content">>,
+    ) => {
       const path = editor.api.findPath(element);
       if (!path) return;
-
-      // Reconstruct full HTML with new content
-      const newText = openingTag + newContent + closingTag;
-
-      // Replace content using insertText over the entire range
       const range = editor.api.range(path);
-      editor.tf.insertText(newText, { at: range });
+      editor.tf.insertText(joinInlineHtml(splitInlineHtml(text), parts), {
+        at: range,
+      });
     };
 
     return (
@@ -92,7 +101,7 @@ export const HtmlInlineElement = withRef<typeof PlateElement>(
             propName={isClosingTag ? "closing" : "inline"}
             inline
             theme={theme}
-            onChange={(_val) => updateInlineText(content)}
+            onChange={(val) => updateInlineText({ openingTag: val })}
           />
         }
       >
@@ -102,7 +111,7 @@ export const HtmlInlineElement = withRef<typeof PlateElement>(
             <InlineBody theme={theme}>
               <ContentEditableSpan
                 value={content}
-                onChange={(val) => updateInlineText(val)}
+                onChange={(val) => updateInlineText({ content: val })}
                 className="inline outline-none"
               />
             </InlineBody>

@@ -87,7 +87,7 @@ export const BaseSnippetBlock = withRef<
       <PlateElement
         ref={ref}
         className={cn(
-          "group/snippet relative my-3 block w-full max-w-full min-w-0 overflow-hidden rounded-lg border shadow-xs",
+          "relative my-3 block w-full max-w-full min-w-0 overflow-hidden rounded-lg border shadow-xs",
           theme.bg,
           theme.border,
           "text-text-default",

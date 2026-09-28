@@ -175,7 +175,7 @@ const FallbackEditableTagLine = ({
         }}
         className={cn(
           "font-mono wrap-anywhere whitespace-pre-wrap",
-          inline ? "text-[0.875em]" : "text-sm",
+          !inline && "text-sm",
           theme.text,
         )}
       />
@@ -226,6 +226,14 @@ const parseAttributes = (text: string): AttrToken[] => {
   return tokens;
 };
 
+const ATTR_CLASS: Record<AttrToken["type"], string> = {
+  key: "text-yellow-600 dark:text-yellow-400 font-medium",
+  value: "text-emerald-600 dark:text-emerald-400",
+  eq: "text-slate-400 dark:text-slate-500",
+  whitespace: "",
+  other: "",
+};
+
 export const HighlightedAttributes = ({
   text,
   theme: _theme,
@@ -237,30 +245,158 @@ export const HighlightedAttributes = ({
 
   return (
     <>
-      {tokens.map((token, i) => {
-        let className = "";
-        switch (token.type) {
-          case "key":
-            // Use a brighter/lighter color for keys
-            className = "text-yellow-600 dark:text-yellow-400 font-medium";
-            break;
-          case "value":
-            // Use a string-like color for values
-            className = "text-emerald-600 dark:text-emerald-400";
-            break;
-          case "eq":
-            className = "text-slate-400 dark:text-slate-500";
-            break;
-          default:
-            className = "";
-        }
-        return (
-          <span key={i} className={className}>
-            {token.text}
-          </span>
-        );
-      })}
+      {tokens.map((token, i) => (
+        <span key={i} className={ATTR_CLASS[token.type]}>
+          {token.text}
+        </span>
+      ))}
     </>
+  );
+};
+
+function focusAttributes(e: ReactMouseEvent<HTMLSpanElement>) {
+  const editable = e.currentTarget.querySelector<HTMLElement>(
+    '[contenteditable="true"]',
+  );
+  if (!editable || editable.contains(e.target as Node)) return;
+  e.preventDefault();
+  e.stopPropagation();
+  editable.focus();
+  const range = document.createRange();
+  range.selectNodeContents(editable);
+  range.collapse(false);
+  const sel = window.getSelection();
+  sel?.removeAllRanges();
+  sel?.addRange(range);
+}
+
+export function splitTagLine(
+  text: string,
+): { prefix: string; attributes: string; suffix: string } | null {
+  const match =
+    text.match(/^(<[\w-]+)([\s\S]*)(\/>)$/) ??
+    text.match(/^(<[\w-]+)([\s\S]*)(>)$/) ??
+    text.match(/^(\{\{[<%]\s*[\w-]+)([\s\S]*)([>%]\}\})$/);
+  return match
+    ? { prefix: match[1], attributes: match[2], suffix: match[3] }
+    : null;
+}
+
+export function splitTagPrefix(prefix: string) {
+  const [, delimiter = "", name = ""] =
+    prefix.match(/^(<\/?|\{\{[<%]\s*)(.*)$/) ?? [];
+  return { delimiter, name };
+}
+
+// The tag name is editable with the attributes; only the delimiters are fixed.
+export function inlineTagEditor(
+  prefix: string,
+  attributes: string,
+  suffix: string,
+) {
+  const { delimiter, name } = splitTagPrefix(prefix);
+  return {
+    delimiter,
+    editable: name + attributes,
+    commit: (typed: string) => delimiter + typed + suffix,
+  };
+}
+
+export function inlineTagTokens(
+  text: string,
+): { type: AttrToken["type"] | "name"; text: string }[] {
+  const [name = ""] = text.match(/^\S*/) ?? [];
+  return [
+    { type: "name", text: name },
+    ...parseAttributes(text.slice(name.length)),
+  ];
+}
+
+// Highlighting is painted only while unfocused, so React never fights the caret.
+const InlineTagContent = ({
+  prefix,
+  attributes,
+  suffix,
+  onChange,
+  theme,
+}: {
+  prefix: string;
+  attributes: string;
+  suffix: string;
+  onChange: (val: string) => void;
+  theme: EditableTagLineTheme;
+}) => {
+  const ref = useRef<HTMLSpanElement>(null);
+  const focused = useRef(false);
+  const { delimiter, editable, commit } = inlineTagEditor(
+    prefix,
+    attributes,
+    suffix,
+  );
+  const tagClass = cn("font-semibold", theme.tagText);
+
+  const paint = (text: string) => {
+    ref.current?.replaceChildren(
+      ...inlineTagTokens(text).map((token) => {
+        const span = document.createElement("span");
+        span.className =
+          token.type === "name" ? tagClass : ATTR_CLASS[token.type];
+        span.textContent = token.text;
+        return span;
+      }),
+    );
+  };
+
+  useEffect(() => {
+    if (!focused.current) paint(editable);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editable]);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const stop = (e: Event) => e.stopPropagation();
+    el.addEventListener("beforeinput", stop);
+    return () => el.removeEventListener("beforeinput", stop);
+  }, []);
+
+  return (
+    <span
+      className={cn("cursor-text wrap-anywhere whitespace-nowrap", theme.text)}
+      dir="ltr"
+      contentEditable={false}
+      onMouseDown={focusAttributes}
+    >
+      <span className={cn(tagClass, "select-none")}>{delimiter}</span>
+      <span
+        ref={ref}
+        contentEditable
+        suppressContentEditableWarning
+        spellCheck={false}
+        className="whitespace-pre-wrap caret-stone-900 outline-none dark:caret-stone-100"
+        onInput={(e) => {
+          e.stopPropagation();
+          onChange(commit(e.currentTarget.textContent ?? ""));
+        }}
+        onKeyDown={(e) => {
+          e.stopPropagation();
+          if (e.key === "Enter") e.preventDefault();
+        }}
+        onKeyUp={(e) => e.stopPropagation()}
+        onClick={(e) => e.stopPropagation()}
+        onMouseDown={(e) => e.stopPropagation()}
+        onFocus={(e) => {
+          e.stopPropagation();
+          focused.current = true;
+        }}
+        onBlur={(e) => {
+          e.stopPropagation();
+          focused.current = false;
+          paint(e.currentTarget.textContent ?? "");
+        }}
+      />
+      <span className={cn(tagClass, "select-none")}>{suffix}</span>
+    </span>
   );
 };
 
@@ -283,6 +419,17 @@ const EditableTagLineContent = ({
 }) => {
   const [attrValue, setAttrValue] = useState(attributes);
   const [syncedAttributes, setSyncedAttributes] = useState(attributes);
+  if (inline) {
+    return (
+      <InlineTagContent
+        prefix={prefix}
+        attributes={attributes}
+        suffix={suffix}
+        onChange={onChange}
+        theme={theme}
+      />
+    );
+  }
   if (syncedAttributes !== attributes) {
     setSyncedAttributes(attributes);
     setAttrValue(attributes);
@@ -293,28 +440,12 @@ const EditableTagLineContent = ({
     theme.tagText,
   );
 
-  const focusAttributes = (e: ReactMouseEvent<HTMLSpanElement>) => {
-    const editable = e.currentTarget.querySelector<HTMLElement>(
-      '[contenteditable="true"]',
-    );
-    if (!editable || editable.contains(e.target as Node)) return;
-    e.preventDefault();
-    e.stopPropagation();
-    editable.focus();
-    const range = document.createRange();
-    range.selectNodeContents(editable);
-    range.collapse(false);
-    const sel = window.getSelection();
-    sel?.removeAllRanges();
-    sel?.addRange(range);
-  };
-
   // Highlighted copy underneath, transparent editable text on top.
   return (
     <span
       className={cn(
         "max-w-full min-w-0 cursor-text font-mono",
-        inline ? "inline-grid align-baseline text-[0.875em]" : "grid text-sm",
+        "grid text-sm",
         theme.text,
       )}
       style={{ gridTemplateColumns: "minmax(0, 1fr)" }}
@@ -379,17 +510,14 @@ export const EditableTagLine = ({
   inline = propName === "inline",
 }: EditableTagLineProps) => {
   const Wrapper = inline ? "span" : "div";
-  const wrapperClass = cn(
-    inline && "inline-flex max-w-full min-w-0",
-    className,
-  );
+  const wrapperClass = className;
 
   if (propName === "closing") {
     return (
       <Wrapper
         className={cn(
           "font-mono font-semibold wrap-anywhere select-none",
-          inline ? "text-[0.875em]" : "text-sm",
+          !inline && "text-sm",
           theme.tagText,
           wrapperClass,
         )}
@@ -401,27 +529,8 @@ export const EditableTagLine = ({
     );
   }
 
-  let prefix = "";
-  let suffix = "";
-  let attributes = "";
-
-  const jsxMatch = text.match(/^(<[\w-]+)([\s\S]*)(>)$/);
-  const jsxSelfClosingMatch = text.match(/^(<[\w-]+)([\s\S]*)(\/>)$/);
-  const hugoMatch = text.match(/^(\{\{[<%]\s*[\w-]+)([\s\S]*)([>%]\}\})$/);
-
-  if (jsxSelfClosingMatch) {
-    prefix = jsxSelfClosingMatch[1];
-    attributes = jsxSelfClosingMatch[2];
-    suffix = jsxSelfClosingMatch[3];
-  } else if (jsxMatch) {
-    prefix = jsxMatch[1];
-    attributes = jsxMatch[2];
-    suffix = jsxMatch[3];
-  } else if (hugoMatch) {
-    prefix = hugoMatch[1];
-    attributes = hugoMatch[2];
-    suffix = hugoMatch[3];
-  } else {
+  const parts = splitTagLine(text);
+  if (!parts) {
     return (
       <Wrapper className={wrapperClass}>
         <FallbackEditableTagLine
@@ -437,9 +546,9 @@ export const EditableTagLine = ({
   return (
     <Wrapper className={wrapperClass}>
       <EditableTagLineContent
-        prefix={prefix}
-        attributes={attributes}
-        suffix={suffix}
+        prefix={parts.prefix}
+        attributes={parts.attributes}
+        suffix={parts.suffix}
         text={text}
         onChange={onChange}
         theme={theme}

@@ -6,6 +6,12 @@ import { ShortcodeInlineKit, ShortcodeKit } from "./common/snippet-plugin";
 import { HtmlBlockKit, HtmlInlineKit } from "./html/html-plugin";
 import { JsxBlockKit, JsxInlineKit } from "./jsx/jsx-plugin";
 import {
+  inlineTagEditor,
+  inlineTagTokens,
+  splitTagLine,
+} from "./common/editable-tag-line";
+import { joinInlineHtml, splitInlineHtml } from "./html/html-inline-node";
+import {
   MdxCommentInlineKit,
   MdxCommentKit,
 } from "./mdx-comment/mdx-comment-plugin";
@@ -522,5 +528,73 @@ describe("mixed content", () => {
         `Plain text with <em>markup</em>.`,
       ].join("\n"),
     );
+  });
+});
+
+const editorFor = (tag: string) => {
+  const { prefix, attributes, suffix } = splitTagLine(tag)!;
+  return inlineTagEditor(prefix, attributes, suffix);
+};
+
+describe("splitTagLine", () => {
+  it.each([
+    [`<A href="/x">`, `<A`, ` href="/x"`, `>`],
+    [`<Icon name="star" />`, `<Icon`, ` name="star" `, `/>`],
+    [`{{< icon name="fb" >}}`, `{{< icon`, ` name="fb" `, `>}}`],
+    [`{{% param "title" %}}`, `{{% param`, ` "title" `, `%}}`],
+  ])("splits %s", (tag, prefix, attributes, suffix) => {
+    expect(splitTagLine(tag)).toEqual({ prefix, attributes, suffix });
+  });
+
+  it("returns null for text that is not a tag", () => {
+    expect(splitTagLine("plain text")).toBeNull();
+  });
+});
+
+describe("inline tag editing", () => {
+  it.each([
+    [`{{< icon name="facebook" >}}`, `iconX name="facebook" `],
+    [`<A href="/contact">`, `Anchor href="/contact"`],
+    [`<Kbd>`, `Kbd class="k"`],
+    [`{{< icon name="facebook" >}}`, `icon name="faceZbook" `],
+  ])("keeps what was typed after re-parsing %s", (tag, typed) => {
+    expect(editorFor(editorFor(tag).commit(typed)).editable).toBe(typed);
+  });
+
+  it("highlights the tag name separately from attributes", () => {
+    const tokens = inlineTagTokens(`icon name="fb"`);
+    expect(tokens[0]).toEqual({ type: "name", text: "icon" });
+    expect(tokens.map((t) => t.text).join("")).toBe(`icon name="fb"`);
+  });
+});
+
+describe("inline HTML", () => {
+  it("splits opening tag, body and closing tag", () => {
+    expect(splitInlineHtml(`<span class="a">hi <b>x</b></span>`)).toEqual({
+      isClosingTag: false,
+      openingTag: `<span class="a">`,
+      content: `hi <b>x</b>`,
+      closingTag: `</span>`,
+    });
+  });
+
+  it("keeps an edited opening tag", () => {
+    const parts = splitInlineHtml(`<kbd>Ctrl</kbd>`);
+    expect(joinInlineHtml(parts, { openingTag: `<kbd class="k">` })).toBe(
+      `<kbd class="k">Ctrl</kbd>`,
+    );
+  });
+
+  it("keeps the opening tag when the body is edited", () => {
+    const parts = splitInlineHtml(`<a href="/x">old</a>`);
+    expect(joinInlineHtml(parts, { content: "new" })).toBe(
+      `<a href="/x">new</a>`,
+    );
+  });
+
+  it("treats a stray closing tag as a single part", () => {
+    const parts = splitInlineHtml(`</span>`);
+    expect(parts.isClosingTag).toBe(true);
+    expect(joinInlineHtml(parts)).toBe(`</span>`);
   });
 });

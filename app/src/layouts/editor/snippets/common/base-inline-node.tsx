@@ -16,7 +16,7 @@ export interface BaseInlineSnippetProps extends React.ComponentProps<
 
 const pillClass = (theme: SnippetTheme) =>
   cn(
-    "inline-flex max-w-full items-baseline rounded-md border px-1 py-px align-baseline leading-[1.4] transition-shadow",
+    "inline rounded-md border [box-decoration-break:clone] px-1 py-px align-baseline font-mono whitespace-nowrap text-[0.875em] transition-shadow [-webkit-box-decoration-break:clone]",
     theme.border,
     theme.bg,
   );
@@ -34,35 +34,24 @@ export const BaseInlineSnippet = withRef<
     <PlateElement
       ref={ref}
       as="span"
-      className={cn(
-        "group/snippet relative mx-px inline align-baseline",
-        className,
-      )}
+      className={cn("mx-px inline align-baseline", className)}
       {...props}
-      attributes={{
-        ...props.attributes,
-        "data-selected": isActive ? "true" : undefined,
-      }}
     >
-      <SnippetControls element={element} isBlock={false} code="" />
-
       <span
         contentEditable={false}
         className={cn(pillClass(theme), isActive && "ring-primary/40 ring-2")}
       >
         {!hideBadge && (
-          // h-lh is one tag line tall, so the badge centres on the first line.
-          <span className="me-1 inline-flex h-lh shrink-0 items-center self-start text-[0.875em]">
-            <span
-              className={cn(
-                "rounded-[3px] px-1 text-[9px] leading-normal font-bold tracking-wider text-white uppercase select-none",
-                theme.badge,
-              )}
-            >
-              {theme.type}
-            </span>
+          <span
+            className={cn(
+              "font-primary relative top-[-0.08em] rounded-[3px] px-1 py-px align-middle text-[9px] font-bold tracking-wider text-white uppercase select-none",
+              theme.badge,
+            )}
+          >
+            {theme.type}
           </span>
         )}
+        <SnippetControls element={element} isBlock={false} />
         {head}
       </span>
 
@@ -102,7 +91,7 @@ export const InlineClosingTag = ({
     <span
       dir="ltr"
       className={cn(
-        "font-mono text-[0.875em] font-semibold whitespace-nowrap select-none",
+        "font-semibold whitespace-nowrap select-none",
         theme.tagText,
       )}
     >

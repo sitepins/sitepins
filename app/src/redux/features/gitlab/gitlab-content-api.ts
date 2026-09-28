@@ -65,6 +65,64 @@ function convertGitLabTreeToTTree(items: TGitLabTreeItem[]): TTree[] {
 // API Endpoints
 // ============================================================================
 
+async function loadGitLabSnippets(
+  response: TGitLabTreeItem[] | { message?: string },
+  id: string | number,
+  ref: string | undefined,
+): Promise<MdxSnippet[]> {
+  if (!Array.isArray(response)) {
+    store.dispatch(updateConfig({ snippets: [] }));
+    return [];
+  }
+
+  const { config } = store.getState();
+  const dispatch = store.dispatch;
+
+  const snippetFiles = response.filter((item) => item.type === "blob");
+
+  const snippetResults = await Promise.all<MdxSnippet | null>(
+    snippetFiles.map(async (file) => {
+      try {
+        const rawUrl = `https://gitlab.com/api/${GITLAB_API_VERSION}/projects/${encodeProjectPath(String(id))}/repository/files/${encodeURIComponent(file.path)}/raw`;
+        const fetchUrl = ref
+          ? `${rawUrl}?ref=${encodeURIComponent(ref)}`
+          : rawUrl;
+
+        const headers: Record<string, string> = {};
+        if (config.currentLoginUserToken) {
+          headers["PRIVATE-TOKEN"] = config.currentLoginUserToken;
+        }
+
+        const fetchResponse = await fetch(fetchUrl, { headers });
+
+        if (!fetchResponse.ok) {
+          logger.warn("Failed to fetch snippet", undefined, {
+            filePath: file.path,
+            status: fetchResponse.status,
+          });
+          return null;
+        }
+
+        const decoded = await fetchResponse.text();
+        return parseSnippetFile(decoded, file.path);
+      } catch (error) {
+        logger.warn("Failed to load snippet", error, {
+          filePath: file.path,
+        });
+        return null;
+      }
+    }),
+  );
+
+  const snippets = snippetResults.filter(
+    (snippet): snippet is MdxSnippet => snippet !== null,
+  );
+
+  dispatch(updateConfig({ snippets }));
+
+  return snippets;
+}
+
 export const gitlabContentApi = gitlabApi.injectEndpoints({
   endpoints: (builder) => ({
     /**
@@ -426,78 +484,37 @@ export const gitlabContentApi = gitlabApi.injectEndpoints({
         ref?: string;
       }
     >({
-      query: ({ id, ref }) => ({
-        endpoint: `/projects/${encodeProjectPath(String(id))}/repository/tree`,
-        params: {
-          path: SNIPPET_FOLDER,
-          ref,
-          per_page: 100,
-        },
-      }),
+      async queryFn({ id, ref }, _api, _extraOptions, fetchWithBQ) {
+        const result = await fetchWithBQ({
+          endpoint: `/projects/${encodeProjectPath(String(id))}/repository/tree`,
+          params: {
+            path: SNIPPET_FOLDER,
+            ref,
+            per_page: 100,
+          },
+        });
+
+        if (result.error) {
+          // A repo without a snippet folder simply has no snippets.
+          if (result.error.status !== 404) return { error: result.error };
+          store.dispatch(updateConfig({ snippets: [] }));
+          return { data: [] };
+        }
+
+        return {
+          data: await loadGitLabSnippets(
+            result.data as TGitLabTreeItem[] | { message?: string },
+            id,
+            ref,
+          ),
+        };
+      },
       providesTags: (_result, _error, arg) => [
         {
           type: "GitLabContent",
           id: `${arg.id}/${arg.ref}/${SNIPPET_FOLDER}`,
         },
       ],
-      async transformResponse(
-        response: TGitLabTreeItem[] | { message?: string },
-        _meta,
-        arg: { id: string | number; ref?: string },
-      ): Promise<MdxSnippet[]> {
-        // Handle case where snippets folder doesn't exist
-        if (!Array.isArray(response)) {
-          store.dispatch(updateConfig({ snippets: [] }));
-          return [];
-        }
-
-        const { config } = store.getState();
-        const dispatch = store.dispatch;
-
-        const snippetFiles = response.filter((item) => item.type === "blob");
-
-        const snippetResults = await Promise.all<MdxSnippet | null>(
-          snippetFiles.map(async (file) => {
-            try {
-              const rawUrl = `https://gitlab.com/api/${GITLAB_API_VERSION}/projects/${encodeProjectPath(String(arg.id))}/repository/files/${encodeURIComponent(file.path)}/raw`;
-              const fetchUrl = arg.ref
-                ? `${rawUrl}?ref=${encodeURIComponent(arg.ref)}`
-                : rawUrl;
-
-              const headers: Record<string, string> = {};
-              if (config.currentLoginUserToken) {
-                headers["PRIVATE-TOKEN"] = config.currentLoginUserToken;
-              }
-
-              const fetchResponse = await fetch(fetchUrl, { headers });
-
-              if (!fetchResponse.ok) {
-                logger.warn("Failed to fetch snippet", undefined, {
-                  filePath: file.path,
-                  status: fetchResponse.status,
-                });
-                return null;
-              }
-
-              const decoded = await fetchResponse.text();
-              return parseSnippetFile(decoded, file.path);
-            } catch (error) {
-              logger.warn("Failed to load snippet", error, {
-                filePath: file.path,
-              });
-              return null;
-            }
-          }),
-        );
-
-        const snippets = snippetResults.filter(
-          (snippet): snippet is MdxSnippet => snippet !== null,
-        );
-
-        dispatch(updateConfig({ snippets }));
-
-        return snippets;
-      },
     }),
 
     /**

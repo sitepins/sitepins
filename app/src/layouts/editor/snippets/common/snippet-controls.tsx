@@ -40,15 +40,15 @@ export function SnippetControls({
 
     try {
       const api = editor.getApi(MarkdownPlugin);
-      // Serialize just this node to get its markdown representation
-      const serialized = api.markdown.serialize({ value: [element] });
-      return serialized;
+      // An inline node can't be serialized at the root.
+      const value = isBlock ? [element] : [{ type: "p", children: [element] }];
+      return api.markdown.serialize({ value }).trim();
     } catch (e) {
       logger.error("Failed to serialize snippet node:", e);
       const fallback = element.value ?? element.content;
       return typeof fallback === "string" ? fallback : "";
     }
-  }, [codeProp, element, editor]);
+  }, [codeProp, element, editor, isBlock]);
 
   // Check if this code already exists in snippets
   // We compare normalized strings to avoid whitespace issues if possible
@@ -101,15 +101,17 @@ export function SnippetControls({
     }
   };
 
+  const Root = isBlock ? "div" : "span";
+  const pad = isBlock ? "p-1" : "p-0.5";
+
   return (
-    <div
+    <Root
       className={cn(
         "flex shrink-0 items-center gap-0.5",
         isBlock
           ? // Sits in the block header row, so it never covers the tag text.
             "ms-auto -me-1"
-          : // Floats above the inline chip; revealed on hover, focus or selection.
-            "bg-background border-border invisible absolute inset-e-0 bottom-full z-20 mb-1 rounded-md border p-0.5 opacity-0 shadow-sm transition-opacity group-focus-within/snippet:visible group-focus-within/snippet:opacity-100 group-hover/snippet:visible group-hover/snippet:opacity-100 group-data-[selected=true]/snippet:visible group-data-[selected=true]/snippet:opacity-100 after:absolute after:inset-x-0 after:top-full after:h-1.5 after:content-['']",
+          : "relative -top-[0.07em] mx-1 inline-flex align-middle",
         className,
       )}
       contentEditable={false}
@@ -125,9 +127,12 @@ export function SnippetControls({
               e.stopPropagation();
               setShowSaveDialog(true);
             }}
-            className="text-muted-foreground hover:bg-primary/10 hover:text-primary rounded-sm p-1 transition-colors"
+            className={cn(
+              "text-muted-foreground hover:bg-primary/10 hover:text-primary rounded-sm transition-colors",
+              pad,
+            )}
           >
-            <Plus className="size-3.5" />
+            <Plus className={isBlock ? "size-3.5" : "size-3"} />
           </button>
           <SnippetSaveDialog
             open={showSaveDialog}
@@ -143,10 +148,13 @@ export function SnippetControls({
         aria-label="Delete block"
         onMouseDown={(e) => e.stopPropagation()}
         onClick={handleDelete}
-        className="text-muted-foreground hover:bg-destructive hover:text-destructive-foreground rounded-sm p-1 transition-colors"
+        className={cn(
+          "text-muted-foreground hover:bg-destructive hover:text-destructive-foreground rounded-sm transition-colors",
+          pad,
+        )}
       >
-        <Trash className="size-3.5" />
+        <Trash className={isBlock ? "size-3.5" : "size-3"} />
       </button>
-    </div>
+    </Root>
   );
 }

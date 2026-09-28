@@ -130,12 +130,13 @@ const octokitBaseQuery: BaseQueryFn<
       request: {
         fetch: fetch,
       },
-      // log: {
-      //   warn: () => {},
-      //   info: () => {},
-      //   debug: () => {},
-      //   error: console.error,
-      // },
+      // request-log reports every non-2xx here; callers already get it as an RTK error.
+      log: {
+        debug: () => {},
+        info: () => {},
+        warn: (message: string) => logger.warn(message),
+        error: () => {},
+      },
     });
 
     const request = baseOctokit.request.defaults({

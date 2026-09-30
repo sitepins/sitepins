@@ -92,7 +92,7 @@
     "react-dnd-html5-backend": "^16.0.1",
     "react-dnd-touch-backend": "^16.0.1",
     "react-dom": "19.3.0",
-    "react-dropzone": "^20.1.1",
+    "react-dropzone": "^20.1.2",
     "react-gravatar": "^2.6.3",
     "react-hook-form": "^7.88.0",
     "react-redux": "^9.3.0",

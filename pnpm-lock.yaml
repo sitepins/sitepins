@@ -215,8 +215,8 @@ importers:
         specifier: ^9.0.3
         version: 9.0.3
       mongoose:
-        specifier: ^9.10.0
-        version: 9.10.0
+        specifier: ^9.10.2
+        version: 9.10.2
       multer:
         specifier: ^2.3.0
         version: 2.3.0
@@ -5395,8 +5395,8 @@ packages:
       socks:
         optional: true
 
-  mongoose@9.10.0:
-    resolution: {integrity: sha512-Kr0J3a61sMxjiLY4QqaL0U+iTA534MB0YKHIvFmMfEgnv5feWwwi9fYkq+WfOQrEIi5mT9GB7sIYt2scM1oZ+w==}
+  mongoose@9.10.2:
+    resolution: {integrity: sha512-oFcFL3dsX5tDzMwBD+GGoDqKIj6RNG3bu3oqlvcUIgPulHP14/6N7c07j3s0XgbrlT7U/lbiXOD89hmPtEXnfQ==}
     engines: {node: '>=20.19.0'}
 
   motion-dom@13.2.0:
@@ -12197,7 +12197,7 @@ snapshots:
       bson: 7.3.2
       mongodb-connection-string-url: 7.0.2
 
-  mongoose@9.10.0:
+  mongoose@9.10.2:
     dependencies:
       '@standard-schema/spec': 1.1.0
       kareem: 3.4.0

@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { useGitProvider } from "@/hooks/use-git-provider";
-import { useOwnerPlan } from "@/hooks/use-owner-plan";
+import { useFeatureAccess } from "@/hooks/use-feature-access";
 import { useAppDispatch } from "@/redux/store";
 import { Code2, CopyPlus, Ellipsis } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -44,7 +44,7 @@ export default function ConfigActions({
   const tCommon = useTranslations("common");
   const tGit = useTranslations("project.git");
   const dispatch = useAppDispatch();
-  const { canAccessProFeatures } = useOwnerPlan();
+  const { hasAdvancedFeatures } = useFeatureAccess();
   const [showDuplicateDialog, setShowDuplicateDialog] = useState(false);
   const [duplicateName, setDuplicateName] = useState("");
   const { updateFiles, useGitTrees, useGitContent, adapter, isPending } =
@@ -165,7 +165,7 @@ export default function ConfigActions({
             <CopyPlus className="size-4" />
             <span>{tCommon("actions.duplicate")}</span>
           </DropdownMenuItem>
-          {canAccessProFeatures && (
+          {hasAdvancedFeatures && (
             <DropdownMenuItem asChild>
               <Link
                 href={`/${params.orgId}/${params.projectId}/code/${currentFilepath}`}

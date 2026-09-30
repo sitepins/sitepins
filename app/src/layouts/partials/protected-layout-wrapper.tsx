@@ -3,7 +3,6 @@
 import Loading from "@/components/loading";
 import { useHydrated } from "@/hooks/use-hydrated";
 import { authClient, Session } from "@/lib/auth/auth-client";
-import { usePlanBootstrap } from "@/redux/features/plan/slice";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useSyncExternalStore } from "react";
 
@@ -82,7 +81,6 @@ export default function ProtectedLayoutWrapper({
   }, [auth]);
 
   const activeAuth = auth || cachedAuth;
-  const isAuthenticated = !!activeAuth;
 
   // Redirect unauthenticated users to login ONLY if they are online and truly unauthenticated
   // When offline, do NOT redirect to login due to network errors
@@ -92,11 +90,6 @@ export default function ProtectedLayoutWrapper({
       router.replace(`/login?from=${encodeURIComponent(from)}`);
     }
   }, [auth, isPending, isOnline, cachedAuth, router]);
-
-  usePlanBootstrap({
-    userId: activeAuth?.user.user_id,
-    enabled: isAuthenticated,
-  });
 
   if (!hasHydrated || (isPending && !cachedAuth) || (!activeAuth && isOnline)) {
     return <Loading fullScreen />;

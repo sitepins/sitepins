@@ -1,9 +1,5 @@
 {
   "add-site": {
-    "sites": "Sitios",
-    "unlimited": "Ilimitado",
-    "quota_limit_reached": "Límite de cuota alcanzado",
-    "maybe_later": "Quizás más tarde",
     "add_new_site": "Añadir nuevo sitio",
     "create_new_site": "Crear nuevo sitio",
     "import_site_desc": "Elige cómo quieres importar tu sitio web.",
@@ -26,12 +22,7 @@
     "site_url_placeholder": "https://ejemplo.com",
     "back": "Volver",
     "create_site": "Crear sitio",
-    "limit_reached_title": "¡Tu proyecto está creciendo rápido!",
-    "limit_reached_desc": "Has alcanzado el número máximo de proyectos para tu plan actual. Mejora tu cuenta para agregar más proyectos.",
-    "limit_reached_button": "Límite alcanzado",
-    "limit_reached_private_desc": "Has alcanzado el límite de sitios privados. Actualiza tu plan para crear más sitios privados.",
     "project_created_success": "Proyecto creado correctamente",
-    "something_went_wrong": "¡Algo salió mal!",
-    "plan_usage": "Uso del plan"
+    "something_went_wrong": "¡Algo salió mal!"
   }
 }

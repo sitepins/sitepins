@@ -2,8 +2,8 @@ import { logger } from "@/lib/logger";
 
 /**
  * Public Sitepins documentation used to ground the search Copilot's "how do
- * I…" answers. Mirrors the public pages of sp-docs (never the password
- * protected `/cloud` section). Keep in sync when docs pages are added.
+ * I…" answers. Mirrors the public pages of sp-docs (never its password
+ * protected section). Keep in sync when docs pages are added.
  */
 
 export type TDocEntry = {

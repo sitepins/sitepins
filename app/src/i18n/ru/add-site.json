@@ -1,9 +1,5 @@
 {
   "add-site": {
-    "sites": "Сайты",
-    "unlimited": "Без ограничений",
-    "quota_limit_reached": "Лимит квоты исчерпан",
-    "maybe_later": "Позже",
     "add_new_site": "Добавить сайт",
     "create_new_site": "Создать сайт",
     "import_site_desc": "Выберите способ импорта вашего сайта.",
@@ -26,12 +22,7 @@
     "site_url_placeholder": "https://example.com",
     "back": "Назад",
     "create_site": "Создать сайт",
-    "limit_reached_title": "Вы быстро растёте!",
-    "limit_reached_desc": "Вы достигли максимального количества проектов для вашего текущего плана. Обновите тарифный план, чтобы добавить больше проектов.",
-    "limit_reached_button": "Лимит исчерпан",
-    "limit_reached_private_desc": "Достигнут лимит приватных сайтов. Обновите тарифный план, чтобы создавать больше приватных сайтов.",
     "project_created_success": "Проект успешно создан",
-    "something_went_wrong": "Что-то пошло не так!",
-    "plan_usage": "Использование плана"
+    "something_went_wrong": "Что-то пошло не так!"
   }
 }

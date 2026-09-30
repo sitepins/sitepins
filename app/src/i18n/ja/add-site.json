@@ -1,9 +1,5 @@
 {
   "add-site": {
-    "sites": "サイト数",
-    "unlimited": "無制限",
-    "quota_limit_reached": "上限に達しました",
-    "maybe_later": "後で行う",
     "add_new_site": "サイトを追加",
     "create_new_site": "サイトを新規作成",
     "import_site_desc": "サイトのインポート方法を選択してください。",
@@ -26,12 +22,7 @@
     "site_url_placeholder": "https://example.com",
     "back": "戻る",
     "create_site": "サイトを作成",
-    "limit_reached_title": "急速に成長しています！",
-    "limit_reached_desc": "現在のプランで作成できるプロジェクト数の上限に達しました。さらにプロジェクトを追加するにはアップグレードしてください。",
-    "limit_reached_button": "上限到達",
-    "limit_reached_private_desc": "プライベートサイトの上限に達しました。プランをアップグレードしてプライベートサイトを追加してください。",
     "project_created_success": "プロジェクトが正常に作成されました",
-    "something_went_wrong": "エラーが発生しました。",
-    "plan_usage": "プラン使用状況"
+    "something_went_wrong": "エラーが発生しました。"
   }
 }

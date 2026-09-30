@@ -1,10 +1,9 @@
 "use client";
 
-import { QuotaUpgradeAction } from "@/components/quota-upgrade-action";
 import {
-  hasTemplatePanel,
-  TemplateStartPanel,
-} from "@/components/template-start-panel";
+  hasAddSiteExtraPanel,
+  AddSiteExtraPanel,
+} from "@/components/add-site-extras";
 import { Button, ButtonProps } from "@/components/ui/button";
 import {
   Combobox,
@@ -40,16 +39,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "@/components/ui/toast";
-import { UpgradeCta } from "@/components/upgrade-cta";
-import { UpgradeDialog } from "@/components/upgrade-dialog";
+import { UnlockCta } from "@/components/unlock-cta";
 import { useDebounce } from "@/hooks/use-debounce";
 import { useDialog } from "@/hooks/use-dialog";
 import { useAllInstallationRepos } from "@/hooks/use-fetch-repos";
 import { useGitAuth } from "@/hooks/use-git-auth";
-import { useOwnerPlan } from "@/hooks/use-owner-plan";
-import { authClient } from "@/lib/auth/auth-client";
+import { useFeatureAccess } from "@/hooks/use-feature-access";
+import { useSiteLimit } from "@/hooks/use-plan-limits";
+import { openUnlockPrompt } from "@/hooks/use-unlock-prompt";
 import { IS_DEMO } from "@/lib/constant";
-import { getPlanLimits } from "@/lib/limits";
 import { cn } from "@/lib/utils/cn";
 import { isDemoUrl } from "@/lib/utils/demo-urls";
 import { errorMessage } from "@/lib/utils/error";
@@ -58,37 +56,21 @@ import {
   isGitLabProvider,
   TGitProvider,
 } from "@/lib/utils/provider-checker";
-import { isSiteCreationPlanLimitError } from "@/lib/utils/site-creation-error";
 import { projectSchema } from "@/lib/validate";
 import { useGetGitHubBranchesQuery as useGitHubBranches } from "@/redux/features/github";
 import { useGetGitLabBranchesQuery } from "@/redux/features/gitlab/gitlab-api";
 import { useGetOrgQuery } from "@/redux/features/orgs/org-api";
-import { selectCurrentPackage } from "@/redux/features/plan/slice";
-import {
-  useAddProjectMutation,
-  useGetAllSitesOwnedByUserQuery,
-} from "@/redux/features/project/project-api";
-import { useAppSelector } from "@/redux/store";
+import { useAddProjectMutation } from "@/redux/features/project/project-api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SiGithub, SiGitlab } from "@icons-pack/react-simple-icons";
 import { ExternalLink, Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod/v4";
 import FormError from "./form-error";
-import {
-  AlertDialog,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "./ui/alert-dialog";
 import { Badge } from "./ui/badge";
 
 const providersList: {
@@ -131,17 +113,15 @@ export default function AddSite({
     skip: !orgId,
   });
 
-  const { currentPackage } = useAppSelector(selectCurrentPackage);
-  const { canAccessProPlusFeatures } = useOwnerPlan();
+  const { hasTeamFeatures } = useFeatureAccess();
   const { isOpen: internalOpen, onOpenChange: internalOnOpenChange } =
     useDialog();
 
   const isOpen = controlledOpen !== undefined ? controlledOpen : internalOpen;
   const onOpenChange = controlledOnOpenChange || internalOnOpenChange;
-  const [showUpgradeDialog, setShowUpgradeDialog] = useState(false);
   const [repoOpen, setRepoOpen] = useState(false);
   const [creationError, setCreationError] = useState<string | null>(null);
-  const [isPlanLimitError, setIsPlanLimitError] = useState(false);
+  const [isLimitError, setIsLimitError] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
   const projectForm = useForm<z.infer<typeof projectSchema>>({
     resolver: zodResolver(projectSchema),
@@ -233,7 +213,7 @@ export default function AddSite({
     if (!isOpen) {
       setStep("selection");
       setCreationError(null);
-      setIsPlanLimitError(false);
+      setIsLimitError(false);
       projectForm.reset();
     }
   }, [isOpen, projectForm]);
@@ -246,8 +226,8 @@ export default function AddSite({
   }, [isTokenChanged, step]);
 
   const handleProviderSelect = (val: TGitProvider) => {
-    if (isGitLabProvider(val) && !canAccessProPlusFeatures) {
-      setShowUpgradeDialog(true);
+    if (isGitLabProvider(val) && !hasTeamFeatures) {
+      openUnlockPrompt("gitlab");
       return;
     }
 
@@ -264,99 +244,28 @@ export default function AddSite({
     }
   };
 
-  const { data: auth } = authClient.useSession();
-  const userId = auth?.user?.user_id;
+  const siteLimit = useSiteLimit(org);
 
-  const ownerId = org?.owner ?? userId;
-  const { data: ownSites } = useGetAllSitesOwnedByUserQuery(
-    { userId: ownerId! },
-    { skip: !ownerId },
-  );
-  const activeOwnedSites = useMemo(() => {
-    return ownSites?.filter((p) => p.status !== "archived") || [];
-  }, [ownSites]);
-  const privateOwnedSites = useMemo(() => {
-    return activeOwnedSites.filter((p) => p.visibility === "private");
-  }, [activeOwnedSites]);
+  // Opening the dialog with no room for a site shows the unlock prompt instead.
+  useEffect(() => {
+    if (siteLimit.isFull && isOpen) {
+      onOpenChange(false);
+      openUnlockPrompt("site_limit");
+    }
+  }, [siteLimit.isFull, isOpen, onOpenChange]);
 
-  const checkSiteLimit = (count: number) => {
-    // No org context yet — nothing to add a site to.
-    if (!org) return true;
-    // A missing owner record means an unknown plan, which getPlanLimits
-    // already resolves to the edition's default package.
-    const owner = (org.ownerData || []).find(
-      (owner) => owner.user_id === org.owner,
-    );
-    return count >= getPlanLimits(owner?.active_package).site_limit;
-  };
-
-  const isSiteLimitReached = checkSiteLimit(activeOwnedSites.length);
-
-  if (isSiteLimitReached) {
-    return (
-      <>
-        <AlertDialog open={isOpen} onOpenChange={onOpenChange}>
-          {children && (
-            <AlertDialogTrigger asChild>
-              <Button {...props}>{children}</Button>
-            </AlertDialogTrigger>
-          )}
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>
-                {tAddSite("limit_reached_title")}
-              </AlertDialogTitle>
-              <AlertDialogDescription>
-                {tAddSite("limit_reached_desc")}
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-
-            <div className="flex flex-col items-center py-6 text-center">
-              <div className="w-full">
-                <div className="mb-3 flex items-center justify-between text-sm font-semibold">
-                  <span className="text-muted-foreground">
-                    {tAddSite("plan_usage")}
-                  </span>
-                  <span className="text-primary">
-                    {activeOwnedSites.length} /{" "}
-                    {getPlanLimits(currentPackage).site_limit === Infinity
-                      ? tAddSite("unlimited")
-                      : getPlanLimits(currentPackage).site_limit}{" "}
-                    {tAddSite("sites")}
-                  </span>
-                </div>
-                <div className="bg-border/50 h-3 w-full overflow-hidden rounded-full">
-                  <div
-                    className="bg-primary h-full rounded-full shadow-[0_0_12px_rgba(var(--primary),0.5)] transition-all duration-1000 ease-out"
-                    style={{ width: "100%" }}
-                  ></div>
-                </div>
-                <p className="text-muted-foreground mt-3 text-xs font-medium italic">
-                  {tAddSite("quota_limit_reached")}
-                </p>
-              </div>
-            </div>
-
-            <AlertDialogFooter>
-              <AlertDialogCancel
-                variant="outline"
-                onClick={() => onOpenChange(false)}
-                className="sm:w-36"
-              >
-                {tAddSite("maybe_later")}
-              </AlertDialogCancel>
-              <QuotaUpgradeAction />
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-
-        <UpgradeDialog
-          open={showUpgradeDialog}
-          onOpenChange={setShowUpgradeDialog}
-          contextKey="gitlab"
-        />
-      </>
-    );
+  if (siteLimit.isFull) {
+    return children ? (
+      <Button
+        {...props}
+        onClick={(event) => {
+          props.onClick?.(event);
+          openUnlockPrompt("site_limit");
+        }}
+      >
+        {children}
+      </Button>
+    ) : null;
   }
 
   return (
@@ -387,7 +296,10 @@ export default function AddSite({
 
           {step === "selection" ? (
             <div
-              className={cn("grid gap-6", hasTemplatePanel && "md:grid-cols-2")}
+              className={cn(
+                "grid gap-6",
+                hasAddSiteExtraPanel && "md:grid-cols-2",
+              )}
             >
               <div className="space-y-6">
                 {providersList.map((p) => {
@@ -423,7 +335,7 @@ export default function AddSite({
                 })}
               </div>
 
-              <TemplateStartPanel />
+              <AddSiteExtraPanel />
             </div>
           ) : (
             <form
@@ -432,23 +344,12 @@ export default function AddSite({
                 try {
                   if (!orgId) return;
                   setCreationError(null);
-                  setIsPlanLimitError(false);
-                  if (data.visibility === "private") {
-                    if (!org) return;
-                    const ownerArray = org.ownerData || [];
-                    const owner = ownerArray.find(
-                      (owner) => owner.user_id === org.owner,
-                    );
-                    if (!owner) return;
-                    const active_package = owner.active_package;
-                    if (
-                      privateOwnedSites.length >=
-                      getPlanLimits(active_package).private_site_limit
-                    ) {
-                      setCreationError(tAddSite("limit_reached_private_desc"));
-                      setIsPlanLimitError(true);
-                      return;
-                    }
+                  setIsLimitError(false);
+                  const limitError = siteLimit.getCreateError(data.visibility);
+                  if (limitError) {
+                    setCreationError(limitError);
+                    setIsLimitError(true);
+                    return;
                   }
                   const { org_id, project_id } = await addProject({
                     org_id: orgId.slice(4),
@@ -467,8 +368,8 @@ export default function AddSite({
                   // against the translated string set in the branch above.
                   const message = errorMessage(error);
                   setCreationError(message || tAddSite("something_went_wrong"));
-                  setIsPlanLimitError(
-                    Boolean(message && isSiteCreationPlanLimitError(message)),
+                  setIsLimitError(
+                    Boolean(message && siteLimit.isLimitError(message)),
                   );
                 }
               })}
@@ -509,11 +410,8 @@ export default function AddSite({
                         </FieldLabel>
                         <Select
                           onValueChange={(value) => {
-                            if (
-                              isGitLabProvider(value) &&
-                              !canAccessProPlusFeatures
-                            ) {
-                              setShowUpgradeDialog(true);
+                            if (isGitLabProvider(value) && !hasTeamFeatures) {
+                              openUnlockPrompt("gitlab");
                               return;
                             }
                             field.onChange(value);
@@ -754,12 +652,12 @@ export default function AddSite({
                 error={null}
                 onReset={() => {
                   setCreationError(null);
-                  setIsPlanLimitError(false);
+                  setIsLimitError(false);
                 }}
               />
-              {isPlanLimitError && (
+              {isLimitError && (
                 <div className="mt-2">
-                  <UpgradeCta labelKey="private_sites" size="sm" />
+                  <UnlockCta labelKey="private_sites" size="sm" />
                 </div>
               )}
             </form>
@@ -778,26 +676,14 @@ export default function AddSite({
                 form="add-site-form"
                 type="submit"
                 isLoading={isProjectAdding}
-                disabled={
-                  (providers?.length || 0) === 0 ||
-                  isProjectAdding ||
-                  isSiteLimitReached
-                }
+                disabled={(providers?.length || 0) === 0 || isProjectAdding}
               >
-                {isSiteLimitReached
-                  ? tAddSite("limit_reached_button")
-                  : tAddSite("create_site")}
+                {tAddSite("create_site")}
               </Button>
             </DialogFooter>
           ) : null}
         </DialogContent>
       </Dialog>
-
-      <UpgradeDialog
-        open={showUpgradeDialog}
-        onOpenChange={setShowUpgradeDialog}
-        contextKey="gitlab"
-      />
     </>
   );
 }

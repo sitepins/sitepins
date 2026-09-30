@@ -1,6 +1,5 @@
 // Routes reachable without authentication, shared by the middleware
-// (proxy.ts) and robots.ts. The hosted cloud edition overrides this module
-// (public-routes.cloud.ts) to add its public pages (template catalog).
+// (proxy.ts) and robots.ts.
 
 export const BASE_PUBLIC_ROUTES = [
   "/login",

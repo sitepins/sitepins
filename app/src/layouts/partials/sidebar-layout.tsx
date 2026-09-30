@@ -4,9 +4,9 @@ import { NavLink } from "@/components/nav-link";
 import SidebarProfileSetting from "@/components/sidebar-profile-setting";
 import {
   SidebarAnnouncement,
-  SidebarUpgrade,
-} from "@/components/sidebar-upgrade";
-import { TrialBanner } from "@/components/trial-banner";
+  SidebarAction,
+} from "@/components/sidebar-extras";
+import { TopBanner } from "@/components/top-banner";
 import { SheetClose } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils/cn";
 import type { TOrg } from "@/redux/features/orgs/type";
@@ -56,7 +56,7 @@ export function SidebarPageLayout({
             {sidebar}
           </SidebarContext.Provider>
         </MobileHeader>
-        <TrialBanner />
+        <TopBanner />
         {header && <div className="w-full">{header}</div>}
         <main className={cn(defaultMainClasses, mainClassName)}>
           {children}
@@ -195,7 +195,7 @@ export function SidebarUserMenu({ orgs: _orgs = [] }: SidebarUserMenuProps) {
     <div className="flex flex-col gap-2">
       <SidebarAnnouncement />
       <SidebarProfileSetting />
-      <SidebarUpgrade />
+      <SidebarAction />
     </div>
   );
 }

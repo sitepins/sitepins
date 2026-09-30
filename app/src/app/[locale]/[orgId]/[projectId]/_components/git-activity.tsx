@@ -12,9 +12,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { UpgradeDialog } from "@/components/upgrade-dialog";
 import { useDeploymentStatusPollingInterval } from "@/hooks/use-deployment-status-polling";
-import { useOwnerPlan } from "@/hooks/use-owner-plan";
+import { useFeatureAccess } from "@/hooks/use-feature-access";
 import { selectConfig } from "@/redux/features/config/slice";
 import { TGitCommit } from "@/redux/features/git/provider-args";
 import { useTranslations } from "next-intl";
@@ -29,9 +28,8 @@ export default function GitActivity() {
   const ref = useRef<HTMLDivElement>(null);
   const [page, setPage] = useState(1);
   const [lastCommitNumber, setLastCommitNumber] = useState<number | null>(null);
-  const [showUpgradeDialog, setShowUpgradeDialog] = useState(false);
 
-  const { canAccessProFeatures } = useOwnerPlan();
+  const { hasAdvancedFeatures } = useFeatureAccess();
 
   const { adapter, useGitCommits } = useGitProvider();
   const {
@@ -97,10 +95,9 @@ export default function GitActivity() {
                 key={sha}
                 provider={adapter.id === "gitlab" ? "Gitlab" : "Github"}
                 commit={commit}
-                setShowUpgradeDialog={setShowUpgradeDialog}
                 onSuccess={handleSuccess}
                 isLatest={isLatest}
-                canAccessProFeatures={canAccessProFeatures}
+                hasAdvancedFeatures={hasAdvancedFeatures}
                 owner={owner}
                 repoName={repoName}
                 branch={branch}
@@ -119,12 +116,6 @@ export default function GitActivity() {
           {tActivity("load_more")}
         </Button>
       </CardFooter>
-
-      <UpgradeDialog
-        open={showUpgradeDialog}
-        onOpenChange={setShowUpgradeDialog}
-        contextKey="git"
-      />
     </Card>
   );
 }
@@ -132,17 +123,15 @@ export default function GitActivity() {
 function CommitWrapper({
   provider,
   commit,
-  setShowUpgradeDialog,
   onSuccess,
   isLatest,
-  canAccessProFeatures,
+  hasAdvancedFeatures,
 }: {
   provider: TGitProvider;
   commit: TGitCommit;
-  setShowUpgradeDialog: (show: boolean) => void;
   onSuccess?: () => void;
   isLatest: boolean;
-  canAccessProFeatures: boolean;
+  hasAdvancedFeatures: boolean;
   owner: string;
   repoName: string;
   branch: string;
@@ -156,7 +145,7 @@ function CommitWrapper({
 
   const { data: rawStatus } = useGitCommitStatus({
     commitRef: adapter.commitRef(commit),
-    skip: !canAccessProFeatures,
+    skip: !hasAdvancedFeatures,
     pollingInterval,
   });
   const statusStateFromData = commitStatusState(rawStatus);
@@ -172,7 +161,6 @@ function CommitWrapper({
     <GitCommitItem
       provider={provider}
       commit={commit}
-      setShowUpgradeDialog={setShowUpgradeDialog}
       onSuccess={onSuccess}
       isLatest={isLatest}
       deploymentStatus={statusStateFromData}

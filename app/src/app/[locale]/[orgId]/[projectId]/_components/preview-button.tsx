@@ -14,12 +14,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useOwnerPlan } from "@/hooks/use-owner-plan";
+import { useFeatureAccess } from "@/hooks/use-feature-access";
 import {
   getPreviewWindow,
   setPreviewWindow,
 } from "@/hooks/use-sandbox-preview";
-import { UpgradeDialog } from "@/layouts/components/upgrade-dialog";
+import { openUnlockPrompt } from "@/hooks/use-unlock-prompt";
 import { isGitLabProvider, TGitProvider } from "@/lib/utils/provider-checker";
 import {
   ChevronDown,
@@ -91,9 +91,7 @@ export default function PreviewButton({
 
   const router = useRouter();
   const { orgId } = useParams<{ orgId: string }>();
-  const { canAccessProFeatures } = useOwnerPlan();
-
-  const [showUpgradeDialog, setShowUpgradeDialog] = useState(false);
+  const { hasAdvancedFeatures } = useFeatureAccess();
 
   const hasWarnedExpiryRef = useRef(false);
   const hasProbedRef = useRef(false);
@@ -373,8 +371,8 @@ export default function PreviewButton({
   // ── Start / sync sandbox (SSE) ────────────────────────────────────────
 
   const startSandbox = async (isSync = false) => {
-    if (!canAccessProFeatures) {
-      setShowUpgradeDialog(true);
+    if (!hasAdvancedFeatures) {
+      openUnlockPrompt("preview");
       return;
     }
 
@@ -524,14 +522,6 @@ export default function PreviewButton({
 
   // ── Render ────────────────────────────────────────────────────────────
 
-  const upgradeDialog = (
-    <UpgradeDialog
-      open={showUpgradeDialog}
-      onOpenChange={setShowUpgradeDialog}
-      contextKey="preview"
-    />
-  );
-
   // No preview yet — single plain button
   if (!previewUrl) {
     return (
@@ -553,7 +543,6 @@ export default function PreviewButton({
             {isLoading ? (loadingStep ?? "Starting") : "Preview"}
           </span>
         </Button>
-        {upgradeDialog}
       </>
     );
   }
@@ -623,7 +612,6 @@ export default function PreviewButton({
           </DropdownMenuContent>
         </DropdownMenu>
       </ButtonGroup>
-      {upgradeDialog}
     </>
   );
 }

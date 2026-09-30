@@ -1,4 +1,3 @@
-import { AiUpgrade } from "@/components/ai-upgrade";
 import { toast } from "@/components/ui/toast";
 import { useDebouncedCallback } from "@/hooks/use-debounce-callback";
 import useMounted from "@/hooks/use-mounted";
@@ -485,7 +484,6 @@ export const RichEditor = ({
           />
         </EditorContainer>
       </Plate>
-      <AiUpgrade />
     </>
   );
 };

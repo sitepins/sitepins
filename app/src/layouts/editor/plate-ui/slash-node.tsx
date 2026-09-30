@@ -2,7 +2,7 @@
 
 import { insertBlock } from "@/editor/utils/transforms";
 import { useIsEditorAiEnabled } from "@/hooks/use-ai-access";
-import { useOwnerPlan } from "@/hooks/use-owner-plan";
+import { useFeatureAccess } from "@/hooks/use-feature-access";
 import { AIChatPlugin } from "@platejs/ai/react";
 import {
   Code2,
@@ -21,7 +21,7 @@ import { type TComboboxInputElement, KEYS } from "platejs";
 import type { PlateEditor, PlateElementProps } from "platejs/react";
 import { PlateElement } from "platejs/react";
 import * as React from "react";
-import { useAiSlashUpsellItem } from "./ai-slash-upsell";
+import { useLockedAiSlashItem } from "./ai-slash-locked";
 import {
   InlineCombobox,
   InlineComboboxContent,
@@ -143,8 +143,8 @@ export function SlashInputElement(
 ) {
   const tEditorSlash = useTranslations("editor.slash");
   const { editor, element } = props;
-  const { canAccessProFeatures: canAccessAi } = useOwnerPlan();
-  const aiUpsellItem = useAiSlashUpsellItem();
+  const { hasAdvancedFeatures: canAccessAi } = useFeatureAccess();
+  const aiUpsellItem = useLockedAiSlashItem();
 
   const editorAi = useIsEditorAiEnabled();
   const availableGroups = editorAi
@@ -182,7 +182,7 @@ export function SlashInputElement(
 
               {items.map((item) => {
                 const { focusEditor, keywords, label, value, onSelect } = item;
-                // cloud upsell items carry a pre-translated label
+                // locked items carry a pre-translated label
                 const text =
                   (item as { labelText?: string }).labelText ??
                   tEditorSlash(label);

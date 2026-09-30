@@ -1,8 +1,7 @@
 "use client";
 
-// Extension point for the global search (⌘K). Inert in this build; an
-// overlay can replace the module (search-extensions.cloud.ts) the same way
-// menu-cloud.ts is replaced.
+// Extension point for the global search (⌘K). Inert here; other builds may
+// swap this module for their own.
 
 /** Replaces a palette command (by id) with a different label and link. */
 export type TSearchExtensionOverride = { label: string; href: string };

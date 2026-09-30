@@ -17,10 +17,10 @@ import {
 import { COMMUNITY_URL, UPDATES_URL } from "./brand";
 import type NavigationType from "../i18n/en/navigation.json";
 import {
-  getCloudDashboardPrimaryItems,
-  getCloudDashboardSecondaryItems,
-  getCloudFooterAccountItems,
-} from "./menu-cloud";
+  getExtraDashboardPrimaryItems,
+  getExtraDashboardSecondaryItems,
+  getExtraFooterAccountItems,
+} from "./menu-extras";
 import { TLocale, getMenuTranslations, locales } from "./utils/localized-text";
 
 export type TMenuLocale = TLocale;
@@ -71,7 +71,7 @@ export const getFooterAccountMenu = (locale?: string) => {
       icon: Sparkles,
       href: "/dashboard/ai-agent",
     },
-    ...getCloudFooterAccountItems(locale),
+    ...getExtraFooterAccountItems(locale),
     {
       name: tMenu.footer_account.preferences,
       tKey: "preferences",
@@ -90,7 +90,7 @@ export const getUserDashboardMenu = (locale?: string) => {
       icon: UserCog,
       href: "/dashboard/account",
     },
-    ...getCloudDashboardPrimaryItems(locale),
+    ...getExtraDashboardPrimaryItems(locale),
     {
       name: tMenu.user_dashboard.preferences,
       tKey: "preferences",
@@ -103,7 +103,7 @@ export const getUserDashboardMenu = (locale?: string) => {
       icon: Sparkles,
       href: "/dashboard/ai-agent",
     },
-    ...getCloudDashboardSecondaryItems(locale),
+    ...getExtraDashboardSecondaryItems(locale),
   ];
 };
 

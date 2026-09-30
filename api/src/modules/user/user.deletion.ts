@@ -1,4 +1,4 @@
-import { runUserDeletionHooks } from "@/lib/entitlements";
+import { runUserDeletionHooks } from "@/lib/lifecycleHooks";
 import { TAuthUser } from "@/types";
 import mongoose, { ClientSession } from "mongoose";
 import { Authentication } from "../authentication/authentication.model";
@@ -42,7 +42,7 @@ const expandAuthIds = (ids: (string | mongoose.Types.ObjectId)[]) => {
 // Every row a deleted account owns, removed inside the caller's transaction.
 //
 // Both deletion paths funnel through here — the self-serve one in
-// user.service and the admin/webhook one in the cloud wrapper — so neither can
+// user.service and any registered by an extension — so neither can
 // drift and start leaving a collection behind, which is how user_preferences
 // and git_provider rows outlived their accounts before.
 //

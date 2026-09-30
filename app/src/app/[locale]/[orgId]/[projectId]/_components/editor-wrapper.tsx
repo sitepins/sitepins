@@ -4,7 +4,7 @@ import { toast } from "@/components/ui/toast";
 import { revertToOriginal } from "@/editor/utils/plate-utils";
 import { useCommitLogic } from "@/hooks/use-commit-logic";
 import { useIsChanged } from "@/hooks/use-is-changed";
-import { useOwnerPlan } from "@/hooks/use-owner-plan";
+import { useFeatureAccess } from "@/hooks/use-feature-access";
 import { useSandboxPreview } from "@/hooks/use-sandbox-preview";
 import { useSaveAsDraft } from "@/hooks/use-save-as-draft";
 import { useSnippets } from "@/hooks/use-snippets";
@@ -66,7 +66,7 @@ const EditorWrapper: React.FC<EditorWrapperProps> = memo(
     const orgIdSafe = params.orgId?.startsWith("org-")
       ? params.orgId.slice(4)
       : params.orgId;
-    const { canAccessProFeatures } = useOwnerPlan();
+    const { hasAdvancedFeatures } = useFeatureAccess();
     const { vercelToken, vercelTeamId, vercelProjectId } = useVercelIntegration(
       params.orgId,
     );
@@ -250,10 +250,10 @@ const EditorWrapper: React.FC<EditorWrapperProps> = memo(
       (isDraft?: boolean) => {
         isDraftRef.current = !!isDraft;
         const passedIsDraft = isDraftRef.current;
-        const shouldCommitManual = config.customCommit && canAccessProFeatures;
+        const shouldCommitManual = config.customCommit && hasAdvancedFeatures;
         prepareCommit(shouldCommitManual, passedIsDraft);
       },
-      [config.customCommit, canAccessProFeatures, prepareCommit],
+      [config.customCommit, hasAdvancedFeatures, prepareCommit],
     );
 
     // Push to Git as draft (replaces the old "Save as Draft" Git behaviour)

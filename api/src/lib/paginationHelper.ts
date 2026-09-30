@@ -19,13 +19,12 @@ const SORTABLE_FIELDS = new Set([
   "full_name",
   "email",
   "status",
-  "package",
-  "billing_period",
-  "expires_date",
 ]);
 
+// `extraSortFields` lets a caller allow its own collection's fields.
 const calculatePagination = (
   options: Partial<TPagination>,
+  extraSortFields: readonly string[] = [],
 ): TPaginationResult => {
   const parsedPage = Number(options.page);
   const parsedLimit = Number(options.limit);
@@ -38,7 +37,9 @@ const calculatePagination = (
   const skip = (page - 1) * limit;
   const requestedSortBy = options.sortBy;
   const sortBy =
-    typeof requestedSortBy === "string" && SORTABLE_FIELDS.has(requestedSortBy)
+    typeof requestedSortBy === "string" &&
+    (SORTABLE_FIELDS.has(requestedSortBy) ||
+      extraSortFields.includes(requestedSortBy))
       ? requestedSortBy
       : "createdAt";
   const sortOrder = options.sortOrder === "asc" ? "asc" : "desc";

@@ -1,12 +1,12 @@
 "use client";
 
-import { useOwnerPlan } from "@/hooks/use-owner-plan";
+import { useFeatureAccess } from "@/hooks/use-feature-access";
 import CommitConfigSkeleton from "./_components/commit-config-skeleton";
 import CommitDialogForm from "./_components/commit-dialog-form";
 import SiteConfig from "./_components/site-config-form";
 
 export default function ConfigurePage() {
-  const { canAccessProFeatures, isLoading } = useOwnerPlan();
+  const { hasAdvancedFeatures, isLoading } = useFeatureAccess();
 
   return (
     <>
@@ -14,7 +14,7 @@ export default function ConfigurePage() {
       {isLoading ? (
         <CommitConfigSkeleton />
       ) : (
-        canAccessProFeatures && <CommitDialogForm />
+        hasAdvancedFeatures && <CommitDialogForm />
       )}
     </>
   );

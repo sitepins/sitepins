@@ -8,7 +8,7 @@ import mongoose from "mongoose";
 import { allowedOrigins } from "./config/cors-options";
 import { getRegisteredAuthPlugins } from "./lib/authExtensions";
 import { verifyEmailWithReoon } from "./lib/emailVerifier";
-import { emitAuthEvent, emitUserRegistration } from "./lib/entitlements";
+import { emitAuthEvent, emitUserRegistration } from "./lib/lifecycleHooks";
 import { logger } from "./lib/logger";
 import { sendMail } from "./lib/mailer";
 import { reconcilePendingInvites } from "./lib/pendingInvites";
@@ -373,7 +373,7 @@ const createAuthInstance = () =>
       // Deliberately left disabled. Enabling it exposes better-auth's own
       // POST /api/v1/auth/delete-user, which drops the users row plus its
       // accounts and sessions and nothing else — no organizations, projects or
-      // billing rows, and no deleted_users archive. Account deletion goes
+      // extension rows. Account deletion goes
       // through DELETE /api/v1/user/delete/:id, which removes everything in one
       // transaction (modules/user/user.deletion.ts).
       deleteUser: {

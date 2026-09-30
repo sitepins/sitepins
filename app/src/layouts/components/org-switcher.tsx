@@ -2,7 +2,7 @@
 
 import AddOrg from "@/components/add-org";
 import Avatar from "@/components/avatar";
-import { PlanLabel } from "@/components/plan-label";
+import { OrgSubtitle } from "@/components/org-subtitle";
 import { Button } from "@/components/ui/button";
 import {
   Command,
@@ -18,15 +18,13 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { UpgradeDialog } from "@/components/upgrade-dialog";
+import { openUnlockPrompt } from "@/hooks/use-unlock-prompt";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { useOrgId } from "@/hooks/use-org-id";
+import { useOrgLimit } from "@/hooks/use-plan-limits";
 import { authClient } from "@/lib/auth/auth-client";
-import { getPlanLimits } from "@/lib/limits";
 import { cn } from "@/lib/utils/cn";
 import type { TOrg } from "@/redux/features/orgs/type";
-import { selectCurrentPackage } from "@/redux/features/plan/slice";
-import { useAppSelector } from "@/redux/store";
 import { ChevronsUpDown, Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
@@ -40,7 +38,6 @@ export default function OrgSwitcher({
   orgs: TOrg[];
   isResponsive?: boolean;
 }) {
-  const { currentPackage } = useAppSelector(selectCurrentPackage);
   const tOrgSwitcher = useTranslations("org.switcher");
   const router = useRouter();
 
@@ -55,21 +52,12 @@ export default function OrgSwitcher({
 
   const [isOpen, setIsOpen] = useState(false);
   const [showAddOrg, setShowAddOrg] = useState(false);
-  const [showUpgradeOrg, setShowUpgradeOrg] = useState(false);
 
   const { data: auth } = authClient.useSession();
   const userId = auth?.user?.user_id;
 
-  // Check if user can add new org based on their package limit
-  const canAddOrg = useMemo(() => {
-    if (!userId) return false;
-    const limit = getPlanLimits(currentPackage).org_limit;
-    const ownOrgs =
-      orgs?.filter(
-        (org) => org.owner === userId && org.status !== "archived",
-      ) || [];
-    return (ownOrgs?.length ?? 0) < limit;
-  }, [currentPackage, orgs, userId]);
+  const orgLimit = useOrgLimit(orgs);
+  const canAddOrg = Boolean(userId) && !orgLimit.isFull;
 
   return (
     <>
@@ -114,13 +102,7 @@ export default function OrgSwitcher({
             <span className="text-text-strong block truncate font-medium">
               {defaultOrgs?.org_name ?? tOrgSwitcher("default_org")}
             </span>
-            <PlanLabel
-              activePackage={
-                defaultOrgs?.ownerData?.[0]?.active_package ??
-                currentPackage ??
-                undefined
-              }
-            />
+            <OrgSubtitle org={defaultOrgs} />
           </span>
         </Link>
 
@@ -189,7 +171,7 @@ export default function OrgSwitcher({
                     if (canAddOrg) {
                       setShowAddOrg(true);
                     } else {
-                      setShowUpgradeOrg(true);
+                      openUnlockPrompt("org_limit");
                     }
                   }}
                 >
@@ -210,12 +192,6 @@ export default function OrgSwitcher({
         open={showAddOrg}
         onOpenChange={setShowAddOrg}
         className="hidden"
-      />
-
-      <UpgradeDialog
-        open={showUpgradeOrg}
-        onOpenChange={setShowUpgradeOrg}
-        contextKey="org_limit"
       />
     </>
   );

@@ -1,5 +1,5 @@
 import { auth } from "@/auth";
-import { emitUserUpdate } from "@/lib/entitlements";
+import { emitUserUpdate } from "@/lib/lifecycleHooks";
 import { logger } from "@/lib/logger";
 import { sendMail } from "@/lib/mailer";
 import { requireUser } from "@/lib/requireUser";

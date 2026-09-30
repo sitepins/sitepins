@@ -1,11 +1,11 @@
 import { describe, expect, it, vi } from "vitest";
 import type { ClientSession } from "mongoose";
 
-// entitlements holds module-level registries — re-import a fresh copy per
+// lifecycleHooks holds module-level registries — re-import a fresh copy per
 // test so registrations from one test never leak into the next.
 async function freshEntitlements() {
   vi.resetModules();
-  return import("./entitlements.js");
+  return import("./lifecycleHooks.js");
 }
 
 describe("user deletion hooks", () => {

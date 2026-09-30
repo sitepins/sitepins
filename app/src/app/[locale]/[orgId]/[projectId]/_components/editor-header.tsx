@@ -27,10 +27,10 @@ import {
 } from "@/components/ui/tooltip";
 import { useDeploymentStatusPollingInterval } from "@/hooks/use-deployment-status-polling";
 import { useGitProvider } from "@/hooks/use-git-provider";
-import { useOwnerPlan } from "@/hooks/use-owner-plan";
+import { useFeatureAccess } from "@/hooks/use-feature-access";
 import { usePresence } from "@/hooks/use-presence";
 import { useVercelIntegration } from "@/hooks/use-vercel-integration";
-import { UpgradeDialog } from "@/layouts/components/upgrade-dialog";
+import { openUnlockPrompt } from "@/hooks/use-unlock-prompt";
 import {
   getDeploymentStatusClass,
   getDeploymentStatusI18nKey,
@@ -103,11 +103,10 @@ export default function EditorHeader({
   const config = useAppSelector(selectConfig);
   const tEditorHeader = useTranslations("editor.header");
   const tCommon = useTranslations("common");
-  const { canAccessProFeatures } = useOwnerPlan();
+  const { hasAdvancedFeatures } = useFeatureAccess();
   const [showResetDialog, setShowResetDialog] = useState(false);
-  const [showUpgradeDialog, setShowUpgradeDialog] = useState(false);
   const isDbDraftLoaded = Boolean(isLoadedFromDbDraft && hasSavedDraft);
-  const canUseDraftSave = canAccessProFeatures;
+  const canUseDraftSave = hasAdvancedFeatures;
   const defaultActionType: "save" | "draft" | "publish" =
     isDbDraftLoaded && canUseDraftSave ? "save" : isDraft ? "draft" : "publish";
 
@@ -129,7 +128,7 @@ export default function EditorHeader({
 
   const { useGitCommitStatus } = useGitProvider();
   const { data: rawStatus, refetch: refetchStatus } = useGitCommitStatus({
-    skip: !config.owner || !config.branch || !canAccessProFeatures,
+    skip: !config.owner || !config.branch || !hasAdvancedFeatures,
     pollingInterval,
   });
   const statusStateFromData = commitStatusState(rawStatus);
@@ -142,10 +141,10 @@ export default function EditorHeader({
   useEffect(() => {
     if (prevPendingRef.current && !pending) {
       setStatusState(undefined);
-      if (canAccessProFeatures) refetchStatus();
+      if (hasAdvancedFeatures) refetchStatus();
     }
     prevPendingRef.current = pending;
-  }, [pending, canAccessProFeatures, refetchStatus]);
+  }, [pending, hasAdvancedFeatures, refetchStatus]);
 
   // The polling interval feeds the status query's options, so the query result
   // cannot be passed straight to the interval hook. Mirroring it during render
@@ -209,7 +208,7 @@ export default function EditorHeader({
 
   const handleSaveAsDraftClick = () => {
     if (!canUseDraftSave) {
-      setShowUpgradeDialog(true);
+      openUnlockPrompt("default");
       return;
     }
     handleSaveAsDraft();
@@ -227,11 +226,6 @@ export default function EditorHeader({
 
   return (
     <>
-      <UpgradeDialog
-        open={showUpgradeDialog}
-        onOpenChange={setShowUpgradeDialog}
-      />
-
       <AlertDialog open={showResetDialog} onOpenChange={setShowResetDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
@@ -281,7 +275,7 @@ export default function EditorHeader({
                 </span>
               </Button>
 
-              {canAccessProFeatures &&
+              {hasAdvancedFeatures &&
                 isDisplayableDeploymentStatus(deploymentStatus) && (
                   <div className="flex min-w-0 items-center gap-1 sm:gap-2">
                     {/* Mobile: Just colored dot */}

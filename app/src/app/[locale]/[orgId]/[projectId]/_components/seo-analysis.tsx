@@ -1,5 +1,4 @@
 import { AiMarkdown } from "@/components/ai-markdown";
-import { AiUpgrade } from "@/components/ai-upgrade";
 import {
   Accordion,
   AccordionContent,
@@ -16,7 +15,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { UpgradeDialog } from "@/components/upgrade-dialog";
+import { openUnlockPrompt } from "@/hooks/use-unlock-prompt";
 import { getAICredential } from "@/editor/plugins/copilot-kit";
 import { useAiAccess } from "@/hooks/use-ai-access";
 import {
@@ -184,7 +183,6 @@ export default function SeoAnalysis({
 }) {
   const tEditorSeo = useTranslations("editor.seo");
   const tCommon = useTranslations("common");
-  const [showUpgrade, setShowUpgrade] = useState(false);
   const { checkAiAccess, isAiSeoEnabled } = useAiAccess();
 
   type AiFixItem = {
@@ -708,7 +706,7 @@ export default function SeoAnalysis({
           <>
             <button
               type="button"
-              onClick={() => setShowUpgrade(true)}
+              onClick={() => openUnlockPrompt("seo_insights")}
               className="border-border bg-light/50 hover:bg-light flex w-full items-center gap-2 rounded-lg border border-dashed px-4 py-3 text-start text-sm transition-colors"
             >
               <Lock className="text-muted-foreground size-4 shrink-0" />
@@ -723,14 +721,8 @@ export default function SeoAnalysis({
                 </span>
               </span>
             </button>
-            <UpgradeDialog
-              open={showUpgrade}
-              onOpenChange={setShowUpgrade}
-              contextKey="seo_insights"
-            />
           </>
         )}
-        <AiUpgrade />
       </div>
     </div>
   );

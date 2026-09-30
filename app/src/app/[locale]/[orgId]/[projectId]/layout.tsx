@@ -11,8 +11,8 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Skeleton } from "@/components/ui/skeleton";
-import { UpgradeDialog } from "@/components/upgrade-dialog";
-import { useOwnerPlan } from "@/hooks/use-owner-plan";
+import { openUnlockPrompt } from "@/hooks/use-unlock-prompt";
+import { useFeatureAccess } from "@/hooks/use-feature-access";
 import { useProjectBranch } from "@/hooks/use-project-branch";
 import { useSafeLocale } from "@/hooks/use-safe-locale";
 import { getProjectDashboardMenu, getProjectSettingsMenu } from "@/lib/menu";
@@ -47,7 +47,7 @@ export default function Layout(
   const { children } = props;
   const dispatch = useAppDispatch();
   const config = useSelector(selectConfig);
-  const { canAccessProFeatures } = useOwnerPlan();
+  const { hasAdvancedFeatures } = useFeatureAccess();
   const { data: orgs, isLoading: isOrgsLoading } = useGetOrgsQuery();
   const pathname = usePathname() ?? "";
   const projectDashboardMenu = getProjectDashboardMenu(locale);
@@ -55,7 +55,6 @@ export default function Layout(
   const tSidebar = useTranslations("navigation.sidebar");
   const tDashboard = useTranslations("dashboard");
   const [searchOpen, setSearchOpen] = useState(false);
-  const [showUpgradeCode, setShowUpgradeCode] = useState(false);
 
   const {
     isLoading: isProjectLoading,
@@ -150,8 +149,8 @@ export default function Layout(
       return [];
     }
 
-    // If no arrangements or no premium access, return original files
-    if (!canAccessProFeatures || !arrangements || arrangements.length <= 0) {
+    // If no arrangements or no feature access, return original files
+    if (!hasAdvancedFeatures || !arrangements || arrangements.length <= 0) {
       return files;
     }
 
@@ -228,7 +227,7 @@ export default function Layout(
               }
               dashboardMenu={projectDashboardMenu}
               settingsMenu={projectSettingsMenu.filter((item) => {
-                if (!canAccessProFeatures && item.name === "Arrangement") {
+                if (!hasAdvancedFeatures && item.name === "Arrangement") {
                   return false;
                 }
                 return true;
@@ -318,12 +317,12 @@ export default function Layout(
                   )}
 
                   {/* Code */}
-                  {!isArchived && !canAccessProFeatures && (
+                  {!isArchived && !hasAdvancedFeatures && (
                     <ul className="tree bg-background rounded pe-2 [--tree-spacing:2rem]">
                       <li>
                         <button
                           type="button"
-                          onClick={() => setShowUpgradeCode(true)}
+                          onClick={() => openUnlockPrompt("code")}
                           className={cn(
                             "text-foreground flex h-auto w-full items-center justify-start gap-2 py-3 ps-3 pe-1 text-sm",
                           )}
@@ -336,7 +335,7 @@ export default function Layout(
                       </li>
                     </ul>
                   )}
-                  {!isArchived && canAccessProFeatures && (
+                  {!isArchived && hasAdvancedFeatures && (
                     <ul className="tree bg-background rounded pe-2 [--tree-spacing:2rem]">
                       <li>
                         <Accordion className={cn("relative")}>
@@ -385,11 +384,6 @@ export default function Layout(
                       </li>
                     </ul>
                   )}
-                  <UpgradeDialog
-                    open={showUpgradeCode}
-                    onOpenChange={setShowUpgradeCode}
-                    contextKey="code"
-                  />
 
                   {/* Config */}
                   {!isArchived && config.configs?.length > 0 && (

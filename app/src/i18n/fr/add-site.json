@@ -1,9 +1,5 @@
 {
   "add-site": {
-    "sites": "Sites",
-    "unlimited": "Illimité",
-    "quota_limit_reached": "Limite de quota atteinte",
-    "maybe_later": "Plus tard",
     "add_new_site": "Ajouter un site",
     "create_new_site": "Créer un site",
     "import_site_desc": "Choisissez comment importer votre site.",
@@ -26,12 +22,7 @@
     "site_url_placeholder": "https://example.com",
     "back": "Retour",
     "create_site": "Créer le site",
-    "limit_reached_title": "Vous grandissez vite !",
-    "limit_reached_desc": "Vous avez atteint le nombre maximal de projets pour votre forfait actuel. Mettez à niveau votre compte pour ajouter plus de projets.",
-    "limit_reached_button": "Limite atteinte",
-    "limit_reached_private_desc": "Limite de sites privés atteinte. Passez à une offre supérieure pour créer plus de sites privés.",
     "project_created_success": "Projet créé avec succès",
-    "something_went_wrong": "Une erreur est survenue !",
-    "plan_usage": "Utilisation du forfait"
+    "something_went_wrong": "Une erreur est survenue !"
   }
 }

@@ -27,7 +27,7 @@ export const runUserDeletionHooks = async (ctx: UserDeletionContext) => {
 };
 
 // Auth lifecycle events (login, password reset). No-op unless an extension
-// registers a handler — the cloud edition uses these for activity logging.
+// registers a handler.
 export type AuthEvent =
   | { type: "login"; userId: string; ip: string; date: string }
   | { type: "password_reset"; userId: string; date: string };

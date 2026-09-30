@@ -5,7 +5,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useOwnerPlan } from "@/hooks/use-owner-plan";
+import { useFeatureAccess } from "@/hooks/use-feature-access";
 import { cn } from "@/lib/utils/cn";
 import { selectConfig } from "@/redux/features/config/slice";
 import { TFiles } from "@/types";
@@ -27,7 +27,7 @@ export default function FileAction({
   const tDirectoryViewActions = useTranslations("directory-view.actions");
   const tCommon = useTranslations("common");
   const params = useParams() as { orgId: string; projectId: string };
-  const { canAccessProFeatures } = useOwnerPlan();
+  const { hasAdvancedFeatures } = useFeatureAccess();
   const filePath = file.path.replace("content/", "");
 
   const config = useSelector(selectConfig);
@@ -80,7 +80,7 @@ export default function FileAction({
               </Link>
             </DropdownMenuItem>
           )}
-          {canAccessProFeatures && (
+          {hasAdvancedFeatures && (
             <DropdownMenuItem asChild onClick={() => setIsOpen(false)}>
               <Link
                 href={`/${params.orgId}/${params.projectId}/code/${filePath}`}

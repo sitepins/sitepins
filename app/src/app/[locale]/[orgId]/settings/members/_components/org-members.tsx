@@ -36,9 +36,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "@/components/ui/toast";
-import { UpgradeCta } from "@/components/upgrade-cta";
+import { UnlockCta } from "@/components/unlock-cta";
 import { useDialog } from "@/hooks/use-dialog";
-import { useOwnerPlan } from "@/hooks/use-owner-plan";
+import { useFeatureAccess } from "@/hooks/use-feature-access";
 import { useOrgMember, usePermission } from "@/hooks/use-permission";
 import { authClient } from "@/lib/auth/auth-client";
 import { IS_DEMO } from "@/lib/constant";
@@ -61,7 +61,7 @@ import MemberActions from "./org-member-actions";
 export default function OrgMembers(org: TOrg) {
   const { members, org_id, owner, ownerData: _ownerData } = org;
 
-  const { canAccessProFeatures } = useOwnerPlan();
+  const { hasAdvancedFeatures } = useFeatureAccess();
   const { isOwner } = useOrgMember();
   const { data: auth } = authClient.useSession();
   const currentUserId = auth?.user?.user_id ?? auth?.user?.id;
@@ -71,7 +71,7 @@ export default function OrgMembers(org: TOrg) {
 
   const canManageMembers = usePermission(ENUM_PERMISSIONS.MANAGE_MEMBERS);
 
-  const isRestricted = !canAccessProFeatures;
+  const isRestricted = !hasAdvancedFeatures;
   const tOrgMembers = useTranslations("org.members");
 
   return (
@@ -83,7 +83,7 @@ export default function OrgMembers(org: TOrg) {
         </div>
 
         {isRestricted && isOwner ? (
-          <UpgradeCta
+          <UnlockCta
             labelKey="members_add"
             className="hidden h-9 px-4 md:flex"
           />
@@ -115,7 +115,7 @@ export default function OrgMembers(org: TOrg) {
       </CardContent>
       <CardFooter className="md:hidden">
         {isRestricted && isOwner ? (
-          <UpgradeCta labelKey="members_add" className="h-9 w-full px-4" />
+          <UnlockCta labelKey="members_add" className="h-9 w-full px-4" />
         ) : (
           <AddMemberDialog
             className="w-full"

@@ -8,7 +8,7 @@ const packageJson = JSON.parse(
   fs.readFileSync(new URL("./package.json", import.meta.url), "utf8"),
 );
 
-const OVERLAY_URL = new URL("./next.config.cloud.mjs", import.meta.url);
+const OVERLAY_URL = new URL("./next.config.overlay.mjs", import.meta.url);
 
 async function loadOverlay() {
   if (!fs.existsSync(OVERLAY_URL)) return {};

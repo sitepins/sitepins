@@ -1,6 +1,6 @@
 "use client";
 
-import { UpgradeCta } from "@/components/upgrade-cta";
+import { UnlockCta } from "@/components/unlock-cta";
 import {
   Card,
   CardContent,
@@ -8,7 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useOwnerPlan } from "@/hooks/use-owner-plan";
+import { useFeatureAccess } from "@/hooks/use-feature-access";
 import { BookOpen, Lightbulb, Shuffle, Star } from "lucide-react";
 import { useTranslations } from "next-intl";
 import _Link from "next/link";
@@ -96,7 +96,7 @@ function ArrangementHeaderSection({ isModified }: { isModified: boolean }) {
 }
 
 export default function ArrangementPage() {
-  const { canAccessProFeatures, isLoading } = useOwnerPlan();
+  const { hasAdvancedFeatures, isLoading } = useFeatureAccess();
   const [isModified, setIsModified] = useState(false);
   const _tProjectSettingsArrangement = useTranslations(
     "project-settings.arrangement",
@@ -106,11 +106,11 @@ export default function ArrangementPage() {
       <ArrangementHeaderSection isModified={isModified} />
       {isLoading ? (
         <ArrangeSiteSkeleton />
-      ) : canAccessProFeatures ? (
+      ) : hasAdvancedFeatures ? (
         <Arrangements setIsModified={setIsModified} />
       ) : (
         <CardContent className="pt-0 text-center">
-          <UpgradeCta labelKey="arrangement" size="default" />
+          <UnlockCta labelKey="arrangement" size="default" />
         </CardContent>
       )}
     </Card>

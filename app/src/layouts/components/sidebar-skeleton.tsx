@@ -39,7 +39,7 @@ export function SidebarSkeleton() {
               </span>
             </div>
           </div>
-          {/* Upgrade Button Skeleton */}
+          {/* Sidebar action skeleton */}
           <Skeleton className="mt-2 h-8 w-full rounded-md" />
         </div>
       </div>

@@ -1,6 +1,4 @@
-// Translation namespaces bundled with the open-source build.
-// A hosted deployment can override this module (namespaces.cloud.ts) to add
-// cloud-only namespaces such as billing and pricing.
+// Translation namespaces bundled with the app.
 export const namespaces = [
   "add-site",
   "auth",

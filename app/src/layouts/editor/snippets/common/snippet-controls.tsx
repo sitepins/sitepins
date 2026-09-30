@@ -1,6 +1,6 @@
 "use client";
 
-import { useOwnerPlan } from "@/hooks/use-owner-plan";
+import { useFeatureAccess } from "@/hooks/use-feature-access";
 import { useSnippets } from "@/hooks/use-snippets";
 import { logger } from "@/lib/logger";
 import { cn } from "@/lib/utils/cn";
@@ -31,7 +31,7 @@ export function SnippetControls({
   const [showSaveDialog, setShowSaveDialog] = useState(false);
   const { snippets } = useSnippets();
   const editor = useEditorRef();
-  const { canAccessProFeatures } = useOwnerPlan();
+  const { hasAdvancedFeatures } = useFeatureAccess();
 
   // Determine the content/code of the current element
   const code = useMemo(() => {
@@ -117,7 +117,7 @@ export function SnippetControls({
       contentEditable={false}
     >
       {extraControls}
-      {canAccessProFeatures && !exists && code && (
+      {hasAdvancedFeatures && !exists && code && (
         <>
           <button
             type="button"

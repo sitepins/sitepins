@@ -60,7 +60,7 @@ export default {
   // ---- Transactional email ----
   // Provider: "smtp" | "console". Unset = auto-detect: SMTP if SMTP_HOST is set,
   // else "console" (logs the message + OTP/link to stdout). Extensions can
-  // register custom delivery providers (e.g. Brevo in sp-cloud).
+  // register custom delivery providers.
   mail_provider: process.env.MAIL_PROVIDER,
   mail_from_name: process.env.MAIL_FROM_NAME || "Sitepins",
   mail_from_email: process.env.MAIL_FROM_EMAIL,

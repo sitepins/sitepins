@@ -3,7 +3,8 @@
 import Avatar from "@/components/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { useOwnerPlan } from "@/hooks/use-owner-plan";
+import { useFeatureAccess } from "@/hooks/use-feature-access";
+import { openUnlockPrompt } from "@/hooks/use-unlock-prompt";
 import { usePermission } from "@/hooks/use-permission";
 import { ENUM_PERMISSIONS } from "@/lib/roles";
 import {
@@ -22,7 +23,6 @@ import { RevertConfirmDialog } from "./git-revert";
 type CommitItemProps = {
   provider: TGitProvider;
   commit: TGitCommit;
-  setShowUpgradeDialog: (show: boolean) => void;
   onSuccess?: () => void;
   isLatest?: boolean;
   deploymentStatus?: string | null;
@@ -31,13 +31,12 @@ type CommitItemProps = {
 export function GitCommitItem({
   provider,
   commit,
-  setShowUpgradeDialog,
   onSuccess,
   isLatest,
   deploymentStatus,
 }: CommitItemProps) {
   const tProjectGit = useTranslations("project.git");
-  const { canAccessProFeatures } = useOwnerPlan();
+  const { hasAdvancedFeatures } = useFeatureAccess();
   const canRestore = usePermission(ENUM_PERMISSIONS.MANAGE_PROJECTS);
 
   const [revertDialog, setRevertDialog] = useState<"reset" | "revert" | null>(
@@ -45,8 +44,8 @@ export function GitCommitItem({
   );
 
   const handleActionClick = (type: "reset" | "revert") => {
-    if (!canAccessProFeatures) {
-      setShowUpgradeDialog(true);
+    if (!hasAdvancedFeatures) {
+      openUnlockPrompt("git");
       return;
     }
 

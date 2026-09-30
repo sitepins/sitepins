@@ -3,6 +3,7 @@ import { getMessages } from "next-intl/server";
 import { NextIntlClientProvider } from "next-intl";
 import { notFound } from "next/navigation";
 import { routing } from "@/lib/i18n/routing";
+import { AppOverlays } from "@/layouts/components/app-overlays";
 import { PwaRegister } from "@/layouts/helpers/pwa-register";
 import React from "react";
 
@@ -27,6 +28,7 @@ export default async function LocaleLayout({
     <NextIntlClientProvider messages={messages} locale={locale}>
       <PwaRegister />
       {children}
+      <AppOverlays />
     </NextIntlClientProvider>
   );
 }

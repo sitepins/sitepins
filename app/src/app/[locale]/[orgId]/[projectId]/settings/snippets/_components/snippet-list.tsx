@@ -1,7 +1,7 @@
 "use client";
 
 import { logger } from "@/lib/logger";
-import { UpgradeCta } from "@/components/upgrade-cta";
+import { UnlockCta } from "@/components/unlock-cta";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -19,7 +19,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useOwnerPlan } from "@/hooks/use-owner-plan";
+import { useFeatureAccess } from "@/hooks/use-feature-access";
 import { SCHEMA_FOLDER, SNIPPET_FOLDER } from "@/lib/constant";
 import {
   isGitHubProvider,
@@ -53,7 +53,7 @@ type SchemaFile = {
 };
 
 const SnippetList = () => {
-  const { canAccessProFeatures, isLoading } = useOwnerPlan();
+  const { hasAdvancedFeatures, isLoading } = useFeatureAccess();
   const config = useSelector(selectConfig);
   const dispatch = useAppDispatch();
   const tProjectSettingsSnippets = useTranslations("project-settings.snippets");
@@ -232,13 +232,13 @@ const SnippetList = () => {
             </div>
             {isLoading || !isConfigReady ? (
               <Skeleton className="hidden h-9 w-36 md:block" />
-            ) : canAccessProFeatures ? (
+            ) : hasAdvancedFeatures ? (
               <Button className="hidden md:flex" onClick={handleCreateSnippet}>
                 <Plus className="me-2 size-4" />
                 {tCommon("actions.add")}
               </Button>
             ) : (
-              <UpgradeCta
+              <UnlockCta
                 labelKey="snippets_add"
                 className="hidden h-9 px-4 md:flex"
               />
@@ -302,13 +302,13 @@ const SnippetList = () => {
         <CardFooter className="md:hidden">
           {isLoading || !isConfigReady ? (
             <Skeleton className="h-9 w-full" />
-          ) : canAccessProFeatures ? (
+          ) : hasAdvancedFeatures ? (
             <Button className="w-full" onClick={handleCreateSnippet}>
               <Plus className="me-2 size-4" />
               {tCommon("actions.add")}
             </Button>
           ) : (
-            <UpgradeCta labelKey="snippets_add" className="h-9 w-full px-4" />
+            <UnlockCta labelKey="snippets_add" className="h-9 w-full px-4" />
           )}
         </CardFooter>
       </Card>

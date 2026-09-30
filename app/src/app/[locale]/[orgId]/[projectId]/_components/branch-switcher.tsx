@@ -25,9 +25,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { UpgradeDialog } from "@/components/upgrade-dialog";
+import { openUnlockPrompt } from "@/hooks/use-unlock-prompt";
 import { useGitProvider } from "@/hooks/use-git-provider";
-import { useOwnerPlan } from "@/hooks/use-owner-plan";
+import { useFeatureAccess } from "@/hooks/use-feature-access";
 import { logger } from "@/lib/logger";
 import { errorMessage, errorMessageOr } from "@/lib/utils/error";
 import { isGitLabProvider } from "@/lib/utils/provider-checker";
@@ -64,11 +64,10 @@ export function BranchSwitcher({ project, config }: BranchSwitcherProps) {
   const [open, setOpen] = useState(false);
   const [isBranchDialogOpen, setIsBranchDialogOpen] = useState(false);
   const [newBranchName, setNewBranchName] = useState("");
-  const [showUpgradeOrg, setShowUpgradeOrg] = useState(false);
 
   const tProjectBranching = useTranslations("project.branching");
   const tCommon = useTranslations("common");
-  const { canAccessProFeatures } = useOwnerPlan();
+  const { hasAdvancedFeatures } = useFeatureAccess();
 
   const branchList = useMemo(() => {
     if (!branches) return [];
@@ -144,10 +143,10 @@ export function BranchSwitcher({ project, config }: BranchSwitcherProps) {
                       checked={config.branch === branch.name}
                       onSelect={(currentValue) => {
                         if (
-                          !canAccessProFeatures &&
+                          !hasAdvancedFeatures &&
                           currentValue !== config.branch
                         ) {
-                          setShowUpgradeOrg(true);
+                          openUnlockPrompt("branching");
                           return;
                         }
                         dispatch(updateConfig({ branch: currentValue }));
@@ -164,7 +163,7 @@ export function BranchSwitcher({ project, config }: BranchSwitcherProps) {
                             </span>
                           )}
                         </div>
-                        {!canAccessProFeatures &&
+                        {!hasAdvancedFeatures &&
                           config.branch !== branch.name && (
                             <Lock className="text-muted-foreground size-3" />
                           )}
@@ -178,8 +177,8 @@ export function BranchSwitcher({ project, config }: BranchSwitcherProps) {
             <CommandGroup className="flex-none">
               <CommandItem
                 onSelect={() => {
-                  if (!canAccessProFeatures) {
-                    setShowUpgradeOrg(true);
+                  if (!hasAdvancedFeatures) {
+                    openUnlockPrompt("branching");
                     return;
                   }
                   setIsBranchDialogOpen(true);
@@ -190,7 +189,7 @@ export function BranchSwitcher({ project, config }: BranchSwitcherProps) {
                     <Plus className="me-2 size-4" />
                     {tProjectBranching("switcher.create_new")}
                   </div>
-                  {!canAccessProFeatures && (
+                  {!hasAdvancedFeatures && (
                     <Lock className="text-muted-foreground size-3" />
                   )}
                 </div>
@@ -259,12 +258,6 @@ export function BranchSwitcher({ project, config }: BranchSwitcherProps) {
       >
         <ExternalLink className="size-3" />
       </a>
-
-      <UpgradeDialog
-        open={showUpgradeOrg}
-        onOpenChange={setShowUpgradeOrg}
-        contextKey="branching"
-      />
     </div>
   );
 }

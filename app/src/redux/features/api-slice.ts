@@ -158,11 +158,8 @@ export const api = createApi({
     "Project",
     "ProjectContent",
     "Providers",
-    "package",
     "User",
     "ProjectLog",
-    "trial",
-    "UserPersona",
     "UserPreference",
   ],
   baseQuery: axiosBaseQuery({ baseUrl: API_URL!, withCredentials: true }), // withCredentials: true for cookie attached to headers

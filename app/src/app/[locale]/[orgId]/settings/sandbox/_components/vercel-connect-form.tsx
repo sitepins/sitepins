@@ -1,7 +1,7 @@
 "use client";
 
 import { errorMessage } from "@/lib/utils/error";
-import { UpgradeCta } from "@/components/upgrade-cta";
+import { UnlockCta } from "@/components/unlock-cta";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -394,7 +394,7 @@ export default function VercelConnectForm({
                   {tOrgSandbox("description")}
                 </CardDescription>
               </div>
-              <UpgradeCta labelKey="sandbox" />
+              <UnlockCta labelKey="sandbox" />
             </div>
           </CardHeader>
         </Card>

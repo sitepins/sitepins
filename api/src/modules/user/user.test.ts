@@ -28,7 +28,7 @@ vi.mock("./user.model", () => ({
   },
 }));
 
-vi.mock("@/lib/entitlements", () => ({
+vi.mock("@/lib/lifecycleHooks", () => ({
   runUserDeletionHooks: (...a: unknown[]) => runUserDeletionHooksMock(...a),
   emitUserUpdate: vi.fn(),
 }));

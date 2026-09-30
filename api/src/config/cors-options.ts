@@ -42,7 +42,7 @@ export const corsProtectedOptions: CorsOptions = {
 // consumed server-to-server / by external API clients — but it authenticates
 // via the Authorization header, never cookies, so credentials must be OFF.
 // (An open origin combined with credentials:true would expose cookie-authed
-// data to any site.) The token routes themselves live in the cloud edition.
+// data to any site.)
 export const corsUnprotectedOptions: CorsOptions = {
   ...sharedCorsConfig,
   origin: true,

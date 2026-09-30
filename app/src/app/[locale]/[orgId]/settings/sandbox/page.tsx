@@ -1,7 +1,7 @@
 "use client";
 
 import { useOrgMember, usePermission } from "@/hooks/use-permission";
-import { useOwnerPlan } from "@/hooks/use-owner-plan";
+import { useFeatureAccess } from "@/hooks/use-feature-access";
 import { ENUM_PERMISSIONS } from "@/lib/roles";
 import { useGetOrgQuery } from "@/redux/features/orgs/org-api";
 import { use } from "react";
@@ -19,14 +19,14 @@ export default function SandboxSettings(props: {
 
   const canUpdateSettings = usePermission(ENUM_PERMISSIONS.MANAGE_ORG);
   const { isOwner } = useOrgMember();
-  const { canAccessProFeatures } = useOwnerPlan();
+  const { hasAdvancedFeatures } = useFeatureAccess();
 
   if (isLoading) return <SandboxSettingsSkeleton />;
   if (!org) return null;
 
   const canUpdate = isOwner || canUpdateSettings;
 
-  const isRestricted = !canAccessProFeatures;
+  const isRestricted = !hasAdvancedFeatures;
 
   return (
     <VercelConnectForm

@@ -10,9 +10,8 @@ export type JwtIssuerEntry = {
   /**
    * Optional extra check run after this entry's signature verifies. A valid
    * signature only proves the token was minted — it says nothing about whether
-   * it has since been revoked. The cloud edition attaches a validator to the
-   * core entry so deleting a personal access token takes effect immediately
-   * instead of at expiry.
+   * it has since been revoked. A validator on the core entry lets deleting
+   * a personal access token take effect immediately instead of at expiry.
    */
   validate?: (token: string, payload: JwtPayload) => Promise<boolean>;
 };

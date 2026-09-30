@@ -99,7 +99,7 @@ const getSingleProjectController = catchAsync(
 const createProjectController = catchAsync(
   async (req: Request, res: Response) => {
     // Explicit allowlist — spreading req.body let a client seed fields the
-    // plan-limit checks own (visibility, status) or fields that are derived.
+    // request guards own (visibility, status) or fields that are derived.
     const {
       org_id,
       project_name,

@@ -1,6 +1,5 @@
 "use client";
 
-import { AiUpgrade } from "@/components/ai-upgrade";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/toast";
 import {
@@ -8,13 +7,13 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { UpgradeDialog } from "@/components/upgrade-dialog";
+import { openUnlockPrompt } from "@/hooks/use-unlock-prompt";
 import { getAICredential } from "@/editor/plugins/copilot-kit";
 import { revertToOriginal } from "@/editor/utils/plate-utils";
 import { useAiAccess } from "@/hooks/use-ai-access";
 import { useDebounce } from "@/hooks/use-debounce";
 import { useHydrated } from "@/hooks/use-hydrated";
-import { useOwnerPlan } from "@/hooks/use-owner-plan";
+import { useFeatureAccess } from "@/hooks/use-feature-access";
 import { getDirection } from "@/lib/i18n/direction";
 import {
   isWrappedValue,
@@ -155,7 +154,6 @@ export default function SeoSetting({
 
   const baseUrl = site?.site_url ?? "";
 
-  const [showUpgradeOrg, setShowUpgradeOrg] = useState(false);
   const [focusKeyword, setFocusKeyword] = useState("");
   const hydrated = useHydrated();
   const portalContainer = hydrated ? document.body : null;
@@ -606,8 +604,8 @@ export default function SeoSetting({
     return newSchema;
   }, [filteredSchema, filename, tEditorSeo]);
 
-  const { canAccessProFeatures: canAccessSeo, canAccessProPlusFeatures } =
-    useOwnerPlan();
+  const { hasAdvancedFeatures: canAccessSeo, hasTeamFeatures } =
+    useFeatureAccess();
 
   // Computed on every plan so the score covers all checks; only the rows are gated.
   const insightsResults = useMemo(
@@ -650,17 +648,12 @@ export default function SeoSetting({
             className="h-9 px-2 text-xs sm:px-2.5 sm:text-sm"
             type="button"
             aria-label="SEO"
-            onClick={() => setShowUpgradeOrg(true)}
+            onClick={() => openUnlockPrompt("seo")}
           >
             <span className="hidden sm:inline-block">SEO</span>
             <ChartSpline className="size-4 sm:hidden" strokeWidth={1.5} />
             {scoreBadge}
           </Button>
-          <UpgradeDialog
-            open={showUpgradeOrg}
-            onOpenChange={setShowUpgradeOrg}
-            contextKey="seo"
-          />
         </div>
       ) : (
         <Button
@@ -717,17 +710,11 @@ export default function SeoSetting({
                     <SeoAnalysis
                       results={results}
                       schema={schema}
-                      insightsResults={
-                        canAccessProPlusFeatures ? insightsResults : {}
-                      }
-                      canAccessInsights={canAccessProPlusFeatures}
-                      focusKeyword={
-                        canAccessProPlusFeatures ? focusKeyword : undefined
-                      }
+                      insightsResults={hasTeamFeatures ? insightsResults : {}}
+                      canAccessInsights={hasTeamFeatures}
+                      focusKeyword={hasTeamFeatures ? focusKeyword : undefined}
                       onFocusKeywordChange={
-                        canAccessProPlusFeatures
-                          ? handleFocusKeywordChange
-                          : undefined
+                        hasTeamFeatures ? handleFocusKeywordChange : undefined
                       }
                       onApplyFix={handleApplyFix}
                       content={content || debouncedContent}
@@ -750,7 +737,6 @@ export default function SeoSetting({
           </AnimatePresence>,
           portalContainer,
         )}
-      <AiUpgrade />
     </div>
   );
 }

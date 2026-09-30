@@ -2,7 +2,7 @@
 
 import { Toaster } from "@/components/ui/toast";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import UserTracker from "@/components/user-tracker";
+import UserSessionEffects from "@/components/user-session-effects";
 import TwSizeIndicator from "@/helpers/tw-size-indicator";
 import { ThemeProvider } from "next-themes";
 import React from "react";
@@ -22,7 +22,7 @@ export function AppProviders({ children }: AppProvidersProps) {
       <TooltipProvider delay={500}>
         <TwSizeIndicator />
         <RtkProviders>
-          <UserTracker />
+          <UserSessionEffects />
           {children}
         </RtkProviders>
       </TooltipProvider>

@@ -7,7 +7,7 @@ import { logger } from "@/lib/logger";
 // The open-source build works with zero external SaaS mail services. Callers
 // send by logical `kind`, and delivery is handled by:
 //
-//   - custom  : registered via setMailSender (e.g. sp-cloud Brevo wrapper)
+//   - custom  : registered via setMailSender
 //   - smtp    : renders a built-in HTML email and sends via nodemailer
 //   - console : logs the message (incl. OTP / reset link) to stdout so a
 //               self-hoster can test or complete signup with no SMTP server

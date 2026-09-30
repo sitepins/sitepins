@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { useDeploymentStatusPollingInterval } from "@/hooks/use-deployment-status-polling";
 import { useGitProvider } from "@/hooks/use-git-provider";
-import { useOwnerPlan } from "@/hooks/use-owner-plan";
+import { useFeatureAccess } from "@/hooks/use-feature-access";
 import {
   getDeploymentStatusI18nKey,
   getDeploymentStatusVariant,
@@ -41,7 +41,7 @@ export default function ProjectOverview({
   const params = useParams();
   const logs = projectLogQuery?.data?.logs ?? [];
   const lastLog = logs.length > 0 ? logs[0] : null;
-  const { canAccessProFeatures } = useOwnerPlan();
+  const { hasAdvancedFeatures } = useFeatureAccess();
   const provider = config?.provider || project?.provider;
   const isGitLab = isGitLabProvider(provider);
 
@@ -61,7 +61,7 @@ export default function ProjectOverview({
 
   const { data: rawStatus, isLoading: isStatusLoading } = useGitCommitStatus({
     commitRef: latestCommitRef,
-    skip: !latestCommitRef || !canAccessProFeatures,
+    skip: !latestCommitRef || !hasAdvancedFeatures,
     pollingInterval,
   });
   const statusStateFromData = commitStatusState(rawStatus);
@@ -139,9 +139,9 @@ export default function ProjectOverview({
               {tDashboard("build_status")}
             </Label>
             <div className="mt-1">
-              {canAccessProFeatures && isStatusLoading ? (
+              {hasAdvancedFeatures && isStatusLoading ? (
                 <Loader2 className="size-4 animate-spin opacity-50" />
-              ) : canAccessProFeatures &&
+              ) : hasAdvancedFeatures &&
                 isDisplayableDeploymentStatus(buildStatus) ? (
                 <Badge
                   variant={getDeploymentStatusVariant(buildStatus)}

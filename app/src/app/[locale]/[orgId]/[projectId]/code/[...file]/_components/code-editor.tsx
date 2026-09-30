@@ -1,6 +1,5 @@
 "use client";
 
-import { AiUpgrade } from "@/components/ai-upgrade";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -24,7 +23,7 @@ import { useAiAccess } from "@/hooks/use-ai-access";
 import { useDeploymentStatusPollingInterval } from "@/hooks/use-deployment-status-polling";
 import { useGitProvider } from "@/hooks/use-git-provider";
 import { useMediaQuery } from "@/hooks/use-media-query";
-import { useOwnerPlan } from "@/hooks/use-owner-plan";
+import { useFeatureAccess } from "@/hooks/use-feature-access";
 import { usePresence } from "@/hooks/use-presence";
 import { useSandboxPreview } from "@/hooks/use-sandbox-preview";
 import { useVercelIntegration } from "@/hooks/use-vercel-integration";
@@ -133,14 +132,14 @@ export default function CodeEditor({
 
   const isSaving = isGitLabProvider(config.provider) ? isGlSaving : isGhSaving;
 
-  const { canAccessProFeatures } = useOwnerPlan();
+  const { hasAdvancedFeatures } = useFeatureAccess();
   const { useGitCommitStatus } = useGitProvider();
 
   const [statusState, setStatusState] = useState<string | undefined>(undefined);
   const pollingInterval = useDeploymentStatusPollingInterval(statusState);
 
   const { data: rawStatus, refetch: refetchStatus } = useGitCommitStatus({
-    skip: !config.owner || !config.branch || !canAccessProFeatures,
+    skip: !config.owner || !config.branch || !hasAdvancedFeatures,
     pollingInterval,
   });
   const statusStateFromData = commitStatusState(rawStatus);
@@ -149,10 +148,10 @@ export default function CodeEditor({
   useEffect(() => {
     if (prevSavingRef.current && !isSaving) {
       setStatusState(undefined);
-      if (canAccessProFeatures) refetchStatus();
+      if (hasAdvancedFeatures) refetchStatus();
     }
     prevSavingRef.current = isSaving;
-  }, [isSaving, canAccessProFeatures, refetchStatus]);
+  }, [isSaving, hasAdvancedFeatures, refetchStatus]);
 
   if (statusState !== statusStateFromData) {
     setStatusState(statusStateFromData);
@@ -794,7 +793,7 @@ export default function CodeEditor({
               </span>
             </Button>
 
-            {canAccessProFeatures &&
+            {hasAdvancedFeatures &&
               isDisplayableDeploymentStatus(deploymentStatus) && (
                 <div className="flex min-w-0 items-center gap-1 sm:gap-2">
                   {/* Mobile: dot */}
@@ -1222,8 +1221,6 @@ export default function CodeEditor({
         getBaselineContent={() => ({ path: filePath, content: savedContent })}
         autoGenerateAi={autoGenerateCommitAi}
       />
-
-      <AiUpgrade />
     </div>
   );
 }

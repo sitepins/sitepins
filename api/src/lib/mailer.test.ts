@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 // Self-hosted signup depends on this module working with zero mail config
-// (console provider). Extensions can plug in custom senders (e.g. Brevo in sp-cloud).
+// (console provider). Extensions can plug in custom senders.
 
 const { mockConfig, createTransportMock, transportSendMailMock } = vi.hoisted(
   () => ({

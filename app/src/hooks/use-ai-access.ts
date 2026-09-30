@@ -1,7 +1,7 @@
 "use client";
 
-import { useOwnerPlan } from "@/hooks/use-owner-plan";
-import { openAiUpsellDialog } from "@/hooks/use-upgrade-dialog";
+import { useFeatureAccess } from "@/hooks/use-feature-access";
+import { openUnlockPrompt } from "@/hooks/use-unlock-prompt";
 import { useSyncExternalStore } from "react";
 
 /**
@@ -163,15 +163,15 @@ export function useIsAiSearchEnabled(): boolean {
 
 /**
  * Pure evaluation function for AI access rules:
- * 1. Plan gating: verifies the user's plan permits AI features.
- *    If blocked, opens the upsell dialog.
+ * 1. Feature gating: verifies AI features are available to the user.
+ *    If blocked, opens the unlock prompt.
  * 2. Model setup gating: verifies the user has selected an AI model in localStorage.
  *    If not configured, opens /dashboard/ai-agent in a new tab.
  */
 export function evaluateAiAccess({
   canAccessAi,
   hasModel,
-  onOpenUpsell = openAiUpsellDialog,
+  onOpenUpsell = () => openUnlockPrompt("ai"),
   onOpenSettings = () => {
     if (typeof window !== "undefined") {
       window.open("/dashboard/ai-agent", "_blank");
@@ -199,10 +199,10 @@ export function evaluateAiAccess({
 /**
  * Standardized AI gating hook matching the Plate editor AI rules:
  * - Always visible in the UI across all plans.
- * - Gated on trigger: Plan -> Model Config -> Action.
+ * - Gated on trigger: Feature access -> Model Config -> Action.
  */
 export function useAiAccess() {
-  const { canAccessProFeatures: canAccessAi } = useOwnerPlan();
+  const { hasAdvancedFeatures: canAccessAi } = useFeatureAccess();
 
   const getHasConfiguredModel = () =>
     typeof window !== "undefined"

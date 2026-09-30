@@ -1,7 +1,6 @@
 "use client";
 
 import { AiMarkdown } from "@/components/ai-markdown";
-import { AiUpgrade } from "@/components/ai-upgrade";
 import {
   Command,
   CommandDialog,
@@ -15,8 +14,8 @@ import {
 import { Kbd, KbdGroup } from "@/components/ui/kbd";
 import { useAiAccess } from "@/hooks/use-ai-access";
 import { useOs } from "@/hooks/use-os";
-import { useOwnerPlan } from "@/hooks/use-owner-plan";
-import { getCloudSearchGroups } from "@/lib/menu-cloud";
+import { useFeatureAccess } from "@/hooks/use-feature-access";
+import { getExtraSearchGroups } from "@/lib/menu-extras";
 import { useSearchExtensions } from "@/lib/search-extensions";
 import { cn } from "@/lib/utils/cn";
 import { sanitizedPath } from "@/lib/utils/common";
@@ -271,7 +270,7 @@ export function GlobalSearch({
   const orgId = params?.orgId;
   const projectId = params?.projectId;
   const { data: orgs } = useGetOrgsQuery();
-  const { canAccessProFeatures } = useOwnerPlan();
+  const { hasAdvancedFeatures } = useFeatureAccess();
   const configs = config?.configs;
   const searchItems = tSearch.raw("items") as Record<
     string,
@@ -353,10 +352,10 @@ export function GlobalSearch({
       (files as TFiles[]).find((t) => t.name === "code")?.children ?? [];
     const contentFiles = flattenFiles(rootChildren);
     const configFiles = flattenConfigFiles(themeChildren, configs);
-    if (!canAccessProFeatures) return [...contentFiles, ...configFiles];
+    if (!hasAdvancedFeatures) return [...contentFiles, ...configFiles];
     const codeFiles = flattenFiles(codeChildren);
     return [...contentFiles, ...configFiles, ...codeFiles];
-  }, [files, canAccessProFeatures, configs, projectId]);
+  }, [files, hasAdvancedFeatures, configs, projectId]);
 
   const collections = React.useMemo(
     () =>
@@ -572,7 +571,7 @@ export function GlobalSearch({
           createSearchItem("coauthor"),
         ],
       },
-      ...getCloudSearchGroups(locale),
+      ...getExtraSearchGroups(locale),
       {
         groupLabel: tSearch("groupLabels.organization_settings"),
         items: orgId
@@ -1261,8 +1260,6 @@ export function GlobalSearch({
           )}
         </Command>
       </CommandDialog>
-
-      <AiUpgrade />
     </div>
   );
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { usePartnerLoginBridge } from "@/lib/partner-login";
+import { useExternalLoginBridge } from "@/lib/external-login";
 import { safeInternalPath } from "@/lib/safe-redirect";
 import { AlertCircle, ShieldCheck } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -12,7 +12,7 @@ import { SocialAuth } from "../register/_components/social-auth";
 import { LoginCredential } from "../register/page";
 import LoginWithPassword from "./_components/login-with-password";
 
-export type { TRedirectUser } from "@/lib/partner-login";
+export type { TRedirectUser } from "@/lib/external-login";
 
 export default function Login() {
   const [showVerify, setShowVerify] = useState(false);
@@ -49,7 +49,7 @@ export default function Login() {
 
   const errorMessage = getOAuthErrorMessage(oauthError);
 
-  const { pending, redirectUser } = usePartnerLoginBridge({
+  const { pending, redirectUser } = useExternalLoginBridge({
     from,
     callbackURL,
   });

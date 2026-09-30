@@ -1,7 +1,7 @@
 import type { NextFunction, Request, Response } from "express";
 
-// Optional hosted-product policy hooks. Core never assigns a policy, so
-// self-hosted installs stay unmetered and do not expose plan concepts.
+// Optional policy hooks. Core never assigns a policy, so installs stay
+// unmetered.
 export type RequestGuardEvent =
   "organization:create" | "organization:member:add" | "project:create";
 

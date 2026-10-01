@@ -26,7 +26,7 @@ import { toast } from "@/components/ui/toast";
 import * as z from "zod/v4";
 import { LoginCredential } from "../page";
 
-type TRegisterFields = z.infer<typeof registerSchema> & { profession?: string };
+type TRegisterFields = z.infer<typeof registerSchema>;
 
 export default function RegisterWithPassword({
   onSetShowVerify,
@@ -41,8 +41,6 @@ export default function RegisterWithPassword({
     (BetterFetchError & Record<string, unknown>) | null
   >(null);
 
-  // `profession` is the honeypot: a real field on the form, deliberately
-  // absent from the schema so a filled value can never reach signup.
   const registerForm = useForm<TRegisterFields>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
@@ -53,24 +51,7 @@ export default function RegisterWithPassword({
     },
   });
 
-  const onSubmit = async (data: z.infer<typeof registerSchema>) => {
-    // Honeypot detection: if bots fill the hidden field (now `profession`),
-    // show a "success" toast then gradually reject the submission
-    // (prevent actual signup).
-    const hp = registerForm.getValues("profession");
-    if (hp && String(hp).trim().length) {
-      setIsPending(true);
-      // Show the normal success message to the bot (or script)
-      toast.success(tAuth("success_toast"));
-
-      // After a short delay, mark as rejected and show an error to the real UI
-      setTimeout(() => {
-        setIsPending(false);
-      }, 1200);
-
-      return;
-    }
-
+  const onSubmit = async (data: TRegisterFields) => {
     await authClient.signUp.email(
       {
         email: data.email,
@@ -98,19 +79,6 @@ export default function RegisterWithPassword({
     <>
       <CardContent className="pb-2.5">
         <form id="register-form" onSubmit={registerForm.handleSubmit(onSubmit)}>
-          {/* Honeypot: visually hidden field styled to look like a required/important field */}
-          <div className="sr-only" aria-hidden="true">
-            <label htmlFor="profession">{tAuth("profession")}</label>
-            <input
-              id="profession"
-              type="text"
-              autoComplete="organization-title"
-              placeholder={tAuth("full_name_placeholder")}
-              tabIndex={-1}
-              {...registerForm.register("profession")}
-            />
-          </div>
-
           <FieldGroup>
             <Controller
               name="full_name"

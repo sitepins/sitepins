@@ -162,6 +162,11 @@ export async function proxy(request: NextRequest) {
 // exclude Next internals, API routes, static assets, and PWA endpoints
 export const config = {
   matcher: [
-    "/((?!api|_next/static|_next/image|images|icons|favicon\\.ico|sw\\.js|manifest\\.webmanifest|manifest\\.json|offline\\.html|\\.well-known).*)",
+    {
+      source:
+        "/((?!api|_next/static|_next/image|images|icons|favicon\\.ico|sw\\.js|manifest\\.webmanifest|manifest\\.json|offline\\.html|\\.well-known).*)",
+      // WebSocket upgrades can't take a proxy response and break the session fetch
+      missing: [{ type: "header", key: "upgrade" }],
+    },
   ],
 };

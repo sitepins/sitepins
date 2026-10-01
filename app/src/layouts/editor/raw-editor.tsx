@@ -71,7 +71,7 @@ export const RawEditor = ({
 
   return (
     <div
-      className={`raw-markdown-editor [&_.monaco-editor-background]:bg-background! [&_.monaco-editor_.margin]:bg-background! [&_.monaco-editor_.overflow-guard]:bg-background! [&_.monaco-editor]:bg-background! relative flex h-fit flex-col rounded ${isMobile ? "" : "pt-4 lg:pt-6"}`}
+      className={`raw-markdown-editor [&_.monaco-editor-background]:bg-background! [&_.monaco-editor_.margin]:bg-background! [&_.monaco-editor_.overflow-guard]:bg-background! [&_.monaco-editor]:bg-background! relative flex h-full flex-col rounded ${isMobile ? "" : "pt-4 lg:pt-6"}`}
     >
       <div
         className={`scrollbar-hide bg-background border-border before:bg-background @container/toolbar sticky inset-s-0 top-0 z-50 flex min-h-10 w-auto items-stretch justify-between overflow-x-auto rounded-lg border p-1 before:pointer-events-none before:absolute before:inset-x-0 before:-top-4 before:h-4 lg:before:-top-6 lg:before:h-6 ${isMobile ? "" : "mx-4 lg:mx-6"}`}
@@ -124,7 +124,7 @@ export const RawEditor = ({
       </div>
       <div
         dir="ltr"
-        className={`relative px-0 pt-4 text-left ${isMobile ? "" : "lg:pt-6"} ${isMobile ? "h-[calc(100vh-215px)]" : "h-[calc(100vh-152px)]"}`}
+        className={`relative min-h-0 flex-1 px-0 pt-4 text-left ${isMobile ? "" : "lg:pt-6"}`}
       >
         <MonacoEditor
           key="raw-editor"

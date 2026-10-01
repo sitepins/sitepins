@@ -24,7 +24,10 @@ export default function ContentEditor({
 
   return (
     <div className="size-full">
-      <div style={{ display: !isRawMode ? "block" : "none" }}>
+      <div
+        className="h-full"
+        style={{ display: !isRawMode ? "block" : "none" }}
+      >
         <RichEditor
           markdownContent={markdownContent}
           onUpdateMarkdown={onUpdateMarkdown}
@@ -32,7 +35,7 @@ export default function ContentEditor({
           onUpdateContentRef={onUpdateContentRef}
         />
       </div>
-      <div style={{ display: isRawMode ? "block" : "none" }}>
+      <div className="h-full" style={{ display: isRawMode ? "block" : "none" }}>
         <RawEditor
           isMobile={isMobile}
           markdownContent={markdownContent}

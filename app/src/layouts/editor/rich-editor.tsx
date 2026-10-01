@@ -474,7 +474,7 @@ export const RichEditor = ({
         editor={editor}
       >
         <EditorContainer
-          className={`relative ${isMobile ? "" : "p-4 lg:p-6"} ${isMobile ? "h-[calc(100vh-170px)]" : "h-[calc(100vh-110px)]"}`}
+          className={`relative h-full overflow-x-hidden ${isMobile ? "" : "p-4 lg:p-6"}`}
         >
           <Editor
             dir="auto"

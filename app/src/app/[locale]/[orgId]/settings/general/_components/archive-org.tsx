@@ -89,7 +89,7 @@ export default function ArchiveOrg({
               <Button
                 type="button"
                 variant={isArchived ? "success" : "warning"}
-                disabled={isPending}
+                isLoading={isPending}
                 onClick={async () => {
                   try {
                     const newStatus = isArchived ? "active" : "archived";

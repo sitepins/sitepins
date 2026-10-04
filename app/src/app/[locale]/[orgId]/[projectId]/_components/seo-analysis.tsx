@@ -30,7 +30,6 @@ import {
   CheckCircle,
   Copy,
   Info,
-  Loader2,
   Lock,
   MinusCircle,
   Sparkles,
@@ -558,13 +557,10 @@ export default function SeoAnalysis({
                                   size="sm"
                                   className="h-6 gap-1 px-2 text-[11px] font-medium"
                                   onClick={() => handleTriggerFix(result)}
-                                  disabled={currentFix?.loading}
+                                  isLoading={currentFix?.loading}
                                 >
                                   {currentFix?.loading ? (
-                                    <>
-                                      <Loader2 className="size-3 animate-spin" />
-                                      <span>{tEditorSeo("ai.fixing")}</span>
-                                    </>
+                                    <span>{tEditorSeo("ai.fixing")}</span>
                                   ) : (
                                     <>
                                       <Sparkles className="size-3" />

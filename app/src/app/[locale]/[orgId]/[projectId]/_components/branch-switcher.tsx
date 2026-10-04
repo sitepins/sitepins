@@ -39,7 +39,6 @@ import {
   ChevronsUpDown,
   ExternalLink,
   GitBranch,
-  Loader2,
   Lock,
   Plus,
 } from "lucide-react";
@@ -237,10 +236,7 @@ export function BranchSwitcher({ project, config }: BranchSwitcherProps) {
             >
               {tCommon("actions.cancel")}
             </Button>
-            <Button onClick={handleCreateBranch} disabled={isBranchCreating}>
-              {isBranchCreating && (
-                <Loader2 className="me-2 size-4 animate-spin" />
-              )}
+            <Button onClick={handleCreateBranch} isLoading={isBranchCreating}>
               {tProjectBranching("create.submit")}
             </Button>
           </DialogFooter>

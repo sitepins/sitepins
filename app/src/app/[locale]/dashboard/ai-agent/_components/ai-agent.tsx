@@ -23,7 +23,7 @@ import { Switch } from "@/components/ui/switch";
 import { toast } from "@/components/ui/toast";
 import { useHydrated } from "@/hooks/use-hydrated";
 import { aiProviders } from "@/lib/constant";
-import { ArrowUpRight, Eye, EyeOff, Trash } from "lucide-react";
+import { ArrowUpRight, Eye, EyeOff, PlugZap, Trash } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { ChangeEvent, useMemo, useState } from "react";
 
@@ -118,6 +118,37 @@ export default function AISettings() {
   const handleDeleteKey = () => {
     setExplicitCustom(false);
     deleteKey();
+  };
+
+  const [isTesting, setIsTesting] = useState(false);
+  const canTest =
+    !!aiCredential.provider &&
+    !!aiCredential.model &&
+    !!aiCredential.apiKey.trim();
+
+  const handleTestKey = async () => {
+    setIsTesting(true);
+    try {
+      const res = await fetch("/api/ai/test", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          apiKey: aiCredential.apiKey.trim(),
+          provider: aiCredential.provider,
+          model: aiCredential.model,
+        }),
+      });
+      if (res.ok) {
+        toast.success(tDashboardAiAgent("test_success"));
+      } else {
+        const data = await res.json().catch(() => ({}));
+        toast.error(data.error || tDashboardAiAgent("test_error"));
+      }
+    } catch {
+      toast.error(tDashboardAiAgent("test_error"));
+    } finally {
+      setIsTesting(false);
+    }
   };
 
   return (
@@ -313,18 +344,29 @@ export default function AISettings() {
                 {tDashboardAiAgent("delete_key")}
               </Button>
             )}
-            <Button
-              disabled={
-                !aiCredential.provider ||
-                !aiCredential.model ||
-                !aiCredential.apiKey.trim() ||
-                !isDirty
-              }
-              type="submit"
-              className="ms-auto"
-            >
-              {tDashboardAiAgent("save_changes")}
-            </Button>
+            <div className="ms-auto flex items-center gap-2">
+              <Button
+                variant="outline"
+                type="button"
+                onClick={handleTestKey}
+                disabled={!canTest}
+                isLoading={isTesting}
+              >
+                {!isTesting && <PlugZap className="me-2 size-4" />}
+                {tDashboardAiAgent("test_key")}
+              </Button>
+              <Button
+                disabled={
+                  !aiCredential.provider ||
+                  !aiCredential.model ||
+                  !aiCredential.apiKey.trim() ||
+                  !isDirty
+                }
+                type="submit"
+              >
+                {tDashboardAiAgent("save_changes")}
+              </Button>
+            </div>
           </CardFooter>
         </form>
       </Card>

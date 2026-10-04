@@ -27,13 +27,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { cn } from "@/lib/utils/cn";
 import { useUpdateOrgMutation } from "@/redux/features/orgs/org-api";
 import { TOrg } from "@/redux/features/orgs/type";
-import {
-  CheckCircle2,
-  ExternalLink,
-  Loader2,
-  RefreshCw,
-  Unlink,
-} from "lucide-react";
+import { CheckCircle2, ExternalLink, RefreshCw, Unlink } from "lucide-react";
 import { useTranslations } from "next-intl";
 import _Link from "next/link";
 import { useState } from "react";
@@ -233,11 +227,9 @@ export default function VercelConnectForm({
       <div className="flex items-center gap-3">
         <Button
           onClick={() => handleValidate(token)}
-          disabled={isValidating || isConnecting || token.trim().length < 20}
+          disabled={token.trim().length < 20}
+          isLoading={isValidating || isConnecting}
         >
-          {(isValidating || isConnecting) && (
-            <Loader2 className="me-2 size-4 animate-spin" />
-          )}
           {isValidating
             ? tOrgSandbox("status_validating")
             : isConnecting
@@ -334,9 +326,8 @@ export default function VercelConnectForm({
               selectedTeamId,
             )
           }
-          disabled={isConnecting}
+          isLoading={isConnecting}
         >
-          {isConnecting && <Loader2 className="me-2 size-4 animate-spin" />}
           {isConnecting
             ? connectStatus || tOrgSandbox("connecting")
             : tOrgSandbox("connect_btn")}

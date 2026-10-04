@@ -466,13 +466,9 @@ const ProjectBranching = ({
                     size="sm"
                     className="h-8 px-3 text-xs"
                     onClick={() => handleMerge(reqId, reqBranch)}
-                    disabled={isMerging}
+                    isLoading={isMerging}
                   >
-                    {isMerging ? (
-                      <Loader2 className="me-1 size-3 animate-spin" />
-                    ) : (
-                      <CheckCircle2 className="me-1 size-3" />
-                    )}
+                    {!isMerging && <CheckCircle2 className="me-1 size-3" />}
                     {tProjectBranching("merge")}
                   </Button>
                 </div>
@@ -587,10 +583,7 @@ const ProjectBranching = ({
                     >
                       Cancel
                     </Button>
-                    <Button onClick={handleCreatePR} disabled={isCreating}>
-                      {isCreating && (
-                        <Loader2 className="me-2 size-4 animate-spin" />
-                      )}
+                    <Button onClick={handleCreatePR} isLoading={isCreating}>
                       {tProjectBranching("create_request", { provider: "" })}
                     </Button>
                   </DialogFooter>

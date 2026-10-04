@@ -160,7 +160,7 @@ export default function MoveProject({
               <AlertDialogCancel>{tCommon("actions.cancel")}</AlertDialogCancel>
               <Button
                 type="button"
-                disabled={isPending}
+                isLoading={isPending}
                 onClick={async () => {
                   if (!selected)
                     return toast(tProjectSettingsGeneralMove("error_select"));

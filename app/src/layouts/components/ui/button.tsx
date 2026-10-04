@@ -68,8 +68,8 @@ function Button({
 }: ButtonProps) {
   const content = isLoading ? (
     <>
+      <Loader2 className="me-2 size-4 animate-spin" />
       {children}
-      <Loader2 className="ms-2 size-4 animate-spin" />
     </>
   ) : (
     children

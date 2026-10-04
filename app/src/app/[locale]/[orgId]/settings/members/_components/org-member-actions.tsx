@@ -99,7 +99,8 @@ function DeleteOrgMember({
         <AlertDialogFooter>
           <AlertDialogCancel>{tCommon("actions.cancel")}</AlertDialogCancel>
           <Button
-            disabled={isLoading || value !== "CONFIRM" || !canManageMembers}
+            disabled={value !== "CONFIRM" || !canManageMembers}
+            isLoading={isLoading}
             variant={"destructive"}
             onClick={async () => {
               if (IS_DEMO) {
@@ -167,7 +168,8 @@ function LeaveOrgMember({
             {tCommon("actions.cancel")}
           </AlertDialogCancel>
           <Button
-            disabled={isLoading || value !== "CONFIRM"}
+            disabled={value !== "CONFIRM"}
+            isLoading={isLoading}
             variant={"destructive"}
             onClick={async () => {
               if (IS_DEMO) {

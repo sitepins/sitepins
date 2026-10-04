@@ -565,19 +565,13 @@ export function CodeAiWidget({
                         size="sm"
                         type="button"
                         onClick={() => handleSubmit()}
-                        disabled={
-                          !prompt.trim() || isGenerating || isExplaining
-                        }
+                        disabled={!prompt.trim()}
+                        isLoading={isGenerating || isExplaining}
                         className="h-7 cursor-pointer px-3 text-xs font-medium"
                       >
-                        {isGenerating || isExplaining ? (
-                          <>
-                            <Loader2 className="size-3.5 animate-spin" />
-                            <span>{tEditor("code.ai.generating")}</span>
-                          </>
-                        ) : (
-                          "Update"
-                        )}
+                        {isGenerating || isExplaining
+                          ? tEditor("code.ai.generating")
+                          : "Update"}
                       </Button>
                     </div>
                   </div>
@@ -607,14 +601,12 @@ export function CodeAiWidget({
                       type="button"
                       size="sm"
                       onClick={() => handleSubmit()}
-                      disabled={!prompt.trim() || isGenerating || isExplaining}
+                      disabled={!prompt.trim()}
+                      isLoading={isGenerating || isExplaining}
                       className="h-7 gap-1.5 px-3 text-xs font-medium"
                     >
                       {isGenerating || isExplaining ? (
-                        <>
-                          <Loader2 className="size-3.5 animate-spin" />
-                          <span>{tEditor("code.ai.generating")}</span>
-                        </>
+                        <span>{tEditor("code.ai.generating")}</span>
                       ) : (
                         <>
                           <Wand2 className="size-3.5" />

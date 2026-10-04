@@ -295,7 +295,8 @@ export default function ProjectSetupSteps({
                   onChange={(e) => setManualUrl(e.target.value)}
                 />
                 <Button
-                  disabled={!manualUrl || isUpdating}
+                  disabled={!manualUrl}
+                  isLoading={isUpdating}
                   onClick={() => {
                     updateProject({
                       project_id: project?.project_id,

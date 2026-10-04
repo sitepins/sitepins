@@ -497,7 +497,7 @@ export default function RepoManager({ canUpdate }: { canUpdate?: boolean }) {
                 isLoading={isDisconnecting}
                 disabled={isDisconnecting || !canUpdateSettings}
               >
-                <Unplug className="me-2 size-4" />
+                {!isDisconnecting && <Unplug className="me-2 size-4" />}
                 {tProjectSettingsGitRepo("disconnect_btn")}
               </Button>
             </AlertDialogTrigger>

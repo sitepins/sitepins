@@ -355,6 +355,7 @@ export default function RepoManager({ canUpdate }: { canUpdate?: boolean }) {
                 onOpenChange={setRepoOpen}
                 value={selectedRepo}
                 items={repoItems}
+                limit={100}
                 onValueChange={(currentValue: string | null) => {
                   setSelectedRepo(currentValue ?? "");
                   setBranchChoice("");

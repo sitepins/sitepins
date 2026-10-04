@@ -38,6 +38,7 @@ import ConfigMenu from "./_components/config-menu";
 import ContentMenu from "./_components/content-menu";
 import ProjectHeader from "./_components/project-header";
 import ProjectSidebar from "./_components/project-sidebar";
+import RepoAccessBanner from "./_components/repo-access-banner";
 
 export default function Layout(
   props: LayoutProps<"/[locale]/[orgId]/[projectId]">,
@@ -439,7 +440,12 @@ export default function Layout(
             />
           )
         }
-        header={<ProjectHeader project={project} />}
+        header={
+          <>
+            <ProjectHeader project={project} />
+            {!isArchived && <RepoAccessBanner project={project} />}
+          </>
+        }
       >
         {isBlockedChildRoute ? (
           <ArchiveBlocked

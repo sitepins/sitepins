@@ -5,14 +5,36 @@ import {
 } from "@/lib/utils/provider-checker";
 import { selectConfig } from "@/redux/features/config/slice";
 import {
+  githubContentApi,
   useGetGitHubInstallationsQuery,
-  useLazyGetGitHubReposByInstallationIdQuery,
-  useLazySearchGitHubReposQuery,
 } from "@/redux/features/github";
 import { useLazyGetGitLabReposQuery } from "@/redux/features/gitlab/gitlab-api";
-import { useAppSelector } from "@/redux/store";
+import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { TGitRepo } from "@/types";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+
+const PAGE_SIZE = 100;
+const MAX_PARALLEL_REQUESTS = 6;
+
+const createLimiter = (max: number) => {
+  let active = 0;
+  const queue: (() => void)[] = [];
+  return async <T>(task: () => Promise<T>): Promise<T> => {
+    if (active >= max) {
+      await new Promise<void>((resolve) => queue.push(resolve));
+    } else {
+      active++;
+    }
+    try {
+      return await task();
+    } finally {
+      // Hand the slot straight to the next waiter so `active` never overshoots.
+      const next = queue.shift();
+      if (next) next();
+      else active--;
+    }
+  };
+};
 
 export const useAllInstallationRepos = (override?: {
   provider?: string;
@@ -56,147 +78,131 @@ export const useAllInstallationRepos = (override?: {
     },
   );
 
-  const [getReposByInstallationId] =
-    useLazyGetGitHubReposByInstallationIdQuery();
-  const [searchGitHubRepositories] = useLazySearchGitHubReposQuery();
+  const dispatch = useAppDispatch();
   const [getGitLabProjects] = useLazyGetGitLabReposQuery();
 
   const [repositories, setRepositories] = useState<TGitRepo[]>([]);
   const [isFetchingRepos, setIsFetchingRepos] = useState(false);
   const [fetchError, setFetchError] = useState<unknown>(null);
 
+  // GitHub loads every repo once and the combobox filters locally, so only
+  // GitLab searches server-side.
+  const remoteSearch = isGitLabProvider(config.provider)
+    ? override?.search
+    : undefined;
+
+  const fetchGitLabRepos = async (
+    active: { current: boolean },
+    searchQuery: string | undefined,
+    fresh: boolean,
+  ) => {
+    if (!config.token) {
+      setRepositories([]);
+      return [];
+    }
+
+    const result = await getGitLabProjects(
+      {
+        token: config.token,
+        search: searchQuery,
+        per_page: PAGE_SIZE,
+        page: 1,
+      },
+      !fresh,
+    ).unwrap();
+
+    if (!active.current) return [];
+
+    const normalized: TGitRepo[] = result.map((proj) => ({
+      name: proj.name,
+      owner: { login: proj.namespace?.path || "Gitlab" },
+      html_url: proj.web_url,
+      homepage: proj.web_url,
+      visibility: proj.visibility,
+      full_name: proj.path_with_namespace,
+      id: proj.id,
+      default_branch: proj.default_branch,
+    }));
+
+    setRepositories(normalized);
+    return normalized;
+  };
+
+  const fetchGitHubRepos = async (
+    active: { current: boolean },
+    fresh: boolean,
+  ) => {
+    const installations = installationsData?.installations ?? [];
+    if (!installations.length) {
+      setRepositories([]);
+      return [];
+    }
+
+    const limit = createLimiter(MAX_PARALLEL_REQUESTS);
+    const fetchPage = (installation_id: number, page: number) =>
+      limit(() =>
+        dispatch(
+          githubContentApi.endpoints.getGitHubReposByInstallationId.initiate(
+            { installation_id, per_page: PAGE_SIZE, page, token: config.token },
+            { subscribe: false, forceRefetch: fresh },
+          ),
+        ).unwrap(),
+      );
+
+    const perInstallation: TGitRepo[][] = installations.map(() => []);
+    const publish = () => {
+      if (active.current) setRepositories(perInstallation.flat());
+    };
+
+    await Promise.all(
+      installations.map(async (installation, index) => {
+        try {
+          const first = await fetchPage(installation.id, 1);
+          const pageCount = Math.ceil(first.total_count / PAGE_SIZE);
+          const rest = await Promise.all(
+            Array.from({ length: Math.max(pageCount - 1, 0) }, (_, i) =>
+              fetchPage(installation.id, i + 2),
+            ),
+          );
+          perInstallation[index] = [first, ...rest].flatMap((result) =>
+            (result.repositories ?? []).map((repo) => ({
+              ...repo,
+              id: typeof repo.id === "bigint" ? repo.id.toString() : repo.id,
+            })),
+          );
+          publish();
+        } catch (err) {
+          logger.error(
+            `Failed to fetch repos for installation ${installation.id}`,
+            err,
+          );
+        }
+      }),
+    );
+
+    return perInstallation.flat();
+  };
+
   const fetchAllRepos = async (
     active: { current: boolean },
-    searchQuery?: string,
+    options: { search?: string; fresh?: boolean } = {},
   ) => {
     setIsFetchingRepos(true);
     setFetchError(null);
 
     try {
-      // GitLab Logic
       if (isGitLabProvider(config.provider)) {
-        if (!config.token) {
-          setRepositories([]);
-          return [];
-        }
-
-        // Pass search param if exists, otherwise just page 1 (limit 100)
-        // If search exists, GitLab API handles filtering
-        const result = await getGitLabProjects({
-          token: config.token,
-          search: searchQuery,
-          per_page: 100,
-          page: 1,
-        }).unwrap();
-
-        if (!active.current) return [];
-
-        // Normalize GitLab projects
-        const normalized: TGitRepo[] = result.map((proj) => ({
-          name: proj.name,
-          owner: { login: proj.namespace?.path || "Gitlab" },
-          html_url: proj.web_url,
-          homepage: proj.web_url,
-          visibility: proj.visibility,
-          full_name: proj.path_with_namespace,
-          id: proj.id,
-          default_branch: proj.default_branch,
-        }));
-
-        setRepositories(normalized);
-        return normalized;
+        return await fetchGitLabRepos(
+          active,
+          options.search,
+          Boolean(options.fresh),
+        );
       }
-
-      // GitHub Logic
-      if (
-        !installationsData?.installations ||
-        !isGitHubProvider(config.provider)
-      ) {
+      if (!isGitHubProvider(config.provider)) {
         setRepositories([]);
         return [];
       }
-
-      const allRepos: TGitRepo[] = [];
-
-      // If searching, we use the Search API
-      if (searchQuery) {
-        // Search API is global, but we want to scope it to the user's installations if possible.
-        // However, searching 'user:name q' is for a specific user.
-        // For installations, it's tricker.
-        // Strategy: Search for the query scoped to each installation account login.
-        // active accounts are in `installationsData.installations`.
-
-        for (const installation of installationsData.installations) {
-          if (!active.current) break;
-
-          try {
-            // "user:ownerName query"
-            // account is a user or an org — only one of login/slug is set
-            const account = installation.account as {
-              login?: string;
-              slug?: string;
-            } | null;
-            const accountLogin = account?.login || account?.slug;
-            if (!accountLogin) continue;
-
-            const q = `user:${accountLogin} ${searchQuery} in:name`;
-            const result = await searchGitHubRepositories({
-              q,
-              per_page: 100,
-              page: 1,
-            }).unwrap();
-
-            if (result.items) {
-              allRepos.push(
-                ...result.items.map((repo) => ({
-                  ...repo,
-                  id:
-                    typeof repo.id === "bigint" ? repo.id.toString() : repo.id,
-                })),
-              );
-            }
-          } catch (err) {
-            logger.error(
-              `Failed to search repos for ${installation.account?.id}`,
-              err,
-            );
-            // continue to next installation
-          }
-        }
-      } else {
-        // No search query -> Fetch first page of each installation
-        for (const installation of installationsData.installations) {
-          if (!active.current) break;
-
-          try {
-            const result = await getReposByInstallationId({
-              installation_id: installation.id,
-              per_page: 100,
-              page: 1,
-              token: config.token,
-            }).unwrap();
-
-            const reposPage = result.repositories ?? [];
-            allRepos.push(
-              ...reposPage.map((repo) => ({
-                ...repo,
-                id: typeof repo.id === "bigint" ? repo.id.toString() : repo.id,
-              })),
-            );
-          } catch (err) {
-            logger.error(
-              `Failed to fetch repos for installation ${installation.id}`,
-              err,
-            );
-            // continue
-          }
-        }
-      }
-
-      if (active.current) {
-        setRepositories(allRepos);
-      }
-      return allRepos;
+      return await fetchGitHubRepos(active, Boolean(options.fresh));
     } catch (err) {
       if (active.current) {
         setFetchError(err);
@@ -217,7 +223,6 @@ export const useAllInstallationRepos = (override?: {
     setRepositories([]);
   }
 
-  // Refetch repos when installationsData updates or provider changes
   useEffect(() => {
     const active = { current: true };
 
@@ -229,7 +234,7 @@ export const useAllInstallationRepos = (override?: {
     ) {
       // fetchAllRepos sets loading/error state synchronously before its first await
       // eslint-disable-next-line react-hooks/set-state-in-effect
-      fetchAllRepos(active, override?.search);
+      fetchAllRepos(active, { search: remoteSearch });
     } else {
       setRepositories([]);
     }
@@ -242,9 +247,33 @@ export const useAllInstallationRepos = (override?: {
     installationsData,
     config.provider,
     config.token,
-    override?.search,
+    remoteSearch,
     override?.skip,
   ]);
+
+  const latest = useRef({
+    fetchAllRepos,
+    refetchInstallations,
+    isGithubUninitialized,
+    provider: config.provider,
+  });
+  useEffect(() => {
+    latest.current = {
+      fetchAllRepos,
+      refetchInstallations,
+      isGithubUninitialized,
+      provider: config.provider,
+    };
+  });
+
+  // Stable identity: callers list it as an effect dependency.
+  const refetch = useCallback(async (search?: string) => {
+    const current = latest.current;
+    if (isGitHubProvider(current.provider) && !current.isGithubUninitialized) {
+      await current.refetchInstallations();
+    }
+    return current.fetchAllRepos({ current: true }, { search, fresh: true });
+  }, []);
 
   return {
     repositories,
@@ -252,11 +281,6 @@ export const useAllInstallationRepos = (override?: {
       (isGitHubProvider(config.provider) ? isLoadingInstallations : false) ||
       isFetchingRepos,
     error: fetchError,
-    refetch: async (search?: string) => {
-      if (isGitHubProvider(config.provider) && !isGithubUninitialized) {
-        await refetchInstallations();
-      }
-      return fetchAllRepos({ current: true }, search);
-    },
+    refetch,
   };
 };

@@ -165,6 +165,13 @@
       "description": "Este proyecto ha sido archivado y la mayoría de funcionalidades están deshabilitadas. Aún puedes acceder a la configuración del proyecto para restaurarlo o cambiar su estado.",
       "open_settings": "Abrir configuración"
     },
+    "repo_access": {
+      "title": "Sitepins no puede acceder a <repo>{repository}</repo>",
+      "github_description": "Da acceso a la aplicación de GitHub {app} o comprueba que no se haya renombrado o eliminado.",
+      "gitlab_description": "Tu cuenta de GitLab necesita acceso Developer o superior, o el proyecto se renombró o eliminó.",
+      "manage_access": "Dar acceso",
+      "retry": "Volver a comprobar"
+    },
     "project_overview": {
       "preview_alt": "Vista previa en vivo de {name}"
     }

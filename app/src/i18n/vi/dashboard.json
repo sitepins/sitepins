@@ -165,6 +165,13 @@
       "description": "Dự án này đã được lưu trữ và hầu hết chức năng đều bị vô hiệu hóa. Bạn vẫn có thể truy cập cài đặt dự án để khôi phục hoặc thay đổi trạng thái dự án.",
       "open_settings": "Mở Cài đặt"
     },
+    "repo_access": {
+      "title": "Sitepins không thể truy cập <repo>{repository}</repo>",
+      "github_description": "Cấp quyền truy cập cho GitHub App {app}, hoặc kiểm tra xem kho lưu trữ có bị đổi tên hay xóa không.",
+      "gitlab_description": "Tài khoản GitLab của bạn cần quyền Developer trở lên, hoặc dự án đã bị đổi tên hay xóa.",
+      "manage_access": "Cấp quyền truy cập",
+      "retry": "Kiểm tra lại"
+    },
     "project_overview": {
       "preview_alt": "Xem trước trực tiếp {name}"
     }

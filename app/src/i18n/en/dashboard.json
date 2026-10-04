@@ -165,6 +165,13 @@
       "description": "This project has been archived and most functionality is disabled. You can still access project settings to restore or change the project status.",
       "open_settings": "Open Settings"
     },
+    "repo_access": {
+      "title": "Sitepins can't reach <repo>{repository}</repo>",
+      "github_description": "Give the {app} GitHub App access to it, or check that it wasn't renamed or deleted.",
+      "gitlab_description": "Your GitLab account needs Developer access or higher, or the project was renamed or deleted.",
+      "manage_access": "Grant access",
+      "retry": "Check again"
+    },
     "project_overview": {
       "preview_alt": "Live preview of {name}"
     }

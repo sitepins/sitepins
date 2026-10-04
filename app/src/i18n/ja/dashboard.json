@@ -165,6 +165,13 @@
       "description": "このプロジェクトはアーカイブされており、ほとんどの機能が無効になっています。プロジェクト設定にアクセスして、復元またはプロジェクトステータスの変更を行えます。",
       "open_settings": "設定を開く"
     },
+    "repo_access": {
+      "title": "Sitepins は <repo>{repository}</repo> にアクセスできません",
+      "github_description": "{app} GitHub App にアクセス権を付与するか、名前の変更や削除がされていないか確認してください。",
+      "gitlab_description": "GitLab アカウントに Developer 以上の権限が必要です。またはプロジェクトの名前が変更されたか削除されています。",
+      "manage_access": "アクセスを付与",
+      "retry": "再確認"
+    },
     "project_overview": {
       "preview_alt": "{name} のライブプレビュー"
     }

@@ -67,11 +67,13 @@ import { ExternalLink, Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod/v4";
 import FormError from "./form-error";
 import { Badge } from "./ui/badge";
+
+const REPO_LIST_LIMIT = 100;
 
 const providersList: {
   name: string;
@@ -177,7 +179,12 @@ export default function AddSite({
     },
   );
 
-  const selectedRepo = repos?.find((repo) => repo.full_name === repository);
+  const reposByName = useMemo(
+    () => new Map(repos.map((repo) => [repo.full_name, repo])),
+    [repos],
+  );
+  const repoNames = useMemo(() => [...reposByName.keys()], [reposByName]);
+  const selectedRepo = reposByName.get(repository);
 
   const { data: glBranches, isLoading: isGlBranchLoading } =
     useGetGitLabBranchesQuery(
@@ -466,11 +473,12 @@ export default function AddSite({
                         open={repoOpen}
                         onOpenChange={setRepoOpen}
                         value={field.value}
-                        items={repos?.map((repo) => repo.full_name)}
+                        items={repoNames}
+                        limit={REPO_LIST_LIMIT}
                         onValueChange={(currentValue: string | null) => {
-                          const repo = repos?.find(
-                            (r) => r.full_name === currentValue,
-                          );
+                          const repo = currentValue
+                            ? reposByName.get(currentValue)
+                            : undefined;
                           if (repo) {
                             const homepage = repo.homepage ?? "";
                             projectForm.setValue(
@@ -512,9 +520,7 @@ export default function AddSite({
                           </ComboboxEmpty>
                           <ComboboxList>
                             {(fullName: string) => {
-                              const repo = repos?.find(
-                                (r) => r.full_name === fullName,
-                              );
+                              const repo = reposByName.get(fullName);
                               if (!repo) return null;
                               return (
                                 <ComboboxItem

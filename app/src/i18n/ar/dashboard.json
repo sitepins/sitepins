@@ -165,6 +165,13 @@
       "description": "تمت أرشفة هذا المشروع وتم تعطيل معظم وظائفه. لا يزال بإمكانك الوصول إلى إعدادات المشروع لاستعادة حالة المشروع أو تغييرها.",
       "open_settings": "افتح الإعدادات"
     },
+    "repo_access": {
+      "title": "لا يمكن لـ Sitepins الوصول إلى <repo>{repository}</repo>",
+      "github_description": "امنح تطبيق GitHub ‏{app} صلاحية الوصول إليه، أو تحقق من أنه لم تتم إعادة تسميته أو حذفه.",
+      "gitlab_description": "يحتاج حسابك على GitLab إلى صلاحية Developer أو أعلى، أو تمت إعادة تسمية المشروع أو حذفه.",
+      "manage_access": "منح الوصول",
+      "retry": "تحقق مرة أخرى"
+    },
     "project_overview": {
       "preview_alt": "معاينة مباشرة لـ {name}"
     }

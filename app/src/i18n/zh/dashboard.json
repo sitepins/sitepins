@@ -165,6 +165,13 @@
       "description": "此项目已归档，大部分功能已禁用。您仍然可以访问项目设置以恢复或更改项目状态。",
       "open_settings": "打开设置"
     },
+    "repo_access": {
+      "title": "Sitepins 无法访问 <repo>{repository}</repo>",
+      "github_description": "请为 {app} GitHub App 授予访问权限，或检查该仓库是否已被重命名或删除。",
+      "gitlab_description": "你的 GitLab 账号需要 Developer 或更高权限，或者该项目已被重命名或删除。",
+      "manage_access": "授予访问权限",
+      "retry": "重新检查"
+    },
     "project_overview": {
       "preview_alt": "{name} 的实时预览"
     }

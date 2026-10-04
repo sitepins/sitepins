@@ -1,5 +1,5 @@
-import { logger } from "@/lib/logger";
 import { GITLAB_API_VERSION, IS_DEMO } from "@/lib/constant";
+import { logger } from "@/lib/logger";
 import { isGitLabProvider } from "@/lib/utils/provider-checker";
 import { RootState } from "@/redux/store";
 import { BaseQueryFn } from "@reduxjs/toolkit/query";
@@ -307,8 +307,11 @@ export const gitlabApi = createApi({
           endpoint: "/projects",
           params: {
             membership: true,
+            min_access_level: 30,
+            archived: false,
             order_by: "updated_at",
             search,
+            search_namespaces: search ? true : undefined,
             per_page,
             page,
           },

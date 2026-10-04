@@ -165,6 +165,13 @@
       "description": "이 프로젝트는 보관되었으며 대부분의 기능이 비활성화되었습니다. 프로젝트 설정에 계속 액세스하여 프로젝트 상태를 복원하거나 변경할 수 있습니다.",
       "open_settings": "설정 열기"
     },
+    "repo_access": {
+      "title": "Sitepins가 <repo>{repository}</repo>에 접근할 수 없습니다",
+      "github_description": "{app} GitHub App에 접근 권한을 부여하거나, 이름이 변경되거나 삭제되지 않았는지 확인하세요.",
+      "gitlab_description": "GitLab 계정에 Developer 이상의 권한이 필요하거나, 프로젝트 이름이 변경되었거나 삭제되었습니다.",
+      "manage_access": "접근 권한 부여",
+      "retry": "다시 확인"
+    },
     "project_overview": {
       "preview_alt": "{name} 실시간 미리보기"
     }

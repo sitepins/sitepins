@@ -151,6 +151,7 @@ export const githubContentApi = githubApi.injectEndpoints({
         endpoint: "GET /user/installations/{installation_id}/repositories",
         options: { ...options },
       }),
+      keepUnusedDataFor: 300,
       providesTags: ["GitHubInstallations"],
     }),
 

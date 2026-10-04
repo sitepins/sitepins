@@ -165,6 +165,13 @@
       "description": "Proyek ini telah diarsipkan dan sebagian besar fungsinya dinonaktifkan. Anda masih dapat mengakses pengaturan proyek untuk memulihkan atau mengubah status proyek.",
       "open_settings": "Buka Pengaturan"
     },
+    "repo_access": {
+      "title": "Sitepins tidak dapat mengakses <repo>{repository}</repo>",
+      "github_description": "Berikan akses ke GitHub App {app}, atau pastikan repositori tidak diganti nama atau dihapus.",
+      "gitlab_description": "Akun GitLab Anda memerlukan akses Developer atau lebih tinggi, atau proyek telah diganti nama atau dihapus.",
+      "manage_access": "Berikan akses",
+      "retry": "Periksa lagi"
+    },
     "project_overview": {
       "preview_alt": "Pratinjau langsung {name}"
     }

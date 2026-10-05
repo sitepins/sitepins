@@ -226,6 +226,10 @@ export const githubCommitApi = githubApi.injectEndpoints({
         // it; an empty author simply means no co-author trailer.
         let author: CommitAuthor = {};
 
+        // Leading `filteredFiles` already on the branch, so the fallback skips them.
+        let landedCount = 0;
+        let landedCommitSha: string | null = null;
+
         const readHead = async (): Promise<{
           commitSha: string | null;
           treeSha: string | null;
@@ -628,6 +632,8 @@ export const githubCommitApi = githubApi.injectEndpoints({
                 // Update the base SHA and tree SHA for the next batch
                 lastCommitSha = commit.sha;
                 lastTreeSha = commit.tree.sha;
+                landedCount += batch.length;
+                landedCommitSha = commit.sha;
 
                 break;
               } catch (err) {
@@ -662,10 +668,12 @@ export const githubCommitApi = githubApi.injectEndpoints({
           // Author and token identity carry over from the Git API attempt.
           const auth_details = getGitAuthDetails("Github");
 
+          const remainingFiles = filteredFiles.slice(landedCount);
+
           // Best effort: the expected sha sent with each write is the real guard.
           const precheck = await findConflicts(
             expectedShas,
-            filteredFiles.map((f) => f.path),
+            remainingFiles.map((f) => f.path),
             readRemote(branch),
           ).catch(() => []);
           if (precheck.length > 0) {
@@ -677,11 +685,12 @@ export const githubCommitApi = githubApi.injectEndpoints({
           const batches: Array<
             { path: string; content?: string; delete?: boolean }[]
           > = [];
-          for (let i = 0; i < filteredFiles.length; i += BATCH_SIZE) {
-            batches.push(filteredFiles.slice(i, i + BATCH_SIZE));
+          for (let i = 0; i < remainingFiles.length; i += BATCH_SIZE) {
+            batches.push(remainingFiles.slice(i, i + BATCH_SIZE));
           }
 
-          let lastCommitSha: string | null = null;
+          let lastCommitSha: string | null = landedCommitSha;
+          let committedCount = landedCount;
 
           // Process each batch sequentially
           for (let batchIndex = 0; batchIndex < batches.length; batchIndex++) {
@@ -764,6 +773,7 @@ export const githubCommitApi = githubApi.injectEndpoints({
                 if (file.delete) {
                   // Delete the file using Contents API (requires sha)
                   if (!existingSha) {
+                    committedCount++;
                     continue;
                   }
 
@@ -791,7 +801,10 @@ export const githubCommitApi = githubApi.injectEndpoints({
                       file.path,
                       deleteRes?.error ?? {},
                     );
-                    throw new Error(`Failed to delete ${file.path}`);
+                    throw Object.assign(
+                      new Error(`Failed to delete ${file.path}`),
+                      { status: errStatus(deleteRes?.error) },
+                    );
                   }
 
                   const commitInfo = (deleteRes.data as GhContentsWrite)
@@ -799,6 +812,7 @@ export const githubCommitApi = githubApi.injectEndpoints({
                   if (commitInfo?.sha) {
                     lastCommitSha = commitInfo.sha;
                   }
+                  committedCount++;
                   continue;
                 }
 
@@ -829,8 +843,9 @@ export const githubCommitApi = githubApi.injectEndpoints({
                     file.path,
                     err ?? {},
                   );
-                  throw new Error(
-                    err?.message || `Failed to upload ${file.path}`,
+                  throw Object.assign(
+                    new Error(err?.message || `Failed to upload ${file.path}`),
+                    { status: errStatus(err) },
                   );
                 }
 
@@ -838,12 +853,23 @@ export const githubCommitApi = githubApi.injectEndpoints({
                 if (commitInfo?.sha) {
                   lastCommitSha = commitInfo.sha;
                 }
+                committedCount++;
               } catch (fileError) {
                 if (fileError instanceof CommitConflictError) {
                   return toConflictResult(fileError);
                 }
                 logger.error(`✗ Failed to process ${file.path}`, fileError);
-                // Continue with next file instead of stopping the entire upload
+                const reason =
+                  errMessage(fileError) ?? `Failed to process ${file.path}`;
+                return {
+                  error: {
+                    status: errStatus(fileError) ?? 500,
+                    message:
+                      committedCount > 0
+                        ? `${reason}. Only ${committedCount} of ${filteredFiles.length} files were published; the rest were not.`
+                        : reason,
+                  },
+                };
               }
             }
           }

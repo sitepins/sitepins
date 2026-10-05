@@ -74,6 +74,10 @@ export const createFakeGitHub = (initial: Record<string, string>) => {
   const state = {
     beforeRefUpdate: undefined as (() => void) | undefined,
     failBlobs: false,
+    /** Tree creations allowed before every later one fails, e.g. 1 fails the second batch. */
+    failTreesAfter: undefined as number | undefined,
+    failContentWrites: new Set<string>(),
+    treesCreated: 0,
     refUpdates: [] as Record<string, unknown>[],
     contentWrites: [] as Record<string, unknown>[],
   };
@@ -112,6 +116,8 @@ export const createFakeGitHub = (initial: Record<string, string>) => {
         });
       }
       state.contentWrites.push({ method, path, ...body });
+      if (state.failContentWrites.has(path))
+        return json(422, { message: `Cannot write ${path}` });
       if (current?.sha !== body.sha)
         return json(409, { message: `${path} does not match ${body.sha}` });
       const sha = push({
@@ -130,6 +136,12 @@ export const createFakeGitHub = (initial: Record<string, string>) => {
     }
 
     if (method === "POST" && route === "/git/trees") {
+      if (
+        state.failTreesAfter !== undefined &&
+        state.treesCreated >= state.failTreesAfter
+      )
+        return json(403, { message: "Resource not accessible" });
+      state.treesCreated++;
       const entries = new Map(body.base_tree ? trees.get(body.base_tree)! : []);
       for (const entry of body.tree) {
         if (entry.sha === null) entries.delete(entry.path);

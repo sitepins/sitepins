@@ -89,13 +89,16 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
-const publishToGitHub = (expectedShas?: Record<string, string>) =>
+const publishToGitHub = (
+  expectedShas?: Record<string, string>,
+  files = [{ path: "content/post.md", content: EDITED }],
+) =>
   store.dispatch(
     githubCommitApi.endpoints.updateGitHubFiles.initiate({
       owner: "acme",
       repo: "site",
       tree: "main",
-      files: [{ path: "content/post.md", content: EDITED }],
+      files,
       message: "Update post",
       expectedShas,
     } as never),
@@ -230,6 +233,57 @@ describe("updateGitHubFiles", () => {
       { method: "PUT", sha: opened },
     ]);
     expect(gh.fileAt("main", "content/post.md")?.content).toBe(EDITED);
+  });
+
+  it("only falls back for files whose Git API batch did not land", async () => {
+    const paths = Array.from({ length: 101 }, (_, i) => `content/p${i}.md`);
+    const gh = createFakeGitHub(
+      Object.fromEntries(paths.map((p) => [p, ORIGINAL])),
+    );
+    vi.stubGlobal("fetch", gh.fetch);
+    gh.state.failTreesAfter = 1;
+    const opened = Object.fromEntries(
+      paths.map((p) => [p, gh.fileAt("main", p)!.sha]),
+    );
+
+    const res = await publishToGitHub(
+      opened,
+      paths.map((path) => ({ path, content: EDITED })),
+    );
+
+    expect(res.error).toBeUndefined();
+    expect(gh.state.refUpdates).toHaveLength(1);
+    expect(gh.state.contentWrites).toHaveLength(1);
+    expect(res.data).toEqual({ sha: gh.head() });
+    expect(paths.every((p) => gh.fileAt("main", p)?.content === EDITED)).toBe(
+      true,
+    );
+  });
+
+  it("stops the Contents API fallback at the first failed file", async () => {
+    const paths = ["content/a.md", "content/b.md", "content/c.md"];
+    const gh = createFakeGitHub(
+      Object.fromEntries(paths.map((p) => [p, ORIGINAL])),
+    );
+    vi.stubGlobal("fetch", gh.fetch);
+    gh.state.failBlobs = true;
+    gh.state.failContentWrites.add("content/b.md");
+
+    const res = await publishToGitHub(
+      undefined,
+      paths.map((path) => ({ path, content: EDITED })),
+    );
+
+    expect(isCommitConflict(res.error)).toBe(false);
+    expect(res.error).toMatchObject({
+      status: 422,
+      message: expect.stringContaining("Only 1 of 3 files were published"),
+    });
+    expect(gh.state.contentWrites.map((w) => w.path)).toEqual([
+      "content/a.md",
+      "content/b.md",
+    ]);
+    expect(gh.fileAt("main", "content/c.md")?.content).toBe(ORIGINAL);
   });
 });
 

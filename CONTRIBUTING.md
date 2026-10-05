@@ -26,8 +26,8 @@ pnpm dev:app   # frontend on :3000
 3. Make sure the code typechecks, builds, and tests pass:
    ```bash
    pnpm build:api
-   pnpm --filter sitepins exec next typegen
-   pnpm --filter sitepins exec tsc --noEmit
+   pnpm --filter sitepins-app exec next typegen
+   pnpm --filter sitepins-app exec tsc --noEmit
    pnpm test
    ```
 4. Format with Prettier (`pnpm format`).

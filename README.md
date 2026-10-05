@@ -166,7 +166,9 @@ cp app/.env.example app/.env
 docker compose up --build
 ```
 
-Web runs on `http://localhost:3000`. API runs on `http://localhost:4000` with a health check at `/healthz`. MongoDB runs in the `mongo` service, so you can leave `MONGO_URI` unset to use it.
+Web runs on `http://localhost:3000`. API runs on `http://localhost:4000` with a health check at `/healthz`. MongoDB runs in the `mongo` service as a single-node replica set (transactions require one), so you can leave `MONGO_URI` unset to use it. If you bring your own MongoDB, it must be a replica set too.
+
+`NEXT_PUBLIC_*` values are inlined into the web image at build time. Compose reads them from your shell or a root-level `.env` file, not `app/.env`. At minimum set `NEXT_PUBLIC_GITHUB_APP_NAME` (and the GitLab ones if you use GitLab), then rebuild with `docker compose up --build`.
 
 ## Project structure
 

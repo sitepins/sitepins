@@ -9,20 +9,33 @@
 #
 # Media storage (S3-compatible) still has to be configured in api/.env —
 # see the README. MongoDB runs in the `mongo` service below.
+#
+# NEXT_PUBLIC_* values are baked into the web image at build time, and compose
+# reads them from the shell or a root-level .env file (not app/.env).
 
 services:
   mongo:
     image: mongo:7
+    # Single-node replica set: better-auth and the services use transactions.
+    command: ["--replSet", "rs0", "--bind_ip_all"]
     restart: unless-stopped
     volumes:
       - mongo-data:/data/db
     ports:
       - "27017:27017"
     healthcheck:
-      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      # Initiates the set on first run; healthy once this node is primary.
+      test:
+        [
+          "CMD",
+          "mongosh",
+          "--quiet",
+          "--eval",
+          "var s; try { s = rs.status().myState } catch (e) { rs.initiate({ _id: 'rs0', members: [{ _id: 0, host: 'mongo:27017' }] }) } quit(s === 1 ? 0 : 1)",
+        ]
+      interval: 5s
+      timeout: 10s
+      retries: 20
 
   api:
     build:
@@ -33,7 +46,7 @@ services:
       - api/.env
     environment:
       # Point the API at the compose Mongo unless api/.env overrides it.
-      MONGO_URI: ${MONGO_URI:-mongodb://mongo:27017/sitepins}
+      MONGO_URI: ${MONGO_URI:-mongodb://mongo:27017/sitepins?replicaSet=rs0}
       NODE_ENV: production
       PORT: "4000"
     depends_on:
@@ -47,11 +60,15 @@ services:
       context: .
       dockerfile: app/Dockerfile
       args:
-        NEXT_PUBLIC_BACKEND_URL: ${NEXT_PUBLIC_BACKEND_URL:-http://localhost:4000}
+        NEXT_PUBLIC_BACKEND_URL: ${NEXT_PUBLIC_BACKEND_URL:-http://localhost:4000/api/v1}
         NEXT_PUBLIC_HP_WS_URL: ${NEXT_PUBLIC_HP_WS_URL:-ws://localhost:4000/api/v1/editor/collab}
         NEXT_PUBLIC_BUCKET_URL: ${NEXT_PUBLIC_BUCKET_URL:-}
         NEXT_PUBLIC_BRAND_NAME: ${NEXT_PUBLIC_BRAND_NAME:-Sitepins}
         NEXT_PUBLIC_BRAND_URL: ${NEXT_PUBLIC_BRAND_URL:-https://sitepins.com}
+        NEXT_PUBLIC_GITHUB_APP_NAME: ${NEXT_PUBLIC_GITHUB_APP_NAME:-}
+        NEXT_PUBLIC_GITLAB_APP_NAME: ${NEXT_PUBLIC_GITLAB_APP_NAME:-}
+        NEXT_PUBLIC_GITLAB_CLIENT_ID: ${NEXT_PUBLIC_GITLAB_CLIENT_ID:-}
+        NEXT_PUBLIC_GIT_COMMIT_EMAIL_DOMAIN: ${NEXT_PUBLIC_GIT_COMMIT_EMAIL_DOMAIN:-}
     restart: unless-stopped
     env_file:
       - app/.env

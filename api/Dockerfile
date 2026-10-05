@@ -13,7 +13,7 @@ RUN pnpm install --frozen-lockfile --filter sitepins-api
 
 COPY api ./api
 RUN pnpm --filter sitepins-api build
-RUN pnpm prune --prod
+RUN pnpm prune --prod --ignore-scripts
 
 FROM node:24-bookworm-slim
 ENV NODE_ENV=production

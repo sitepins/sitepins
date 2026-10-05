@@ -46,13 +46,13 @@ import { TGitHubOption, TGitHubPromise } from "./github-type";
 // `fetchWithBQ` hands back `unknown`, so these describe only the fields this
 // module reads off each GitHub REST response.
 
-type GhCommitRef = {
+type TGhCommitRef = {
   sha?: string;
   commit?: { message?: string; tree?: { sha?: string } };
   parents?: { sha?: string }[];
 };
 
-type GhGitRef = { object?: { sha?: string } };
+type TGhGitRef = { object?: { sha?: string } };
 
 type TGhUser = {
   id?: number;
@@ -73,17 +73,17 @@ const githubAccount = (data: unknown): TCommitIdentity => {
   };
 };
 
-type GhBranch = {
+type TGhBranch = {
   commit?: { sha?: string; commit?: { tree?: { sha?: string } } };
 };
 
-type GhGitCommit = { sha?: string; tree?: { sha?: string } };
+type TGhGitCommit = { sha?: string; tree?: { sha?: string } };
 
-type GhContentsFile = { sha?: string; content?: string; encoding?: string };
+type TGhContentsFile = { sha?: string; content?: string; encoding?: string };
 
-type GhContentsWrite = { commit?: { sha?: string } };
+type TGhContentsWrite = { commit?: { sha?: string } };
 
-type GhContentDirectory = { path?: string }[];
+type TGhContentDirectory = { path?: string }[];
 
 // Thrown values arrive as `unknown`; these read the two fields the error
 // paths below care about without widening the catch back to `any`.
@@ -99,7 +99,7 @@ const errMessage = (error: unknown): string | undefined => {
 
 const MAX_REF_UPDATE_RETRIES = 3;
 
-type GhCommitStatus = {
+type TGhCommitStatus = {
   state?: string;
   total_count?: number;
   statuses?: unknown[];
@@ -161,14 +161,14 @@ export const githubCommitApi = githubApi.injectEndpoints({
      * Get commit status for a repository reference (SHA, branch, etc.)
      */
     getGitHubCommitStatus: build.query<
-      GhCommitStatus,
+      TGhCommitStatus,
       TGitHubOption<"GET /repos/{owner}/{repo}/commits/{ref}/status">
     >({
       query: (arg) => ({
         endpoint: "GET /repos/{owner}/{repo}/commits/{ref}/status",
         options: arg,
       }),
-      transformResponse: (response: GhCommitStatus) => {
+      transformResponse: (response: TGhCommitStatus) => {
         // If total_count is 0, it means no statuses/checks are configured on this repo.
         // Return a sentinel so we stop polling and do not show a pending badge.
         if (response && response.total_count === 0) {
@@ -344,7 +344,7 @@ export const githubCommitApi = githubApi.injectEndpoints({
                 `Failed to read ${filePath}: ${errMessage(res.error) ?? ""}`,
               );
             }
-            const file = res.data as GhContentsFile | undefined;
+            const file = res.data as TGhContentsFile | undefined;
             if (!file?.sha) return null;
             return {
               sha: file.sha,
@@ -743,7 +743,7 @@ export const githubCommitApi = githubApi.injectEndpoints({
                       },
                     }),
                   );
-                  existingSha = (headRes?.data as GhContentsFile | undefined)
+                  existingSha = (headRes?.data as TGhContentsFile | undefined)
                     ?.sha;
                 } catch {
                   // File doesn't exist yet, that's okay
@@ -806,7 +806,7 @@ export const githubCommitApi = githubApi.injectEndpoints({
                     );
                   }
 
-                  const commitInfo = (deleteRes.data as GhContentsWrite)
+                  const commitInfo = (deleteRes.data as TGhContentsWrite)
                     ?.commit;
                   if (commitInfo?.sha) {
                     lastCommitSha = commitInfo.sha;
@@ -848,7 +848,7 @@ export const githubCommitApi = githubApi.injectEndpoints({
                   );
                 }
 
-                const commitInfo = (putRes.data as GhContentsWrite)?.commit;
+                const commitInfo = (putRes.data as TGhContentsWrite)?.commit;
                 if (commitInfo?.sha) {
                   lastCommitSha = commitInfo.sha;
                 }
@@ -969,7 +969,7 @@ export const githubCommitApi = githubApi.injectEndpoints({
                         ref: arg.tree,
                         path: parent,
                       },
-                      ((draft: GhContentDirectory) => {
+                      ((draft: TGhContentDirectory) => {
                         if (!Array.isArray(draft)) return draft;
                         return draft.filter((f) => f.path !== file.path);
                       }) as never,
@@ -1551,7 +1551,7 @@ export const githubCommitApi = githubApi.injectEndpoints({
             return { error: commitCheck.error };
           }
 
-          const targetRef = commitCheck.data as GhCommitRef;
+          const targetRef = commitCheck.data as TGhCommitRef;
           const targetCommit = targetRef.sha;
           const commitMessage = targetRef.commit?.message ?? "";
 
@@ -1571,7 +1571,7 @@ export const githubCommitApi = githubApi.injectEndpoints({
             return { error: branchCheck.error };
           }
 
-          const currentSha = (branchCheck.data as GhGitRef).object?.sha;
+          const currentSha = (branchCheck.data as TGhGitRef).object?.sha;
 
           if (currentSha === targetCommit) {
             return {
@@ -1661,7 +1661,7 @@ export const githubCommitApi = githubApi.injectEndpoints({
             return { error: commitCheck.error };
           }
 
-          const commit = commitCheck.data as GhCommitRef;
+          const commit = commitCheck.data as TGhCommitRef;
           const commitMessage = commit.commit?.message;
 
           // Get current branch to find the parent and base tree
@@ -1674,7 +1674,7 @@ export const githubCommitApi = githubApi.injectEndpoints({
             return { error: branchCheck.error };
           }
 
-          const currentBranch = branchCheck.data as GhBranch;
+          const currentBranch = branchCheck.data as TGhBranch;
           const currentSha = currentBranch.commit?.sha;
 
           // Get the commit's parent
@@ -1698,7 +1698,7 @@ export const githubCommitApi = githubApi.injectEndpoints({
             return { error: parentCommit.error };
           }
 
-          const parentTree = (parentCommit.data as GhGitCommit).tree?.sha;
+          const parentTree = (parentCommit.data as TGhGitCommit).tree?.sha;
 
           // Create revert commit
           const { config: storeConfig } = getState() as RootState;
@@ -1740,7 +1740,7 @@ export const githubCommitApi = githubApi.injectEndpoints({
             return { error: revertCommitResponse.error };
           }
 
-          const revertCommit = revertCommitResponse.data as GhGitCommit;
+          const revertCommit = revertCommitResponse.data as TGhGitCommit;
 
           if (!revertCommit.sha) {
             return {

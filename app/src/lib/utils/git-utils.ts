@@ -9,12 +9,12 @@ import { GITHUB_APP_NAME, GITLAB_APP_NAME } from "../constant";
  * Common Git utility functions for GitHub and GitLab providers.
  */
 
-export type UploadableFileLike = { path: string; delete?: boolean };
+export type TUploadableFileLike = { path: string; delete?: boolean };
 
 /**
  * Filters out system and restricted files from an upload list
  */
-export function filterUploadableFiles<T extends UploadableFileLike>(
+export function filterUploadableFiles<T extends TUploadableFileLike>(
   files: T[],
 ): T[] {
   return files.filter((file) => {
@@ -50,7 +50,7 @@ export function matchPattern(str: string, pattern: string) {
 /**
  * Collapse duplicate paths so we don't upload the same file twice.
  */
-export function dedupeFiles<T extends UploadableFileLike>(files: T[]): T[] {
+export function dedupeFiles<T extends TUploadableFileLike>(files: T[]): T[] {
   const map = new Map<string, T>();
   for (const file of files) {
     map.set(file.path, file);

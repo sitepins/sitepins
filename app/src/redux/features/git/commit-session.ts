@@ -15,10 +15,10 @@ import { userPreferenceApi } from "../user-preference/user-preference-api";
  * file filtering, token escalation, author resolution — is the same.
  */
 
-export type CommitFile = { path: string; content?: string; delete?: boolean };
+export type TCommitFile = { path: string; content?: string; delete?: boolean };
 
-export type PreparedCommit = {
-  files: CommitFile[];
+export type TPreparedCommit = {
+  files: TCommitFile[];
   message: string;
 };
 
@@ -27,9 +27,9 @@ export type PreparedCommit = {
  * normalises the message. Returns null when nothing is left to commit.
  */
 export const prepareCommit = (
-  files: CommitFile[],
+  files: TCommitFile[],
   message: string,
-): PreparedCommit | null => {
+): TPreparedCommit | null => {
   const prepared = filterUploadableFiles(dedupeFiles(files));
   if (prepared.length === 0) return null;
   return {
@@ -45,12 +45,13 @@ export const isPermissionError = (error: unknown): boolean => {
   return status === 401 || status === 403;
 };
 
-export type FetchResult<T = unknown> = { data?: T; error?: unknown };
+export type TFetchResult<T = unknown> = { data?: T; error?: unknown };
 
 /** `fetchWithBQ` is typed as possibly-synchronous, so callbacks mirror that. */
-export type MaybeFetchResult<T> = FetchResult<T> | PromiseLike<FetchResult<T>>;
+export type TMaybeFetchResult<T> =
+  TFetchResult<T> | PromiseLike<TFetchResult<T>>;
 
-export type CommitTokenSession = {
+export type TCommitTokenSession = {
   /** False once a call has fallen back to the app identity. */
   usingUserToken: () => boolean;
   /** Token for the current identity. */
@@ -61,7 +62,7 @@ export type CommitTokenSession = {
    * the rest of the commit, so a single commit never mixes authors.
    */
   // Generic over the whole result so the provider's own error type survives.
-  run: <R extends FetchResult<unknown>>(
+  run: <R extends TFetchResult<unknown>>(
     call: (token: string | undefined) => R | PromiseLike<R>,
   ) => Promise<R>;
 };
@@ -69,13 +70,13 @@ export type CommitTokenSession = {
 export const createCommitTokenSession = (
   userToken?: string,
   appToken?: string,
-): CommitTokenSession => {
+): TCommitTokenSession => {
   let useUserToken = Boolean(userToken);
 
   return {
     usingUserToken: () => useUserToken,
     token: () => (useUserToken ? userToken : appToken),
-    async run<R extends FetchResult<unknown>>(
+    async run<R extends TFetchResult<unknown>>(
       call: (token: string | undefined) => R | PromiseLike<R>,
     ) {
       const result = await call(useUserToken ? userToken : appToken);
@@ -90,7 +91,7 @@ export const createCommitTokenSession = (
   };
 };
 
-type Dispatcher = {
+type TDispatcher = {
   (action: unknown): { data?: { impersonate?: boolean } };
 };
 
@@ -99,7 +100,7 @@ type Dispatcher = {
  * Failures here must not fail the commit.
  */
 export const resolveImpersonatePreference = async (
-  dispatch: Dispatcher,
+  dispatch: TDispatcher,
 ): Promise<boolean> => {
   try {
     const userId = (await authClient.getSession())?.data?.user?.user_id;
@@ -124,9 +125,9 @@ export const resolveCommitAuthor = async <T>({
   fetchUser,
   mapUser,
 }: {
-  session: CommitTokenSession;
+  session: TCommitTokenSession;
   /** Provider call for the authenticated user; skipped without a user token. */
-  fetchUser: (token: string | undefined) => MaybeFetchResult<T>;
+  fetchUser: (token: string | undefined) => TMaybeFetchResult<T>;
   mapUser: (data: T) => TCommitIdentity;
 }): Promise<TCommitAuthor> => {
   const name = (await authClient.getSession())?.data?.user?.full_name;
@@ -169,9 +170,9 @@ export const resolveAttributionTrailer = async <T>({
   fetchUser,
   mapUser,
 }: {
-  dispatch: Dispatcher;
-  session: CommitTokenSession;
-  fetchUser: (token: string | undefined) => MaybeFetchResult<T>;
+  dispatch: TDispatcher;
+  session: TCommitTokenSession;
+  fetchUser: (token: string | undefined) => TMaybeFetchResult<T>;
   mapUser: (data: T) => TCommitIdentity;
 }): Promise<string | undefined> => {
   if (await resolveImpersonatePreference(dispatch)) return undefined;

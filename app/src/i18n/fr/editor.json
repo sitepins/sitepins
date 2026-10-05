@@ -418,7 +418,7 @@
       "draft": "Brouillon",
       "published": "Publié"
     },
-    "conflict": {
+    "draft_conflict": {
       "title": "Conflit de brouillon detecte",
       "description": "Votre brouillon enregistre est base sur une ancienne version de ce fichier. Quelqu'un a pousse une nouvelle modification vers Git depuis l'enregistrement du brouillon. Avec quelle version voulez-vous continuer l'edition ?",
       "draft_saved_at": "Votre brouillon a ete enregistre pour la derniere fois le {date}.",
@@ -429,6 +429,19 @@
       "preview_truncated": "...aperçu tronque",
       "use_draft": "Utiliser la version brouillon",
       "use_git": "Utiliser la version Git (ignorer le brouillon)"
+    },
+    "publish_conflict": {
+      "title": "Fichier modifié dans le dépôt",
+      "description": "Quelqu'un a modifié ce fichier dans le dépôt après que vous l'avez ouvert. Publier maintenant écraserait ses modifications.",
+      "deleted_description": "Ce fichier a été supprimé du dépôt après que vous l'avez ouvert. Publier maintenant le recréerait.",
+      "cancel_hint": "Pour conserver les deux, copiez vos modifications, rechargez la page et appliquez-les à la dernière version.",
+      "preview_title": "Modifications qui seraient écrasées",
+      "preview_remote": "Dépôt",
+      "preview_local": "Votre version",
+      "preview_no_diff": "Aucune différence de contenu.",
+      "preview_truncated": "...aperçu tronqué",
+      "cancel": "Continuer l'édition",
+      "overwrite": "Écraser quand même"
     }
   }
 }

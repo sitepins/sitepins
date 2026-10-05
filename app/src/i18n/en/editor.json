@@ -418,7 +418,7 @@
       "draft": "Draft",
       "published": "Published"
     },
-    "conflict": {
+    "draft_conflict": {
       "title": "Draft Conflict Detected",
       "description": "Your saved draft is based on an older version of this file. Someone has pushed a new change to Git since you saved the draft. Which version would you like to continue editing?",
       "draft_saved_at": "Your draft was last saved on {date}.",
@@ -429,6 +429,19 @@
       "preview_truncated": "...preview truncated",
       "use_draft": "Use Draft Version",
       "use_git": "Use Git Version (discard draft)"
+    },
+    "publish_conflict": {
+      "title": "File Changed in the Repository",
+      "description": "Someone changed this file in the repository after you opened it. Publishing now would overwrite their changes.",
+      "deleted_description": "This file was deleted from the repository after you opened it. Publishing now would recreate it.",
+      "cancel_hint": "To keep both, copy your edits, reload the page, and apply them to the latest version.",
+      "preview_title": "Changes that would be overwritten",
+      "preview_remote": "Repository",
+      "preview_local": "Your version",
+      "preview_no_diff": "No content differences.",
+      "preview_truncated": "...preview truncated",
+      "cancel": "Keep Editing",
+      "overwrite": "Overwrite Anyway"
     }
   }
 }

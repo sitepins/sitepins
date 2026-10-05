@@ -418,7 +418,7 @@
       "draft": "Borrador",
       "published": "Publicado"
     },
-    "conflict": {
+    "draft_conflict": {
       "title": "Conflicto de borrador detectado",
       "description": "Tu borrador guardado se basa en una versión anterior de este archivo. Alguien ha enviado un nuevo cambio a Git desde que guardaste el borrador. ¿Con qué versión quieres continuar editando?",
       "draft_saved_at": "Tu borrador se guardó por última vez el {date}.",
@@ -429,6 +429,19 @@
       "preview_truncated": "...vista previa truncada",
       "use_draft": "Usar versión de borrador",
       "use_git": "Usar versión de Git (descartar borrador)"
+    },
+    "publish_conflict": {
+      "title": "Archivo modificado en el repositorio",
+      "description": "Alguien modificó este archivo en el repositorio después de que lo abrieras. Si publicas ahora, sobrescribirás sus cambios.",
+      "deleted_description": "Este archivo se eliminó del repositorio después de que lo abrieras. Si publicas ahora, se volverá a crear.",
+      "cancel_hint": "Para conservar ambos, copia tus cambios, recarga la página y aplícalos a la versión más reciente.",
+      "preview_title": "Cambios que se sobrescribirían",
+      "preview_remote": "Repositorio",
+      "preview_local": "Tu versión",
+      "preview_no_diff": "No hay diferencias de contenido.",
+      "preview_truncated": "...vista previa truncada",
+      "cancel": "Seguir editando",
+      "overwrite": "Sobrescribir de todos modos"
     }
   }
 }

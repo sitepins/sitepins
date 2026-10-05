@@ -25,6 +25,7 @@ import type { Socket } from "socket.io-client";
 import CommitModal from "./commit-modal";
 import EditorHeader from "./editor-header";
 import PreventNavigation from "./prevent-navigation";
+import PublishConflictDialog from "./publish-conflict-dialog";
 import ResponsiveEditorLayout from "./responsive-editor-layout";
 import SeoSetting from "./seo-setting";
 
@@ -178,6 +179,7 @@ const EditorWrapper: React.FC<EditorWrapperProps> = memo(
       pageContent: markdownContent,
       onReplaceContentRef,
       newPath,
+      gitSha,
       onRenameComplete,
       onCommitSuccess: () => {
         sandboxCommitSyncRef.current();
@@ -198,6 +200,9 @@ const EditorWrapper: React.FC<EditorWrapperProps> = memo(
       setShowCommitModal,
       pending,
       getProcessedStateData,
+      getBaseSha,
+      publishConflict,
+      resolvePublishConflict,
     } = commitLogic;
 
     const getUncommittedFile = useCallback(() => {
@@ -277,7 +282,7 @@ const EditorWrapper: React.FC<EditorWrapperProps> = memo(
       orgId: orgIdSafe,
       filePath,
       getFormattedContent,
-      getGitSha: () => gitSha,
+      getGitSha: getBaseSha,
       onSuccess: useCallback(() => {
         // Sync the saved baseline so hasChanges resets to false
         const cloned = (() => {
@@ -431,6 +436,17 @@ const EditorWrapper: React.FC<EditorWrapperProps> = memo(
           getUncommittedContent={getUncommittedFile}
           getBaselineContent={getBaselineFile}
           autoGenerateAi={autoGenerateCommitAi}
+        />
+
+        <PublishConflictDialog
+          open={publishConflict !== null}
+          filePath={filePath}
+          remoteContent={publishConflict?.remoteContent}
+          remoteDeleted={publishConflict?.remoteDeleted ?? false}
+          localContent={publishConflict?.data.content ?? ""}
+          pending={pending}
+          onOverwrite={() => resolvePublishConflict("overwrite")}
+          onCancel={() => resolvePublishConflict("cancel")}
         />
       </>
     );

@@ -6,6 +6,7 @@ import { useGitProvider } from "@/hooks/use-git-provider";
 import { useImages } from "@/hooks/use-images";
 import { authClient } from "@/lib/auth/auth-client";
 import { contentFormatter, format } from "@/lib/utils/content-serializer";
+import { gitBlobSha } from "@/lib/utils/git-utils";
 import {
   arrayValue,
   isWrappedValue,
@@ -14,6 +15,7 @@ import {
 } from "@/lib/utils/frontmatter-value";
 import { getLogType } from "@/lib/utils/project-log-type-detector";
 import { selectConfig } from "@/redux/features/config/slice";
+import { isCommitConflict } from "@/redux/features/git/commit-conflict";
 import { EAction } from "@/redux/features/project-log/type";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { TField, TFrontmatterData, TState } from "@/types";
@@ -25,6 +27,19 @@ import type { Socket } from "socket.io-client";
 type CommitData = {
   path: string;
   content: string;
+};
+
+type PendingCommit = {
+  images: { path: string; content: string }[];
+  data: CommitData;
+  isDraft: boolean;
+  message?: string;
+  description?: string;
+};
+
+export type PublishConflict = PendingCommit & {
+  remoteContent?: string;
+  remoteDeleted: boolean;
 };
 
 type CommitDetails = {
@@ -46,6 +61,8 @@ type UseCommitLogicProps = {
   pageContent: string;
   onReplaceContentRef: (content: string) => void;
   newPath?: string;
+  /** Blob sha of the version the editor was loaded from. */
+  gitSha?: string;
   onRenameComplete?: (newPath: string) => void;
   /** Fired once after a successful commit. Used to trigger sandbox commit-sync. */
   onCommitSuccess?: () => void;
@@ -174,6 +191,7 @@ export function useCommitLogic({
   pageContent,
   onReplaceContentRef,
   newPath,
+  gitSha,
   onRenameComplete,
   onCommitSuccess,
 }: UseCommitLogicProps) {
@@ -192,6 +210,13 @@ export function useCommitLogic({
   const draftRef = useRef(false);
   const [commitData, setCommitData] = useState<CommitData | null>(null);
   const [showCommitModal, setShowCommitModal] = useState(false);
+  const [publishConflict, setPublishConflict] =
+    useState<PublishConflict | null>(null);
+
+  // Pinned at mount: the editor never reloads from a background refetch, so
+  // the live query sha can be newer than what is being edited.
+  const baseShaRef = useRef(gitSha);
+  const getBaseSha = useCallback(() => baseShaRef.current, []);
 
   const updateSavedBaseline = useCallback(() => {
     const clonedState = (() => {
@@ -258,6 +283,7 @@ export function useCommitLogic({
       isDraft: boolean,
       message = tEditor("default_message"),
       description?: string,
+      overwrite = false,
     ) => {
       const targetPath = newPath || data.path;
       const isRename = targetPath !== data.path;
@@ -274,13 +300,36 @@ export function useCommitLogic({
           ]
         : [{ path: data.path, content: data.content }, ...images];
 
+      const baseSha = baseShaRef.current;
       const res = await updateFiles({
         files: actions,
         message: finalMessage,
         description,
+        expectedShas:
+          baseSha && !overwrite ? { [data.path]: baseSha } : undefined,
       });
 
+      if (isCommitConflict(res.error)) {
+        const conflict =
+          res.error.conflicts.find((c) => c.path === data.path) ??
+          res.error.conflicts[0];
+        setShowCommitModal(false);
+        setPublishConflict({
+          images,
+          data,
+          isDraft,
+          message,
+          description,
+          remoteContent: conflict?.remoteContent,
+          remoteDeleted: conflict?.remoteSha === null,
+        });
+        return;
+      }
+
       if (!res.error?.message) {
+        const committedSha = gitBlobSha(data.content);
+        baseShaRef.current = committedSha;
+
         // update saved baseline (deep clone to avoid reference aliasing)
         updateSavedBaseline();
 
@@ -291,6 +340,7 @@ export function useCommitLogic({
           dispatch,
           adapter.contentArgs(config, committedPath, { parser: true }),
           (draft) => {
+            draft.sha = committedSha;
             draft.commitDate = new Date().toString();
             draft.data = {
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -446,6 +496,27 @@ export function useCommitLogic({
     ],
   );
 
+  const resolvePublishConflict = useCallback(
+    async (choice: "overwrite" | "cancel") => {
+      const pendingCommit = publishConflict;
+      if (!pendingCommit) return;
+      if (choice === "cancel") {
+        setPublishConflict(null);
+        return;
+      }
+      await commitToProvider(
+        pendingCommit.images,
+        pendingCommit.data,
+        pendingCommit.isDraft,
+        pendingCommit.message,
+        pendingCommit.description,
+        true,
+      );
+      setPublishConflict(null);
+    },
+    [publishConflict, commitToProvider],
+  );
+
   const handleCommit = useCallback(
     async (commitDetails: CommitDetails) => {
       if (!commitData) return;
@@ -470,5 +541,8 @@ export function useCommitLogic({
     setShowCommitModal,
     pending: isPending,
     getProcessedStateData,
+    getBaseSha,
+    publishConflict,
+    resolvePublishConflict,
   };
 }

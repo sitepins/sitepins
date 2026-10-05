@@ -418,7 +418,7 @@
       "draft": "Rascunho",
       "published": "Publicado"
     },
-    "conflict": {
+    "draft_conflict": {
       "title": "Conflito de rascunho detectado",
       "description": "Seu rascunho salvo é baseado em uma versão antiga deste arquivo. Alguém enviou uma nova alteração para o Git desde que você salvou o rascunho. Com qual versão você deseja continuar editando?",
       "draft_saved_at": "Seu rascunho foi salvo pela última vez em {date}.",
@@ -429,6 +429,19 @@
       "preview_truncated": "...pré-visualização truncada",
       "use_draft": "Usar versão de rascunho",
       "use_git": "Usar versão do Git (descartar rascunho)"
+    },
+    "publish_conflict": {
+      "title": "Arquivo alterado no repositório",
+      "description": "Alguém alterou este arquivo no repositório depois que você o abriu. Publicar agora sobrescreveria essas alterações.",
+      "deleted_description": "Este arquivo foi excluído do repositório depois que você o abriu. Publicar agora o recriaria.",
+      "cancel_hint": "Para manter ambos, copie suas edições, recarregue a página e aplique-as à versão mais recente.",
+      "preview_title": "Alterações que seriam sobrescritas",
+      "preview_remote": "Repositório",
+      "preview_local": "Sua versão",
+      "preview_no_diff": "Sem diferenças de conteúdo.",
+      "preview_truncated": "...pré-visualização truncada",
+      "cancel": "Continuar editando",
+      "overwrite": "Sobrescrever mesmo assim"
     }
   }
 }

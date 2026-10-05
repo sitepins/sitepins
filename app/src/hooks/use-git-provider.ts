@@ -1,4 +1,5 @@
 import { selectConfig } from "@/redux/features/config/slice";
+import { ExpectedShas } from "@/redux/features/git/commit-conflict";
 import {
   CommitsQueryOptions,
   getGitProviderAdapter,
@@ -44,6 +45,7 @@ type UpdateFilesOptions = {
   files: GitFile[];
   message: string;
   description?: string;
+  expectedShas?: ExpectedShas;
 };
 
 type QueryOptions = {
@@ -117,6 +119,7 @@ export function useGitProvider() {
           files: options.files,
           message: options.message,
           description: options.description,
+          expectedShas: options.expectedShas,
         });
       }
       return updateGitHubFiles({
@@ -126,6 +129,7 @@ export function useGitProvider() {
         files: options.files,
         message: options.message,
         description: options.description,
+        expectedShas: options.expectedShas,
       });
     },
     [config, isGitLab, updateGitHubFiles, updateGitLabFiles],

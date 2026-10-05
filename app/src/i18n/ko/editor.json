@@ -418,7 +418,7 @@
       "draft": "초안",
       "published": "게시됨"
     },
-    "conflict": {
+    "draft_conflict": {
       "title": "초안 충돌 감지됨",
       "description": "저장된 초안이 이 파일의 이전 버전을 기준으로 만들어졌습니다. 초안을 저장한 이후 누군가 Git에 새 변경사항을 푸시했습니다. 어떤 버전으로 계속 편집하시겠습니까?",
       "draft_saved_at": "초안은 마지막으로 {date}에 저장되었습니다.",
@@ -429,6 +429,19 @@
       "preview_truncated": "...미리보기가 잘렸습니다",
       "use_draft": "초안 버전 사용",
       "use_git": "Git 버전 사용(초안 폐기)"
+    },
+    "publish_conflict": {
+      "title": "저장소에서 파일이 변경됨",
+      "description": "파일을 연 후 누군가 저장소에서 이 파일을 변경했습니다. 지금 게시하면 해당 변경 사항을 덮어씁니다.",
+      "deleted_description": "파일을 연 후 이 파일이 저장소에서 삭제되었습니다. 지금 게시하면 파일이 다시 생성됩니다.",
+      "cancel_hint": "둘 다 유지하려면 편집 내용을 복사하고 페이지를 새로고침한 후 최신 버전에 적용하세요.",
+      "preview_title": "덮어쓰게 될 변경 사항",
+      "preview_remote": "저장소",
+      "preview_local": "내 버전",
+      "preview_no_diff": "내용 차이가 없습니다.",
+      "preview_truncated": "...미리보기가 잘림",
+      "cancel": "계속 편집",
+      "overwrite": "그래도 덮어쓰기"
     }
   }
 }

@@ -418,7 +418,7 @@
       "draft": "Entwurf",
       "published": "Veröffentlicht"
     },
-    "conflict": {
+    "draft_conflict": {
       "title": "Entwurfskonflikt erkannt",
       "description": "Dein gespeicherter Entwurf basiert auf einer älteren Version dieser Datei. Seitdem wurde eine neue Änderung nach Git gepusht. Mit welcher Version möchtest du weiterarbeiten?",
       "draft_saved_at": "Dein Entwurf wurde zuletzt am {date} gespeichert.",
@@ -429,6 +429,19 @@
       "preview_truncated": "...Vorschau gekürzt",
       "use_draft": "Entwurfsversion verwenden",
       "use_git": "Git-Version verwenden (Entwurf verwerfen)"
+    },
+    "publish_conflict": {
+      "title": "Datei im Repository geändert",
+      "description": "Jemand hat diese Datei im Repository geändert, nachdem du sie geöffnet hast. Wenn du jetzt veröffentlichst, werden diese Änderungen überschrieben.",
+      "deleted_description": "Diese Datei wurde aus dem Repository gelöscht, nachdem du sie geöffnet hast. Wenn du jetzt veröffentlichst, wird sie neu erstellt.",
+      "cancel_hint": "Um beides zu behalten, kopiere deine Änderungen, lade die Seite neu und übertrage sie auf die neueste Version.",
+      "preview_title": "Änderungen, die überschrieben würden",
+      "preview_remote": "Repository",
+      "preview_local": "Deine Version",
+      "preview_no_diff": "Keine inhaltlichen Unterschiede.",
+      "preview_truncated": "...Vorschau gekürzt",
+      "cancel": "Weiter bearbeiten",
+      "overwrite": "Trotzdem überschreiben"
     }
   }
 }

@@ -1,3 +1,4 @@
+import { toast } from "@/components/ui/toast";
 import { authClient } from "@/lib/auth/auth-client";
 import { GITHUB_APP_NAME, IS_DEMO, SCHEMA_FOLDER } from "@/lib/constant";
 import { logger } from "@/lib/logger";
@@ -7,6 +8,7 @@ import { fmDetector } from "@/lib/utils/frontmatter-detector";
 import {
   createGitCommitMessage,
   delay,
+  fromBase64,
   getGitAuthDetails,
   isTransientNetworkError,
   runWithConcurrency,
@@ -17,8 +19,16 @@ import { TreeCache } from "@/redux/features/git/provider-args";
 import { RootState } from "@/redux/store";
 import { TTree } from "@/types";
 import path from "path";
-import { toast } from "@/components/ui/toast";
 import { updateConfig } from "../config/slice";
+import {
+  assertNoConflicts,
+  CommitConflictError,
+  ExpectedShas,
+  findConflicts,
+  isCommitConflict,
+  RemoteFile,
+  toConflictResult,
+} from "../git/commit-conflict";
 import {
   coAuthorOf,
   CommitAuthor,
@@ -52,7 +62,7 @@ type GhBranch = {
 
 type GhGitCommit = { sha?: string; tree?: { sha?: string } };
 
-type GhContentsFile = { sha?: string };
+type GhContentsFile = { sha?: string; content?: string; encoding?: string };
 
 type GhContentsWrite = { commit?: { sha?: string } };
 
@@ -69,6 +79,8 @@ const errMessage = (error: unknown): string | undefined => {
   const message = (error as { message?: unknown } | undefined)?.message;
   return typeof message === "string" ? message : undefined;
 };
+
+const MAX_REF_UPDATE_RETRIES = 3;
 
 type GhCommitStatus = {
   state?: string;
@@ -172,6 +184,7 @@ export const githubCommitApi = githubApi.injectEndpoints({
         description?: string;
         createFolder?: boolean;
         createNewBranch?: boolean;
+        expectedShas?: ExpectedShas;
       }
     >({
       // @ts-ignore
@@ -184,6 +197,7 @@ export const githubCommitApi = githubApi.injectEndpoints({
           message,
           description,
           createNewBranch: _createNewBranch,
+          expectedShas,
         },
         { getState, dispatch },
         _extraOptions,
@@ -210,6 +224,120 @@ export const githubCommitApi = githubApi.injectEndpoints({
         // Declared out here so the Contents API fallback in `catch` can reuse
         // it; an empty author simply means no co-author trailer.
         let author: CommitAuthor = {};
+
+        const readHead = async (): Promise<{
+          commitSha: string | null;
+          treeSha: string | null;
+        }> => {
+          let commitSha: string | null = null;
+          let treeSha: string | null = null;
+
+          try {
+            const branchResult = await session.run((token) =>
+              fetchWithBQ({
+                endpoint: `GET /repos/{owner}/{repo}/branches/{branch}?_nocache=${Date.now()}`,
+                options: {
+                  owner,
+                  repo,
+                  branch,
+                  ...(token && { token }),
+                },
+              }),
+            );
+
+            if (branchResult.data) {
+              const branchData = branchResult.data as {
+                commit: {
+                  sha: string;
+                  commit?: { tree?: { sha?: string } };
+                  tree?: { sha?: string };
+                };
+              };
+              commitSha = branchData.commit.sha;
+              treeSha =
+                branchData.commit.commit?.tree?.sha ||
+                branchData.commit.tree?.sha ||
+                null;
+            } else if (branchResult.error) {
+              const err = branchResult.error;
+              if (err.status !== 404) {
+                throw new Error(
+                  `Failed to fetch branch info: ${err.message || err.status}`,
+                );
+              }
+            }
+          } catch (e) {
+            if ((e as { status?: number })?.status !== 404) throw e;
+          }
+
+          // Fallback: fetch tree SHA from commit if missing
+          if (commitSha && !treeSha) {
+            try {
+              const commitResult = await session.run((token) =>
+                fetchWithBQ({
+                  endpoint: `GET /repos/{owner}/{repo}/git/commits/{commit_sha}?_nocache=${Date.now()}`,
+                  options: {
+                    owner,
+                    repo,
+                    commit_sha: commitSha,
+                    ...(token && { token }),
+                  },
+                }),
+              );
+
+              if (commitResult.data) {
+                treeSha =
+                  (commitResult.data as { tree?: { sha?: string } }).tree
+                    ?.sha || null;
+              }
+            } catch {
+              // Ignore fallback errors
+            }
+
+            if (!treeSha) {
+              throw new Error(
+                "Failed to retrieve repository tree. Please try again.",
+              );
+            }
+          }
+
+          return { commitSha, treeSha };
+        };
+
+        const readRemote =
+          (ref: string | null) =>
+          async (filePath: string): Promise<RemoteFile> => {
+            if (!ref) return null;
+            const res = await session.run((token) =>
+              fetchWithBQ({
+                endpoint: `GET /repos/{owner}/{repo}/contents/{path}?_nocache=${Date.now()}`,
+                options: {
+                  owner,
+                  repo,
+                  path: filePath,
+                  ref,
+                  ...(token && { token }),
+                },
+              }),
+            );
+            if (res.error) {
+              if (errStatus(res.error) === 404) return null;
+              throw new Error(
+                `Failed to read ${filePath}: ${errMessage(res.error) ?? ""}`,
+              );
+            }
+            const file = res.data as GhContentsFile | undefined;
+            if (!file?.sha) return null;
+            return {
+              sha: file.sha,
+              content:
+                file.encoding === "base64" &&
+                typeof file.content === "string" &&
+                !checkMedia(filePath)
+                  ? fromBase64(file.content)
+                  : undefined,
+            };
+          };
 
         try {
           if (IS_DEMO) {
@@ -240,78 +368,14 @@ export const githubCommitApi = githubApi.injectEndpoints({
 
           const auth_details = getGitAuthDetails("Github");
 
-          // Get branch reference and tree SHA
-          let baseCommitSha: string | null = null;
-          let baseTreeSha: string | null = null;
+          const { commitSha: baseCommitSha, treeSha: baseTreeSha } =
+            await readHead();
 
-          try {
-            const branchResult = await session.run((token) =>
-              fetchWithBQ({
-                endpoint: `GET /repos/{owner}/{repo}/branches/{branch}?_nocache=${Date.now()}`,
-                options: {
-                  owner,
-                  repo,
-                  branch,
-                  ...(token && { token }),
-                },
-              }),
-            );
-
-            if (branchResult.data) {
-              const branchData = branchResult.data as {
-                commit: {
-                  sha: string;
-                  commit?: { tree?: { sha?: string } };
-                  tree?: { sha?: string };
-                };
-              };
-              baseCommitSha = branchData.commit.sha;
-              baseTreeSha =
-                branchData.commit.commit?.tree?.sha ||
-                branchData.commit.tree?.sha ||
-                null;
-            } else if (branchResult.error) {
-              const err = branchResult.error;
-              if (err.status !== 404) {
-                throw new Error(
-                  `Failed to fetch branch info: ${err.message || err.status}`,
-                );
-              }
-            }
-          } catch (e) {
-            if ((e as { status?: number })?.status !== 404) throw e;
-          }
-
-          // Fallback: fetch tree SHA from commit if missing
-          if (baseCommitSha && !baseTreeSha) {
-            try {
-              const commitResult = await session.run((token) =>
-                fetchWithBQ({
-                  endpoint: `GET /repos/{owner}/{repo}/git/commits/{commit_sha}?_nocache=${Date.now()}`,
-                  options: {
-                    owner,
-                    repo,
-                    commit_sha: baseCommitSha,
-                    ...(token && { token }),
-                  },
-                }),
-              );
-
-              if (commitResult.data) {
-                baseTreeSha =
-                  (commitResult.data as { tree?: { sha?: string } }).tree
-                    ?.sha || null;
-              }
-            } catch {
-              // Ignore fallback errors
-            }
-
-            if (!baseTreeSha) {
-              throw new Error(
-                "Failed to retrieve repository tree. Please try again.",
-              );
-            }
-          }
+          await assertNoConflicts(
+            expectedShas,
+            filteredFiles.map((f) => f.path),
+            readRemote(baseCommitSha),
+          );
 
           // Split files into batches
           const BATCH_SIZE = baseCommitSha ? 100 : 50;
@@ -426,40 +490,6 @@ export const githubCommitApi = githubApi.injectEndpoints({
                   };
                 });
 
-                const treeResult = await session.run((token) =>
-                  fetchWithBQ({
-                    endpoint: "POST /repos/{owner}/{repo}/git/trees",
-                    options: {
-                      tree: treeData,
-                      owner,
-                      repo,
-                      ...(lastTreeSha && { base_tree: lastTreeSha }),
-                      ...(token && { token }),
-                    },
-                  }),
-                );
-
-                if (!treeResult.data) {
-                  const error = treeResult?.error;
-                  logger.error(
-                    `Failed to create tree for batch ${batchIndex + 1}:`,
-                    {
-                      status: error?.status,
-                      message: error?.message,
-                      treeSize: treeData.length,
-                      baseTreeSha: lastTreeSha,
-                      batchFiles: batch.map((f) => f.path),
-                    },
-                  );
-                  throw new Error(
-                    `Failed to create tree for batch ${batchIndex + 1}. ${error?.message ?? ""}`,
-                  );
-                }
-                const tree = treeResult.data as { sha: string };
-
-                // ---------------------------------------------------
-                // 5.3. Create commit for this batch
-                // ---------------------------------------------------
                 const batchMessage =
                   batches.length > 1
                     ? `${effectiveMessage} (batch ${batchIndex + 1}/${batches.length}) by Sitepins`
@@ -473,63 +503,124 @@ export const githubCommitApi = githubApi.injectEndpoints({
                   "Github",
                 );
 
-                const commitResult = await session.run((token) =>
-                  fetchWithBQ({
-                    endpoint: "POST /repos/{owner}/{repo}/git/commits",
-                    options: {
-                      owner,
-                      repo,
-                      message: commitMessage,
-                      author: auth_details,
-                      committer: auth_details,
-                      tree: tree.sha,
-                      ...(lastCommitSha ? { parents: [lastCommitSha] } : {}),
-                      ...(token && { token }),
-                    },
-                  }),
-                );
+                let commit: { sha: string; tree: { sha: string } };
 
-                if (!commitResult.data) {
-                  throw new Error(
-                    `Failed to create commit for batch ${batchIndex + 1}.`,
-                  );
-                }
-                const commit = commitResult.data as {
-                  sha: string;
-                  tree: { sha: string };
-                };
-
-                // ---------------------------------------------------
-                // 5.4. Update or create branch reference
-                // ---------------------------------------------------
-                if (!lastCommitSha && batchIndex === 0) {
-                  // First batch and new repo → create ref
-                  await session.run((token) =>
+                for (let refAttempt = 0; ; refAttempt++) {
+                  const treeResult = await session.run((token) =>
                     fetchWithBQ({
-                      endpoint: "POST /repos/{owner}/{repo}/git/refs",
+                      endpoint: "POST /repos/{owner}/{repo}/git/trees",
                       options: {
+                        tree: treeData,
                         owner,
                         repo,
-                        ref: "refs/heads/" + branch,
-                        sha: commit.sha,
+                        ...(lastTreeSha && { base_tree: lastTreeSha }),
                         ...(token && { token }),
                       },
                     }),
                   );
-                } else {
-                  // Update ref
-                  await session.run((token) =>
+
+                  if (!treeResult.data) {
+                    const error = treeResult?.error;
+                    logger.error(
+                      `Failed to create tree for batch ${batchIndex + 1}:`,
+                      {
+                        status: error?.status,
+                        message: error?.message,
+                        treeSize: treeData.length,
+                        baseTreeSha: lastTreeSha,
+                        batchFiles: batch.map((f) => f.path),
+                      },
+                    );
+                    throw new Error(
+                      `Failed to create tree for batch ${batchIndex + 1}. ${error?.message ?? ""}`,
+                    );
+                  }
+                  const tree = treeResult.data as { sha: string };
+
+                  // ---------------------------------------------------
+                  // 5.3. Create commit for this batch
+                  // ---------------------------------------------------
+                  const commitResult = await session.run((token) =>
                     fetchWithBQ({
-                      endpoint: "PATCH /repos/{owner}/{repo}/git/refs/{ref}",
+                      endpoint: "POST /repos/{owner}/{repo}/git/commits",
                       options: {
-                        sha: commit.sha,
-                        force: true,
-                        ref: "heads/" + branch,
                         owner,
                         repo,
+                        message: commitMessage,
+                        author: auth_details,
+                        committer: auth_details,
+                        tree: tree.sha,
+                        ...(lastCommitSha ? { parents: [lastCommitSha] } : {}),
                         ...(token && { token }),
                       },
                     }),
+                  );
+
+                  if (!commitResult.data) {
+                    throw new Error(
+                      `Failed to create commit for batch ${batchIndex + 1}.`,
+                    );
+                  }
+                  commit = commitResult.data as {
+                    sha: string;
+                    tree: { sha: string };
+                  };
+
+                  // ---------------------------------------------------
+                  // 5.4. Update or create branch reference. No `force`:
+                  // if the branch moved since it was read, this fails
+                  // instead of dropping the other commit.
+                  // ---------------------------------------------------
+                  const refResult = await session.run((token) =>
+                    lastCommitSha
+                      ? fetchWithBQ({
+                          endpoint:
+                            "PATCH /repos/{owner}/{repo}/git/refs/{ref}",
+                          options: {
+                            sha: commit.sha,
+                            ref: "heads/" + branch,
+                            owner,
+                            repo,
+                            ...(token && { token }),
+                          },
+                        })
+                      : fetchWithBQ({
+                          endpoint: "POST /repos/{owner}/{repo}/git/refs",
+                          options: {
+                            owner,
+                            repo,
+                            ref: "refs/heads/" + branch,
+                            sha: commit.sha,
+                            ...(token && { token }),
+                          },
+                        }),
+                  );
+
+                  if (!refResult.error) break;
+
+                  const head = await readHead();
+                  // A 5xx can still have applied the update.
+                  if (head.commitSha === commit.sha) break;
+
+                  if (
+                    head.commitSha === lastCommitSha ||
+                    refAttempt >= MAX_REF_UPDATE_RETRIES
+                  ) {
+                    throw Object.assign(
+                      new Error(
+                        `Failed to update branch "${branch}". ${errMessage(refResult.error) ?? ""}`,
+                      ),
+                      { status: errStatus(refResult.error) },
+                    );
+                  }
+
+                  // Someone else pushed: rebuild this batch on the new head.
+                  lastCommitSha = head.commitSha;
+                  lastTreeSha = head.treeSha;
+                  await assertNoConflicts(
+                    expectedShas,
+                    batch.map((f) => f.path),
+                    readRemote(lastCommitSha),
                   );
                 }
 
@@ -555,6 +646,10 @@ export const githubCommitApi = githubApi.injectEndpoints({
 
           return { data: { sha: lastCommitSha } };
         } catch (error) {
+          if (error instanceof CommitConflictError) {
+            return toConflictResult(error);
+          }
+
           // ============================================================================
           // FALLBACK: Use Contents API (slower but more reliable for problematic repos)
           // ============================================================================
@@ -565,6 +660,16 @@ export const githubCommitApi = githubApi.injectEndpoints({
 
           // Author and token identity carry over from the Git API attempt.
           const auth_details = getGitAuthDetails("Github");
+
+          // Best effort: the expected sha sent with each write is the real guard.
+          const precheck = await findConflicts(
+            expectedShas,
+            filteredFiles.map((f) => f.path),
+            readRemote(branch),
+          ).catch(() => []);
+          if (precheck.length > 0) {
+            return toConflictResult(new CommitConflictError(precheck));
+          }
 
           // Split into smaller batches - Contents API has stricter limits
           const BATCH_SIZE = 10;
@@ -636,6 +741,25 @@ export const githubCommitApi = githubApi.injectEndpoints({
                   existingSha = undefined;
                 }
 
+                // GitHub rejects the write with a 409 when this no longer
+                // matches, so a guarded file can't be overwritten.
+                const writeSha = expectedShas?.[file.path] ?? existingSha;
+                const throwIfConflict = async (writeError: unknown) => {
+                  if (
+                    !expectedShas?.[file.path] ||
+                    errStatus(writeError) !== 409
+                  )
+                    return;
+                  const conflicts = await findConflicts(
+                    expectedShas,
+                    [file.path],
+                    readRemote(branch),
+                  );
+                  if (conflicts.length > 0) {
+                    throw new CommitConflictError(conflicts);
+                  }
+                };
+
                 if (file.delete) {
                   // Delete the file using Contents API (requires sha)
                   if (!existingSha) {
@@ -651,7 +775,7 @@ export const githubCommitApi = githubApi.injectEndpoints({
                         path: file.path,
                         message: commitMessage,
                         branch,
-                        sha: existingSha,
+                        sha: writeSha,
                         author: auth_details,
                         committer: auth_details,
                         ...(token && { token }),
@@ -660,6 +784,7 @@ export const githubCommitApi = githubApi.injectEndpoints({
                   );
 
                   if (!deleteRes.data) {
+                    await throwIfConflict(deleteRes?.error);
                     logger.error(
                       "Contents API delete failed for",
                       file.path,
@@ -689,7 +814,7 @@ export const githubCommitApi = githubApi.injectEndpoints({
                       author: auth_details,
                       committer: auth_details,
                       content: contentBase64,
-                      ...(existingSha && { sha: existingSha }),
+                      ...(writeSha && { sha: writeSha }),
                       ...(token && { token }),
                     },
                   }),
@@ -697,6 +822,7 @@ export const githubCommitApi = githubApi.injectEndpoints({
 
                 if (!putRes.data) {
                   const err = putRes?.error;
+                  await throwIfConflict(err);
                   logger.error(
                     "Contents API upload failed for",
                     file.path,
@@ -712,6 +838,9 @@ export const githubCommitApi = githubApi.injectEndpoints({
                   lastCommitSha = commitInfo.sha;
                 }
               } catch (fileError) {
+                if (fileError instanceof CommitConflictError) {
+                  return toConflictResult(fileError);
+                }
                 logger.error(`✗ Failed to process ${file.path}`, fileError);
                 // Continue with next file instead of stopping the entire upload
               }
@@ -1146,6 +1275,7 @@ export const githubCommitApi = githubApi.injectEndpoints({
           });
         } catch (thrown) {
           const { error } = (thrown ?? {}) as { error?: { message?: string } };
+          if (isCommitConflict(error)) return;
           toast.error(error?.message);
         }
       },

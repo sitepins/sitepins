@@ -418,7 +418,7 @@
       "draft": "Bozza",
       "published": "Pubblicato"
     },
-    "conflict": {
+    "draft_conflict": {
       "title": "Rilevato conflitto nella bozza",
       "description": "La tua bozza salvata si basa su una versione precedente di questo file. Qualcuno ha inviato una nuova modifica a Git da quando hai salvato la bozza. Quale versione desideri continuare a modificare?",
       "draft_saved_at": "La tua bozza è stata salvata l'ultima volta il {date}.",
@@ -429,6 +429,19 @@
       "preview_truncated": "...anteprima troncata",
       "use_draft": "Usa versione bozza",
       "use_git": "Usa versione Git (scarta bozza)"
+    },
+    "publish_conflict": {
+      "title": "File modificato nel repository",
+      "description": "Qualcuno ha modificato questo file nel repository dopo che lo hai aperto. Pubblicando ora sovrascriveresti le sue modifiche.",
+      "deleted_description": "Questo file è stato eliminato dal repository dopo che lo hai aperto. Pubblicando ora verrebbe ricreato.",
+      "cancel_hint": "Per mantenere entrambe, copia le tue modifiche, ricarica la pagina e applicale all'ultima versione.",
+      "preview_title": "Modifiche che verrebbero sovrascritte",
+      "preview_remote": "Repository",
+      "preview_local": "La tua versione",
+      "preview_no_diff": "Nessuna differenza nel contenuto.",
+      "preview_truncated": "...anteprima troncata",
+      "cancel": "Continua a modificare",
+      "overwrite": "Sovrascrivi comunque"
     }
   }
 }

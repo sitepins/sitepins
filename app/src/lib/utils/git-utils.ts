@@ -1,6 +1,6 @@
-import { logger } from "@/lib/logger";
 import { MdxSnippet } from "@/editor/utils/plate-types";
 import { GIT_COMMIT_EMAIL_DOMAIN } from "@/lib/brand";
+import { logger } from "@/lib/logger";
 import { isGitLabProvider, TGitProvider } from "@/lib/utils/provider-checker";
 import path from "path";
 import { GITHUB_APP_NAME, GITLAB_APP_NAME } from "../constant";
@@ -333,4 +333,65 @@ export function toBase64(str: string): string {
   } catch {
     return Buffer.from(str, "utf-8").toString("base64");
   }
+}
+
+export function fromBase64(str: string): string {
+  return Buffer.from(str, "base64").toString("utf-8");
+}
+
+function sha1Hex(bytes: Uint8Array): string {
+  const total = Math.ceil((bytes.length + 9) / 64) * 64;
+  const buf = new Uint8Array(total);
+  buf.set(bytes);
+  buf[bytes.length] = 0x80;
+  const view = new DataView(buf.buffer);
+  const bits = bytes.length * 8;
+  view.setUint32(total - 8, Math.floor(bits / 2 ** 32));
+  view.setUint32(total - 4, bits >>> 0);
+
+  const h = [0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476, 0xc3d2e1f0];
+  const w = new Uint32Array(80);
+  for (let off = 0; off < total; off += 64) {
+    for (let i = 0; i < 16; i++) w[i] = view.getUint32(off + i * 4);
+    for (let i = 16; i < 80; i++) {
+      const x = w[i - 3] ^ w[i - 8] ^ w[i - 14] ^ w[i - 16];
+      w[i] = (x << 1) | (x >>> 31);
+    }
+    let [a, b, c, d, e] = h;
+    for (let i = 0; i < 80; i++) {
+      const f =
+        i < 20
+          ? ((b & c) | (~b & d)) + 0x5a827999
+          : i < 40
+            ? (b ^ c ^ d) + 0x6ed9eba1
+            : i < 60
+              ? ((b & c) | (b & d) | (c & d)) + 0x8f1bbcdc
+              : (b ^ c ^ d) + 0xca62c1d6;
+      const t = (((a << 5) | (a >>> 27)) + f + e + w[i]) >>> 0;
+      e = d;
+      d = c;
+      c = ((b << 30) | (b >>> 2)) >>> 0;
+      b = a;
+      a = t;
+    }
+    h[0] = (h[0] + a) >>> 0;
+    h[1] = (h[1] + b) >>> 0;
+    h[2] = (h[2] + c) >>> 0;
+    h[3] = (h[3] + d) >>> 0;
+    h[4] = (h[4] + e) >>> 0;
+  }
+  return h.map((x) => x.toString(16).padStart(8, "0")).join("");
+}
+
+/**
+ * Same id `git hash-object` gives the UTF-8 encoding of `content`. Pure JS
+ * because `crypto.subtle` is missing on plain-HTTP self-hosted origins.
+ */
+export function gitBlobSha(content: string): string {
+  const body = new TextEncoder().encode(content);
+  const header = new TextEncoder().encode(`blob ${body.length}\0`);
+  const bytes = new Uint8Array(header.length + body.length);
+  bytes.set(header);
+  bytes.set(body, header.length);
+  return sha1Hex(bytes);
 }

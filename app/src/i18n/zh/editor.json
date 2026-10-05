@@ -418,7 +418,7 @@
       "draft": "草稿",
       "published": "已发布"
     },
-    "conflict": {
+    "draft_conflict": {
       "title": "检测到草稿冲突",
       "description": "你保存的草稿基于此文件的较旧版本。自你保存草稿后，已有新改动被推送到 Git。你想基于哪个版本继续编辑？",
       "draft_saved_at": "你的草稿上次保存于 {date}。",
@@ -429,6 +429,19 @@
       "preview_truncated": "...预览已截断",
       "use_draft": "使用草稿版本",
       "use_git": "使用 Git 版本（丢弃草稿）"
+    },
+    "publish_conflict": {
+      "title": "仓库中的文件已更改",
+      "description": "在你打开此文件后，有人在仓库中修改了它。现在发布将覆盖这些更改。",
+      "deleted_description": "在你打开此文件后，它已从仓库中删除。现在发布将重新创建该文件。",
+      "cancel_hint": "如需同时保留两者，请复制你的编辑内容，重新加载页面，然后将其应用到最新版本。",
+      "preview_title": "将被覆盖的更改",
+      "preview_remote": "仓库",
+      "preview_local": "你的版本",
+      "preview_no_diff": "内容没有差异。",
+      "preview_truncated": "...预览已截断",
+      "cancel": "继续编辑",
+      "overwrite": "仍然覆盖"
     }
   }
 }

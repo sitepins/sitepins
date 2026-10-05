@@ -418,7 +418,7 @@
       "draft": "Bản nháp",
       "published": "Đã xuất bản"
     },
-    "conflict": {
+    "draft_conflict": {
       "title": "Phát hiện xung đột bản nháp",
       "description": "Bản nháp đã lưu của bạn dựa trên phiên bản cũ hơn của tệp này. Ai đó đã đẩy một thay đổi mới lên Git kể từ khi bạn lưu bản nháp. Bạn muốn tiếp tục chỉnh sửa theo phiên bản nào?",
       "draft_saved_at": "Bản nháp của bạn được lưu lần cuối vào {date}.",
@@ -429,6 +429,19 @@
       "preview_truncated": "...bản xem trước đã bị cắt",
       "use_draft": "Dùng phiên bản bản nháp",
       "use_git": "Dùng phiên bản Git (bỏ bản nháp)"
+    },
+    "publish_conflict": {
+      "title": "Tệp đã thay đổi trong kho lưu trữ",
+      "description": "Ai đó đã thay đổi tệp này trong kho lưu trữ sau khi bạn mở nó. Xuất bản bây giờ sẽ ghi đè các thay đổi của họ.",
+      "deleted_description": "Tệp này đã bị xóa khỏi kho lưu trữ sau khi bạn mở nó. Xuất bản bây giờ sẽ tạo lại tệp.",
+      "cancel_hint": "Để giữ cả hai, hãy sao chép các chỉnh sửa của bạn, tải lại trang và áp dụng chúng vào phiên bản mới nhất.",
+      "preview_title": "Những thay đổi sẽ bị ghi đè",
+      "preview_remote": "Kho lưu trữ",
+      "preview_local": "Phiên bản của bạn",
+      "preview_no_diff": "Không có khác biệt về nội dung.",
+      "preview_truncated": "...bản xem trước đã bị cắt bớt",
+      "cancel": "Tiếp tục chỉnh sửa",
+      "overwrite": "Vẫn ghi đè"
     }
   }
 }

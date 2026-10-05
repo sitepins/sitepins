@@ -418,7 +418,7 @@
       "draft": "Draf",
       "published": "Diterbitkan"
     },
-    "conflict": {
+    "draft_conflict": {
       "title": "Konflik Draf Terdeteksi",
       "description": "Draf tersimpan Anda didasarkan pada versi file yang lebih lama. Seseorang telah mendorong perubahan baru ke Git sejak Anda menyimpan draf. Versi mana yang ingin Anda lanjutkan untuk diedit?",
       "draft_saved_at": "Draf Anda terakhir disimpan pada {date}.",
@@ -429,6 +429,19 @@
       "preview_truncated": "...pratinjau dipotong",
       "use_draft": "Gunakan Versi Draf",
       "use_git": "Gunakan Versi Git (buang draf)"
+    },
+    "publish_conflict": {
+      "title": "File Berubah di Repositori",
+      "description": "Seseorang mengubah file ini di repositori setelah Anda membukanya. Memublikasikan sekarang akan menimpa perubahan mereka.",
+      "deleted_description": "File ini dihapus dari repositori setelah Anda membukanya. Memublikasikan sekarang akan membuatnya kembali.",
+      "cancel_hint": "Untuk menyimpan keduanya, salin suntingan Anda, muat ulang halaman, lalu terapkan ke versi terbaru.",
+      "preview_title": "Perubahan yang akan ditimpa",
+      "preview_remote": "Repositori",
+      "preview_local": "Versi Anda",
+      "preview_no_diff": "Tidak ada perbedaan konten.",
+      "preview_truncated": "...pratinjau dipotong",
+      "cancel": "Lanjutkan Mengedit",
+      "overwrite": "Tetap Timpa"
     }
   }
 }

@@ -1,3 +1,4 @@
+import { toast } from "@/components/ui/toast";
 import { IS_DEMO, SCHEMA_FOLDER } from "@/lib/constant";
 import { logger } from "@/lib/logger";
 import { checkMedia } from "@/lib/utils/check-media-file";
@@ -6,14 +7,23 @@ import { errorMessageOr, errorStatus } from "@/lib/utils/error";
 import { fmDetector } from "@/lib/utils/frontmatter-detector";
 import {
   createGitCommitMessage,
+  fromBase64,
   getGitAuthDetails,
 } from "@/lib/utils/git-utils";
 import { pathToDir } from "@/lib/utils/path-to-dir";
 import { RootState } from "@/redux/store";
 import path from "path";
-import { toast } from "@/components/ui/toast";
 import { updateConfig } from "../config/slice";
-import { getGitProviderAdapter } from "../git/provider-adapter";
+import {
+  assertNoConflicts,
+  CommitConflictError,
+  ExpectedShas,
+  findConflicts,
+  guardedPaths,
+  isCommitConflict,
+  RemoteFile,
+  toConflictResult,
+} from "../git/commit-conflict";
 import {
   coAuthorOf,
   createCommitTokenSession,
@@ -21,6 +31,7 @@ import {
   resolveCommitAuthor,
   resolveImpersonatePreference,
 } from "../git/commit-session";
+import { getGitProviderAdapter } from "../git/provider-adapter";
 import { encodeProjectPath, gitlabApi } from "./gitlab-api";
 import { gitlabContentApi } from "./gitlab-content-api";
 import {
@@ -135,11 +146,12 @@ export const gitlabCommitApi = gitlabApi.injectEndpoints({
         files: Array<{ path: string; content?: string; delete?: boolean }>;
         message: string;
         description?: string;
+        expectedShas?: ExpectedShas;
       }
     >({
       // @ts-ignore - complex queryFn
       async queryFn(
-        { id, branch, files, message, description },
+        { id, branch, files, message, description, expectedShas },
         { getState, dispatch },
         _extraOptions,
         fetchWithBQ,
@@ -204,7 +216,52 @@ export const gitlabCommitApi = gitlabApi.injectEndpoints({
             // If tree fetch fails, assume all files are new
           }
 
-          const actions = convertToGitLabActions(filteredFiles, existingFiles);
+          const filePaths = filteredFiles.map((f) => f.path);
+          const lastCommitIds: Record<string, string> = {};
+          const readRemote = async (filePath: string): Promise<RemoteFile> => {
+            const res = await session.run((token) =>
+              fetchWithBQ({
+                endpoint: `/projects/${encodeProjectPath(String(id))}/repository/files/${encodeURIComponent(filePath)}`,
+                params: { ref: branch, _nocache: Date.now() },
+                token,
+              }),
+            );
+            if (res.error) {
+              if (errorStatus(res.error) === 404) return null;
+              throw new Error(
+                errorMessageOr(res.error, `Failed to read ${filePath}.`),
+              );
+            }
+            const file = res.data as TGitLabFile;
+            lastCommitIds[filePath] = file.last_commit_id;
+            return {
+              sha: file.blob_id,
+              content:
+                file.encoding === "base64" && !checkMedia(filePath)
+                  ? fromBase64(file.content)
+                  : undefined,
+            };
+          };
+
+          await assertNoConflicts(expectedShas, filePaths, readRemote);
+
+          // GitLab rejects an action whose file changed after
+          // `last_commit_id`, closing the gap between the check and the commit.
+          const actions = convertToGitLabActions(
+            filteredFiles,
+            existingFiles,
+          ).map((action) => {
+            const lastCommitId = lastCommitIds[action.file_path];
+            if (!lastCommitId) return action;
+            return {
+              ...action,
+              action:
+                action.action === "create"
+                  ? ("update" as const)
+                  : action.action,
+              last_commit_id: lastCommitId,
+            };
+          });
 
           // The message is rebuilt per attempt: once the retry drops to the
           // app identity, `coAuthorOf` stops emitting the co-author trailer.
@@ -233,6 +290,19 @@ export const gitlabCommitApi = gitlabApi.injectEndpoints({
           if (!commitResult.data) {
             const error = commitResult.error as
               { message?: string } | undefined;
+            if (
+              errorStatus(error) === 400 &&
+              guardedPaths(expectedShas, filePaths).length > 0
+            ) {
+              const conflicts = await findConflicts(
+                expectedShas,
+                filePaths,
+                readRemote,
+              ).catch(() => []);
+              if (conflicts.length > 0) {
+                return toConflictResult(new CommitConflictError(conflicts));
+              }
+            }
             throw new Error(
               errorMessageOr(error, "Failed to create commit in GitLab."),
             );
@@ -240,6 +310,9 @@ export const gitlabCommitApi = gitlabApi.injectEndpoints({
 
           return { data: commitResult.data as TGitLabCreateCommitResponse };
         } catch (error: unknown) {
+          if (error instanceof CommitConflictError) {
+            return toConflictResult(error);
+          }
           const err = error as Error;
           logger.error("GitLab commit error:", err.message || err);
           return {
@@ -377,6 +450,7 @@ export const gitlabCommitApi = gitlabApi.injectEndpoints({
           });
         } catch (err: unknown) {
           const error = err as { error?: { message?: string } };
+          if (isCommitConflict(error?.error)) return;
           toast.error(error?.error?.message || "Failed to commit files");
         }
       },

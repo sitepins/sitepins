@@ -32,7 +32,7 @@ export default function DraftConflictDialog({
   draftContent,
   onChoose,
 }: DraftConflictDialogProps) {
-  const t = useTranslations("editor.conflict");
+  const t = useTranslations("editor.draft_conflict");
 
   const buildPreview = () => {
     const git = (gitContent || "").replace(/\r\n/g, "\n").split("\n");

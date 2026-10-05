@@ -4,7 +4,9 @@ import {
   createGitCommitMessage,
   dedupeFiles,
   filterUploadableFiles,
+  fromBase64,
   getGitAuthDetails,
+  gitBlobSha,
   isTransientNetworkError,
   matchPattern,
   normalizeDeleteCommitMessage,
@@ -343,5 +345,34 @@ describe("toBase64", () => {
 
   it("encodes an empty string", () => {
     expect(toBase64("")).toBe("");
+  });
+});
+
+describe("fromBase64", () => {
+  it("decodes UTF-8 written by toBase64", () => {
+    expect(fromBase64(toBase64("café ☕\n"))).toBe("café ☕\n");
+  });
+});
+
+// Expected values come from `git hash-object --stdin`.
+describe("gitBlobSha", () => {
+  it.each([
+    ["", "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"],
+    ["hello\n", "ce013625030ba8dba906f756967f9e9ca394464a"],
+    ["h\u00e9llo \u2014 \u2713\n", "f68dd70655fca87e3154932ae7b0353ea37cb5e4"],
+  ])("hashes %j like git", (content, sha) => {
+    expect(gitBlobSha(content)).toBe(sha);
+  });
+
+  it.each([
+    [47, "719ddd7888a02660234770b651274214ff7df239"],
+    [48, "3b3abca28de4b8ce6ea9dac5da512120ed7c5a0c"],
+    [55, "e329c5109ce10a7367561757d2f5a053c528f11e"],
+    [56, "355e203863c368f0404d7fc7ae4761122c117dd2"],
+    [100, "d690765445339443e88fd770dad129c38e3521ff"],
+    [119, "476be27639daf140e142c5f18280c33563ade72b"],
+  ])("handles SHA-1 block boundaries (%i bytes)", (length, sha) => {
+    const char = length === 100 ? "a" : "x";
+    expect(gitBlobSha(char.repeat(length))).toBe(sha);
   });
 });

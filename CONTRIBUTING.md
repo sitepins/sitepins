@@ -24,12 +24,14 @@ pnpm dev:app   # frontend on :3000
 1. Fork the repo and create a branch from `main`.
 2. Keep changes focused — one feature/fix per pull request.
 3. Make sure the code typechecks, builds, and tests pass:
+
    ```bash
    pnpm build:api
    pnpm --filter sitepins-app exec next typegen
    pnpm --filter sitepins-app exec tsc --noEmit
    pnpm test
    ```
+
 4. Format with Prettier (`pnpm format`).
 5. Open a pull request with a clear description of the problem and solution.
 
@@ -37,7 +39,7 @@ pnpm dev:app   # frontend on :3000
 
 Use [Conventional Commits](https://www.conventionalcommits.org/) where practical:
 
-```
+```txt
 feat: add GitLab branch protection support
 fix: prevent duplicate project names within an org
 docs: clarify self-hosting env vars

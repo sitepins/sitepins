@@ -1,6 +1,5 @@
 import { toast } from "@/components/ui/toast";
-import { authClient } from "@/lib/auth/auth-client";
-import { GITHUB_APP_NAME, IS_DEMO, SCHEMA_FOLDER } from "@/lib/constant";
+import { IS_DEMO, SCHEMA_FOLDER } from "@/lib/constant";
 import { logger } from "@/lib/logger";
 import { checkMedia } from "@/lib/utils/check-media-file";
 import { parseContentJson } from "@/lib/utils/content-serializer";
@@ -31,12 +30,10 @@ import {
   toConflictResult,
 } from "../git/commit-conflict";
 import {
-  coAuthorOf,
-  CommitAuthor,
   createCommitTokenSession,
   prepareCommit,
-  resolveCommitAuthor,
-  resolveImpersonatePreference,
+  resolveAttributionTrailer,
+  TCommitIdentity,
 } from "../git/commit-session";
 import { githubApi } from "./github-api";
 import { githubContentApi } from "./github-content-api";
@@ -56,6 +53,25 @@ type GhCommitRef = {
 };
 
 type GhGitRef = { object?: { sha?: string } };
+
+type TGhUser = {
+  id?: number;
+  login?: string;
+  name?: string | null;
+  email?: string | null;
+};
+
+const githubAccount = (data: unknown): TCommitIdentity => {
+  const user = data as TGhUser;
+  const noreply = user.id ? `${user.id}+${user.login}` : user.login;
+  return {
+    name: user.name || user.login,
+    // GitHub returns null for users with a private email.
+    email:
+      user.email ||
+      (user.login ? `${noreply}@users.noreply.github.com` : undefined),
+  };
+};
 
 type GhBranch = {
   commit?: { sha?: string; commit?: { tree?: { sha?: string } } };
@@ -220,11 +236,8 @@ export const githubCommitApi = githubApi.injectEndpoints({
           storeConfig.token,
         );
 
-        const impersonate = await resolveImpersonatePreference(dispatch);
-
-        // Declared out here so the Contents API fallback in `catch` can reuse
-        // it; an empty author simply means no co-author trailer.
-        let author: CommitAuthor = {};
+        // Declared out here so the Contents API fallback in `catch` can reuse it.
+        let trailer: string | undefined;
 
         // Leading `filteredFiles` already on the branch, so the fallback skips them.
         let landedCount = 0;
@@ -353,22 +366,12 @@ export const githubCommitApi = githubApi.injectEndpoints({
           // STEP 2: Get user details and prepare auth info
           // ============================================================================
 
-          author = await resolveCommitAuthor({
+          trailer = await resolveAttributionTrailer({
+            dispatch,
             session,
             fetchUser: (token) =>
               fetchWithBQ({ endpoint: "GET /user", options: { token } }),
-            mapUser: (data) => {
-              const user = data as { login?: string; email?: string | null };
-              return {
-                name: user.login,
-                // GitHub returns null for users with a private email.
-                email:
-                  user.email ||
-                  (user.login
-                    ? `${user.login}@users.noreply.github.com`
-                    : undefined),
-              };
-            },
+            mapUser: githubAccount,
           });
 
           const auth_details = getGitAuthDetails("Github");
@@ -503,9 +506,7 @@ export const githubCommitApi = githubApi.injectEndpoints({
                 const commitMessage = createGitCommitMessage(
                   batchMessage,
                   description,
-                  coAuthorOf(author, { impersonate, session }).name,
-                  coAuthorOf(author, { impersonate, session }).email,
-                  "Github",
+                  trailer,
                 );
 
                 let commit: { sha: string; tree: { sha: string } };
@@ -723,9 +724,7 @@ export const githubCommitApi = githubApi.injectEndpoints({
               const commitMessage = createGitCommitMessage(
                 batchMessage,
                 description,
-                coAuthorOf(author, { impersonate, session }).name,
-                coAuthorOf(author, { impersonate, session }).email,
-                "Github",
+                trailer,
               );
 
               try {
@@ -1351,44 +1350,24 @@ export const githubCommitApi = githubApi.injectEndpoints({
           const { dispatch, getState } = api;
           const { config: storeConfig } = getState() as RootState;
 
-          const { config } = getState() as RootState;
-          // const token = await getSession();
-          const { data: auth } = await authClient.getSession();
-          const user = auth?.user;
-          const loginUserEmail = user?.email;
+          // Only the author lookup uses the user token; the rename itself runs as the app.
+          const trailer = await resolveAttributionTrailer({
+            dispatch,
+            session: createCommitTokenSession(
+              storeConfig.currentLoginUserToken,
+              storeConfig.token,
+            ),
+            fetchUser: (token) =>
+              fetchWithBQ({ endpoint: "GET /user", options: { token } }),
+            mapUser: githubAccount,
+          });
 
-          const userResult = storeConfig.currentLoginUserToken
-            ? await fetchWithBQ({
-                endpoint: "GET /user",
-                options: {
-                  token: storeConfig.currentLoginUserToken,
-                },
-              })
-            : {
-                data: {
-                  login: user?.full_name.replaceAll(" ", "").toLowerCase(),
-                  email: user?.email,
-                },
-              };
-
-          if (!userResult.data) {
-            throw new Error("Failed to fetch user details.");
-          }
-
-          const { login, email } = userResult.data as {
-            login: string;
-            email: string;
-          };
-
-          const auth_details = {
-            email: `${GITHUB_APP_NAME}[bot]@users.noreply.github.com`,
-            name: `${GITHUB_APP_NAME}[bot]`,
-          };
-
-          const userEmail =
-            email || loginUserEmail || `${login}@users.noreply.github.com`;
-          const coAuthor = `Co-authored-by: ${login} <${userEmail}>`;
-          const commitMessage = `${message} by Sitepins${description ? `\n\n${description}` : ""}\n\n${coAuthor} `;
+          const auth_details = getGitAuthDetails("Github");
+          const commitMessage = createGitCommitMessage(
+            `${message} by Sitepins`,
+            description,
+            trailer,
+          );
 
           // Step 1: Get the current branch details
           const branchResponse = await fetchWithBQ({
@@ -1492,14 +1471,14 @@ export const githubCommitApi = githubApi.injectEndpoints({
                 repo,
                 tree_sha: branch,
                 recursive: "1",
-                config: config,
+                config: storeConfig,
               },
               (draft: TreeCache) => {
                 const files = treeData.tree.filter(
                   (file: TTree) => !file.path?.startsWith(oldFolder),
                 );
                 draft.files = files;
-                draft.trees = pathToDir(files, config);
+                draft.trees = pathToDir(files, storeConfig);
                 return draft;
               },
             ),
@@ -1663,7 +1642,7 @@ export const githubCommitApi = githubApi.injectEndpoints({
     >({
       async queryFn(
         { owner, repo, sha, branch, token },
-        _api,
+        { dispatch, getState },
         _extraOptions,
         fetchWithBQ,
       ) {
@@ -1722,18 +1701,33 @@ export const githubCommitApi = githubApi.injectEndpoints({
           const parentTree = (parentCommit.data as GhGitCommit).tree?.sha;
 
           // Create revert commit
+          const { config: storeConfig } = getState() as RootState;
+          const trailer = await resolveAttributionTrailer({
+            dispatch,
+            session: createCommitTokenSession(
+              storeConfig.currentLoginUserToken,
+              storeConfig.token,
+            ),
+            fetchUser: (userToken) =>
+              fetchWithBQ({
+                endpoint: "GET /user",
+                options: { token: userToken },
+              }),
+            mapUser: githubAccount,
+          });
           const revertCommitMessage = `Revert "${commitMessage?.split("\n")[0] || "commit"}"`;
-          const auth_details = {
-            name: "Sitepins[bot]",
-            email: "sitepins[bot]@users.noreply.github.com",
-          };
+          const auth_details = getGitAuthDetails("Github");
 
           const revertCommitResponse = await fetchWithBQ({
             endpoint: "POST /repos/{owner}/{repo}/git/commits",
             options: {
               owner,
               repo,
-              message: revertCommitMessage,
+              message: createGitCommitMessage(
+                revertCommitMessage,
+                undefined,
+                trailer,
+              ),
               author: auth_details,
               committer: auth_details,
               tree: parentTree,

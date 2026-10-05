@@ -4,6 +4,7 @@ import {
   dedupeFiles,
   filterUploadableFiles,
   normalizeDeleteCommitMessage,
+  USER_TRAILER_KEY,
 } from "@/lib/utils/git-utils";
 import { userPreferenceApi } from "../user-preference/user-preference-api";
 
@@ -94,7 +95,7 @@ type Dispatcher = {
 };
 
 /**
- * Whether the signed-in user has opted out of being credited as co-author.
+ * Whether the signed-in user chose to act as the bot, which drops attribution.
  * Failures here must not fail the commit.
  */
 export const resolveImpersonatePreference = async (
@@ -113,13 +114,11 @@ export const resolveImpersonatePreference = async (
   }
 };
 
-export type CommitAuthor = { name?: string; email?: string };
+export type TCommitIdentity = { name?: string; email?: string };
 
-/**
- * Co-author details for the commit trailer. Prefers the provider's own view of
- * the signed-in user, falling back to the session when there is no usable
- * user token.
- */
+/** `name` is the CMS user's; `account` is the provider account behind the user token, when there is one. */
+export type TCommitAuthor = { name?: string; account?: TCommitIdentity };
+
 export const resolveCommitAuthor = async <T>({
   session,
   fetchUser,
@@ -128,39 +127,54 @@ export const resolveCommitAuthor = async <T>({
   session: CommitTokenSession;
   /** Provider call for the authenticated user; skipped without a user token. */
   fetchUser: (token: string | undefined) => MaybeFetchResult<T>;
-  mapUser: (data: T) => CommitAuthor;
-}): Promise<CommitAuthor> => {
-  const sessionUser = (await authClient.getSession())?.data?.user;
-  const sessionAuthor: CommitAuthor = {
-    name: sessionUser?.full_name,
-    email: sessionUser?.email,
-  };
+  mapUser: (data: T) => TCommitIdentity;
+}): Promise<TCommitAuthor> => {
+  const name = (await authClient.getSession())?.data?.user?.full_name;
 
-  if (!session.usingUserToken()) return sessionAuthor;
+  if (!session.usingUserToken()) return { name };
 
-  const result = await session.run(fetchUser);
-  if (!result.data) {
-    // The escalation already dropped to the app identity; the session name is
-    // still the best attribution available.
-    if (!session.usingUserToken()) return sessionAuthor;
-    throw new Error("Failed to fetch user details.");
+  try {
+    const result = await session.run(fetchUser);
+    if (result.data) return { name, account: mapUser(result.data) };
+    if (session.usingUserToken()) {
+      logger.warn("Failed to fetch commit author", result.error);
+    }
+  } catch (error) {
+    logger.warn("Failed to fetch commit author", error);
   }
-
-  const author = mapUser(result.data);
-  return {
-    name: author.name || sessionAuthor.name,
-    email: author.email || sessionAuthor.email,
-  };
+  return { name };
 };
 
-/** Co-author trailer arguments, or undefined when attribution is suppressed. */
-export const coAuthorOf = (
-  author: CommitAuthor,
-  {
-    impersonate,
-    session,
-  }: { impersonate: boolean; session: CommitTokenSession },
-): CommitAuthor => {
-  if (impersonate || !session.usingUserToken()) return {};
-  return author;
+const trailerValue = (value: string) =>
+  value
+    .replace(/[\r\n<>]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+/** The CMS email is never published; only a linked provider account gets a Co-authored-by. */
+export const attributionTrailer = (
+  author: TCommitAuthor,
+): string | undefined => {
+  const coName = author.account?.name && trailerValue(author.account.name);
+  const coEmail = author.account?.email && trailerValue(author.account.email);
+  if (coName && coEmail) return `Co-authored-by: ${coName} <${coEmail}>`;
+
+  const name = trailerValue(author.name || author.account?.name || "");
+  return name ? `${USER_TRAILER_KEY}: ${name}` : undefined;
+};
+
+export const resolveAttributionTrailer = async <T>({
+  dispatch,
+  session,
+  fetchUser,
+  mapUser,
+}: {
+  dispatch: Dispatcher;
+  session: CommitTokenSession;
+  fetchUser: (token: string | undefined) => MaybeFetchResult<T>;
+  mapUser: (data: T) => TCommitIdentity;
+}): Promise<string | undefined> => {
+  if (await resolveImpersonatePreference(dispatch)) return undefined;
+  const author = await resolveCommitAuthor({ session, fetchUser, mapUser });
+  return attributionTrailer(author);
 };

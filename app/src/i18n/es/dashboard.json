@@ -6,7 +6,7 @@
         "title": "Autoría compartida en Git",
         "description": "Elige qué identidad usar para las acciones del repositorio.",
         "as_you": "Actuar como tú",
-        "as_you_desc": "El bot usará tu identidad personal para commits, ramas y pull requests, dándote crédito completo por los cambios.",
+        "as_you_desc": "El bot crea los commits y te acredita en el mensaje: como coautor si iniciaste sesión con tu cuenta de Git y, si no, por tu nombre. Tu correo de Sitepins nunca se publica.",
         "as_you_fallback": "Vuelve automáticamente al bot si los permisos personales son insuficientes para asegurar que las tareas se completen.",
         "as_bot": "Actuar como el bot",
         "as_bot_desc": "Todas las acciones del repositorio se atribuirán al bot del sistema. Esto asegura un registro de auditoría consistente y es la configuración recomendada para flujos de trabajo automatizados.",

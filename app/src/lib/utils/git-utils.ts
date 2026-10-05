@@ -1,5 +1,5 @@
 import { MdxSnippet } from "@/editor/utils/plate-types";
-import { GIT_COMMIT_EMAIL_DOMAIN } from "@/lib/brand";
+import { BRAND_NAME, GIT_COMMIT_EMAIL_DOMAIN } from "@/lib/brand";
 import { logger } from "@/lib/logger";
 import { isGitLabProvider, TGitProvider } from "@/lib/utils/provider-checker";
 import path from "path";
@@ -242,30 +242,18 @@ export function parseSnippetFile(
   }
 }
 
+/** Trailer key crediting a CMS user by name; trailer keys can't contain spaces. */
+export const USER_TRAILER_KEY = `${BRAND_NAME.replace(/[^A-Za-z0-9]+/g, "-")}-User`;
+
 /**
  * Standardizes commit message with attribution
  */
 export function createGitCommitMessage(
   message: string,
-  description: string | undefined,
-  authorName?: string,
-  authorEmail?: string,
-  provider: TGitProvider = "Github",
+  description?: string,
+  trailer?: string,
 ): string {
-  const parts = [message];
-
-  if (description) {
-    parts.push(description);
-  }
-
-  if (authorName) {
-    const email =
-      authorEmail ||
-      `${authorName.toLowerCase().replace(/\s+/g, "")}@users.noreply.${provider.toLowerCase()}.com`;
-    parts.push(`Co-authored-by: ${authorName} <${email}>`);
-  }
-
-  return parts.filter(Boolean).join("\n\n");
+  return [message, description, trailer].filter(Boolean).join("\n\n");
 }
 
 /**

@@ -6,7 +6,7 @@
         "title": "Penulisan Bersama Git",
         "description": "Pilih identitas mana yang akan digunakan untuk tindakan repositori.",
         "as_you": "Bertindak sebagai Anda",
-        "as_you_desc": "Bot akan menggunakan identitas pribadi Anda untuk komitmen, cabang, dan permintaan penarikan, memberi Anda kredit penuh atas perubahan tersebut.",
+        "as_you_desc": "Commit dibuat oleh bot dan mencantumkan Anda di pesannya: sebagai rekan penulis jika Anda masuk dengan akun Git, jika tidak dengan nama Anda. Email Sitepins Anda tidak pernah dipublikasikan.",
         "as_you_fallback": "Secara otomatis kembali ke bot jika izin pribadi tidak cukup untuk memastikan tugas diselesaikan.",
         "as_bot": "Bertindak sebagai Bot",
         "as_bot_desc": "Semua tindakan repositori akan dikaitkan dengan bot sistem. Hal ini memastikan jejak audit yang konsisten dan merupakan pengaturan yang direkomendasikan untuk alur kerja otomatis.",

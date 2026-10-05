@@ -181,22 +181,18 @@ describe("createGitCommitMessage", () => {
 
   it("separates description and trailer with blank lines", () => {
     expect(
-      createGitCommitMessage("Update", "Longer body", "Ada Lovelace"),
-    ).toBe(
-      "Update\n\nLonger body\n\nCo-authored-by: Ada Lovelace <adalovelace@users.noreply.github.com>",
-    );
+      createGitCommitMessage(
+        "Update",
+        "Longer body",
+        "Co-authored-by: Ada <ada@example.com>",
+      ),
+    ).toBe("Update\n\nLonger body\n\nCo-authored-by: Ada <ada@example.com>");
   });
 
-  it("prefers an explicit author email", () => {
+  it("keeps the trailer last when there is no description", () => {
     expect(
-      createGitCommitMessage("Update", undefined, "Ada", "ada@example.com"),
-    ).toContain("Co-authored-by: Ada <ada@example.com>");
-  });
-
-  it("derives the noreply domain from the provider", () => {
-    expect(
-      createGitCommitMessage("Update", undefined, "Ada", undefined, "Gitlab"),
-    ).toContain("@users.noreply.gitlab.com");
+      createGitCommitMessage("Update", undefined, "Sitepins-User: Ada"),
+    ).toBe("Update\n\nSitepins-User: Ada");
   });
 });
 

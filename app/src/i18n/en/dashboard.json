@@ -6,7 +6,7 @@
         "title": "Git Co-authoring",
         "description": "Choose which identity to use for repository actions.",
         "as_you": "Acting as You",
-        "as_you_desc": "The bot will use your personal identity for commits, branches, and pull requests, giving you full credit for the changes.",
+        "as_you_desc": "Commits are made by the bot and credit you in the message: as a co-author when you're signed in with your Git account, otherwise by name. Your Sitepins email is never published.",
         "as_you_fallback": "Automatically falls back to the bot if personal permissions are insufficient to ensure tasks are completed.",
         "as_bot": "Acting as the Bot",
         "as_bot_desc": "All repository actions will be attributed to the system bot. This ensures a consistent audit trail and is the recommended setting for automated workflows.",

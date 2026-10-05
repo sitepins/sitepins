@@ -25,11 +25,10 @@ import {
   toConflictResult,
 } from "../git/commit-conflict";
 import {
-  coAuthorOf,
+  TCommitIdentity,
   createCommitTokenSession,
   prepareCommit,
-  resolveCommitAuthor,
-  resolveImpersonatePreference,
+  resolveAttributionTrailer,
 } from "../git/commit-session";
 import { getGitProviderAdapter } from "../git/provider-adapter";
 import { encodeProjectPath, gitlabApi } from "./gitlab-api";
@@ -43,6 +42,21 @@ import {
   TGitLabFile,
   TGitLabPipeline,
 } from "./gitlab-type";
+
+type TGlUser = {
+  name?: string;
+  username?: string;
+  email?: string;
+  commit_email?: string;
+};
+
+const gitlabAccount = (data: unknown): TCommitIdentity => {
+  const user = data as TGlUser;
+  return {
+    name: user.name || user.username,
+    email: user.commit_email || user.email,
+  };
+};
 
 /**
  * Convert file operations to GitLab commit actions
@@ -169,24 +183,16 @@ export const gitlabCommitApi = gitlabApi.injectEndpoints({
           storeConfig.token,
         );
 
-        const impersonate = await resolveImpersonatePreference(dispatch);
-
         try {
           if (IS_DEMO) {
             return { data: null };
           }
 
-          const author = await resolveCommitAuthor({
+          const trailer = await resolveAttributionTrailer({
+            dispatch,
             session,
             fetchUser: (token) => fetchWithBQ({ endpoint: "/user", token }),
-            mapUser: (data) => {
-              const user = data as {
-                name?: string;
-                username?: string;
-                email?: string;
-              };
-              return { name: user.name || user.username, email: user.email };
-            },
+            mapUser: gitlabAccount,
           });
 
           const auth_details = getGitAuthDetails("Gitlab");
@@ -263,11 +269,8 @@ export const gitlabCommitApi = gitlabApi.injectEndpoints({
             };
           });
 
-          // The message is rebuilt per attempt: once the retry drops to the
-          // app identity, `coAuthorOf` stops emitting the co-author trailer.
-          const commitResult = await session.run((token) => {
-            const coAuthor = coAuthorOf(author, { impersonate, session });
-            return fetchWithBQ({
+          const commitResult = await session.run((token) =>
+            fetchWithBQ({
               endpoint: `/projects/${encodeProjectPath(String(id))}/repository/commits`,
               method: "POST",
               body: {
@@ -275,17 +278,15 @@ export const gitlabCommitApi = gitlabApi.injectEndpoints({
                 commit_message: createGitCommitMessage(
                   `${effectiveMessage} by Sitepins`,
                   description,
-                  coAuthor.name,
-                  coAuthor.email,
-                  "Gitlab",
+                  trailer,
                 ),
                 author_email: auth_details.email,
                 author_name: auth_details.name,
                 actions,
                 ...(token && { token }),
               },
-            });
-          });
+            }),
+          );
 
           if (!commitResult.data) {
             const error = commitResult.error as
@@ -484,20 +485,12 @@ export const gitlabCommitApi = gitlabApi.injectEndpoints({
           storeConfig.token,
         );
 
-        const impersonate = await resolveImpersonatePreference(dispatch);
-
         try {
-          const author = await resolveCommitAuthor({
+          const trailer = await resolveAttributionTrailer({
+            dispatch,
             session,
             fetchUser: (token) => fetchWithBQ({ endpoint: "/user", token }),
-            mapUser: (data) => {
-              const user = data as {
-                name?: string;
-                username?: string;
-                email?: string;
-              };
-              return { name: user.name || user.username, email: user.email };
-            },
+            mapUser: gitlabAccount,
           });
 
           const auth_details = getGitAuthDetails("Gitlab");
@@ -533,11 +526,8 @@ export const gitlabCommitApi = gitlabApi.injectEndpoints({
             previous_path: file.path,
           }));
 
-          // Rebuilt per attempt: once the retry drops to the app identity,
-          // `coAuthorOf` stops emitting the co-author trailer.
-          const commitResult = await session.run((token) => {
-            const coAuthor = coAuthorOf(author, { impersonate, session });
-            return fetchWithBQ({
+          const commitResult = await session.run((token) =>
+            fetchWithBQ({
               endpoint: `/projects/${encodeProjectPath(String(id))}/repository/commits`,
               method: "POST",
               body: {
@@ -545,17 +535,15 @@ export const gitlabCommitApi = gitlabApi.injectEndpoints({
                 commit_message: createGitCommitMessage(
                   `${message} by Sitepins`,
                   description,
-                  coAuthor.name,
-                  coAuthor.email,
-                  "Gitlab",
+                  trailer,
                 ),
                 author_email: auth_details.email,
                 author_name: auth_details.name,
                 actions,
                 ...(token && { token }),
               },
-            });
-          });
+            }),
+          );
 
           if (!commitResult.data) {
             throw new Error("Failed to rename folder in GitLab.");
@@ -630,7 +618,7 @@ export const gitlabCommitApi = gitlabApi.injectEndpoints({
     >({
       async queryFn(
         { projectId, sha, branch, token },
-        _api,
+        { dispatch, getState },
         _extraOptions,
         fetchWithBQ,
       ) {
@@ -829,13 +817,23 @@ export const gitlabCommitApi = gitlabApi.injectEndpoints({
             };
           }
 
+          const { config: storeConfig } = getState() as RootState;
+          const trailer = await resolveAttributionTrailer({
+            dispatch,
+            session: createCommitTokenSession(
+              storeConfig.currentLoginUserToken,
+              storeConfig.token,
+            ),
+            fetchUser: (userToken) =>
+              fetchWithBQ({ endpoint: "/user", token: userToken }),
+            mapUser: gitlabAccount,
+          });
+
           // Create commit with only changed files
           const commitMessage = createGitCommitMessage(
             `Reset branch to commit by Sitepins`,
             `Reset to ${sha.substring(0, 7)}: ${commit.message}`,
-            undefined,
-            undefined,
-            "Gitlab",
+            trailer,
           );
 
           const commitRes = await fetchWithBQ({

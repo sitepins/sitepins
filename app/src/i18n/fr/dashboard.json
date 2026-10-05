@@ -6,7 +6,7 @@
         "title": "Co-auteur Git",
         "description": "Choisissez l'identité à utiliser pour les actions sur le dépôt.",
         "as_you": "Agir en tant que vous",
-        "as_you_desc": "Le bot utilisera votre identité personnelle pour les commits, les branches et les pull requests, vous accordant tout le crédit des modifications.",
+        "as_you_desc": "Les commits sont créés par le bot et vous créditent dans le message : comme co-auteur si vous êtes connecté avec votre compte Git, sinon par votre nom. Votre e-mail Sitepins n'est jamais publié.",
         "as_you_fallback": "Revient automatiquement au bot si les autorisations personnelles sont insuffisantes pour s'assurer que les tâches sont accomplies.",
         "as_bot": "Agir en tant que le bot",
         "as_bot_desc": "Toutes les actions sur le dépôt seront attribuées au bot système. Cela garantit une piste d'audit cohérente et est le paramètre recommandé pour les workflows automatisés.",

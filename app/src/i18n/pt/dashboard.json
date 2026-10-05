@@ -6,7 +6,7 @@
         "title": "Co-autoria no Git",
         "description": "Escolha qual identidade usar para ações no repositório.",
         "as_you": "Agindo como Você",
-        "as_you_desc": "O bot usará sua identidade pessoal para commits, branches e pull requests, dando a você todo o crédito pelas alterações.",
+        "as_you_desc": "Os commits são feitos pelo bot e creditam você na mensagem: como coautor se você entrou com sua conta Git, caso contrário pelo seu nome. Seu e-mail do Sitepins nunca é publicado.",
         "as_you_fallback": "Automaticamente retorna para o bot se as permissões pessoais forem insuficientes para garantir que as tarefas sejam concluídas.",
         "as_bot": "Agindo como o Bot",
         "as_bot_desc": "Todas as ações no repositório serão atribuídas ao bot do sistema. Isso garante uma trilha de auditoria consistente e é a configuração recomendada para fluxos de trabalho automatizados.",

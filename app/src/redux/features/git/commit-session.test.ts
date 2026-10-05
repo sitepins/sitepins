@@ -1,10 +1,18 @@
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
-  coAuthorOf,
+  attributionTrailer,
   createCommitTokenSession,
   isPermissionError,
   prepareCommit,
+  resolveAttributionTrailer,
+  resolveCommitAuthor,
 } from "./commit-session";
+
+const getSessionMock = vi.hoisted(() => vi.fn());
+
+vi.mock("@/lib/auth/auth-client", () => ({
+  authClient: { getSession: getSessionMock },
+}));
 
 describe("prepareCommit", () => {
   it("returns null when every file is filtered out", () => {
@@ -133,23 +141,141 @@ describe("createCommitTokenSession", () => {
   });
 });
 
-describe("coAuthorOf", () => {
-  const author = { name: "Ada", email: "ada@example.com" };
+describe("attributionTrailer", () => {
+  const account = { name: "ada", email: "1+ada@users.noreply.github.com" };
 
-  it("credits the user when attribution is on", () => {
-    const session = createCommitTokenSession("user-token", "app-token");
-    expect(coAuthorOf(author, { impersonate: false, session })).toEqual(author);
+  it("co-authors the linked provider account", () => {
+    expect(attributionTrailer({ name: "Ada Lovelace", account })).toBe(
+      "Co-authored-by: ada <1+ada@users.noreply.github.com>",
+    );
   });
 
-  it("suppresses the trailer when the user opted into impersonation", () => {
-    const session = createCommitTokenSession("user-token", "app-token");
-    expect(coAuthorOf(author, { impersonate: true, session })).toEqual({});
+  // sitepins/sitepins#38: editors without a Git account were invisible.
+  it("credits a user without a Git account by name only", () => {
+    expect(attributionTrailer({ name: "Ada Lovelace" })).toBe(
+      "Sitepins-User: Ada Lovelace",
+    );
   });
 
-  it("suppresses the trailer once the commit fell back to the app identity", async () => {
-    const session = createCommitTokenSession("user-token", "app-token");
-    await session.run(async () => ({ error: { status: 403 } }));
+  it("falls back to the CMS name when the account has no email", () => {
+    expect(
+      attributionTrailer({ name: "Ada Lovelace", account: { name: "ada" } }),
+    ).toBe("Sitepins-User: Ada Lovelace");
+  });
 
-    expect(coAuthorOf(author, { impersonate: false, session })).toEqual({});
+  it("falls back to the account name when the CMS user has none", () => {
+    expect(attributionTrailer({ account: { name: "ada" } })).toBe(
+      "Sitepins-User: ada",
+    );
+  });
+
+  it("returns nothing when there is no one to credit", () => {
+    expect(attributionTrailer({})).toBeUndefined();
+  });
+
+  it("strips characters that would forge another trailer", () => {
+    expect(
+      attributionTrailer({ name: "Ada\nCo-authored-by: Eve <eve@x>" }),
+    ).toBe("Sitepins-User: Ada Co-authored-by: Eve eve@x");
+  });
+});
+
+describe("resolveCommitAuthor", () => {
+  beforeEach(() => {
+    getSessionMock.mockResolvedValue({
+      data: {
+        user: {
+          user_id: "u1",
+          full_name: "Ada Lovelace",
+          email: "ada@cms.example",
+        },
+      },
+    });
+  });
+
+  const mapUser = (data: { login: string; email: string }) => ({
+    name: data.login,
+    email: data.email,
+  });
+
+  it("uses only the CMS name without a user token", async () => {
+    const fetchUser = vi.fn();
+    const author = await resolveCommitAuthor({
+      session: createCommitTokenSession(undefined, "app-token"),
+      fetchUser,
+      mapUser,
+    });
+
+    expect(author).toEqual({ name: "Ada Lovelace" });
+    expect(fetchUser).not.toHaveBeenCalled();
+  });
+
+  it("adds the provider account behind the user token", async () => {
+    const author = await resolveCommitAuthor({
+      session: createCommitTokenSession("user-token", "app-token"),
+      fetchUser: async () => ({
+        data: { login: "ada", email: "ada@users.noreply.github.com" },
+      }),
+      mapUser,
+    });
+
+    expect(author.account).toEqual({
+      name: "ada",
+      email: "ada@users.noreply.github.com",
+    });
+  });
+
+  it("keeps the CMS name when the lookup falls back to the app identity", async () => {
+    const author = await resolveCommitAuthor({
+      session: createCommitTokenSession("user-token", "app-token"),
+      fetchUser: vi.fn().mockResolvedValue({ error: { status: 403 } }),
+      mapUser,
+    });
+
+    expect(author).toEqual({ name: "Ada Lovelace" });
+  });
+
+  it("does not fail the commit when the lookup errors", async () => {
+    const author = await resolveCommitAuthor({
+      session: createCommitTokenSession("user-token", "app-token"),
+      fetchUser: async () => ({ error: { status: 500 } }),
+      mapUser,
+    });
+
+    expect(author).toEqual({ name: "Ada Lovelace" });
+  });
+});
+
+describe("resolveAttributionTrailer", () => {
+  beforeEach(() => {
+    getSessionMock.mockResolvedValue({
+      data: {
+        user: {
+          user_id: "u1",
+          full_name: "Ada Lovelace",
+          email: "ada@cms.example",
+        },
+      },
+    });
+  });
+
+  const resolve = (impersonate: boolean, fetchUser = vi.fn()) =>
+    resolveAttributionTrailer({
+      dispatch: vi.fn(() => ({ data: { impersonate } })),
+      session: createCommitTokenSession(undefined, "app-token"),
+      fetchUser,
+      mapUser: () => ({}),
+    });
+
+  it("credits nobody for users acting as the bot", async () => {
+    const fetchUser = vi.fn();
+    expect(await resolve(true, fetchUser)).toBeUndefined();
+    expect(fetchUser).not.toHaveBeenCalled();
+  });
+
+  it("never publishes the CMS email", async () => {
+    const trailer = await resolve(false);
+    expect(trailer).toBe("Sitepins-User: Ada Lovelace");
+    expect(trailer).not.toContain("ada@cms.example");
   });
 });

@@ -441,7 +441,8 @@
       "preview_no_diff": "No content differences.",
       "preview_truncated": "...preview truncated",
       "cancel": "Keep Editing",
-      "overwrite": "Overwrite Anyway"
+      "overwrite": "Overwrite Anyway",
+      "collab_outdated": "Others are editing this file from an older version. You're seeing their unpublished changes, and publishing will ask before replacing newer changes in the repository."
     }
   }
 }

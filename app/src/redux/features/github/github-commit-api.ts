@@ -10,6 +10,7 @@ import {
   delay,
   fromBase64,
   getGitAuthDetails,
+  gitBlobSha,
   isTransientNetworkError,
   runWithConcurrency,
   toBase64,
@@ -1164,6 +1165,7 @@ export const githubCommitApi = githubApi.injectEndpoints({
                     {
                       data: file.content,
                       content: file.content,
+                      sha: gitBlobSha(file.content),
                     },
                   ),
                 );
@@ -1187,6 +1189,8 @@ export const githubCommitApi = githubApi.injectEndpoints({
                       content: parsedContent.content,
                       fmType: fm,
                       startWith,
+                      // The editor reads its conflict-guard base from here.
+                      sha: gitBlobSha(file.content),
                     },
                   ),
                 );

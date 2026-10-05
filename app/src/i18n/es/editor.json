@@ -441,7 +441,8 @@
       "preview_no_diff": "No hay diferencias de contenido.",
       "preview_truncated": "...vista previa truncada",
       "cancel": "Seguir editando",
-      "overwrite": "Sobrescribir de todos modos"
+      "overwrite": "Sobrescribir de todos modos",
+      "collab_outdated": "Otras personas están editando este archivo desde una versión anterior. Estás viendo sus cambios sin publicar y, al publicar, se te pedirá confirmación antes de reemplazar cambios más recientes del repositorio."
     }
   }
 }

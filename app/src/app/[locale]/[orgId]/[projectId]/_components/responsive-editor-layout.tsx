@@ -101,7 +101,12 @@ export default function ResponsiveEditorLayout({
               showDuplicate={isConfigRoute}
             />
           </TabsContent>
-          <TabsContent value="content" className="h-full min-h-0 flex-1">
+          {/* Mounted while hidden: the rich editor holds the collaboration room. */}
+          <TabsContent
+            value="content"
+            keepMounted
+            className="h-full min-h-0 flex-1"
+          >
             <ContentEditor
               markdownContent={markdownContent}
               onUpdateMarkdown={onUpdateMarkdown}

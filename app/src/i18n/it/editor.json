@@ -441,7 +441,8 @@
       "preview_no_diff": "Nessuna differenza nel contenuto.",
       "preview_truncated": "...anteprima troncata",
       "cancel": "Continua a modificare",
-      "overwrite": "Sovrascrivi comunque"
+      "overwrite": "Sovrascrivi comunque",
+      "collab_outdated": "Altre persone stanno modificando questo file da una versione precedente. Stai vedendo le loro modifiche non pubblicate e, alla pubblicazione, ti verrà chiesto prima di sostituire modifiche più recenti nel repository."
     }
   }
 }

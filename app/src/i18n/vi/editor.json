@@ -441,7 +441,8 @@
       "preview_no_diff": "Không có khác biệt về nội dung.",
       "preview_truncated": "...bản xem trước đã bị cắt bớt",
       "cancel": "Tiếp tục chỉnh sửa",
-      "overwrite": "Vẫn ghi đè"
+      "overwrite": "Vẫn ghi đè",
+      "collab_outdated": "Người khác đang chỉnh sửa tệp này từ một phiên bản cũ hơn. Bạn đang thấy các thay đổi chưa xuất bản của họ, và khi xuất bản bạn sẽ được hỏi trước khi thay thế các thay đổi mới hơn trong kho lưu trữ."
     }
   }
 }

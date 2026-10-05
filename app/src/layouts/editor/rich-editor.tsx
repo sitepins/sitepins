@@ -1,4 +1,5 @@
 import { toast } from "@/components/ui/toast";
+import { useCollabBase } from "@/contexts/collab-base-context";
 import { useDebouncedCallback } from "@/hooks/use-debounce-callback";
 import useMounted from "@/hooks/use-mounted";
 import { authClient } from "@/lib/auth/auth-client";
@@ -6,7 +7,6 @@ import { logger } from "@/lib/logger";
 import { setCursorOffset, setRawMode } from "@/redux/features/config/slice";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { MarkdownPlugin } from "@platejs/markdown";
-import { YjsPlugin } from "@platejs/yjs/react";
 import { useTranslations } from "next-intl";
 import { usePathname } from "next/navigation";
 import { KEYS, TElement } from "platejs";
@@ -15,6 +15,7 @@ import { useEffect, useRef } from "react";
 import { Editor, EditorContainer } from "./plate-ui/editor";
 import { EditorKit, MyEditor } from "./plugins/editor-kit";
 import { YjsKit } from "./plugins/yjs.kit";
+import { joinCollabRoom } from "./utils/join-collab-room";
 import { RichTextType } from "./utils/plate-types";
 
 const CURSOR_MARKER = "\uE000"; // Private Use Area character as a marker
@@ -69,6 +70,12 @@ export const RichEditor = ({
   const selectionTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const scrollTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isAliveRef = useRef(true);
+  const collab = useCollabBase();
+  const isRawModeRef = useRef(isRawMode);
+
+  useEffect(() => {
+    isRawModeRef.current = isRawMode;
+  }, [isRawMode]);
 
   useEffect(() => {
     isAliveRef.current = true;
@@ -131,15 +138,18 @@ export const RichEditor = ({
       .markdown.deserialize(markdownContent, { withoutMdx: true });
 
     // Initialize Yjs connection, sync document, and set initial editor state
-    editor.getApi(YjsPlugin).yjs.init({
-      id: documentId, // Unique identifier for the Yjs document
-      value: initialValue, // Initial content if the Y.Doc is empty
+    const { ready, leave } = joinCollabRoom(editor, {
+      id: documentId,
+      value: initialValue,
+      collab,
+      isRawMode: () => isRawModeRef.current,
     });
+    ready.catch((error) =>
+      logger.error("Failed to join the collaborative room", error),
+    );
 
     // Clean up: Destroy connection when component unmounts
-    return () => {
-      editor.getApi(YjsPlugin).yjs.destroy();
-    };
+    return leave;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [editor, mounted, pathname]);
 

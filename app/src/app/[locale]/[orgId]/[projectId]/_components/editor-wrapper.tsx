@@ -2,7 +2,9 @@
 
 import { toast } from "@/components/ui/toast";
 import { revertToOriginal } from "@/editor/utils/plate-utils";
+import { CollabBaseContext } from "@/contexts/collab-base-context";
 import { useCommitLogic } from "@/hooks/use-commit-logic";
+import { useFrontmatterSync } from "@/hooks/use-frontmatter-sync";
 import { useIsChanged } from "@/hooks/use-is-changed";
 import { useFeatureAccess } from "@/hooks/use-feature-access";
 import { useSandboxPreview } from "@/hooks/use-sandbox-preview";
@@ -201,9 +203,12 @@ const EditorWrapper: React.FC<EditorWrapperProps> = memo(
       pending,
       getProcessedStateData,
       getBaseSha,
+      collabBase,
       publishConflict,
       resolvePublishConflict,
     } = commitLogic;
+
+    useFrontmatterSync(collabBase, state, setState, setBaseline);
 
     const getUncommittedFile = useCallback(() => {
       const formattedContent = contentFormatter({
@@ -372,7 +377,7 @@ const EditorWrapper: React.FC<EditorWrapperProps> = memo(
     const isDraft = isDraftRef.current;
 
     return (
-      <>
+      <CollabBaseContext.Provider value={collabBase}>
         <PreventNavigation isDirty={hasChanges} resetData={handleReset} />
 
         <div>
@@ -448,7 +453,7 @@ const EditorWrapper: React.FC<EditorWrapperProps> = memo(
           onOverwrite={() => resolvePublishConflict("overwrite")}
           onCancel={() => resolvePublishConflict("cancel")}
         />
-      </>
+      </CollabBaseContext.Provider>
     );
   },
 );

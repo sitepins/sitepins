@@ -54,6 +54,7 @@ type QueryOptions = {
 
 type ContentOptions = QueryOptions & {
   parser?: boolean;
+  refetchOnMountOrArgChange?: boolean;
 };
 
 type TreeOptions = QueryOptions & TreeQueryOptions;
@@ -208,11 +209,17 @@ export function useGitProvider() {
     const contentOptions = { parser: options?.parser ?? false };
     const ghQuery = useGetGitHubContentQuery(
       gh.contentArgs(config, path, contentOptions) as never,
-      { skip: isGitLab || isDisabled || options?.skip },
+      {
+        skip: isGitLab || isDisabled || options?.skip,
+        refetchOnMountOrArgChange: options?.refetchOnMountOrArgChange,
+      },
     );
     const glQuery = useGetGitLabContentQuery(
       gl.contentArgs(config, path, contentOptions) as never,
-      { skip: !isGitLab || isDisabled || options?.skip },
+      {
+        skip: !isGitLab || isDisabled || options?.skip,
+        refetchOnMountOrArgChange: options?.refetchOnMountOrArgChange,
+      },
     );
     return isGitLab ? glQuery : ghQuery;
   };

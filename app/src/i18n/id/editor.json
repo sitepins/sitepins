@@ -441,7 +441,8 @@
       "preview_no_diff": "Tidak ada perbedaan konten.",
       "preview_truncated": "...pratinjau dipotong",
       "cancel": "Lanjutkan Mengedit",
-      "overwrite": "Tetap Timpa"
+      "overwrite": "Tetap Timpa",
+      "collab_outdated": "Orang lain sedang mengedit file ini dari versi yang lebih lama. Anda melihat perubahan mereka yang belum dipublikasikan, dan saat memublikasikan Anda akan ditanya sebelum menimpa perubahan yang lebih baru di repositori."
     }
   }
 }

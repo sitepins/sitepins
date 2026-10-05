@@ -441,7 +441,8 @@
       "preview_no_diff": "内容没有差异。",
       "preview_truncated": "...预览已截断",
       "cancel": "继续编辑",
-      "overwrite": "仍然覆盖"
+      "overwrite": "仍然覆盖",
+      "collab_outdated": "其他人正在基于旧版本编辑此文件。你看到的是他们尚未发布的更改，发布时会在替换仓库中较新的更改前征求你的确认。"
     }
   }
 }

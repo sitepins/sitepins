@@ -5,11 +5,7 @@ import {
   type CursorOverlayData,
   useRemoteCursorOverlayPositions,
 } from "@slate-yjs/react";
-import {
-  useEditorContainerRef,
-  usePluginOption,
-  useValueVersion,
-} from "platejs/react";
+import { usePluginOption, useValueVersion } from "platejs/react";
 import * as React from "react";
 
 export function RemoteCursorOverlay() {
@@ -23,40 +19,35 @@ export function RemoteCursorOverlay() {
 }
 
 function RemoteCursorOverlayContent() {
-  const containerRef = useEditorContainerRef();
   const valueVersion = useValueVersion();
+  // Carets are laid out in Plate's inner wrapper, not the padded editor
+  // container, so measure against whatever element actually positions them.
+  const [layoutElement, setLayoutElement] =
+    React.useState<HTMLDivElement | null>(null);
+  const anchorRef = React.useCallback((node: HTMLDivElement | null) => {
+    setLayoutElement((node?.offsetParent as HTMLDivElement | null) ?? null);
+  }, []);
+  // The hook skips measuring while `current` is null.
+  const layoutRef = React.useMemo(
+    () => ({ current: layoutElement }) as React.RefObject<HTMLDivElement>,
+    [layoutElement],
+  );
   const [cursors, refresh] = useRemoteCursorOverlayPositions<CursorData>({
-    containerRef: containerRef as React.RefObject<HTMLDivElement>,
+    containerRef: layoutRef,
   });
-  // eslint-disable-next-line react-hooks/refs
-  const scrollTop = containerRef.current?.scrollTop ?? 0;
 
   React.useEffect(() => {
     refresh();
   }, [refresh, valueVersion]);
 
-  const normalizedCursors = React.useMemo(
-    () =>
-      // eslint-disable-next-line react-hooks/refs
-      cursors.map((cursor) => ({
-        ...cursor,
-        caretPosition: cursor.caretPosition
-          ? {
-              ...cursor.caretPosition,
-              top: cursor.caretPosition.top + scrollTop,
-            }
-          : null,
-        selectionRects: cursor.selectionRects.map((position) => ({
-          ...position,
-          top: position.top + scrollTop,
-        })),
-      })),
-    [cursors, scrollTop],
-  );
-
   return (
     <>
-      {normalizedCursors.map((cursor) => (
+      <div
+        ref={anchorRef}
+        aria-hidden
+        className="pointer-events-none absolute"
+      />
+      {cursors.map((cursor) => (
         <RemoteSelection key={cursor.clientId} {...cursor} />
       ))}
     </>

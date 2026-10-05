@@ -441,7 +441,8 @@
       "preview_no_diff": "Keine inhaltlichen Unterschiede.",
       "preview_truncated": "...Vorschau gekürzt",
       "cancel": "Weiter bearbeiten",
-      "overwrite": "Trotzdem überschreiben"
+      "overwrite": "Trotzdem überschreiben",
+      "collab_outdated": "Andere bearbeiten diese Datei auf Basis einer älteren Version. Du siehst ihre unveröffentlichten Änderungen, und vor dem Ersetzen neuerer Änderungen im Repository wirst du beim Veröffentlichen gefragt."
     }
   }
 }

@@ -1,4 +1,5 @@
 import { toast } from "@/components/ui/toast";
+import { createCollabBase } from "@/contexts/collab-base-context";
 import { MdxSnippet } from "@/editor/utils/plate-types";
 import { revertToOriginal } from "@/editor/utils/plate-utils";
 import { useAddLog } from "@/hooks/use-add-log";
@@ -6,13 +7,13 @@ import { useGitProvider } from "@/hooks/use-git-provider";
 import { useImages } from "@/hooks/use-images";
 import { authClient } from "@/lib/auth/auth-client";
 import { contentFormatter, format } from "@/lib/utils/content-serializer";
-import { gitBlobSha } from "@/lib/utils/git-utils";
 import {
   arrayValue,
   isWrappedValue,
   recordValue,
   unwrapValue,
 } from "@/lib/utils/frontmatter-value";
+import { gitBlobSha } from "@/lib/utils/git-utils";
 import { getLogType } from "@/lib/utils/project-log-type-detector";
 import { selectConfig } from "@/redux/features/config/slice";
 import { isCommitConflict } from "@/redux/features/git/commit-conflict";
@@ -200,6 +201,7 @@ export function useCommitLogic({
   const tEditor = useTranslations("editor.commit");
   const tFeedback = useTranslations("common.feedback");
   const tCommon = useTranslations("common");
+  const tConflict = useTranslations("editor.publish_conflict");
 
   const { data: auth } = authClient.useSession();
   const params = useParams();
@@ -215,8 +217,10 @@ export function useCommitLogic({
 
   // Pinned at mount: the editor never reloads from a background refetch, so
   // the live query sha can be newer than what is being edited.
-  const baseShaRef = useRef(gitSha);
-  const getBaseSha = useCallback(() => baseShaRef.current, []);
+  const [collabBase] = useState(() =>
+    createCollabBase(gitSha, () => toast.warning(tConflict("collab_outdated"))),
+  );
+  const { getBaseSha } = collabBase;
 
   const updateSavedBaseline = useCallback(() => {
     const clonedState = (() => {
@@ -300,7 +304,7 @@ export function useCommitLogic({
           ]
         : [{ path: data.path, content: data.content }, ...images];
 
-      const baseSha = baseShaRef.current;
+      const baseSha = getBaseSha();
       const res = await updateFiles({
         files: actions,
         message: finalMessage,
@@ -328,7 +332,7 @@ export function useCommitLogic({
 
       if (!res.error?.message) {
         const committedSha = gitBlobSha(data.content);
-        baseShaRef.current = committedSha;
+        collabBase.recordPublished(committedSha);
 
         // update saved baseline (deep clone to avoid reference aliasing)
         updateSavedBaseline();
@@ -542,6 +546,7 @@ export function useCommitLogic({
     pending: isPending,
     getProcessedStateData,
     getBaseSha,
+    collabBase,
     publishConflict,
     resolvePublishConflict,
   };

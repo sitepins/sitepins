@@ -108,10 +108,18 @@ export default function FileEditor() {
     data: response,
     isFetching,
     isSuccess,
+    isError,
+    fulfilledTimeStamp,
   } = useGitContent(filepath, {
     parser: true,
     skip: !isConfigReady,
+    refetchOnMountOrArgChange: true,
   });
+
+  // The editor seeds its state once, so it must start from the branch's
+  // current version rather than a cached copy that may predate a push.
+  const [openedAt] = useState(() => Date.now());
+  const isFresh = (fulfilledTimeStamp ?? 0) >= openedAt || isError;
 
   const { data, content, fmType, startWith, comments } =
     (response as TParsedContent) || {};
@@ -288,7 +296,13 @@ export default function FileEditor() {
     return hasMissingInSchema || hasMissingInData;
   }, [finalData, schemaData]);
 
-  if (!isSuccess || fetchingContent || fetchingSchema || isDraftFetching) {
+  if (
+    !isSuccess ||
+    !isFresh ||
+    fetchingContent ||
+    fetchingSchema ||
+    isDraftFetching
+  ) {
     return <EditorSkeleton />;
   }
 

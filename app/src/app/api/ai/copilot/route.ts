@@ -47,7 +47,8 @@ export async function POST(req: NextRequest) {
       temperature: 0.7,
     });
 
-    return NextResponse.json({ ...result, text: result.text });
+    // "0" is the client's "no suggestion"; an empty text makes Plate throw.
+    return NextResponse.json({ ...result, text: result.text || "0" });
   } catch (error) {
     if (error instanceof Error && error.name === "AbortError") {
       return NextResponse.json(null, { status: 408 });

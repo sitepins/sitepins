@@ -19,12 +19,11 @@ type JoinOptions = {
   /** Seeds the room only when the server has no state for it. */
   value: Value;
   collab: TCollabBaseContext | null;
-  isRawMode: () => boolean;
 };
 
 export function joinCollabRoom(
   editor: PlateEditor,
-  { id, value, collab, isRawMode }: JoinOptions,
+  { id, value, collab }: JoinOptions,
 ): { ready: Promise<void>; leave: () => void } {
   const roomDoc = editor.getOptions(YjsPlugin).ydoc as unknown as RoomDoc;
   let room: RoomSnapshot | null = null;
@@ -43,12 +42,8 @@ export function joinCollabRoom(
     const { baseSha, record } = resolveRoomBase(room, collab.getBaseSha());
     if (record && baseSha) writeRoomBase(roomDoc, baseSha);
 
-    // Raw-mode edits never reach the room body, so a raw-mode tab can neither
-    // vouch for the room's content nor take a publish of it as its own.
     collab.setRoomWriters({
-      base: (sha) => {
-        if (!isRawMode()) writeRoomBase(roomDoc, sha);
-      },
+      base: (sha) => writeRoomBase(roomDoc, sha),
       frontmatter: (data) => writeRoomFrontmatter(roomDoc, data),
     });
     collab.onRoomJoined({ baseSha, frontmatter: readRoomFrontmatter(roomDoc) });
@@ -57,9 +52,7 @@ export function joinCollabRoom(
       roomDoc,
       collab.onRoomFrontmatter,
     );
-    const stopBase = observeRoomBase(roomDoc, (sha) => {
-      if (!isRawMode()) collab.onRoomBase(sha);
-    });
+    const stopBase = observeRoomBase(roomDoc, collab.onRoomBase);
     stopObserving = () => {
       stopFrontmatter();
       stopBase();

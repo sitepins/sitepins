@@ -1,5 +1,6 @@
 import { CollabBase, createCollabBase } from "@/contexts/collab-base-context";
 import { UNKNOWN_BASE_SHA } from "@/lib/utils/collab-room-base";
+import { MarkdownPlugin } from "@platejs/markdown";
 import { registerProviderType } from "@platejs/yjs";
 import { YjsPlugin } from "@platejs/yjs/react";
 import { createRequire } from "node:module";
@@ -8,6 +9,7 @@ import { Value } from "platejs";
 import { createPlateEditor, PlateEditor } from "platejs/react";
 import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 import { joinCollabRoom } from "./join-collab-room";
+import { applyMarkdownToEditor } from "./raw-collab";
 
 // yjs is only a transitive dependency; load the exact build Plate uses so the
 // docs below and Plate's own Y.Doc share one module instance.
@@ -131,7 +133,6 @@ type Tab = {
   collab: CollabBase;
   onOutdated: ReturnType<typeof vi.fn>;
   leave: () => void;
-  rawMode: boolean;
   /** Mirrors EditorWrapper's frontmatter `state.data` and `baseline.data`. */
   frontmatter: { data: Frontmatter; baseline: Frontmatter };
   /** A local frontmatter edit, as FrontmatterRenderer + useFrontmatterSync do. */
@@ -147,6 +148,7 @@ const openTab = async (
 ) => {
   const editor = createPlateEditor({
     plugins: [
+      MarkdownPlugin,
       YjsPlugin.configure({
         options: { providers: [memoryProvider] },
       }),
@@ -159,7 +161,6 @@ const openTab = async (
     collab,
     onOutdated,
     leave: () => {},
-    rawMode: false,
     frontmatter: { data: frontmatter, baseline: frontmatter },
     edit: (data) => {
       tab.frontmatter.data = data;
@@ -177,7 +178,6 @@ const openTab = async (
     id: ROOM,
     value: paragraphs(...lines),
     collab,
-    isRawMode: () => tab.rawMode,
   });
   tab.leave = leave;
   openTabs.push(tab);
@@ -242,18 +242,6 @@ describe("joinCollabRoom", () => {
     expect(c.onOutdated).not.toHaveBeenCalled();
   });
 
-  it("does not vouch for the room after a raw-mode publish", async () => {
-    const a = await openTab(S1, ["Body"]);
-    a.rawMode = true;
-
-    a.collab.recordPublished(S3);
-    await tick();
-    const c = await openTab(S3, ["Body edited in raw mode"]);
-
-    expect(c.collab.getBaseSha()).toBe(S1);
-    expect(c.onOutdated).toHaveBeenCalledTimes(1);
-  });
-
   it("follows a collaborator's publish, since the content is shared", async () => {
     const a = await openTab(S1, ["Body"]);
     const b = await openTab(S1, ["Body"]);
@@ -264,15 +252,30 @@ describe("joinCollabRoom", () => {
     expect(b.collab.getBaseSha()).toBe(S3);
   });
 
-  it("does not follow a publish while in raw mode", async () => {
-    const a = await openTab(S1, ["Body"]);
-    const b = await openTab(S1, ["Body"]);
-    b.rawMode = true;
+  it("keeps the shared block when raw typing only changes its text", async () => {
+    const a = await openTab(S1, ["First paragraph.", "Second paragraph."]);
+    const b = await openTab(S1, ["First paragraph.", "Second paragraph."]);
+    const sharedBlocks = () =>
+      (
+        rooms.get(ROOM)!.doc.get("content", Y.XmlText) as unknown as {
+          toDelta(): { insert: unknown }[];
+        }
+      )
+        .toDelta()
+        .map((op) => op.insert);
+    const before = sharedBlocks();
 
-    a.collab.recordPublished(S3);
+    applyMarkdownToEditor(
+      a.editor,
+      "First paragraph.\n\nSecond paragraph, typed in raw.",
+    );
     await tick();
 
-    expect(b.collab.getBaseSha()).toBe(S1);
+    expect(bodyOf(b.editor)).toBe(
+      "First paragraph.\nSecond paragraph, typed in raw.",
+    );
+    // Same Y types: collaborators' carets anchored in them stay valid.
+    expect(sharedBlocks()[1]).toBe(before[1]);
   });
 
   it("treats a room with no recorded version as unknown", async () => {
@@ -313,7 +316,6 @@ describe("joinCollabRoom", () => {
         id: ROOM,
         value: paragraphs("Body"),
         collab,
-        isRawMode: () => false,
       });
 
     join().leave();
@@ -437,7 +439,6 @@ describe("frontmatter in the collaborative room", () => {
       id: ROOM,
       value: paragraphs("Body"),
       collab: b.collab,
-      isRawMode: () => false,
     });
     await rejoin.ready;
     await tick();

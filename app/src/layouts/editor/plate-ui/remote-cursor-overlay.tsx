@@ -10,12 +10,43 @@ import * as React from "react";
 
 export function RemoteCursorOverlay() {
   const isSynced = usePluginOption(YjsPlugin, "_isSynced");
+  const valueVersion = useValueVersion();
 
   if (!isSynced) {
     return null;
   }
 
-  return <RemoteCursorOverlayContent />;
+  return (
+    <CaretBoundary resetKey={valueVersion}>
+      <RemoteCursorOverlayContent />
+    </CaretBoundary>
+  );
+}
+
+/**
+ * A caret can briefly point past the end of text that just changed, and
+ * slate-yjs throws while measuring it. Skip the carets until the next change
+ * rather than take the editor down.
+ */
+class CaretBoundary extends React.Component<
+  { resetKey: unknown; children?: React.ReactNode },
+  { failed: boolean }
+> {
+  state = { failed: false };
+
+  static getDerivedStateFromError() {
+    return { failed: true };
+  }
+
+  componentDidUpdate(previous: { resetKey: unknown }) {
+    if (this.state.failed && previous.resetKey !== this.props.resetKey) {
+      this.setState({ failed: false });
+    }
+  }
+
+  render() {
+    return this.state.failed ? null : this.props.children;
+  }
 }
 
 function RemoteCursorOverlayContent() {

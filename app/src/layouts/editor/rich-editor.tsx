@@ -16,6 +16,12 @@ import { Editor, EditorContainer } from "./plate-ui/editor";
 import { EditorKit, MyEditor } from "./plugins/editor-kit";
 import { YjsKit } from "./plugins/yjs.kit";
 import { joinCollabRoom } from "./utils/join-collab-room";
+import {
+  applyMarkdownToEditor,
+  editorBlockKeys,
+  editorPointAtMarkdownOffset,
+  patchMarkdownFromEditor,
+} from "./utils/raw-collab";
 import { RichTextType } from "./utils/plate-types";
 
 const CURSOR_MARKER = "\uE000"; // Private Use Area character as a marker
@@ -55,6 +61,47 @@ type TSlateNode = {
   [key: string]: unknown;
 };
 
+const recursiveFilter = (nodes: TSlateNode[]): TSlateNode[] => {
+  return nodes
+    .filter((n) => n.type !== "slash_input" && n.type !== KEYS.aiChat)
+    .map((n) =>
+      n.children ? { ...n, children: recursiveFilter(n.children) } : n,
+    );
+};
+
+const serializeEditor = (editor: MyEditor, value: TElement[]) => {
+  // 1. Recursively remove internal nodes like slash_input
+  const filteredValue = recursiveFilter(value as TSlateNode[]);
+
+  // 2. Clean up "spacer" paragraphs
+  const cleanValue = filteredValue.filter((node: TSlateNode) => {
+    if (node.type === "p" || node.type === "paragraph") {
+      // If the paragraph has ANY non-text children (like JSX inlines or images),
+      // we MUST keep it even if its text content appears empty.
+      const hasNonTextChildren = (node.children || []).some(
+        (c: TSlateNode) => !c.text && c.type !== "text",
+      );
+      if (hasNonTextChildren) return true;
+
+      const text = (node.children || [])
+        .map((c: TSlateNode) => c.text || "")
+        .join("");
+      // Only strip if it's pure text AND that text is just whitespace/ZWSP.
+      return text.replace(/[\u200B\u200C\u200D\uFEFF]/g, "").trim().length > 0;
+    }
+    return true;
+  });
+
+  const mdContent = editor.getApi(MarkdownPlugin).markdown.serialize({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    value: cleanValue as any,
+    preserveEmptyParagraphs: false,
+  }) as string;
+
+  // Strip the cursor marker if it somehow leaked in
+  return mdContent.replaceAll(CURSOR_MARKER, "");
+};
+
 export const RichEditor = ({
   markdownContent,
   isMobile,
@@ -71,11 +118,6 @@ export const RichEditor = ({
   const scrollTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isAliveRef = useRef(true);
   const collab = useCollabBase();
-  const isRawModeRef = useRef(isRawMode);
-
-  useEffect(() => {
-    isRawModeRef.current = isRawMode;
-  }, [isRawMode]);
 
   useEffect(() => {
     isAliveRef.current = true;
@@ -142,7 +184,6 @@ export const RichEditor = ({
       id: documentId,
       value: initialValue,
       collab,
-      isRawMode: () => isRawModeRef.current,
     });
     ready.catch((error) =>
       logger.error("Failed to join the collaborative room", error),
@@ -158,13 +199,52 @@ export const RichEditor = ({
   // initial mount run (and StrictMode's double-invoke) never triggers a sync.
   const prevIsRawMode = useRef(isRawMode);
 
+  // While in raw mode: the markdown the editor last matched, and its block
+  // keys then. Changes on either side are applied to the other per block.
+  const rawSyncRef = useRef<{ markdown: string; keys: string[] } | null>(null);
+
+  const startRawSync = () => {
+    const markdown = serializeEditor(editor, editor.children as TElement[]);
+    rawSyncRef.current = { markdown, keys: editorBlockKeys(editor) };
+    onUpdateMarkdown(markdown);
+  };
+
+  // Raw edits reach the room through this hidden editor.
+  useEffect(() => {
+    const sync = rawSyncRef.current;
+    if (!isRawMode || !sync || markdownContent === sync.markdown) return;
+    applyMarkdownToEditor(editor, markdownContent);
+    rawSyncRef.current = {
+      markdown: markdownContent,
+      keys: editorBlockKeys(editor),
+    };
+  }, [editor, isRawMode, markdownContent]);
+
+  // Collaborators see a raw-mode author's caret through this hidden editor's
+  // selection, so keep it on the Monaco cursor.
+  const followRawCursor = useDebouncedCallback((offset: number) => {
+    const sync = rawSyncRef.current;
+    if (!sync) return;
+    const point = editorPointAtMarkdownOffset(editor, sync.markdown, offset);
+    if (point) editor.tf.select(point);
+  }, 150);
+
+  useEffect(() => {
+    if (isRawMode && cursorOffset !== undefined) followRawCursor(cursorOffset);
+  }, [isRawMode, cursorOffset, markdownContent, followRawCursor]);
+
   // Sync cursor from Redux to Plate — only on genuine raw → rich transitions
   useEffect(() => {
     const wasRawMode = prevIsRawMode.current;
     prevIsRawMode.current = isRawMode;
 
+    if (!wasRawMode && isRawMode) {
+      startRawSync();
+      return;
+    }
     // Guard: only run when actually switching FROM raw TO rich
     if (!(wasRawMode === true && !isRawMode)) return;
+    rawSyncRef.current = null;
     if (!editor || cursorOffset === undefined) return;
 
     // 1. Insert marker in markdown to find cursor position
@@ -178,31 +258,10 @@ export const RichEditor = ({
         .getApi(MarkdownPlugin)
         .markdown.deserialize(mdWithMarker, { withoutMdx: true });
 
-      const cleanNodes = editor
-        .getApi(MarkdownPlugin)
-        .markdown.deserialize(markdownContent, { withoutMdx: true });
-
-      const newChildren =
-        cleanNodes.length > 0
-          ? cleanNodes
-          : [{ children: [{ text: "" }], type: "p" }];
-
-      // 2. Replace content using proper Slate transforms so internal state
-      //    (WeakMaps, normalization, etc.) stays consistent. Direct mutation
-      //    of editor.children corrupts Slate internals and breaks selections.
+      // 2. Raw edits were applied as they happened; this only catches the
+      //    last one. Replacing everything would wipe collaborators' edits.
       isRemoteUpdate.current = true;
-
-      editor.tf.withoutNormalizing(() => {
-        // Remove all existing nodes (in reverse to keep indices valid)
-        for (let i = editor.children.length - 1; i >= 0; i--) {
-          editor.tf.removeNodes({ at: [i] });
-        }
-        // Insert new nodes
-        newChildren.forEach((node: TSlateNode, i: number) => {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          editor.tf.insertNodes(node as any, { at: [i] });
-        });
-      });
+      applyMarkdownToEditor(editor, markdownContent);
 
       // 3. Find marker in the nodes-with-marker tree
       let markerOffset = 0;
@@ -361,48 +420,9 @@ export const RichEditor = ({
     };
   }, [editor, onUpdateMarkdown]);
 
-  const recursiveFilter = (nodes: TSlateNode[]): TSlateNode[] => {
-    return nodes
-      .filter((n) => n.type !== "slash_input" && n.type !== KEYS.aiChat)
-      .map((n) =>
-        n.children ? { ...n, children: recursiveFilter(n.children) } : n,
-      );
-  };
-
   const onSerialize = useDebouncedCallback(
     (editor: MyEditor, value: TElement[]) => {
-      // 1. Recursively remove internal nodes like slash_input
-      const filteredValue = recursiveFilter(value as TSlateNode[]);
-
-      // 2. Clean up "spacer" paragraphs
-      const cleanValue = filteredValue.filter((node: TSlateNode) => {
-        if (node.type === "p" || node.type === "paragraph") {
-          // If the paragraph has ANY non-text children (like JSX inlines or images),
-          // we MUST keep it even if its text content appears empty.
-          const hasNonTextChildren = (node.children || []).some(
-            (c: TSlateNode) => !c.text && c.type !== "text",
-          );
-          if (hasNonTextChildren) return true;
-
-          const text = (node.children || [])
-            .map((c: TSlateNode) => c.text || "")
-            .join("");
-          // Only strip if it's pure text AND that text is just whitespace/ZWSP.
-          return (
-            text.replace(/[\u200B\u200C\u200D\uFEFF]/g, "").trim().length > 0
-          );
-        }
-        return true;
-      });
-
-      const mdContent = editor.getApi(MarkdownPlugin).markdown.serialize({
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        value: cleanValue as any,
-        preserveEmptyParagraphs: false,
-      }) as string;
-
-      // Strip the cursor marker if it somehow leaked in
-      const cleanMd = mdContent.replaceAll(CURSOR_MARKER, "");
+      const cleanMd = serializeEditor(editor, value);
       onUpdateMarkdown(cleanMd);
       onUpdateContentRef(cleanMd);
     },
@@ -474,6 +494,26 @@ export const RichEditor = ({
           // Track cursor position if selection changed
           if (editor.selection) {
             onSyncCursor(editor);
+          }
+
+          // Runs regardless of isRemoteUpdate: a collaborator's change skipped
+          // here would be reverted by the next raw keystroke.
+          if (isRawMode) {
+            const sync = rawSyncRef.current;
+            if (!sync) {
+              startRawSync();
+              return;
+            }
+            const keys = editorBlockKeys(editor);
+            if (keys.join("\u0000") === sync.keys.join("\u0000")) return;
+            const markdown = patchMarkdownFromEditor(
+              editor,
+              sync.markdown,
+              sync.keys,
+            );
+            rawSyncRef.current = { markdown, keys };
+            if (markdown !== sync.markdown) onUpdateMarkdown(markdown);
+            return;
           }
 
           if (isRemoteUpdate.current) return;

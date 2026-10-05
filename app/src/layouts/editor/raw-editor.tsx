@@ -19,6 +19,7 @@ import { useTheme } from "next-themes";
 import dynamic from "next/dynamic";
 import { useEffect, useRef } from "react";
 import { RichTextType } from "./utils/plate-types";
+import { mergeText, minimalTextEdit } from "./utils/raw-collab";
 
 // Configure Monaco AMD loader to a compatible CDN version
 configureMonacoLoader();
@@ -67,7 +68,46 @@ export const RawEditor = ({
 
   const onDebounceUpdate = useDebouncedCallback((content: string) => {
     onUpdateMarkdown(content);
-  }, 500);
+  }, 250);
+
+  // The markdown both sides last agreed on; anything typed since is unsent.
+  const baseRef = useRef(markdownContent);
+  const applyingRef = useRef(false);
+
+  // Collaborators' edits arrive as new markdown. Merge them into the editor
+  // with a minimal edit so the cursor, undo stack and unsent typing survive.
+  useEffect(() => {
+    const editor = editorRef.current;
+    const model = editor?.getModel();
+    const base = baseRef.current;
+    baseRef.current = markdownContent;
+    if (!editor || !model) return;
+
+    const ours = model.getValue();
+    const merged = mergeText(base, ours, markdownContent);
+    if (merged === ours) return;
+
+    const edit = minimalTextEdit(ours, merged);
+    const from = model.getPositionAt(edit.start);
+    const to = model.getPositionAt(edit.end);
+    applyingRef.current = true;
+    try {
+      editor.executeEdits("collaborator", [
+        {
+          range: {
+            startLineNumber: from.lineNumber,
+            startColumn: from.column,
+            endLineNumber: to.lineNumber,
+            endColumn: to.column,
+          },
+          text: edit.text,
+        },
+      ]);
+    } finally {
+      applyingRef.current = false;
+    }
+    if (merged !== markdownContent) onDebounceUpdate(merged);
+  }, [markdownContent, onDebounceUpdate]);
 
   return (
     <div
@@ -82,7 +122,12 @@ export const RawEditor = ({
               "hover:bg-muted hover:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 aria-checked:bg-primary aria-checked:text-primary-foreground aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
               "h-8 min-w-8 bg-transparent px-1.5",
             )}
-            onClick={() => dispatch(setRawMode(false))}
+            onClick={() => {
+              // Send the last keystrokes before the rich editor takes over.
+              const latest = editorRef.current?.getModel()?.getValue();
+              if (latest !== undefined) onUpdateMarkdown(latest);
+              dispatch(setRawMode(false));
+            }}
           >
             {tEditorRaw("view_in_rich_text")}
           </button>
@@ -133,7 +178,7 @@ export const RawEditor = ({
           width="100%"
           language="markdown"
           theme={resolvedTheme === "light" ? "light-plus" : "dark-plus"}
-          value={markdownContent || ""}
+          defaultValue={markdownContent || ""}
           beforeMount={(monaco) =>
             initializeShiki(
               monaco,
@@ -142,6 +187,12 @@ export const RawEditor = ({
           }
           onMount={(editor) => {
             editorRef.current = editor;
+
+            // Monaco caches models by path, so a remount can show stale text.
+            const model = editor.getModel();
+            if (model && model.getValue() !== baseRef.current) {
+              model.setValue(baseRef.current);
+            }
 
             // Track cursor position changes
             editor.onDidChangeCursorPosition((e) => {
@@ -167,6 +218,7 @@ export const RawEditor = ({
             }
           }}
           onChange={(next: string | undefined) => {
+            if (applyingRef.current) return;
             onDebounceUpdate(next ?? "");
           }}
           options={{

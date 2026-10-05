@@ -45,6 +45,7 @@
     "@platejs/docx": "53.0.0",
     "@platejs/emoji": "53.1.7",
     "@platejs/floating": "53.0.0",
+    "@platejs/footnote": "53.0.0",
     "@platejs/indent": "53.0.0",
     "@platejs/juice": "53.0.0",
     "@platejs/link": "53.3.5",

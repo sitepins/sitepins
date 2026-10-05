@@ -3,6 +3,7 @@ import { BaseAlignKit } from "./align-base-kit";
 import { BaseBasicBlocksKit } from "./basic-blocks-base-kit";
 import { BaseBasicMarksKit } from "./basic-marks-base-kit";
 import { BaseCodeBlockKit } from "./code-block-base-kit";
+import { BaseFootnoteKit } from "./footnote-base-kit";
 import { BaseLineHeightKit } from "./line-height-base-kit";
 import { BaseLinkKit } from "./link-base-kit";
 import { BaseListKit } from "./list-base-kit";
@@ -17,6 +18,7 @@ export const BaseEditorKit = [
   ...BaseMediaKit,
   ...BaseMathKit,
   ...BaseLinkKit,
+  ...BaseFootnoteKit,
   ...BaseBasicMarksKit,
   ...BaseListKit,
   ...BaseAlignKit,

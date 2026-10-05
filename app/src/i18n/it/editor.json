@@ -443,6 +443,13 @@
       "cancel": "Continua a modificare",
       "overwrite": "Sovrascrivi comunque",
       "collab_outdated": "Altre persone stanno modificando questo file da una versione precedente. Stai vedendo le loro modifiche non pubblicate e, alla pubblicazione, ti verrà chiesto prima di sostituire modifiche più recenti nel repository."
+    },
+    "footnote": {
+      "new": "Nuova nota a piè di pagina",
+      "existing": "Nota {id}",
+      "missing": "Definizione della nota mancante",
+      "back_to_reference": "Torna al riferimento",
+      "no_results": "Nessuna nota trovata"
     }
   }
 }

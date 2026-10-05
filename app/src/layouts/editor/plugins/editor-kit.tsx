@@ -29,6 +29,7 @@ import { EmojiKit } from "./emoji-kit";
 import { ExitBreakKit } from "./exit-break-kit";
 import { FixedToolbarKit } from "./fixed-toolbar-kit";
 import { FloatingToolbarKit } from "./floating-toolbar-kit";
+import { FootnoteKit } from "./footnote-kit";
 import { LineHeightKit } from "./line-height-kit";
 import { LinkKit } from "./link-kit";
 import { ListKit } from "./list-kit";
@@ -51,6 +52,7 @@ export const EditorKit = [
   ...MediaKit,
   ...MathKit,
   ...LinkKit,
+  ...FootnoteKit,
 
   // Marks Plugin
   ...BasicMarksKit,

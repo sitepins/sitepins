@@ -443,6 +443,13 @@
       "cancel": "继续编辑",
       "overwrite": "仍然覆盖",
       "collab_outdated": "其他人正在基于旧版本编辑此文件。你看到的是他们尚未发布的更改，发布时会在替换仓库中较新的更改前征求你的确认。"
+    },
+    "footnote": {
+      "new": "新建脚注",
+      "existing": "脚注 {id}",
+      "missing": "缺少脚注定义",
+      "back_to_reference": "返回引用位置",
+      "no_results": "未找到脚注"
     }
   }
 }

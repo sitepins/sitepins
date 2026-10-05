@@ -443,6 +443,13 @@
       "cancel": "Weiter bearbeiten",
       "overwrite": "Trotzdem überschreiben",
       "collab_outdated": "Andere bearbeiten diese Datei auf Basis einer älteren Version. Du siehst ihre unveröffentlichten Änderungen, und vor dem Ersetzen neuerer Änderungen im Repository wirst du beim Veröffentlichen gefragt."
+    },
+    "footnote": {
+      "new": "Neue Fußnote",
+      "existing": "Fußnote {id}",
+      "missing": "Fußnotendefinition fehlt",
+      "back_to_reference": "Zurück zum Verweis",
+      "no_results": "Keine Fußnoten gefunden"
     }
   }
 }

@@ -443,6 +443,13 @@
       "cancel": "Tiếp tục chỉnh sửa",
       "overwrite": "Vẫn ghi đè",
       "collab_outdated": "Người khác đang chỉnh sửa tệp này từ một phiên bản cũ hơn. Bạn đang thấy các thay đổi chưa xuất bản của họ, và khi xuất bản bạn sẽ được hỏi trước khi thay thế các thay đổi mới hơn trong kho lưu trữ."
+    },
+    "footnote": {
+      "new": "Chú thích mới",
+      "existing": "Chú thích {id}",
+      "missing": "Thiếu định nghĩa chú thích",
+      "back_to_reference": "Quay lại tham chiếu",
+      "no_results": "Không tìm thấy chú thích"
     }
   }
 }

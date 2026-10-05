@@ -443,6 +443,13 @@
       "cancel": "Continuar editando",
       "overwrite": "Sobrescrever mesmo assim",
       "collab_outdated": "Outras pessoas estão editando este arquivo a partir de uma versão mais antiga. Você está vendo as alterações não publicadas delas, e a publicação pedirá confirmação antes de substituir alterações mais recentes do repositório."
+    },
+    "footnote": {
+      "new": "Nova nota de rodapé",
+      "existing": "Nota de rodapé {id}",
+      "missing": "Definição da nota de rodapé ausente",
+      "back_to_reference": "Voltar à referência",
+      "no_results": "Nenhuma nota de rodapé encontrada"
     }
   }
 }

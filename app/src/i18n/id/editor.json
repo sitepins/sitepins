@@ -443,6 +443,13 @@
       "cancel": "Lanjutkan Mengedit",
       "overwrite": "Tetap Timpa",
       "collab_outdated": "Orang lain sedang mengedit file ini dari versi yang lebih lama. Anda melihat perubahan mereka yang belum dipublikasikan, dan saat memublikasikan Anda akan ditanya sebelum menimpa perubahan yang lebih baru di repositori."
+    },
+    "footnote": {
+      "new": "Catatan kaki baru",
+      "existing": "Catatan kaki {id}",
+      "missing": "Definisi catatan kaki tidak ada",
+      "back_to_reference": "Kembali ke referensi",
+      "no_results": "Catatan kaki tidak ditemukan"
     }
   }
 }

@@ -443,6 +443,13 @@
       "cancel": "Continuer l'édition",
       "overwrite": "Écraser quand même",
       "collab_outdated": "D'autres personnes modifient ce fichier à partir d'une version plus ancienne. Vous voyez leurs modifications non publiées, et la publication vous demandera confirmation avant de remplacer des modifications plus récentes du dépôt."
+    },
+    "footnote": {
+      "new": "Nouvelle note de bas de page",
+      "existing": "Note {id}",
+      "missing": "Définition de la note manquante",
+      "back_to_reference": "Retour à la référence",
+      "no_results": "Aucune note trouvée"
     }
   }
 }

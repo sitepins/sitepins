@@ -69,7 +69,7 @@ const recursiveFilter = (nodes: TSlateNode[]): TSlateNode[] => {
     );
 };
 
-const serializeEditor = (editor: MyEditor, value: TElement[]) => {
+export const serializeEditor = (editor: MyEditor, value: TElement[]) => {
   // 1. Recursively remove internal nodes like slash_input
   const filteredValue = recursiveFilter(value as TSlateNode[]);
 
@@ -78,8 +78,9 @@ const serializeEditor = (editor: MyEditor, value: TElement[]) => {
     if (node.type === "p" || node.type === "paragraph") {
       // If the paragraph has ANY non-text children (like JSX inlines or images),
       // we MUST keep it even if its text content appears empty.
+      // An empty text leaf has `text: ""`; only elements lack the property.
       const hasNonTextChildren = (node.children || []).some(
-        (c: TSlateNode) => !c.text && c.type !== "text",
+        (c: TSlateNode) => typeof c.text !== "string" && c.type !== "text",
       );
       if (hasNonTextChildren) return true;
 

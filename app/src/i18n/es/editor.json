@@ -443,6 +443,13 @@
       "cancel": "Seguir editando",
       "overwrite": "Sobrescribir de todos modos",
       "collab_outdated": "Otras personas están editando este archivo desde una versión anterior. Estás viendo sus cambios sin publicar y, al publicar, se te pedirá confirmación antes de reemplazar cambios más recientes del repositorio."
+    },
+    "footnote": {
+      "new": "Nueva nota al pie",
+      "existing": "Nota al pie {id}",
+      "missing": "Falta la definición de la nota al pie",
+      "back_to_reference": "Volver a la referencia",
+      "no_results": "No se encontraron notas al pie"
     }
   }
 }

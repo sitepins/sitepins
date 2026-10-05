@@ -452,6 +452,24 @@ describe("MDX comments", () => {
   });
 });
 
+describe("footnotes", () => {
+  it.each([
+    ["a single note", "Text with a note[^1].\n\n[^1]: The note.\n"],
+    [
+      "named notes",
+      "First[^alpha] and second[^beta].\n\n[^alpha]: Alpha note.\n\n[^beta]: Beta note.\n",
+    ],
+    ["a reused note", "One[^1], again[^1].\n\n[^1]: Shared note.\n"],
+    [
+      "a multi-paragraph note",
+      "Claim[^1].\n\n[^1]: First paragraph.\n\n    Second paragraph.\n",
+    ],
+  ])("keeps %s", (_name, markdown) => {
+    expect(roundTrip(markdown)).toBe(markdown);
+    expect(mountedRoundTrip(markdown)).toBe(markdown);
+  });
+});
+
 describe("editor mounting", () => {
   it("preserves mixed snippets through normalization on mount", () => {
     const src = `{{< notice "tip" >}}\nBody with <Badge dismissible /> and {/* note */}.\n{{< /notice >}}\n\n<Tabs>\n<Tab name="One">\nParagraph body.\n</Tab>\n</Tabs>`;

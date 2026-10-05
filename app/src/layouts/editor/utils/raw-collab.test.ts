@@ -1,4 +1,5 @@
-import { EditorKit } from "@/editor/plugins/editor-kit";
+import { EditorKit, MyEditor } from "@/editor/plugins/editor-kit";
+import { serializeEditor } from "@/editor/rich-editor";
 import { createPlateEditor, PlateEditor } from "platejs/react";
 import { describe, expect, it } from "vitest";
 import {
@@ -309,5 +310,27 @@ describe("syntax the editor round-trips", () => {
     const patched = patchMarkdownFromEditor(editor, md, keys);
     expect(reapplied).toBe(false);
     expect(patched).toBe(md);
+  });
+});
+
+describe("serializeEditor", () => {
+  const serialized = (markdown: string) => {
+    const editor = editorWith(markdown) as unknown as MyEditor;
+    return serializeEditor(editor, editor.children);
+  };
+
+  // Plate keeps an empty paragraph after a final non-paragraph block.
+  it.each([
+    ["footnote definitions", "Claim[^1].\n\n[^1]: The note.\n"],
+    ["a list", "Intro.\n\n- one\n- two\n"],
+    ["a code block", "Intro.\n\n```js\nconst a = 1;\n```\n"],
+  ])("adds no trailing blank line after %s", (_name, markdown) => {
+    expect(serialized(markdown)).toBe(markdown);
+  });
+
+  it("keeps footnote references in the rich editor", () => {
+    const markdown =
+      "First[^alpha], again[^alpha] and[^2].\n\n[^alpha]: Alpha note.\n\n[^2]: Two.\n";
+    expect(serialized(markdown)).toBe(markdown);
   });
 });

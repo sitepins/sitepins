@@ -443,6 +443,13 @@
       "cancel": "Keep Editing",
       "overwrite": "Overwrite Anyway",
       "collab_outdated": "Others are editing this file from an older version. You're seeing their unpublished changes, and publishing will ask before replacing newer changes in the repository."
+    },
+    "footnote": {
+      "new": "New footnote",
+      "existing": "Footnote {id}",
+      "missing": "Missing footnote definition",
+      "back_to_reference": "Back to reference",
+      "no_results": "No footnotes found"
     }
   }
 }

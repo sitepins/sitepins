@@ -76,6 +76,7 @@ type Props = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onChangeHandler: any;
   triggerButton?: React.ReactNode;
+  triggerNativeButton?: boolean;
   ref?: React.RefObject<HTMLButtonElement | null>;
   addExternalImage?: (url: string) => void;
   absolutePath?: string;
@@ -204,6 +205,7 @@ const RenderFolderOrFiles = ({
 
 const MediaPopupList = ({
   triggerButton,
+  triggerNativeButton = true,
   path: filepath,
   name,
   onChangeHandler,
@@ -450,7 +452,7 @@ const MediaPopupList = ({
   return (
     <>
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogTrigger asChild>
+        <DialogTrigger asChild nativeButton={triggerNativeButton}>
           {triggerButton ? (
             triggerButton
           ) : (

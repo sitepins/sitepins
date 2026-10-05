@@ -7,13 +7,18 @@ import {
   type MdLink,
   type SerializeMdOptions,
 } from "@platejs/markdown";
+import type { Paragraph, PhrasingContent, Root } from "mdast";
 import { KEYS, type Descendant } from "platejs";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import type { Processor } from "unified";
+import { visit } from "unist-util-visit";
 import { imageSerializationRules } from "../snippets/common/image-serialization";
 import { remarkMdx } from "../snippets/common/remark-mdx-extension";
-import { htmlSerializationRules } from "../snippets/html/html-serialization";
+import {
+  htmlSerializationRules,
+  inlineHtmlStringifyHandlers,
+} from "../snippets/html/html-serialization";
 import { remarkHtml } from "../snippets/html/html-transformer";
 import { hugoSerializationRules } from "../snippets/hugo/hugo-serialization";
 import { remarkHugo } from "../snippets/hugo/hugo-transformer";
@@ -34,6 +39,20 @@ function remarkMathDoubleDollarOnly(this: Processor) {
 /** remark-gfm without table column realignment (keeps default cell padding). */
 function remarkGfmNoTableAlign(this: Processor) {
   remarkGfm.call(this, { tablePipeAlign: false });
+}
+
+// Plate's text rule strips a leading "\n", which drops the line break after an inline node.
+function remarkKeepLineBreakAfterInline() {
+  return (tree: Root) => {
+    visit(tree, "paragraph", (paragraph: Paragraph) => {
+      paragraph.children = paragraph.children.flatMap(
+        (child, index): PhrasingContent[] =>
+          index > 0 && child.type === "text" && child.value.startsWith("\n")
+            ? [{ type: "break" }, { ...child, value: child.value.slice(1) }]
+            : [child],
+      );
+    });
+  };
 }
 
 const linkSerializationRules = {
@@ -82,6 +101,7 @@ export const MarkdownKit = [
         remarkHugo, // Detect Hugo shortcodes
         remarkMathDoubleDollarOnly,
         remarkGfmNoTableAlign,
+        remarkKeepLineBreakAfterInline,
         remarkMdx, // MDX extension
       ],
 
@@ -94,6 +114,7 @@ export const MarkdownKit = [
         // Prevent links whose text equals the URL from collapsing to bare
         // auto-links (e.g. `[http://x](http://x)` → `http://x`).
         resourceLink: true,
+        handlers: inlineHtmlStringifyHandlers,
       },
 
       // Serialization rules define how to convert between Slate and markdown

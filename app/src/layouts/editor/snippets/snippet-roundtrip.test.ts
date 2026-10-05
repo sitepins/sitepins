@@ -2,15 +2,15 @@ import { MarkdownPlugin } from "@platejs/markdown";
 import { createSlateEditor, type TElement } from "platejs";
 import { describe, expect, it } from "vitest";
 import { BaseEditorKit } from "../plugins/editor-base-kit";
-import { ShortcodeInlineKit, ShortcodeKit } from "./common/snippet-plugin";
-import { HtmlBlockKit, HtmlInlineKit } from "./html/html-plugin";
-import { JsxBlockKit, JsxInlineKit } from "./jsx/jsx-plugin";
 import {
   inlineTagEditor,
   inlineTagTokens,
   splitTagLine,
 } from "./common/editable-tag-line";
+import { ShortcodeInlineKit, ShortcodeKit } from "./common/snippet-plugin";
 import { joinInlineHtml, splitInlineHtml } from "./html/html-inline-node";
+import { HtmlBlockKit, HtmlInlineKit } from "./html/html-plugin";
+import { JsxBlockKit, JsxInlineKit } from "./jsx/jsx-plugin";
 import {
   MdxCommentInlineKit,
   MdxCommentKit,
@@ -54,11 +54,17 @@ function mountedRoundTrip(markdown: string): string {
   const value = parser
     .getApi(MarkdownPlugin)
     .markdown.deserialize(markdown, { withoutMdx: true });
-  const mountedEditor = createSlateEditor({ plugins: Kit, value });
+  return serializeMounted(value);
+}
 
-  return mountedEditor
-    .getApi(MarkdownPlugin)
-    .markdown.serialize({ value: mountedEditor.children as TElement[] });
+function serializeMounted(value: TElement[]): string {
+  const mountedEditor = createSlateEditor({ plugins: Kit, value });
+  mountedEditor.tf.normalize({ force: true });
+
+  return mountedEditor.getApi(MarkdownPlugin).markdown.serialize({
+    value: mountedEditor.children as TElement[],
+    preserveEmptyParagraphs: false,
+  });
 }
 
 const brCount = (s: string) => (s.match(/<br\s*\/?>/g) || []).length;
@@ -457,6 +463,29 @@ describe("editor mounting", () => {
     expect(once).toContain("Paragraph body.");
     expect(mountedRoundTrip(once)).toBe(once);
   });
+
+  it("does not write zero-width spaces around inline html", () => {
+    const src = `<video src="/media/demo.mp4" controls playsinline preload="metadata" width="1600" height="818"></video>\n`;
+
+    expect(mountedRoundTrip(src)).toBe(src);
+  });
+
+  it("saves an empty body as an empty string", () => {
+    expect(serializeMounted([{ type: "p", children: [{ text: "" }] }])).toBe(
+      "",
+    );
+  });
+
+  it("does not write zero-width spaces for blank paragraphs", () => {
+    const md = serializeMounted([
+      { type: "p", children: [{ text: "a" }] },
+      { type: "p", children: [{ text: "" }] },
+      { type: "p", children: [{ text: "b" }] },
+    ]);
+
+    expect(md).not.toContain("\u200B");
+    expect(mountedRoundTrip(md)).toBe("a\n\nb\n");
+  });
 });
 
 describe("the reported document", () => {
@@ -596,5 +625,31 @@ describe("inline HTML", () => {
     const parts = splitInlineHtml(`</span>`);
     expect(parts.isClosingTag).toBe(true);
     expect(joinInlineHtml(parts)).toBe(`</span>`);
+  });
+
+  it("keeps the line break before inline html without a stray backslash", () => {
+    const once = mountedRoundTrip(
+      `Text before\n<video src="/x.mp4"></video>\n`,
+    );
+
+    expect(once).toBe(`Text before\\\n<video src="/x.mp4"></video>\n`);
+    expect(mountedRoundTrip(once)).toBe(once);
+  });
+
+  it("keeps a hard break before inline html", () => {
+    const src = `line1\\\n<b>x</b> after\n`;
+
+    expect(mountedRoundTrip(src)).toBe(src);
+  });
+
+  it("keeps the line break after inline html", () => {
+    const once = mountedRoundTrip(`a <b>x</b>\nline2\n`);
+
+    expect(once).toBe(`a <b>x</b>\\\nline2\n`);
+    expect(mountedRoundTrip(once)).toBe(once);
+  });
+
+  it("keeps the line break after emphasis", () => {
+    expect(mountedRoundTrip(`a *x*\nline2\n`)).toBe(`a *x*\\\nline2\n`);
   });
 });

@@ -1,4 +1,8 @@
 import type { MdHtml } from "@platejs/markdown";
+import type {
+  Handle,
+  Options as ToMarkdownOptions,
+} from "mdast-util-to-markdown";
 import { KEY_HTML_BLOCK, KEY_HTML_INLINE } from "../snippet-keys";
 
 // @platejs/markdown rewrites `class=`/`for=` to `className=`/`htmlFor=` across
@@ -56,6 +60,39 @@ export const serializeHtml = (slateNode: {
   };
 };
 
+const PARAGRAPH_INTERRUPTING_TAGS =
+  "address|article|aside|base|basefont|blockquote|body|caption|center|col|colgroup|dd|details|dialog|dir|div|dl|dt|fieldset|figcaption|figure|footer|form|frame|frameset|h[1-6]|head|header|hr|html|iframe|legend|li|link|main|menu|menuitem|nav|noframes|ol|optgroup|option|p|param|search|section|summary|table|tbody|td|tfoot|th|thead|title|tr|track|ul";
+
+// CommonMark HTML block types 1-6; only these can start a block mid-paragraph.
+const PARAGRAPH_INTERRUPTING_HTML = new RegExp(
+  `^(?:<(?:script|pre|style|textarea)(?:\\s|>|$)|<!--|<\\?|<![A-Za-z]|<!\\[CDATA\\[|</?(?:${PARAGRAPH_INTERRUPTING_TAGS})(?:\\s|/?>|$))`,
+  "i",
+);
+
+const MD_INLINE_HTML = "sitepinsInlineHtml";
+
+// to-markdown swaps the eol before any `html` node for a space (a stray `\` after a hard break).
+const serializeInlineHtml = (slateNode: {
+  children?: { text?: string }[];
+  value?: string;
+}) => {
+  const node = serializeHtml(slateNode);
+
+  return PARAGRAPH_INTERRUPTING_HTML.test(node.value)
+    ? node
+    : { ...node, type: MD_INLINE_HTML };
+};
+
+const handleInlineHtml: Handle = Object.assign(
+  (node: { value?: string }) => node.value || "",
+  { peek: () => "<" },
+);
+
+// Cast because `Handlers` only lists the standard mdast node types.
+export const inlineHtmlStringifyHandlers = {
+  [MD_INLINE_HTML]: handleInlineHtml,
+} as ToMarkdownOptions["handlers"];
+
 /**
  * Markdown serialization rules for HTML snippet types
  */
@@ -67,6 +104,6 @@ export const htmlSerializationRules = {
     serialize: serializeHtml,
   },
   [KEY_HTML_INLINE]: {
-    serialize: serializeHtml,
+    serialize: serializeInlineHtml,
   },
 };

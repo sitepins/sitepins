@@ -65,6 +65,7 @@ export default function MediaPreview({
           path={value}
           type="button"
           onChangeHandler={handleChange}
+          triggerNativeButton={false}
           triggerButton={
             <div className="cursor-pointer">
               <MediaPreviewBox className="h-full w-full" value={value}>

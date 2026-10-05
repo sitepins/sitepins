@@ -385,10 +385,11 @@ export const RichEditor = ({
         return true;
       });
 
-      const mdContent = editor
-        .getApi(MarkdownPlugin)
+      const mdContent = editor.getApi(MarkdownPlugin).markdown.serialize({
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        .markdown.serialize({ value: cleanValue as any }) as string;
+        value: cleanValue as any,
+        preserveEmptyParagraphs: false,
+      }) as string;
 
       // Strip the cursor marker if it somehow leaked in
       const cleanMd = mdContent.replaceAll(CURSOR_MARKER, "");
@@ -441,6 +442,7 @@ export const RichEditor = ({
         const mdWithMarker = editor.getApi(MarkdownPlugin).markdown.serialize({
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           value: filteredClone as any,
+          preserveEmptyParagraphs: false,
         }) as string;
 
         const markerOffset = mdWithMarker.indexOf(marker);

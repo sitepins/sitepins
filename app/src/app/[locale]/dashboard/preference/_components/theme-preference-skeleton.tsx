@@ -1,13 +1,11 @@
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
+import { CardHeaderSkeleton } from "@/components/ui/card-skeleton";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export function ThemePreferenceSkeleton() {
   return (
     <Card>
-      <CardHeader>
-        <Skeleton className="h-7 w-32" />
-        <Skeleton className="h-4 w-72 max-w-full" />
-      </CardHeader>
+      <CardHeaderSkeleton titleClassName="w-32" descriptionClassName="w-72" />
       <CardContent>
         <div className="grid grid-cols-3 gap-4">
           {[...Array(3)].map((_, i) => (

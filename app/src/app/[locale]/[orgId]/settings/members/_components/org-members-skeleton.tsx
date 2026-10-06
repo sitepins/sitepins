@@ -1,26 +1,16 @@
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-} from "@/components/ui/card";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { CardHeaderSkeleton } from "@/components/ui/card-skeleton";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export function MembersSettingsSkeleton() {
   return (
     <>
       <Card>
-        {/* Card Header */}
-        <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-4">
-          <div className="flex flex-col gap-2">
-            <Skeleton className="h-6 w-32" />
-            <Skeleton className="h-4 w-48" />
-          </div>
-          <Skeleton className="hidden h-7 w-28 md:block" />
-        </CardHeader>
+        <CardHeaderSkeleton titleClassName="w-32" descriptionClassName="w-48">
+          <Skeleton className="hidden h-9 w-32 md:block" />
+        </CardHeaderSkeleton>
 
-        {/* Card Content - Member List */}
-        <CardContent className="pt-0">
+        <CardContent>
           <div className="divide-border border-border divide-y rounded-xl border">
             {[...Array(5)].map((_, i) => (
               <div
@@ -46,7 +36,7 @@ export function MembersSettingsSkeleton() {
           </div>
         </CardContent>
         <CardFooter className="md:hidden">
-          <Skeleton className="h-7 w-full" />
+          <Skeleton className="h-9 w-full" />
         </CardFooter>
       </Card>
     </>

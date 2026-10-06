@@ -1,22 +1,33 @@
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
+import {
+  CardHeaderSkeleton,
+  SkeletonText,
+} from "@/components/ui/card-skeleton";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export function SandboxSettingsSkeleton() {
   return (
     <Card>
-      <CardHeader>
-        <div className="flex items-center gap-2">
-          <Skeleton className="size-5" />
-          <Skeleton className="h-6 w-36" />
+      <CardHeaderSkeleton titleClassName="w-36" descriptionClassName="w-96" />
+      <CardContent className="space-y-6">
+        <div className="space-y-4">
+          <div className="space-y-2 text-sm">
+            <div>
+              <SkeletonText className="w-48" />
+            </div>
+            <div>
+              <SkeletonText className="w-72" />
+            </div>
+            <div>
+              <SkeletonText className="w-80" />
+            </div>
+          </div>
+          <div className="space-y-2">
+            <Skeleton className="h-3.5 w-32" />
+            <Skeleton className="h-9 w-full" />
+          </div>
+          <Skeleton className="h-9 w-24" />
         </div>
-        <Skeleton className="h-4 w-72" />
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <Skeleton className="h-4 w-64" />
-        <Skeleton className="h-4 w-48" />
-        <Skeleton className="h-4 w-56" />
-        <Skeleton className="h-10 w-full" />
-        <Skeleton className="h-9 w-24" />
       </CardContent>
     </Card>
   );

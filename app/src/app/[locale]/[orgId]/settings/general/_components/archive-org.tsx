@@ -43,7 +43,7 @@ export default function ArchiveOrg({
   return (
     <Card className="border-border">
       <CardHeader>
-        <CardTitle className="flex items-center text-lg">
+        <CardTitle>
           {isArchived
             ? tOrgGeneralArchive("title_restore")
             : tOrgGeneralArchive("title_archive")}

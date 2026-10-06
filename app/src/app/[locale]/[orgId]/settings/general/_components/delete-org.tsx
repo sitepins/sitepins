@@ -43,9 +43,7 @@ export default function DeleteOrg({
   return (
     <Card className="order-3">
       <CardHeader>
-        <CardTitle className="flex items-center text-lg">
-          {tOrgGeneralDelete("title")}
-        </CardTitle>
+        <CardTitle>{tOrgGeneralDelete("title")}</CardTitle>
         <CardDescription>{tOrgGeneralDelete("description")}</CardDescription>
       </CardHeader>
 

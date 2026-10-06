@@ -1,25 +1,12 @@
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { CardHeaderSkeleton } from "@/components/ui/card-skeleton";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function GitSettingsSkeleton() {
   return (
     <>
       <Card>
-        <CardHeader className="grid-cols-1">
-          <CardTitle>
-            <Skeleton className="h-6 w-32 max-w-full" />
-          </CardTitle>
-          <CardDescription>
-            <Skeleton className="h-4 w-72 max-w-full" />
-          </CardDescription>
-        </CardHeader>
+        <CardHeaderSkeleton titleClassName="w-32" descriptionClassName="w-72" />
         <CardContent>
           <div className="border-border flex items-center justify-between rounded-lg border p-4">
             <div className="flex items-center gap-3">
@@ -37,14 +24,7 @@ export default function GitSettingsSkeleton() {
       </Card>
 
       <Card>
-        <CardHeader className="grid-cols-1">
-          <CardTitle>
-            <Skeleton className="h-6 w-32 max-w-full" />
-          </CardTitle>
-          <CardDescription>
-            <Skeleton className="h-4 w-80 max-w-full" />
-          </CardDescription>
-        </CardHeader>
+        <CardHeaderSkeleton titleClassName="w-32" descriptionClassName="w-80" />
         <CardContent>
           <div className="border-border flex items-center justify-between rounded-lg border p-4">
             <div className="flex items-center gap-3">

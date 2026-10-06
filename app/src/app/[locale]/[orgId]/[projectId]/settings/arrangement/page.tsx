@@ -28,9 +28,7 @@ function ArrangementHeaderSection({ isModified }: { isModified: boolean }) {
           {tProjectSettingsArrangement("description")}
         </CardDescription>
       </CardHeader>
-      <CardContent
-        className={`p-4 md:p-6 ${isModified ? "hidden md:block" : ""}`}
-      >
+      <CardContent className={isModified ? "hidden md:block" : undefined}>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div className="space-y-4">
             <div className="flex items-start gap-3">

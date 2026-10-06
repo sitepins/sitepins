@@ -3,8 +3,9 @@
 import { BucketImageUpload } from "@/components/bucket-image-upload";
 import {
   Card,
-  CardContent,
+  CardAction,
   CardDescription,
+  CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { IS_DEMO } from "@/lib/constant";
@@ -42,24 +43,22 @@ export default function OrgAvatar(org: TOrg & { canUpdate?: boolean }) {
 
   return (
     <Card>
-      <CardContent className="flex flex-col-reverse justify-between gap-2 sm:flex-row sm:gap-4">
-        <div className="space-y-2.5">
-          <CardTitle className="flex items-center text-lg">
-            {tOrgAvatar("title")}
-          </CardTitle>
-          <CardDescription>{tOrgAvatar("description")}</CardDescription>
-        </div>
-        <BucketImageUpload
-          usedFor="org"
-          folder="sitepins/orgs"
-          defaultImage={org_image}
-          defaultLabel={org_name?.charAt(0)}
-          onUploadSuccess={onUploadSuccess}
-          altText={org_name || "Organization"}
-          size="lg"
-          isDisabled={IS_DEMO || isPending || !canUpdate}
-        />
-      </CardContent>
+      <CardHeader>
+        <CardTitle>{tOrgAvatar("title")}</CardTitle>
+        <CardDescription>{tOrgAvatar("description")}</CardDescription>
+        <CardAction>
+          <BucketImageUpload
+            usedFor="org"
+            folder="sitepins/orgs"
+            defaultImage={org_image}
+            defaultLabel={org_name?.charAt(0)}
+            onUploadSuccess={onUploadSuccess}
+            altText={org_name || "Organization"}
+            size="lg"
+            isDisabled={IS_DEMO || isPending || !canUpdate}
+          />
+        </CardAction>
+      </CardHeader>
     </Card>
   );
 }

@@ -150,7 +150,7 @@ export default function Arrangement({
 
   return (
     <>
-      <CardContent className="p-4 pt-0 md:p-6">
+      <CardContent className="pt-0">
         <Reorder.Group
           axis="y"
           className="relative"

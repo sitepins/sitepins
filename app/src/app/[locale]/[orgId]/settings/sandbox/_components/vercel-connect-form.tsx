@@ -16,6 +16,7 @@ import {
 import { Button } from "@/components/ui/button";
 import {
   Card,
+  CardAction,
   CardContent,
   CardDescription,
   CardHeader,
@@ -378,15 +379,11 @@ export default function VercelConnectForm({
       <>
         <Card>
           <CardHeader>
-            <div className="flex flex-wrap items-center justify-between gap-4">
-              <div>
-                <CardTitle>{tOrgSandbox("title")}</CardTitle>
-                <CardDescription className="mt-1">
-                  {tOrgSandbox("description")}
-                </CardDescription>
-              </div>
+            <CardTitle>{tOrgSandbox("title")}</CardTitle>
+            <CardDescription>{tOrgSandbox("description")}</CardDescription>
+            <CardAction>
               <UnlockCta labelKey="sandbox" />
-            </div>
+            </CardAction>
           </CardHeader>
         </Card>
         {securityCard}

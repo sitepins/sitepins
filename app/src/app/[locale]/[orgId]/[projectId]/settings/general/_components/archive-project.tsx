@@ -47,7 +47,7 @@ export default function ArchiveProject({
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center text-lg">
+        <CardTitle>
           {isArchived
             ? tProjectSettingsGeneralArchive("restore_title")
             : tProjectSettingsGeneralArchive("archive_title")}

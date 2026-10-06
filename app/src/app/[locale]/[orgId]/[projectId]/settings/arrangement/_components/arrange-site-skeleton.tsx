@@ -4,7 +4,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 export default function ArrangeSiteSkeleton() {
   return (
     <>
-      <CardContent>
+      <CardContent className="pt-0">
         {Array.from({ length: 5 }).map((_, i) => (
           <div
             key={i}
@@ -30,7 +30,7 @@ export default function ArrangeSiteSkeleton() {
         ))}
       </CardContent>
       <CardFooter>
-        <Skeleton className="h-8 w-full sm:w-32" />
+        <Skeleton className="h-9 w-full sm:w-32" />
       </CardFooter>
     </>
   );

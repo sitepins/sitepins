@@ -24,7 +24,7 @@ function CardHeader({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="card-header"
       className={cn(
-        "group/card-header border-border @container/card-header grid auto-rows-min items-start gap-1 space-y-2 rounded-t-xl px-6 py-3 group-data-[size=sm]/card:px-3 has-data-[slot=card-action]:grid-cols-[1fr_auto] has-data-[slot=card-description]:grid-rows-[auto_auto] [.border-b]:pb-4 group-data-[size=sm]/card:[.border-b]:pb-3",
+        "group/card-header border-border @container/card-header grid auto-rows-min items-start rounded-t-xl px-6 py-3 group-data-[size=sm]/card:px-3 has-data-[slot=card-action]:grid-cols-[1fr_auto] has-data-[slot=card-description]:grid-rows-[auto_1fr] [.border-b]:pb-4 group-data-[size=sm]/card:[.border-b]:pb-3",
         className,
       )}
       {...props}
@@ -37,7 +37,7 @@ function CardTitle({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="card-title"
       className={cn(
-        "text-base leading-snug font-medium group-data-[size=sm]/card:text-sm",
+        "col-start-1 text-base leading-snug font-medium group-data-[size=sm]/card:text-sm",
         className,
       )}
       {...props}
@@ -49,7 +49,10 @@ function CardDescription({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="card-description"
-      className={cn("text-muted-foreground text-sm", className)}
+      className={cn(
+        "text-muted-foreground col-start-1 mt-1.5 text-sm first:mt-0",
+        className,
+      )}
       {...props}
     />
   );
@@ -60,7 +63,7 @@ function CardAction({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="card-action"
       className={cn(
-        "col-start-2 row-span-2 row-start-1 self-start justify-self-end",
+        "col-start-2 row-span-2 row-start-1 self-center justify-self-end",
         className,
       )}
       {...props}

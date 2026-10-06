@@ -4,6 +4,7 @@ import Avatar from "@/components/avatar";
 import { Button } from "@/components/ui/button";
 import {
   Card,
+  CardAction,
   CardContent,
   CardDescription,
   CardFooter,
@@ -76,28 +77,23 @@ export default function OrgMembers(org: TOrg) {
 
   return (
     <Card>
-      <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-4">
-        <div className="flex flex-col gap-1">
-          <CardTitle>{tOrgMembers("title")}</CardTitle>
-          <CardDescription>{tOrgMembers("description")}</CardDescription>
-        </div>
-
-        {isRestricted && isOwner ? (
-          <UnlockCta
-            labelKey="members_add"
-            className="hidden h-9 px-4 md:flex"
-          />
-        ) : (
-          <AddMemberDialog
-            className="hidden md:flex"
-            orgId={org_id}
-            canManageMembers={canManageMembers}
-            isLoading={isUpdating}
-          />
-        )}
+      <CardHeader>
+        <CardTitle>{tOrgMembers("title")}</CardTitle>
+        <CardDescription>{tOrgMembers("description")}</CardDescription>
+        <CardAction className="hidden md:flex">
+          {isRestricted && isOwner ? (
+            <UnlockCta labelKey="members_add" className="h-9 px-4" />
+          ) : (
+            <AddMemberDialog
+              orgId={org_id}
+              canManageMembers={canManageMembers}
+              isLoading={isUpdating}
+            />
+          )}
+        </CardAction>
       </CardHeader>
 
-      <CardContent className="pt-0">
+      <CardContent>
         <div className="divide-border border-border divide-y rounded-xl border">
           {members?.map((member) => (
             <MemberListItem

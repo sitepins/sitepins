@@ -1,13 +1,11 @@
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
+import { CardHeaderSkeleton } from "@/components/ui/card-skeleton";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export function CoAuthorPreferenceSkeleton() {
   return (
     <Card>
-      <CardHeader className="grid-cols-1">
-        <Skeleton className="h-7 w-44" />
-        <Skeleton className="h-4 w-80 max-w-full" />
-      </CardHeader>
+      <CardHeaderSkeleton titleClassName="w-44" descriptionClassName="w-80" />
       <CardContent>
         <div className="grid gap-4 md:grid-cols-2">
           {[...Array(2)].map((_, i) => (

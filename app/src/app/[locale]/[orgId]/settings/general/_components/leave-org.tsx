@@ -43,9 +43,7 @@ export default function LeaveOrg({
   return (
     <Card className="order-3">
       <CardHeader>
-        <CardTitle className="flex items-center text-lg">
-          {tOrgGeneralLeave("title")}
-        </CardTitle>
+        <CardTitle>{tOrgGeneralLeave("title")}</CardTitle>
         <CardDescription>{tOrgGeneralLeave("description")}</CardDescription>
       </CardHeader>
 

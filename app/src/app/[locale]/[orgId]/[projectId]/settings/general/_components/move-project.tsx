@@ -66,10 +66,7 @@ export default function MoveProject({
   return (
     <Card className="border-border">
       <CardHeader>
-        <CardTitle className="flex items-center text-lg">
-          {/* <FolderInput className="text-accent mr-2 size-5" /> */}
-          {tProjectSettingsGeneralMove("title")}
-        </CardTitle>
+        <CardTitle>{tProjectSettingsGeneralMove("title")}</CardTitle>
         <CardDescription>
           {tProjectSettingsGeneralMove("description")}
         </CardDescription>

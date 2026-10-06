@@ -5,6 +5,7 @@ import { UnlockCta } from "@/components/unlock-cta";
 import { Button } from "@/components/ui/button";
 import {
   Card,
+  CardAction,
   CardContent,
   CardDescription,
   CardFooter,
@@ -221,29 +222,22 @@ const SnippetList = () => {
     <>
       <Card>
         <CardHeader>
-          <div className="flex flex-wrap items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <div className="space-y-3">
-                <CardTitle>{tProjectSettingsSnippets("title")}</CardTitle>
-                <CardDescription>
-                  {tProjectSettingsSnippets("description")}
-                </CardDescription>
-              </div>
-            </div>
+          <CardTitle>{tProjectSettingsSnippets("title")}</CardTitle>
+          <CardDescription>
+            {tProjectSettingsSnippets("description")}
+          </CardDescription>
+          <CardAction className="hidden md:flex">
             {isLoading || !isConfigReady ? (
-              <Skeleton className="hidden h-9 w-36 md:block" />
+              <Skeleton className="h-9 w-36" />
             ) : hasAdvancedFeatures ? (
-              <Button className="hidden md:flex" onClick={handleCreateSnippet}>
+              <Button onClick={handleCreateSnippet}>
                 <Plus className="me-2 size-4" />
                 {tCommon("actions.add")}
               </Button>
             ) : (
-              <UnlockCta
-                labelKey="snippets_add"
-                className="hidden h-9 px-4 md:flex"
-              />
+              <UnlockCta labelKey="snippets_add" className="h-9 px-4" />
             )}
-          </div>
+          </CardAction>
         </CardHeader>
 
         <CardContent>

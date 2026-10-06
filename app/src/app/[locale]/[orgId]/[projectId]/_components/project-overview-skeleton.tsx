@@ -1,5 +1,6 @@
 import Container from "@/components/container";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
+import { CardHeaderSkeleton } from "@/components/ui/card-skeleton";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export function ProjectOverviewSkeleton() {
@@ -24,7 +25,7 @@ export function ProjectOverviewSkeleton() {
             <li>
               <Skeleton className="mb-2 h-3.5 w-24" />
               <div className="mt-1">
-                <Skeleton className="h-[22px] w-16 rounded-full" />
+                <Skeleton className="h-5.5 w-16 rounded-full" />
               </div>
             </li>
             <li>
@@ -45,22 +46,25 @@ export function ProjectOverviewSkeleton() {
         </div>
       </div>
       {/* Latest Changes Skeleton */}
-      <Card>
-        <CardHeader className="border-border border-b p-4">
-          <Skeleton className="mb-2 h-7 w-full max-w-48" />
-          <Skeleton className="h-4 w-72" />
-        </CardHeader>
-        <CardContent className="px-0 pb-4">
-          <div className="space-y-4 px-4 py-4">
-            {[1, 2].map((i) => (
-              <div key={i} className="flex items-start gap-4">
-                <Skeleton className="size-10 rounded-full" />
-                <div className="flex-1 space-y-2">
-                  <Skeleton className="h-4 w-3/4" />
-                  <Skeleton className="h-3 w-1/2" />
+      <Card className="gap-0">
+        <CardHeaderSkeleton
+          className="border-border border-b"
+          titleClassName="w-48"
+          descriptionClassName="w-72"
+        />
+        <CardContent className="p-0">
+          <div className="px-4">
+            <div className="space-y-4 py-3">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="flex items-center gap-4">
+                  <Skeleton className="size-10 rounded-full" />
+                  <div className="flex-1 space-y-2">
+                    <Skeleton className="h-4 w-3/4 rounded" />
+                    <Skeleton className="h-3 w-1/2 rounded" />
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </CardContent>
       </Card>

@@ -3,8 +3,9 @@
 import { BucketImageUpload } from "@/components/bucket-image-upload";
 import {
   Card,
-  CardContent,
+  CardAction,
   CardDescription,
+  CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { IS_DEMO } from "@/lib/constant";
@@ -43,23 +44,23 @@ export default function ProjectAvatar(
 
   return (
     <Card>
-      <CardContent className="flex flex-col-reverse gap-4 sm:flex-row sm:justify-between">
-        <div className="space-y-2.5">
-          <CardTitle>{tProjectAvatar("title")}</CardTitle>
-          <CardDescription>{tProjectAvatar("description")}</CardDescription>
-        </div>
-        <BucketImageUpload
-          usedFor="site"
-          folder="sitepins/sites"
-          defaultImage={project_image}
-          defaultLabel={project_name?.charAt(0)}
-          onUploadSuccess={onUploadSuccess}
-          altText={project_name || "Project"}
-          size="lg"
-          isDisabled={IS_DEMO || !canUpdate}
-          siteUrl={site_url}
-        />
-      </CardContent>
+      <CardHeader>
+        <CardTitle>{tProjectAvatar("title")}</CardTitle>
+        <CardDescription>{tProjectAvatar("description")}</CardDescription>
+        <CardAction>
+          <BucketImageUpload
+            usedFor="site"
+            folder="sitepins/sites"
+            defaultImage={project_image}
+            defaultLabel={project_name?.charAt(0)}
+            onUploadSuccess={onUploadSuccess}
+            altText={project_name || "Project"}
+            size="lg"
+            isDisabled={IS_DEMO || !canUpdate}
+            siteUrl={site_url}
+          />
+        </CardAction>
+      </CardHeader>
     </Card>
   );
 }

@@ -4,8 +4,9 @@ import { BucketImageUpload } from "@/components/bucket-image-upload";
 import FormError from "@/components/form-error";
 import {
   Card,
-  CardContent,
+  CardAction,
   CardDescription,
+  CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { authClient, Session } from "@/lib/auth/auth-client";
@@ -55,12 +56,10 @@ export default function UserAvatar({ auth }: { auth: Session }) {
 
   return (
     <Card id="display-picture">
-      <CardContent className="flex justify-between gap-4">
-        <div className="space-y-2.5">
-          <CardTitle>{tUserAvatar("title")}</CardTitle>
-          <CardDescription>{tUserAvatar("description")}</CardDescription>
-        </div>
-        <div className="space-y-4">
+      <CardHeader>
+        <CardTitle>{tUserAvatar("title")}</CardTitle>
+        <CardDescription>{tUserAvatar("description")}</CardDescription>
+        <CardAction className="space-y-4">
           <BucketImageUpload
             usedFor="user"
             folder="sitepins/users"
@@ -75,8 +74,8 @@ export default function UserAvatar({ auth }: { auth: Session }) {
 
           {/* @ts-ignore */}
           <FormError error={error?.data?.errorMessage} />
-        </div>
-      </CardContent>
+        </CardAction>
+      </CardHeader>
     </Card>
   );
 }

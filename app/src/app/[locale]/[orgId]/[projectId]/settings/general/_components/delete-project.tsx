@@ -47,9 +47,7 @@ export default function DeleteProject({
   return (
     <Card className="ring-destructive/20 dark:ring-destructive/40">
       <CardHeader>
-        <CardTitle className="flex items-center text-lg">
-          {tProjectSettingsGeneralDelete("title")}
-        </CardTitle>
+        <CardTitle>{tProjectSettingsGeneralDelete("title")}</CardTitle>
         <CardDescription>
           {tProjectSettingsGeneralDelete("description")}
         </CardDescription>

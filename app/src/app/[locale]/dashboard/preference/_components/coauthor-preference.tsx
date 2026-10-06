@@ -50,9 +50,7 @@ export default function CoAuthorPreference({
   return (
     <Card id="coauthor">
       <CardHeader>
-        <CardTitle className="text-2xl font-semibold tracking-tight">
-          {tDashboardPreferenceCoauthor("title")}
-        </CardTitle>
+        <CardTitle>{tDashboardPreferenceCoauthor("title")}</CardTitle>
         <CardDescription>
           {tDashboardPreferenceCoauthor("description")}
         </CardDescription>

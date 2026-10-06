@@ -12,12 +12,35 @@ export function ProjectOverviewSkeleton() {
         </div>
         <div className="flex flex-col justify-start px-6 pb-6 md:col-span-5 md:px-0 md:pt-6 lg:col-span-6">
           <ul className="space-y-4">
-            {[1, 2, 3, 4].map((i) => (
-              <li key={i}>
-                <Skeleton className="mb-1 h-3 w-20" />
-                <Skeleton className="h-5 w-40" />
-              </li>
-            ))}
+            <li>
+              <div className="mb-2 flex items-center gap-2">
+                <Skeleton className="h-3.5 w-16" />
+                <Skeleton className="size-3.5" />
+              </div>
+              <div className="mt-1 flex h-6 items-center">
+                <Skeleton className="h-4 w-64 max-w-full" />
+              </div>
+            </li>
+            <li>
+              <Skeleton className="mb-2 h-3.5 w-24" />
+              <div className="mt-1">
+                <Skeleton className="h-[22px] w-16 rounded-full" />
+              </div>
+            </li>
+            <li>
+              <Skeleton className="mb-2 h-3.5 w-24" />
+              <div className="mt-1 flex h-6 items-center">
+                <Skeleton className="h-4 w-56 max-w-full" />
+              </div>
+            </li>
+            <li>
+              <Skeleton className="mb-2 h-3.5 w-14" />
+              <div className="flex items-center gap-2">
+                <Skeleton className="size-5 rounded-full" />
+                <Skeleton className="h-7 w-25 rounded-md" />
+                <Skeleton className="size-3.5" />
+              </div>
+            </li>
           </ul>
         </div>
       </div>

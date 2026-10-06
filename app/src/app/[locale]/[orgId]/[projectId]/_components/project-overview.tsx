@@ -2,9 +2,10 @@
 
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useDeploymentStatusPollingInterval } from "@/hooks/use-deployment-status-polling";
-import { useGitProvider } from "@/hooks/use-git-provider";
 import { useFeatureAccess } from "@/hooks/use-feature-access";
+import { useGitProvider } from "@/hooks/use-git-provider";
 import {
   getDeploymentStatusI18nKey,
   getDeploymentStatusVariant,
@@ -17,7 +18,7 @@ import { TProject } from "@/redux/features/project/type";
 import { TConfig } from "@/types";
 import { SiGithub, SiGitlab } from "@icons-pack/react-simple-icons";
 import { formatDistanceToNow } from "date-fns";
-import { ExternalLink, Loader2, PencilLine } from "lucide-react";
+import { ExternalLink, PencilLine } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useParams } from "next/navigation";
@@ -140,7 +141,7 @@ export default function ProjectOverview({
             </Label>
             <div className="mt-1">
               {hasAdvancedFeatures && isStatusLoading ? (
-                <Loader2 className="size-4 animate-spin opacity-50" />
+                <Skeleton className="h-5.5 w-16 rounded-full" />
               ) : hasAdvancedFeatures &&
                 isDisplayableDeploymentStatus(buildStatus) ? (
                 <Badge

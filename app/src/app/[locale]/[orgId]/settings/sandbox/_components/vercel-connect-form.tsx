@@ -13,6 +13,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -25,12 +26,18 @@ import {
 } from "@/components/ui/card";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { cn } from "@/lib/utils/cn";
 import { useUpdateOrgMutation } from "@/redux/features/orgs/org-api";
 import { TOrg } from "@/redux/features/orgs/type";
-import { CheckCircle2, ExternalLink, RefreshCw, Unlink } from "lucide-react";
+import {
+  ExternalLink,
+  RefreshCw,
+  Triangle,
+  Unlink,
+  User,
+  Users,
+} from "lucide-react";
 import { useTranslations } from "next-intl";
 import _Link from "next/link";
 import { useState } from "react";
@@ -239,106 +246,100 @@ export default function VercelConnectForm({
   // ── Team picker ───────────────────────────────────────────────────────────
 
   const teamPicker = pendingConnect && (
-    <div className="space-y-2">
-      <Label>{tOrgSandbox("select_team_title")}</Label>
+    <Field>
+      <FieldLabel>{tOrgSandbox("select_team_title")}</FieldLabel>
       <RadioGroup
         value={selectedTeamId}
         onValueChange={setSelectedTeamId}
         disabled={isConnecting}
-        className="space-y-1.5"
       >
-        {/* Personal account */}
-        <label
-          className={cn(
-            "flex cursor-pointer items-center gap-3 rounded-lg border px-3 py-2.5 transition-colors",
-            isConnecting && "cursor-not-allowed opacity-60",
-            selectedTeamId === ""
-              ? "border-primary bg-primary/5"
-              : "border-border hover:bg-muted/50",
-          )}
-        >
-          <RadioGroupItem value="" id="team-personal" disabled={isConnecting} />
-          <div className="min-w-0 flex-1">
-            <p className="text-sm font-medium">
-              {tOrgSandbox("personal_account")}
-            </p>
-            <p className="text-muted-foreground font-mono text-xs">
-              @{pendingConnect.username}
-            </p>
-          </div>
-        </label>
-
-        {/* Teams */}
-        {pendingConnect.teams.map((team) => (
+        {[
+          {
+            id: "",
+            name: tOrgSandbox("personal_account"),
+            slug: pendingConnect.username,
+            Icon: User,
+          },
+          ...pendingConnect.teams.map((team) => ({
+            id: team.id,
+            name: team.name,
+            slug: team.slug,
+            Icon: Users,
+          })),
+        ].map(({ id, name, slug, Icon }) => (
           <label
-            key={team.id}
+            key={id || "personal"}
             className={cn(
-              "flex cursor-pointer items-center gap-3 rounded-lg border px-3 py-2.5 transition-colors",
+              "flex cursor-pointer items-center justify-between gap-3 rounded-lg border p-4 transition-colors",
               isConnecting && "cursor-not-allowed opacity-60",
-              selectedTeamId === team.id
+              selectedTeamId === id
                 ? "border-primary bg-primary/5"
                 : "border-border hover:bg-muted/50",
             )}
           >
+            <div className="flex min-w-0 items-center gap-3">
+              <div className="bg-primary/10 text-primary flex size-10 shrink-0 items-center justify-center rounded-lg">
+                <Icon className="size-5" />
+              </div>
+              <div className="min-w-0">
+                <p className="text-primary truncate font-medium">{name}</p>
+                <p className="text-muted-foreground truncate text-sm">
+                  @{slug}
+                </p>
+              </div>
+            </div>
             <RadioGroupItem
-              value={team.id}
-              id={`team-${team.id}`}
+              value={id}
+              id={`team-${id || "personal"}`}
               disabled={isConnecting}
             />
-            <div className="min-w-0 flex-1">
-              <p className="text-sm font-medium">{team.name}</p>
-              <p className="text-muted-foreground font-mono text-xs">
-                @{team.slug}
-              </p>
-            </div>
           </label>
         ))}
       </RadioGroup>
-    </div>
+    </Field>
   );
 
   // ── Connected status ──────────────────────────────────────────────────────
 
+  const projectName = vi?.project_name ?? vi?.project_id;
+  const projectUrl =
+    vi?.username && vi?.project_name
+      ? `https://vercel.com/${vi.username}/${vi.project_name}`
+      : null;
+
   const connectedStatus = (
-    <div className="border-border flex items-center gap-3 rounded-lg border p-4">
-      <div className="bg-success/10 text-success flex size-10 shrink-0 items-center justify-center rounded-lg">
-        <CheckCircle2 className="size-5" />
+    <div className="border-border flex items-center justify-between gap-3 rounded-lg border p-4">
+      <div className="flex min-w-0 items-center gap-3">
+        <div className="bg-primary/10 text-primary flex size-10 shrink-0 items-center justify-center rounded-lg">
+          <Triangle className="size-5" />
+        </div>
+        <div className="min-w-0">
+          {projectUrl ? (
+            <a
+              href={projectUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary flex items-center gap-1.5 font-medium hover:underline"
+            >
+              <span className="truncate">{projectName}</span>
+              <ExternalLink className="size-4 shrink-0 opacity-50" />
+            </a>
+          ) : (
+            <p className="text-primary truncate font-medium">{projectName}</p>
+          )}
+          <p className="text-muted-foreground truncate text-sm">
+            {[
+              vi?.username && `${tOrgSandbox("account")}: ${vi.username}`,
+              vi?.team_id && `${tOrgSandbox("team_label")}: ${vi.team_id}`,
+            ]
+              .filter(Boolean)
+              .join(" · ")}
+          </p>
+        </div>
       </div>
-      <div className="min-w-0 space-y-0.5">
-        <p className="font-medium">{tOrgSandbox("connected")}</p>
-        {vi?.username && (
-          <p className="text-muted-foreground text-sm">
-            {tOrgSandbox("account")}:{" "}
-            <span className="font-mono">{vi.username}</span>
-          </p>
-        )}
-        {vi?.team_id && (
-          <p className="text-muted-foreground text-sm">
-            {tOrgSandbox("team_label")}:{" "}
-            <span className="font-mono text-xs">{vi.team_id}</span>
-          </p>
-        )}
-        {(vi?.project_name ?? vi?.project_id) && (
-          <p className="text-muted-foreground text-sm">
-            {tOrgSandbox("project_label")}:{" "}
-            {vi?.username && vi?.project_name ? (
-              <a
-                href={`https://vercel.com/${vi.username}/${vi.project_name}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary inline-flex items-center gap-1 font-mono text-xs underline"
-              >
-                {vi.project_name}
-                <ExternalLink className="size-3" />
-              </a>
-            ) : (
-              <span className="font-mono text-xs">
-                {vi?.project_name ?? vi?.project_id}
-              </span>
-            )}
-          </p>
-        )}
-      </div>
+      <Badge variant="success" className="shrink-0">
+        {tOrgSandbox("connected")}
+      </Badge>
     </div>
   );
 
@@ -496,7 +497,7 @@ export default function VercelConnectForm({
           <CardDescription>{tOrgSandbox("description")}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          {isConnected && connectedStatus}
+          {isConnected && !showForm && connectedStatus}
           {!isConnected && !canUpdate && (
             <p className="text-muted-foreground text-sm">
               {tOrgSandbox("no_permission")}

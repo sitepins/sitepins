@@ -19,9 +19,11 @@ import {
   CardAction,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Field, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -41,6 +43,8 @@ type SandboxConnectFormProps = {
 };
 
 type Team = { id: string; name: string; slug: string };
+
+const TOKEN_FORM_ID = "sandbox-token-form";
 
 const SANDBOX_NOTICE_KEYS = [
   "security0",
@@ -186,10 +190,19 @@ export default function VercelConnectForm({
     }
   };
 
+  const isBusy = isValidating || isConnecting;
+
   // ── Token input form ──────────────────────────────────────────────────────
 
   const tokenForm = (
-    <div className="space-y-4">
+    <form
+      id={TOKEN_FORM_ID}
+      className="space-y-4"
+      onSubmit={(e) => {
+        e.preventDefault();
+        if (!isBusy) handleValidate(token);
+      }}
+    >
       <ol className="text-muted-foreground space-y-2 text-sm">
         <li>
           1.{" "}
@@ -207,144 +220,226 @@ export default function VercelConnectForm({
         <li>3. {tOrgSandbox("step3")}</li>
       </ol>
 
-      <div className="space-y-2">
-        <Label htmlFor="sandbox-token">{tOrgSandbox("token_label")}</Label>
+      <Field>
+        <FieldLabel htmlFor="sandbox-token">
+          {tOrgSandbox("token_label")}
+        </FieldLabel>
         <Input
           id="sandbox-token"
           type="password"
           placeholder={tOrgSandbox("token_placeholder")}
           value={token}
           onChange={(e) => setToken(e.target.value)}
-          onKeyDown={(e) =>
-            e.key === "Enter" &&
-            !isValidating &&
-            !isConnecting &&
-            handleValidate(token)
-          }
-          disabled={isValidating || isConnecting}
+          disabled={isBusy}
         />
-      </div>
-
-      <div className="flex items-center gap-3">
-        <Button
-          onClick={() => handleValidate(token)}
-          disabled={token.trim().length < 20}
-          isLoading={isValidating || isConnecting}
-        >
-          {isValidating
-            ? tOrgSandbox("status_validating")
-            : isConnecting
-              ? connectStatus || tOrgSandbox("connecting")
-              : isConnected
-                ? tOrgSandbox("save_token_btn")
-                : tOrgSandbox("connect_btn")}
-        </Button>
-        {isConnected && (
-          <Button
-            variant="ghost"
-            size="sm"
-            disabled={isValidating || isConnecting}
-            onClick={() => setShowUpdateForm(false)}
-          >
-            {tOrgSandbox("cancel_btn")}
-          </Button>
-        )}
-      </div>
-    </div>
+      </Field>
+    </form>
   );
 
   // ── Team picker ───────────────────────────────────────────────────────────
 
   const teamPicker = pendingConnect && (
-    <div className="space-y-4">
-      <div className="space-y-2">
-        <Label>{tOrgSandbox("select_team_title")}</Label>
-        <RadioGroup
-          value={selectedTeamId}
-          onValueChange={setSelectedTeamId}
-          disabled={isConnecting}
-          className="space-y-1.5"
+    <div className="space-y-2">
+      <Label>{tOrgSandbox("select_team_title")}</Label>
+      <RadioGroup
+        value={selectedTeamId}
+        onValueChange={setSelectedTeamId}
+        disabled={isConnecting}
+        className="space-y-1.5"
+      >
+        {/* Personal account */}
+        <label
+          className={cn(
+            "flex cursor-pointer items-center gap-3 rounded-lg border px-3 py-2.5 transition-colors",
+            isConnecting && "cursor-not-allowed opacity-60",
+            selectedTeamId === ""
+              ? "border-primary bg-primary/5"
+              : "border-border hover:bg-muted/50",
+          )}
         >
-          {/* Personal account */}
+          <RadioGroupItem value="" id="team-personal" disabled={isConnecting} />
+          <div className="min-w-0 flex-1">
+            <p className="text-sm font-medium">
+              {tOrgSandbox("personal_account")}
+            </p>
+            <p className="text-muted-foreground font-mono text-xs">
+              @{pendingConnect.username}
+            </p>
+          </div>
+        </label>
+
+        {/* Teams */}
+        {pendingConnect.teams.map((team) => (
           <label
+            key={team.id}
             className={cn(
               "flex cursor-pointer items-center gap-3 rounded-lg border px-3 py-2.5 transition-colors",
               isConnecting && "cursor-not-allowed opacity-60",
-              selectedTeamId === ""
+              selectedTeamId === team.id
                 ? "border-primary bg-primary/5"
                 : "border-border hover:bg-muted/50",
             )}
           >
             <RadioGroupItem
-              value=""
-              id="team-personal"
+              value={team.id}
+              id={`team-${team.id}`}
               disabled={isConnecting}
             />
             <div className="min-w-0 flex-1">
-              <p className="text-sm font-medium">
-                {tOrgSandbox("personal_account")}
-              </p>
+              <p className="text-sm font-medium">{team.name}</p>
               <p className="text-muted-foreground font-mono text-xs">
-                @{pendingConnect.username}
+                @{team.slug}
               </p>
             </div>
           </label>
+        ))}
+      </RadioGroup>
+    </div>
+  );
 
-          {/* Teams */}
-          {pendingConnect.teams.map((team) => (
-            <label
-              key={team.id}
-              className={cn(
-                "flex cursor-pointer items-center gap-3 rounded-lg border px-3 py-2.5 transition-colors",
-                isConnecting && "cursor-not-allowed opacity-60",
-                selectedTeamId === team.id
-                  ? "border-primary bg-primary/5"
-                  : "border-border hover:bg-muted/50",
-              )}
-            >
-              <RadioGroupItem
-                value={team.id}
-                id={`team-${team.id}`}
-                disabled={isConnecting}
-              />
-              <div className="min-w-0 flex-1">
-                <p className="text-sm font-medium">{team.name}</p>
-                <p className="text-muted-foreground font-mono text-xs">
-                  @{team.slug}
-                </p>
-              </div>
-            </label>
-          ))}
-        </RadioGroup>
+  // ── Connected status ──────────────────────────────────────────────────────
+
+  const connectedStatus = (
+    <div className="border-border flex items-center gap-3 rounded-lg border p-4">
+      <div className="bg-success/10 text-success flex size-10 shrink-0 items-center justify-center rounded-lg">
+        <CheckCircle2 className="size-5" />
       </div>
-
-      <div className="flex items-center gap-3">
-        <Button
-          onClick={() =>
-            handleFinalize(
-              pendingConnect.token,
-              pendingConnect.username,
-              selectedTeamId,
-            )
-          }
-          isLoading={isConnecting}
-        >
-          {isConnecting
-            ? connectStatus || tOrgSandbox("connecting")
-            : tOrgSandbox("connect_btn")}
-        </Button>
-        <Button
-          variant="ghost"
-          size="sm"
-          disabled={isConnecting}
-          onClick={() => {
-            setPendingConnect(null);
-          }}
-        >
-          {tOrgSandbox("change_token")}
-        </Button>
+      <div className="min-w-0 space-y-0.5">
+        <p className="font-medium">{tOrgSandbox("connected")}</p>
+        {vi?.username && (
+          <p className="text-muted-foreground text-sm">
+            {tOrgSandbox("account")}:{" "}
+            <span className="font-mono">{vi.username}</span>
+          </p>
+        )}
+        {vi?.team_id && (
+          <p className="text-muted-foreground text-sm">
+            {tOrgSandbox("team_label")}:{" "}
+            <span className="font-mono text-xs">{vi.team_id}</span>
+          </p>
+        )}
+        {(vi?.project_name ?? vi?.project_id) && (
+          <p className="text-muted-foreground text-sm">
+            {tOrgSandbox("project_label")}:{" "}
+            {vi?.username && vi?.project_name ? (
+              <a
+                href={`https://vercel.com/${vi.username}/${vi.project_name}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary inline-flex items-center gap-1 font-mono text-xs underline"
+              >
+                {vi.project_name}
+                <ExternalLink className="size-3" />
+              </a>
+            ) : (
+              <span className="font-mono text-xs">
+                {vi?.project_name ?? vi?.project_id}
+              </span>
+            )}
+          </p>
+        )}
       </div>
     </div>
+  );
+
+  // ── Footer actions ────────────────────────────────────────────────────────
+
+  const connectedActions = (
+    <>
+      <Button
+        variant="outline"
+        className="w-full sm:w-auto"
+        onClick={() => setShowUpdateForm(true)}
+      >
+        <RefreshCw className="me-2 size-4" />
+        {tOrgSandbox("update_token_btn")}
+      </Button>
+
+      <AlertDialog>
+        <AlertDialogTrigger asChild>
+          <Button variant="destructive" className="w-full sm:w-auto">
+            <Unlink className="me-2 size-4" />
+            {tOrgSandbox("disconnect_btn")}
+          </Button>
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              {tOrgSandbox("disconnect_confirm_title")}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {tOrgSandbox("disconnect_confirm_desc")}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>
+              {tOrgSandbox("disconnect_cancel_btn")}
+            </AlertDialogCancel>
+            <AlertDialogAction asChild>
+              <Button variant="destructive" onClick={handleDisconnect}>
+                {tOrgSandbox("disconnect_confirm_btn")}
+              </Button>
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
+  );
+
+  const formActions = pendingConnect ? (
+    <>
+      <Button
+        variant="outline"
+        className="w-full sm:w-auto"
+        disabled={isConnecting}
+        onClick={() => setPendingConnect(null)}
+      >
+        {tOrgSandbox("change_token")}
+      </Button>
+      <Button
+        className="w-full sm:w-auto"
+        isLoading={isConnecting}
+        onClick={() =>
+          handleFinalize(
+            pendingConnect.token,
+            pendingConnect.username,
+            selectedTeamId,
+          )
+        }
+      >
+        {isConnecting
+          ? connectStatus || tOrgSandbox("connecting")
+          : tOrgSandbox("connect_btn")}
+      </Button>
+    </>
+  ) : (
+    <>
+      {isConnected && (
+        <Button
+          variant="outline"
+          className="w-full sm:w-auto"
+          disabled={isBusy}
+          onClick={() => setShowUpdateForm(false)}
+        >
+          {tOrgSandbox("cancel_btn")}
+        </Button>
+      )}
+      <Button
+        className="w-full sm:w-auto"
+        form={TOKEN_FORM_ID}
+        type="submit"
+        disabled={token.trim().length < 20}
+        isLoading={isBusy}
+      >
+        {isValidating
+          ? tOrgSandbox("status_validating")
+          : isConnecting
+            ? connectStatus || tOrgSandbox("connecting")
+            : isConnected
+              ? tOrgSandbox("save_token_btn")
+              : tOrgSandbox("connect_btn")}
+      </Button>
+    </>
   );
 
   // ── Security notice card ─────────────────────────────────────────────────
@@ -391,6 +486,8 @@ export default function VercelConnectForm({
     );
   }
 
+  const showForm = canUpdate && (!isConnected || showUpdateForm);
+
   return (
     <>
       <Card>
@@ -398,118 +495,20 @@ export default function VercelConnectForm({
           <CardTitle>{tOrgSandbox("title")}</CardTitle>
           <CardDescription>{tOrgSandbox("description")}</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-6">
-          {isConnected ? (
-            <div className="space-y-4">
-              {/* Connected status */}
-              <div className="border-border flex items-start gap-3 rounded-lg border p-4">
-                <CheckCircle2 className="text-success mt-0.5 size-5 shrink-0" />
-                <div className="flex-1 space-y-1">
-                  <p className="font-medium">{tOrgSandbox("connected")}</p>
-                  {vi?.username && (
-                    <p className="text-muted-foreground text-sm">
-                      {tOrgSandbox("account")}:{" "}
-                      <span className="font-mono">{vi.username}</span>
-                    </p>
-                  )}
-                  {vi?.team_id && (
-                    <p className="text-muted-foreground text-sm">
-                      {tOrgSandbox("team_label")}:{" "}
-                      <span className="font-mono text-xs">{vi.team_id}</span>
-                    </p>
-                  )}
-                  {(vi?.project_name ?? vi?.project_id) && (
-                    <p className="text-muted-foreground text-sm">
-                      {tOrgSandbox("project_label")}:{" "}
-                      {vi?.username && vi?.project_name ? (
-                        <a
-                          href={`https://vercel.com/${vi.username}/${vi.project_name}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-primary inline-flex items-center gap-1 font-mono text-xs underline"
-                        >
-                          {vi.project_name}
-                          <ExternalLink className="size-3" />
-                        </a>
-                      ) : (
-                        <span className="font-mono text-xs">
-                          {vi?.project_name ?? vi?.project_id}
-                        </span>
-                      )}
-                    </p>
-                  )}
-                </div>
-              </div>
-
-              {/* Actions */}
-              {canUpdate && !showUpdateForm && (
-                <div className="flex items-center gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setShowUpdateForm(true)}
-                  >
-                    <RefreshCw className="me-2 size-4" />
-                    {tOrgSandbox("update_token_btn")}
-                  </Button>
-
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="text-destructive hover:text-destructive"
-                      >
-                        <Unlink className="me-2 size-4" />
-                        {tOrgSandbox("disconnect_btn")}
-                      </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>
-                          {tOrgSandbox("disconnect_confirm_title")}
-                        </AlertDialogTitle>
-                        <AlertDialogDescription>
-                          {tOrgSandbox("disconnect_confirm_desc")}
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>
-                          {tOrgSandbox("disconnect_cancel_btn")}
-                        </AlertDialogCancel>
-                        <AlertDialogAction asChild>
-                          <Button
-                            variant="destructive"
-                            onClick={handleDisconnect}
-                          >
-                            {tOrgSandbox("disconnect_confirm_btn")}
-                          </Button>
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
-                </div>
-              )}
-
-              {/* Update token flow */}
-              {canUpdate &&
-                showUpdateForm &&
-                (pendingConnect ? teamPicker : tokenForm)}
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {!canUpdate ? (
-                <p className="text-muted-foreground text-sm">
-                  {tOrgSandbox("no_permission")}
-                </p>
-              ) : pendingConnect ? (
-                teamPicker
-              ) : (
-                tokenForm
-              )}
-            </div>
+        <CardContent className="space-y-4">
+          {isConnected && connectedStatus}
+          {!isConnected && !canUpdate && (
+            <p className="text-muted-foreground text-sm">
+              {tOrgSandbox("no_permission")}
+            </p>
           )}
+          {showForm && (pendingConnect ? teamPicker : tokenForm)}
         </CardContent>
+        {canUpdate && (
+          <CardFooter className="gap-x-3">
+            {showForm ? formActions : connectedActions}
+          </CardFooter>
+        )}
       </Card>
       {securityCard}
     </>

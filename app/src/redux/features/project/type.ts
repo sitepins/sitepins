@@ -1,6 +1,11 @@
-import { projectSchema } from "@/lib/validate";
 import { TGitProvider } from "@/lib/utils/provider-checker";
+import { projectSchema } from "@/lib/validate";
 import { z } from "zod/v4";
+
+export type TProjectLastEdit = {
+  createdAt: string;
+  user_name?: string;
+};
 
 export type TProject<
   T = z.infer<typeof projectSchema> & {
@@ -26,6 +31,7 @@ export type TProject<
   variables: T;
   createdAt?: string | Date;
   updatedAt?: string | Date;
+  last_edit?: TProjectLastEdit;
   ownerData?: Array<{
     full_name: string;
     email: string;

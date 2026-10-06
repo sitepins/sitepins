@@ -158,13 +158,17 @@
   "org-sites": {
     "no_sites_found": "Сайты не найдены",
     "try_adjusting": "Попробуйте изменить поисковый запрос",
-    "site_name": "Название сайта",
-    "repository": "Репозиторий",
-    "status": "Статус",
     "archived": "В архиве",
-    "active": "Активный",
     "private": "Приватный",
-    "public": "Публичный"
+    "add_site_url": "Добавить URL сайта",
+    "edited": "Изменено {time}",
+    "edited_by": "{name}",
+    "added": "Добавлено {time}",
+    "open_editor": "Открыть редактор",
+    "visit_site": "Открыть сайт",
+    "view_repository": "Открыть на {provider}",
+    "settings": "Настройки",
+    "site_actions": "Действия с сайтом"
   },
   "org-archived": {
     "title": "Организация архивирована",

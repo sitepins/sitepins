@@ -215,6 +215,38 @@ const getProjectByOrgId = async ({ org_id }: { org_id: string }) => {
         org_id,
       },
     },
+    {
+      $lookup: {
+        from: "project_logs",
+        let: { projectId: "$project_id" },
+        pipeline: [
+          { $match: { $expr: { $eq: ["$project_id", "$$projectId"] } } },
+          { $sort: { createdAt: -1 } },
+          { $limit: 1 },
+          {
+            $lookup: {
+              from: "users",
+              localField: "user_id",
+              foreignField: "user_id",
+              as: "user",
+            },
+          },
+          {
+            $project: {
+              _id: 0,
+              createdAt: 1,
+              user_name: { $arrayElemAt: ["$user.full_name", 0] },
+            },
+          },
+        ],
+        as: "last_edit",
+      },
+    },
+    {
+      $addFields: {
+        last_edit: { $arrayElemAt: ["$last_edit", 0] },
+      },
+    },
   ]);
   return project;
 };

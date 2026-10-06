@@ -158,13 +158,17 @@
   "org-sites": {
     "no_sites_found": "未找到网站",
     "try_adjusting": "请尝试调整搜索关键词",
-    "site_name": "网站名称",
-    "repository": "代码仓库",
-    "status": "状态",
     "archived": "已归档",
-    "active": "活跃",
     "private": "私有",
-    "public": "公开"
+    "add_site_url": "添加网站 URL",
+    "edited": "{time}编辑",
+    "edited_by": "{name}",
+    "added": "{time}添加",
+    "open_editor": "打开编辑器",
+    "visit_site": "访问网站",
+    "view_repository": "在 {provider} 上查看",
+    "settings": "设置",
+    "site_actions": "网站操作"
   },
   "org-archived": {
     "title": "组织已归档",

@@ -12,42 +12,30 @@ export default function OrgSitesSkeleton() {
         <Skeleton className="h-10 w-36 rounded-lg" />
       </div>
 
-      {/* Table Header Skeleton - Hidden on mobile */}
-      <div className="bg-light hidden grid-cols-12 rounded-lg px-8 py-2.5 md:grid">
-        <Skeleton className="col-span-6 h-5 w-24" />
-        <Skeleton className="col-span-4 h-5 w-28" />
-        <Skeleton className="col-span-2 ms-auto h-5 w-16" />
-      </div>
-
-      {/* Site Items Skeleton */}
-      <div className="mt-6 space-y-4">
+      <div className="space-y-4">
         {[...Array(5)].map((_, i) => (
           <div
             key={i}
-            className="border-border relative flex grid-cols-12 items-center gap-x-3 overflow-hidden rounded-lg border px-2.5 *:py-8 md:grid lg:gap-x-0 lg:px-0"
+            className="border-border flex min-h-24 items-stretch gap-4 overflow-hidden rounded-lg border pe-2 lg:pe-4"
           >
-            {/* Avatar + Name Section — mirrors ProjectNameSection */}
-            <div className="col-span-6 flex h-full items-center py-0! md:gap-5">
-              {/* Avatar — mirrors ProjectIcon "card" container footprint */}
-              <Skeleton className="h-12 w-12 rounded-full lg:h-full lg:w-47 lg:rounded-none" />
-              {/* Name - Hidden on mobile */}
-              <Skeleton className="hidden h-6 w-32 md:block" />
+            <div className="flex shrink-0 items-center ps-4 lg:ps-0">
+              <Skeleton className="h-12 w-12 rounded-full lg:h-full lg:w-32 lg:rounded-none" />
             </div>
-
-            {/* Repository Section */}
-            <div className="col-span-4 w-full">
-              {/* Mobile: Project Name + Status */}
-              <div className="flex justify-between md:hidden">
-                <Skeleton className="h-6 w-28" />
-                <Skeleton className="h-6 w-16 rounded-full" />
-              </div>
-              {/* Desktop: Repository Link */}
-              <Skeleton className="hidden h-5 w-3/4 md:block" />
+            <div className="flex flex-1 flex-col justify-center gap-2 py-4">
+              <Skeleton className="h-6 w-40" />
+              <Skeleton className="h-4 w-56" />
             </div>
-
-            {/* Status Section - Hidden on mobile */}
-            <div className="col-span-2 me-6 hidden md:flex md:items-center md:justify-end">
-              <Skeleton className="h-6 w-16 rounded-full" />
+            <div className="hidden w-52 shrink-0 items-center lg:flex">
+              <Skeleton className="h-4 w-36" />
+            </div>
+            <div className="hidden w-28 shrink-0 items-center lg:flex">
+              <Skeleton className="h-4 w-16" />
+            </div>
+            <div className="hidden w-44 shrink-0 items-center lg:flex">
+              <Skeleton className="h-4 w-32" />
+            </div>
+            <div className="flex shrink-0 items-center">
+              <Skeleton className="size-8 rounded-md" />
             </div>
           </div>
         ))}

@@ -158,13 +158,17 @@
   "org-sites": {
     "no_sites_found": "Aucun site trouvé",
     "try_adjusting": "Essayez d'ajuster vos critères de recherche",
-    "site_name": "Nom du site",
-    "repository": "Dépôt",
-    "status": "Statut",
     "archived": "Archivé",
-    "active": "Actif",
     "private": "Privé",
-    "public": "Public"
+    "add_site_url": "Ajouter l’URL du site",
+    "edited": "Modifié {time}",
+    "edited_by": "par {name}",
+    "added": "Ajouté {time}",
+    "open_editor": "Ouvrir l’éditeur",
+    "visit_site": "Visiter le site",
+    "view_repository": "Voir sur {provider}",
+    "settings": "Paramètres",
+    "site_actions": "Actions du site"
   },
   "org-archived": {
     "title": "Organisation archivée",

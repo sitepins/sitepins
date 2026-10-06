@@ -158,13 +158,17 @@
   "org-sites": {
     "no_sites_found": "Nenhum site encontrado",
     "try_adjusting": "Tente ajustar seus termos de busca",
-    "site_name": "Nome do site",
-    "repository": "Repositório",
-    "status": "Status",
     "archived": "Arquivado",
-    "active": "Ativo",
     "private": "Privado",
-    "public": "Público"
+    "add_site_url": "Adicionar URL do site",
+    "edited": "Editado {time}",
+    "edited_by": "por {name}",
+    "added": "Adicionado {time}",
+    "open_editor": "Abrir editor",
+    "visit_site": "Visitar site",
+    "view_repository": "Ver no {provider}",
+    "settings": "Configurações",
+    "site_actions": "Ações do site"
   },
   "org-archived": {
     "title": "Organização arquivada",

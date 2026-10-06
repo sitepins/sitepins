@@ -158,13 +158,17 @@
   "org-sites": {
     "no_sites_found": "কোনো সাইট পাওয়া যায়নি",
     "try_adjusting": "ভিন্ন কোনো শব্দ দিয়ে খুঁজে দেখুন",
-    "site_name": "সাইটের নাম",
-    "repository": "রিপোজিটরি",
-    "status": "অবস্থা",
     "archived": "আর্কাইভ করা",
-    "active": "সক্রিয়",
     "private": "প্রাইভেট",
-    "public": "পাবলিক"
+    "add_site_url": "সাইটের URL যোগ করুন",
+    "edited": "সম্পাদিত {time}",
+    "edited_by": "{name} দ্বারা",
+    "added": "যোগ করা হয়েছে {time}",
+    "open_editor": "এডিটর খুলুন",
+    "visit_site": "সাইট দেখুন",
+    "view_repository": "{provider}-এ দেখুন",
+    "settings": "সেটিংস",
+    "site_actions": "সাইটের অ্যাকশন"
   },
   "org-archived": {
     "title": "সংস্থাটি আর্কাইভ করা হয়েছে",

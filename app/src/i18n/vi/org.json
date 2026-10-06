@@ -158,13 +158,17 @@
   "org-sites": {
     "no_sites_found": "Không tìm thấy trang web nào",
     "try_adjusting": "Thử điều chỉnh từ khóa tìm kiếm của bạn",
-    "site_name": "Tên trang web",
-    "repository": "Kho lưu trữ",
-    "status": "Trạng thái",
     "archived": "Đã lưu trữ",
-    "active": "Đang hoạt động",
     "private": "Riêng tư",
-    "public": "Công khai"
+    "add_site_url": "Thêm URL trang web",
+    "edited": "Đã chỉnh sửa {time}",
+    "edited_by": "bởi {name}",
+    "added": "Đã thêm {time}",
+    "open_editor": "Mở trình chỉnh sửa",
+    "visit_site": "Truy cập trang web",
+    "view_repository": "Xem trên {provider}",
+    "settings": "Cài đặt",
+    "site_actions": "Thao tác trang web"
   },
   "org-archived": {
     "title": "Tổ chức đã được lưu trữ",

@@ -10,9 +10,9 @@ import { useState } from "react";
 const VARIANTS = {
   // Org overview row: image fills the cell, favicon/initial sit centered in it.
   card: {
-    size: 188,
+    size: 256,
     wrapper:
-      "bg-light relative h-12 w-12 overflow-hidden rounded-full text-center lg:h-full lg:w-47 lg:rounded-none lg:px-10",
+      "bg-light relative h-12 w-12 overflow-hidden rounded-full text-center lg:h-full lg:w-32 lg:rounded-none",
     image: "absolute inset-0 h-full w-full object-cover",
     favicon:
       "absolute top-1/2 left-1/2 size-12 -translate-x-1/2 -translate-y-1/2 rounded-full object-cover",

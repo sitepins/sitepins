@@ -37,8 +37,7 @@ const projectLogSchema = new mongoose.Schema<TProjectLogType, TProjectLogModel>(
   },
 );
 
-// Index for efficient querying by project and date
-projectLogSchema.index({ project_id: 1, date: -1 });
+projectLogSchema.index({ project_id: 1, createdAt: -1 });
 
 export const ProjectLog = model<TProjectLogType, TProjectLogModel>(
   "project_log",

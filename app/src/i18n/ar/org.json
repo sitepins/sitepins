@@ -158,13 +158,17 @@
   "org-sites": {
     "no_sites_found": "لم يتم العثور على مواقع",
     "try_adjusting": "جرب تعديل مصطلحات البحث",
-    "site_name": "اسم الموقع",
-    "repository": "المستودع",
-    "status": "الحالة",
     "archived": "مؤرشف",
-    "active": "نشط",
     "private": "خاص",
-    "public": "عام"
+    "add_site_url": "إضافة رابط الموقع",
+    "edited": "تم التعديل {time}",
+    "edited_by": "بواسطة {name}",
+    "added": "تمت الإضافة {time}",
+    "open_editor": "فتح المحرر",
+    "visit_site": "زيارة الموقع",
+    "view_repository": "عرض على {provider}",
+    "settings": "الإعدادات",
+    "site_actions": "إجراءات الموقع"
   },
   "org-archived": {
     "title": "المنظمة مؤرشفة",

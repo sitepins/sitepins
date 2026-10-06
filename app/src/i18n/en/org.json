@@ -158,13 +158,17 @@
   "org-sites": {
     "no_sites_found": "No sites found",
     "try_adjusting": "Try adjusting your search terms",
-    "site_name": "Site Name",
-    "repository": "Repository",
-    "status": "Status",
     "archived": "Archived",
-    "active": "Active",
     "private": "Private",
-    "public": "Public"
+    "add_site_url": "Add site URL",
+    "edited": "Edited {time}",
+    "edited_by": "by {name}",
+    "added": "Added {time}",
+    "open_editor": "Open editor",
+    "visit_site": "Visit site",
+    "view_repository": "View on {provider}",
+    "settings": "Settings",
+    "site_actions": "Site actions"
   },
   "org-archived": {
     "title": "Organization Archived",

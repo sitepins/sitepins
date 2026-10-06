@@ -158,13 +158,17 @@
   "org-sites": {
     "no_sites_found": "कोई साइट नहीं मिली",
     "try_adjusting": "अपने खोज शब्दों को बदलने का प्रयास करें",
-    "site_name": "साइट का नाम",
-    "repository": "रिपॉजिटरी",
-    "status": "स्थिति",
     "archived": "संग्रहीत",
-    "active": "सक्रिय",
     "private": "निजी",
-    "public": "सार्वजनिक"
+    "add_site_url": "साइट URL जोड़ें",
+    "edited": "संपादित {time}",
+    "edited_by": "{name} द्वारा",
+    "added": "जोड़ा गया {time}",
+    "open_editor": "एडिटर खोलें",
+    "visit_site": "साइट देखें",
+    "view_repository": "{provider} पर देखें",
+    "settings": "सेटिंग्स",
+    "site_actions": "साइट क्रियाएँ"
   },
   "org-archived": {
     "title": "संगठन संग्रहीत है",

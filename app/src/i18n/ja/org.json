@@ -158,13 +158,17 @@
   "org-sites": {
     "no_sites_found": "サイトが見つかりません",
     "try_adjusting": "検索条件を変更してお試しください",
-    "site_name": "サイト名",
-    "repository": "リポジトリ",
-    "status": "ステータス",
     "archived": "アーカイブ済み",
-    "active": "アクティブ",
     "private": "プライベート",
-    "public": "パブリック"
+    "add_site_url": "サイトURLを追加",
+    "edited": "{time}に編集",
+    "edited_by": "{name}",
+    "added": "{time}に追加",
+    "open_editor": "エディターを開く",
+    "visit_site": "サイトを表示",
+    "view_repository": "{provider}で表示",
+    "settings": "設定",
+    "site_actions": "サイトの操作"
   },
   "org-archived": {
     "title": "組織はアーカイブされています",

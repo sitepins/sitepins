@@ -158,13 +158,17 @@
   "org-sites": {
     "no_sites_found": "사이트를 찾을 수 없습니다",
     "try_adjusting": "다른 검색어로 다시 검색해 보세요",
-    "site_name": "사이트 이름",
-    "repository": "저장소",
-    "status": "상태",
     "archived": "보관됨",
-    "active": "활성",
     "private": "비공개",
-    "public": "공개"
+    "add_site_url": "사이트 URL 추가",
+    "edited": "{time} 편집됨",
+    "edited_by": "{name}",
+    "added": "{time} 추가됨",
+    "open_editor": "편집기 열기",
+    "visit_site": "사이트 방문",
+    "view_repository": "{provider}에서 보기",
+    "settings": "설정",
+    "site_actions": "사이트 작업"
   },
   "org-archived": {
     "title": "조직이 보관 처리되었습니다",

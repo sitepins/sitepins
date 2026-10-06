@@ -158,13 +158,17 @@
   "org-sites": {
     "no_sites_found": "Tidak ada situs ditemukan",
     "try_adjusting": "Coba sesuaikan kata kunci pencarian Anda",
-    "site_name": "Nama Situs",
-    "repository": "Repositori",
-    "status": "Status",
     "archived": "Diarsipkan",
-    "active": "Aktif",
     "private": "Privat",
-    "public": "Publik"
+    "add_site_url": "Tambahkan URL situs",
+    "edited": "Diedit {time}",
+    "edited_by": "oleh {name}",
+    "added": "Ditambahkan {time}",
+    "open_editor": "Buka editor",
+    "visit_site": "Kunjungi situs",
+    "view_repository": "Lihat di {provider}",
+    "settings": "Pengaturan",
+    "site_actions": "Aksi situs"
   },
   "org-archived": {
     "title": "Organisasi Diarsipkan",

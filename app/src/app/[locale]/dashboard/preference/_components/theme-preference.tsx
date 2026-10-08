@@ -61,7 +61,7 @@ export default function ThemePreference({ userId }: ThemePreferenceProps) {
       </CardHeader>
       <CardContent>
         <RadioGroup
-          defaultValue={theme || "system"}
+          value={theme || "system"}
           onValueChange={handleThemeChange}
           className="grid grid-cols-3 gap-4"
         >

@@ -22,7 +22,6 @@ export default function Login() {
     password: "",
   });
   const from = safeInternalPath(params.get("from"));
-  const callbackURL = `/onboarding?from=${encodeURIComponent(from)}`;
 
   const oauthError = params.get("error");
   const oauthErrorDescription = params.get("error_description");
@@ -51,7 +50,7 @@ export default function Login() {
 
   const { pending, redirectUser } = useExternalLoginBridge({
     from,
-    callbackURL,
+    callbackURL: from,
   });
 
   const tAuth = useTranslations("auth.login");
@@ -92,7 +91,7 @@ export default function Login() {
           </Alert>
         </div>
       )}
-      <SocialAuth title="" redirect_url={callbackURL} />
+      <SocialAuth title="" redirect_url={from} />
       <LoginWithPassword
         redirectUser={redirectUser}
         onSetShowVerify={(val) => {

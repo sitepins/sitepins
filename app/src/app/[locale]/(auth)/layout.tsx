@@ -33,7 +33,7 @@ export default function RootLayout({
                 new URLSearchParams(window.location.search).get("from"),
               );
               window.location.href = new URL(
-                `/onboarding?from=${encodeURIComponent(from)}`,
+                from,
                 window.location.origin,
               ).toString();
             },

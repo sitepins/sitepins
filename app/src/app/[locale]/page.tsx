@@ -3,7 +3,6 @@
 import Loading from "@/components/loading";
 import { useOrgId } from "@/hooks/use-org-id";
 import { authClient } from "@/lib/auth/auth-client";
-import { onboardingEnabled } from "@/lib/onboarding-gate";
 import ProtectedLayoutWrapper from "@/partials/protected-layout-wrapper";
 import {
   useEnsureDefaultOrgMutation,
@@ -28,20 +27,11 @@ export default function ProtectedRootPage() {
     } else if (isError) {
       // Orgs API failed — session is stale/invalid. Sign out to clear the bad cookie.
       authClient.signOut().finally(() => router.replace("/login"));
-    } else if (orgs && orgs.length === 0 && onboardingEnabled) {
-      router.replace("/onboarding");
     }
   }, [isLoading, isError, prefixedOrgId, orgs, router]);
 
   useEffect(() => {
-    if (
-      isLoading ||
-      isError ||
-      onboardingEnabled ||
-      prefixedOrgId ||
-      !orgs ||
-      orgs.length > 0
-    ) {
+    if (isLoading || isError || prefixedOrgId || !orgs || orgs.length > 0) {
       return;
     }
 

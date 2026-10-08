@@ -25,11 +25,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
-import { authClient, Session } from "@/lib/auth/auth-client";
+import { Session, signOutToLogin } from "@/lib/auth/auth-client";
 import { IS_DEMO } from "@/lib/constant";
 import { useDeleteUserMutation } from "@/redux/features/user/user-api";
 import { useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "@/components/ui/toast";
 
@@ -41,7 +40,6 @@ export default function DeleteAccount({ auth }: { auth: Session }) {
   const [otherReason, setOtherReason] = useState("");
   const { user } = auth;
   const [deleteUser, { isSuccess, error, isLoading }] = useDeleteUserMutation();
-  const router = useRouter();
 
   const deleteReasonOptions = [
     { value: "complex", label: tDashboardAccountDelete("reasons.complex") },
@@ -84,13 +82,7 @@ export default function DeleteAccount({ auth }: { auth: Session }) {
 
       toast.success(tDashboardAccountDelete("feedback.success"));
 
-      await authClient.signOut({
-        fetchOptions: {
-          onSuccess: () => {
-            router.refresh();
-          },
-        },
-      });
+      await signOutToLogin();
     } catch (error) {
       toast.error(
         errorMessageOr(error, tDashboardAccountDelete("feedback.error")),

@@ -2,7 +2,6 @@ import { errorMessage } from "@/lib/errorMessage";
 import config from "@/config/variables";
 import {
   DeleteObjectCommand,
-  HeadObjectCommand,
   S3Client,
   S3ClientConfig,
 } from "@aws-sdk/client-s3";
@@ -35,23 +34,5 @@ export const deleteFile = async (key: string) => {
     return await s3Client.send(new DeleteObjectCommand(deleteParams));
   } catch (err) {
     throw new Error(`Failed to delete file: ${errorMessage(err)}`);
-  }
-};
-
-/**
- * Check if a file exists in S3 bucket
- * @param key - S3 object key
- */
-export const checkFileExists = async (key: string) => {
-  const headParams = { Bucket: config.s3_bucket_name, Key: key };
-
-  try {
-    await s3Client.send(new HeadObjectCommand(headParams));
-    return true;
-  } catch (err) {
-    if (err instanceof Error && err.name === "NotFound") {
-      return false;
-    }
-    throw new Error(`Failed to check file existence: ${errorMessage(err)}`);
   }
 };

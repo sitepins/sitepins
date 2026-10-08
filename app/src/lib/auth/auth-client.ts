@@ -1,10 +1,10 @@
+import { toast } from "@/components/ui/toast";
 import { API_URL, IS_DEMO } from "@/lib/constant";
 import {
   emailOTPClient,
   inferAdditionalFields,
 } from "better-auth/client/plugins";
 import { createAuthClient } from "better-auth/react";
-import { toast } from "@/components/ui/toast";
 
 export const authClient = createAuthClient({
   baseURL: `${API_URL}${IS_DEMO ? "/demo/auth" : "/auth"}`,
@@ -66,3 +66,23 @@ export const authClient = createAuthClient({
 });
 
 export type Session = typeof authClient.$Infer.Session;
+
+let signingOut = false;
+
+export const isSigningOut = () => signingOut;
+
+// A full reload drops the previous account's RTK cache; the flag stops ProtectedLayoutWrapper from adding `?from=`.
+export async function signOutToLogin() {
+  signingOut = true;
+  try {
+    localStorage.removeItem("sitepins_cached_session");
+  } catch {
+    // Silently catch storage errors
+  }
+  const { error } = await authClient.signOut();
+  if (error) {
+    signingOut = false;
+    return;
+  }
+  window.location.replace("/login");
+}

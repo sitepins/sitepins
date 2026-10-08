@@ -18,7 +18,6 @@ export default function Register() {
   const [showVerify, setShowVerify] = useState(false);
   const params = useSearchParams();
   const from = safeInternalPath(params.get("from"));
-  const callbackURL = `/onboarding?from=${encodeURIComponent(from)}`;
   const [loginInfo, setLoginInfo] = useState<LoginCredential>({
     email: "",
     password: "",
@@ -61,7 +60,7 @@ export default function Register() {
           </Alert>
         </div>
       )}
-      <SocialAuth title="" redirect_url={callbackURL} />
+      <SocialAuth title="" redirect_url={from} />
       <RegisterWithPassword
         onSetShowVerify={(val) => {
           setShowVerify(val);

@@ -3,10 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getAuth } from "./lib/auth/auth-server";
 import { routing } from "./lib/i18n/routing";
 import { PUBLIC_ROUTES } from "./lib/public-routes";
-import {
-  hasCompletedOnboarding,
-  onboardingEnabled,
-} from "./lib/onboarding-gate";
+import { gateProtectedRequest } from "./lib/proxy-gate";
 import { getUserLanguage } from "./redux/features/user-preference/preference-server";
 import { safeInternalPath } from "./lib/safe-redirect";
 
@@ -47,22 +44,12 @@ export async function proxy(request: NextRequest) {
     return intlResponse;
   }
 
-  // 3. Apply auth / onboarding logic
+  // 3. Apply auth logic
   if (isPublicRoute(pathname)) {
     // Redirect already-authed users away from auth pages
     if ((await getAuthOnce()) && isAuthRoute(pathname)) {
-      const hasPersonaCookie = request.cookies.get(
-        "onboarding_completed",
-      )?.value;
       const safe = safeInternalPath(nextUrl.searchParams.get("from"));
-      if (hasPersonaCookie || !onboardingEnabled) {
-        return NextResponse.redirect(new URL(safe, origin), 302);
-      }
-      const onboardingUrl = new URL(
-        `/onboarding?from=${encodeURIComponent(safe)}`,
-        origin,
-      );
-      return NextResponse.redirect(onboardingUrl, 302);
+      return NextResponse.redirect(new URL(safe, origin), 302);
     }
     return intlResponse;
   }
@@ -111,52 +98,13 @@ export async function proxy(request: NextRequest) {
     intlResponse.cookies.set("locale_synced", "1", { path: "/" });
   }
 
-  // Check for User Persona
-  const hasPersonaCookie = request.cookies.get("onboarding_completed")?.value;
-
-  if (pathname === "/onboarding") {
-    const from = safeInternalPath(nextUrl.searchParams.get("from"));
-    if (hasPersonaCookie) {
-      return NextResponse.redirect(new URL(from, origin), 302);
-    }
-
-    const hasPersonaInDB = await hasCompletedOnboarding(
-      authData.user.user_id,
-      request.headers.get("cookie") || "",
-    );
-
-    if (hasPersonaInDB) {
-      const res = NextResponse.redirect(new URL(from, origin), 302);
-      res.cookies.set("onboarding_completed", "true", {
-        maxAge: 60 * 60 * 24 * 365,
-        path: "/",
-      });
-      return res;
-    }
-  } else {
-    if (!hasPersonaCookie) {
-      if (
-        await hasCompletedOnboarding(
-          authData.user.user_id,
-          request.headers.get("cookie") || "",
-        )
-      ) {
-        const res = intlResponse;
-        res.cookies.set("onboarding_completed", "true", {
-          maxAge: 60 * 60 * 24 * 365,
-          path: "/",
-        });
-        return res;
-      } else {
-        const onboardingUrl = new URL("/onboarding", origin);
-        const from = `${nextUrl.pathname}${nextUrl.search || ""}`;
-        onboardingUrl.searchParams.set("from", from);
-        return NextResponse.redirect(onboardingUrl, 302);
-      }
-    }
-  }
-
-  return intlResponse;
+  return (
+    (await gateProtectedRequest({
+      request,
+      userId: authData.user.user_id,
+      response: intlResponse,
+    })) ?? intlResponse
+  );
 }
 
 // exclude Next internals, API routes, static assets, and PWA endpoints

@@ -76,10 +76,9 @@ export default function LoginWithPassword({
           const redirectTo = safeInternalPath(
             storedRedirect || params.get("from"),
           );
-          const onboardingRedirect = `/onboarding?from=${encodeURIComponent(redirectTo)}`;
           // Use window.location.href for full page navigation to bypass any router interception
           window.location.href = new URL(
-            onboardingRedirect,
+            redirectTo,
             window.location.origin,
           ).toString();
         },

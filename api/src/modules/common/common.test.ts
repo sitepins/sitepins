@@ -1,5 +1,4 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import type { Request, Response } from "express";
 
 // Mocks for Gateway dependencies
 const isOrgMemberMock = vi.fn();
@@ -7,41 +6,11 @@ vi.mock("@/lib/orgAccess", () => ({
   isOrgMember: (...args: unknown[]) => isOrgMemberMock(...args),
 }));
 
-// Mocks for Bucket route dependencies
-const checkFileExistsMock = vi.fn();
-const deleteFileMock = vi.fn();
-vi.mock("@/lib/s3-utils", () => ({
-  s3Client: { send: vi.fn() },
-  checkFileExists: (...args: unknown[]) => checkFileExistsMock(...args),
-  deleteFile: (...args: unknown[]) => deleteFileMock(...args),
-}));
-
-vi.mock("@/middlewares/rateLimiters", () => ({
-  uploadLimiter: (_req: Request, _res: Response, next: () => void) => next(),
-}));
-
-vi.mock("@/middlewares/authMiddleware", () => ({
-  authMiddleware: {
-    verifyAuth: () => (_req: Request, _res: Response, next: () => void) =>
-      next(),
-  },
-}));
-
-vi.mock("multer-s3", () => ({
-  default: () => ({
-    _handleFile: vi.fn(),
-    _removeFile: vi.fn(),
-  }),
-  AUTO_CONTENT_TYPE: "auto",
-}));
-
 type Listener = (...args: any[]) => void | Promise<void>;
 
 describe("Common Module", () => {
   beforeEach(() => {
     isOrgMemberMock.mockReset();
-    checkFileExistsMock.mockReset();
-    deleteFileMock.mockReset();
   });
 
   describe("Editor Gateway", () => {
@@ -270,110 +239,6 @@ describe("Common Module", () => {
       // 3. Disconnect removes socket
       handlers["disconnect"]();
       expect(socket.leave).toHaveBeenCalledWith(key);
-    });
-  });
-
-  describe("Bucket Route", () => {
-    function makeReqRes(params: Record<string, string> = {}) {
-      const req = {
-        params,
-      } as unknown as Request;
-
-      const json = vi.fn();
-      const status = vi.fn(() => ({ json }));
-      const res = { status } as unknown as Response;
-
-      return { req, res, json, status };
-    }
-
-    function getDeleteHandler(router: unknown) {
-      const stack = (
-        router as {
-          stack: Array<{
-            route?: {
-              methods: Record<string, boolean>;
-              stack: Array<{
-                handle: (
-                  req: Request,
-                  res: Response,
-                  next: (err?: unknown) => void,
-                ) => Promise<unknown>;
-              }>;
-            };
-          }>;
-        }
-      ).stack;
-      const layer = stack.find((l) => l.route?.methods?.delete);
-      return layer?.route?.stack.slice(-1)[0]?.handle;
-    }
-
-    it("returns 404 when file to delete does not exist", async () => {
-      const bucketRouter = (await import("./bucket.route.js")).default;
-      checkFileExistsMock.mockResolvedValueOnce(false);
-
-      const handler = getDeleteHandler(bucketRouter);
-      expect(handler).toBeDefined();
-
-      const { req, res, status, json } = makeReqRes({
-        key: encodeURIComponent("sitepins/users/avatar.png"),
-      });
-
-      await handler!(req, res, vi.fn());
-
-      expect(status).toHaveBeenCalledWith(404);
-      expect(json).toHaveBeenCalledWith(
-        expect.objectContaining({
-          success: false,
-          message: "File not found",
-        }),
-      );
-    });
-
-    it("returns 500 if deleteFile fails", async () => {
-      const bucketRouter = (await import("./bucket.route.js")).default;
-      checkFileExistsMock.mockResolvedValueOnce(true);
-      deleteFileMock.mockResolvedValueOnce(false);
-
-      const handler = getDeleteHandler(bucketRouter);
-      expect(handler).toBeDefined();
-
-      const { req, res, status, json } = makeReqRes({
-        key: encodeURIComponent("sitepins/users/avatar.png"),
-      });
-
-      await handler!(req, res, vi.fn());
-
-      expect(status).toHaveBeenCalledWith(500);
-      expect(json).toHaveBeenCalledWith(
-        expect.objectContaining({
-          success: false,
-          message: "Failed to delete file",
-        }),
-      );
-    });
-
-    it("successfully deletes file and returns 200", async () => {
-      const bucketRouter = (await import("./bucket.route.js")).default;
-      checkFileExistsMock.mockResolvedValueOnce(true); // Initial exists check
-      deleteFileMock.mockResolvedValueOnce(true); // Deletion succeeds
-      checkFileExistsMock.mockResolvedValueOnce(false); // Post-delete verify check
-
-      const handler = getDeleteHandler(bucketRouter);
-      expect(handler).toBeDefined();
-
-      const { req, res, status, json } = makeReqRes({
-        key: encodeURIComponent("sitepins/users/avatar.png"),
-      });
-
-      await handler!(req, res, vi.fn());
-
-      expect(status).toHaveBeenCalledWith(200);
-      expect(json).toHaveBeenCalledWith(
-        expect.objectContaining({
-          success: true,
-          message: "File deleted successfully",
-        }),
-      );
     });
   });
 });

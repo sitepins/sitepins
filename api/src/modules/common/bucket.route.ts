@@ -1,6 +1,7 @@
 import config from "@/config/variables";
 import { ENUM_ROLE } from "@/enums/roles";
-import { checkFileExists, deleteFile, s3Client } from "@/lib/s3-utils";
+import { s3Client } from "@/lib/s3-utils";
+import { canUploadToFolder } from "@/lib/uploadFolders";
 import { sendResponse } from "@/lib/sendResponse";
 import { authMiddleware } from "@/middlewares/authMiddleware";
 import { uploadLimiter } from "@/middlewares/rateLimiters";
@@ -16,27 +17,6 @@ const bucketRouter: express.Router = express.Router();
 type UploadBody = { permission?: string; folder?: string };
 const uploadBody = (req: unknown): UploadBody =>
   ((req as { body?: UploadBody }).body ?? {}) as UploadBody;
-
-// Bucket keys carry no ownership metadata, so an unconstrained `folder` let a
-// caller write anywhere in the bucket — including over another user's avatar.
-// Every prefix the apps actually upload to (app avatar uploads + the admin
-// dashboard's persona pictures). Adding a new upload surface means adding its
-// prefix here; UPLOAD_FOLDERS can extend the list without a code change.
-const DEFAULT_ALLOWED_FOLDERS = [
-  "sitepins/users",
-  "sitepins/orgs",
-  "sitepins/sites",
-  "sitepins/user-persona",
-];
-
-const ALLOWED_FOLDERS = new Set(
-  (process.env.UPLOAD_FOLDERS
-    ? process.env.UPLOAD_FOLDERS.split(",").map((f) => f.trim())
-    : []
-  )
-    .filter(Boolean)
-    .concat(DEFAULT_ALLOWED_FOLDERS),
-);
 
 // Images only — without this, an HTML/JS file served from the bucket origin is
 // stored XSS. Mirrors AcceptImages on the client so nothing the UI permits is
@@ -100,7 +80,7 @@ const uploadFile = multer({
       if (!folder) {
         return cb(new Error("Folder name is required"));
       }
-      if (!ALLOWED_FOLDERS.has(folder)) {
+      if (!canUploadToFolder(folder, req.user)) {
         return cb(new Error("Invalid folder"));
       }
       // randomUUID prevents one uploader from clobbering another's object by
@@ -136,83 +116,6 @@ bucketRouter.post(
         result: req.file,
       });
     });
-  },
-);
-
-// delete router
-// Delete by raw object key. Bucket keys carry no per-user/per-org ownership,
-// so a regular user deleting an arbitrary key would be a cross-tenant delete.
-// Restricted to ADMIN (no self-serve caller exists; the web app never calls
-// this route).
-bucketRouter.delete(
-  "/delete/:key",
-  authMiddleware.verifyAuth(ENUM_ROLE.ADMIN),
-  async (req, res, next) => {
-    const key = decodeURIComponent(req.params.key as string);
-
-    if (!key) {
-      return sendResponse(res, {
-        statusCode: 400,
-        success: false,
-        message: "Key is required",
-      });
-    }
-
-    try {
-      // Check if file exists before deleting
-      const headResult = await checkFileExists(key);
-      if (!headResult) {
-        return sendResponse(res, {
-          statusCode: 404,
-          success: false,
-          message: "File not found",
-        });
-      }
-
-      const deleteResult = await deleteFile(key);
-      if (!deleteResult) {
-        return sendResponse(res, {
-          statusCode: 500,
-          success: false,
-          message: "Failed to delete file",
-        });
-      }
-
-      // Verify deletion after deletion
-      const existsAfterDelete = await checkFileExists(key);
-      if (existsAfterDelete) {
-        // Retry logic
-        let retryCount = 0;
-        const maxRetries = 3;
-        let deleted = false;
-
-        while (retryCount < maxRetries && !deleted) {
-          await new Promise((resolve) => setTimeout(resolve, 1000)); // Wait 1 second
-          await deleteFile(key);
-          const stillExists = await checkFileExists(key);
-          if (!stillExists) {
-            deleted = true;
-          }
-          retryCount++;
-        }
-
-        if (!deleted) {
-          return sendResponse(res, {
-            statusCode: 500,
-            success: false,
-            message: "Failed to delete file after multiple attempts",
-          });
-        }
-      }
-
-      return sendResponse(res, {
-        statusCode: 200,
-        success: true,
-        message: "File deleted successfully",
-      });
-    } catch (error) {
-      next(error);
-    }
   },
 );
 

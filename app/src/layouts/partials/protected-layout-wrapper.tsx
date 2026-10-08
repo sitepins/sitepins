@@ -2,7 +2,7 @@
 
 import Loading from "@/components/loading";
 import { useHydrated } from "@/hooks/use-hydrated";
-import { authClient, Session } from "@/lib/auth/auth-client";
+import { authClient, isSigningOut, Session } from "@/lib/auth/auth-client";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useSyncExternalStore } from "react";
 
@@ -85,7 +85,7 @@ export default function ProtectedLayoutWrapper({
   // Redirect unauthenticated users to login ONLY if they are online and truly unauthenticated
   // When offline, do NOT redirect to login due to network errors
   useEffect(() => {
-    if (!isPending && !auth && isOnline && !cachedAuth) {
+    if (!isPending && !auth && isOnline && !cachedAuth && !isSigningOut()) {
       const from = `${window.location.pathname}${window.location.search}`;
       router.replace(`/login?from=${encodeURIComponent(from)}`);
     }

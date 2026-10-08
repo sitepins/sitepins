@@ -18,7 +18,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { authClient } from "@/lib/auth/auth-client";
+import { authClient, signOutToLogin } from "@/lib/auth/auth-client";
 import { IS_DEMO } from "@/lib/constant";
 import { getFooterAccountMenu } from "@/lib/menu";
 import { usePwaInstall } from "@/hooks/use-pwa-install";
@@ -27,13 +27,11 @@ import { Download, LogOut } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useTheme } from "next-themes";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "@/components/ui/toast";
 
 export default function SidebarProfileSetting() {
   const locale = useLocale();
-  const router = useRouter();
   const { isInstallable, promptInstall } = usePwaInstall();
 
   const [isOpen, setIsOpen] = useState(false);
@@ -47,18 +45,7 @@ export default function SidebarProfileSetting() {
       toast.error(tCommon("logout.demo_disabled"));
       return;
     }
-    try {
-      localStorage.removeItem("sitepins_cached_session");
-    } catch {
-      // Silently catch storage errors
-    }
-    await authClient.signOut({
-      fetchOptions: {
-        onSuccess: () => {
-          router.push("/login");
-        },
-      },
-    });
+    await signOutToLogin();
   };
 
   // session data for the current logged in user

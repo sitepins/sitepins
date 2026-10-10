@@ -13,7 +13,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { TProjectLogQuery } from "@/redux/features/project-log/type";
 import { formatDistanceToNow } from "date-fns";
-import { Clock, FileText, User } from "lucide-react";
+import { Bot, Clock, FileText, User } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useParams } from "next/navigation";
@@ -180,6 +180,16 @@ export default function AppActivity({
                           <div className="flex items-center gap-1">
                             <User className="h-4 w-4 shrink-0" />
                             <span>{log.user_name}</span>
+                            {log.via && (
+                              <Badge
+                                variant="outline"
+                                size="sm"
+                                className="gap-1"
+                              >
+                                <Bot className="size-3" />
+                                {log.via}
+                              </Badge>
+                            )}
                           </div>
                         </div>
                       </div>

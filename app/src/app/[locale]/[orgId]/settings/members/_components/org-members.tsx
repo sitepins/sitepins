@@ -4,7 +4,6 @@ import Avatar from "@/components/avatar";
 import { Button } from "@/components/ui/button";
 import {
   Card,
-  CardAction,
   CardContent,
   CardDescription,
   CardFooter,
@@ -80,17 +79,6 @@ export default function OrgMembers(org: TOrg) {
       <CardHeader>
         <CardTitle>{tOrgMembers("title")}</CardTitle>
         <CardDescription>{tOrgMembers("description")}</CardDescription>
-        <CardAction className="hidden md:flex">
-          {isRestricted && isOwner ? (
-            <UnlockCta labelKey="members_add" className="h-9 px-4" />
-          ) : (
-            <AddMemberDialog
-              orgId={org_id}
-              canManageMembers={canManageMembers}
-              isLoading={isUpdating}
-            />
-          )}
-        </CardAction>
       </CardHeader>
 
       <CardContent>
@@ -109,12 +97,15 @@ export default function OrgMembers(org: TOrg) {
           ))}
         </div>
       </CardContent>
-      <CardFooter className="md:hidden">
+      <CardFooter>
         {isRestricted && isOwner ? (
-          <UnlockCta labelKey="members_add" className="h-9 w-full px-4" />
+          <UnlockCta
+            labelKey="members_add"
+            className="h-9 w-full px-4 sm:w-auto"
+          />
         ) : (
           <AddMemberDialog
-            className="w-full"
+            className="w-full sm:w-auto"
             orgId={org_id}
             canManageMembers={canManageMembers}
             isLoading={isUpdating}

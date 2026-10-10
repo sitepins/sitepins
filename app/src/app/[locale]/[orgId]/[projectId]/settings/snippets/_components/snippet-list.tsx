@@ -5,7 +5,6 @@ import { UnlockCta } from "@/components/unlock-cta";
 import { Button } from "@/components/ui/button";
 import {
   Card,
-  CardAction,
   CardContent,
   CardDescription,
   CardFooter,
@@ -226,18 +225,6 @@ const SnippetList = () => {
           <CardDescription>
             {tProjectSettingsSnippets("description")}
           </CardDescription>
-          <CardAction className="hidden md:flex">
-            {isLoading || !isConfigReady ? (
-              <Skeleton className="h-9 w-36" />
-            ) : hasAdvancedFeatures ? (
-              <Button onClick={handleCreateSnippet}>
-                <Plus className="me-2 size-4" />
-                {tCommon("actions.add")}
-              </Button>
-            ) : (
-              <UnlockCta labelKey="snippets_add" className="h-9 px-4" />
-            )}
-          </CardAction>
         </CardHeader>
 
         <CardContent>
@@ -293,16 +280,19 @@ const SnippetList = () => {
             </div>
           )}
         </CardContent>
-        <CardFooter className="md:hidden">
+        <CardFooter>
           {isLoading || !isConfigReady ? (
-            <Skeleton className="h-9 w-full" />
+            <Skeleton className="h-9 w-full sm:w-36" />
           ) : hasAdvancedFeatures ? (
-            <Button className="w-full" onClick={handleCreateSnippet}>
+            <Button className="w-full sm:w-auto" onClick={handleCreateSnippet}>
               <Plus className="me-2 size-4" />
               {tCommon("actions.add")}
             </Button>
           ) : (
-            <UnlockCta labelKey="snippets_add" className="h-9 w-full px-4" />
+            <UnlockCta
+              labelKey="snippets_add"
+              className="h-9 w-full px-4 sm:w-auto"
+            />
           )}
         </CardFooter>
       </Card>

@@ -31,6 +31,10 @@ const projectLogSchema = new mongoose.Schema<TProjectLogType, TProjectLogModel>(
       enum: Object.values(EProjectLogType),
       required: true,
     },
+    // Name of the AI agent that made the change on the user's behalf.
+    via: {
+      type: String,
+    },
   },
   {
     timestamps: true,

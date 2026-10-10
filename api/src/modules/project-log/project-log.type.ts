@@ -24,6 +24,7 @@ export type TProjectLogType = {
   user_id: string;
   file: string;
   file_type: EProjectLogType;
+  via?: string;
 };
 
 export type TProjectLogModel = Model<TProjectLogType, object>;

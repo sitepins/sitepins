@@ -1,0 +1,87 @@
+{
+  "agents": {
+    "scopes": {
+      "projects_read": {
+        "title": "साइट देखें",
+        "description": "नीचे चुनी गई साइटों की सूची देखें।"
+      },
+      "content_read": {
+        "title": "फ़ाइलें पढ़ें",
+        "description": "कंटेंट, स्कीमा और इतिहास पढ़ें, और रिपॉज़िटरी क्लोन करें।"
+      },
+      "content_write": {
+        "title": "कंटेंट संपादित करें",
+        "description": "कंटेंट और कॉन्फ़िग फ़ोल्डर में फ़ाइलें बनाएँ, संपादित करें और हटाएँ।"
+      },
+      "media_write": {
+        "title": "मीडिया प्रबंधित करें",
+        "description": "मीडिया फ़ोल्डर में फ़ाइलें अपलोड करें, नाम बदलें और हटाएँ।"
+      },
+      "schema_write": {
+        "title": "स्कीमा संपादित करें",
+        "description": ".sitepins में स्कीमा और स्निपेट बदलें। .sitepins/config.json बदलने के लिए कोड संपादित करें अनुमति चाहिए।"
+      },
+      "code_write": {
+        "title": "कोड संपादित करें",
+        "description": "कोई भी अन्य फ़ाइल बदलें, जैसे टेम्पलेट और package.json। CI वर्कफ़्लो फ़ाइलें कभी नहीं बदली जा सकतीं।"
+      },
+      "git_branch": {
+        "title": "ब्रांच और पुल रिक्वेस्ट",
+        "description": "दूसरी ब्रांच में कमिट करें और पुल रिक्वेस्ट खोलें।"
+      }
+    },
+    "fields": {
+      "organization": "संगठन",
+      "select_org": "संगठन चुनें",
+      "projects": "साइटें",
+      "projects_all": "सभी साइटें",
+      "projects_all_description": "इस संगठन की हर साइट, बाद में जोड़ी गई साइटों सहित।",
+      "projects_selected": "चुनी गई साइटें",
+      "projects_selected_description": "केवल वे साइटें जिन्हें आप चुनते हैं।",
+      "select_all": "सभी चुनें",
+      "selected_count": "{total} में से {count} चुनी गईं",
+      "no_projects": "इस संगठन में अभी कोई साइट नहीं है।",
+      "permissions": "अनुमतियाँ",
+      "write_mode": "बदलाव कैसे सेव होते हैं",
+      "write_direct": "सीधे कमिट करें",
+      "write_direct_description": "बदलाव सीधे साइट की ब्रांच में जाते हैं, Sitepins बॉट कमिट करता है।",
+      "write_pull_request": "पुल रिक्वेस्ट खोलें",
+      "write_pull_request_description": "बदलाव एक नई ब्रांच में जाते हैं, साथ में आपकी समीक्षा के लिए पुल रिक्वेस्ट।"
+    },
+    "settings": {
+      "title": "MCP कनेक्शन",
+      "description": "Claude, Codex, Cursor और Antigravity जैसे AI एजेंट को अपनी साइटों तक पहुँच दें। एक टोकन बनाएँ, फिर सेटअप प्रॉम्प्ट अपने एजेंट में पेस्ट करें। उनके कमिट Sitepins बॉट से आते हैं।",
+      "connect_title": "अपना एजेंट जोड़ें",
+      "connect_description": "यह प्रॉम्प्ट कॉपी करके अपने AI एजेंट में पेस्ट करें। यह एजेंट की MCP सेटिंग में Sitepins जोड़ता है। टोकन केवल एक बार दिखाया जाता है।",
+      "mcp_label": "MCP सर्वर URL",
+      "copy": "कॉपी करें",
+      "copied": "कॉपी हो गया",
+      "empty": "अभी कोई एक्सेस टोकन नहीं है।",
+      "write_pr_badge": "पुल रिक्वेस्ट",
+      "last_used": "अंतिम उपयोग {date}",
+      "never_used": "कभी उपयोग नहीं हुआ",
+      "expires": "{date} को समाप्त",
+      "revoke": "रद्द करें",
+      "revoke_title": "{name} की पहुँच रद्द करें?",
+      "revoke_description": "पहुँच तुरंत खत्म हो जाएगी। पहले से कमिट किए गए बदलाव रिपॉज़िटरी में रहेंगे।",
+      "revoked": "पहुँच रद्द की गई",
+      "cancel": "रद्द करें",
+      "token_name": "नाम",
+      "token_name_placeholder": "जैसे Claude Desktop",
+      "token_expiry": "इतने समय बाद समाप्त",
+      "days": "{count} दिन",
+      "create_token": "टोकन बनाएँ",
+      "done": "हो गया",
+      "create_title": "एक्सेस टोकन बनाएँ",
+      "create_description": "चुनें कि एजेंट किन साइटों तक पहुँच सकता है और क्या बदल सकता है।",
+      "copy_prompt": "प्रॉम्प्ट कॉपी करें",
+      "manual_title": "मैनुअल सेटअप",
+      "token_label": "एक्सेस टोकन",
+      "header_hint": "इसे हेडर {example} में भेजें।",
+      "all_sites": "सभी साइटें"
+    },
+    "editor": {
+      "external_commit": "{name} ने {agent} के ज़रिए यह फ़ाइल बदली। प्रकाशित करते समय पहले आपको बदलाव दिखेंगे।"
+    }
+  }
+}

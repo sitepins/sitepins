@@ -1,0 +1,87 @@
+{
+  "agents": {
+    "scopes": {
+      "projects_read": {
+        "title": "সাইট দেখা",
+        "description": "নিচে বেছে নেওয়া সাইটগুলোর তালিকা দেখা।"
+      },
+      "content_read": {
+        "title": "ফাইল পড়া",
+        "description": "কনটেন্ট, স্কিমা ও ইতিহাস পড়া এবং রিপোজিটরি ক্লোন করা।"
+      },
+      "content_write": {
+        "title": "কনটেন্ট সম্পাদনা",
+        "description": "কনটেন্ট ও কনফিগ ফোল্ডারে ফাইল তৈরি, সম্পাদনা ও মুছে ফেলা।"
+      },
+      "media_write": {
+        "title": "মিডিয়া পরিচালনা",
+        "description": "মিডিয়া ফোল্ডারে ফাইল আপলোড, নাম পরিবর্তন ও মুছে ফেলা।"
+      },
+      "schema_write": {
+        "title": "স্কিমা সম্পাদনা",
+        "description": ".sitepins-এ স্কিমা ও স্নিপেট বদলানো। .sitepins/config.json বদলাতে কোড সম্পাদনা অনুমতি লাগে।"
+      },
+      "code_write": {
+        "title": "কোড সম্পাদনা",
+        "description": "টেমপ্লেট ও package.json-এর মতো অন্য যেকোনো ফাইল বদলানো। CI ওয়ার্কফ্লো ফাইল কখনো বদলানো যায় না।"
+      },
+      "git_branch": {
+        "title": "ব্রাঞ্চ ও পুল রিকোয়েস্ট",
+        "description": "অন্য ব্রাঞ্চে কমিট করা ও পুল রিকোয়েস্ট খোলা।"
+      }
+    },
+    "fields": {
+      "organization": "প্রতিষ্ঠান",
+      "select_org": "একটি প্রতিষ্ঠান বেছে নিন",
+      "projects": "সাইট",
+      "projects_all": "সব সাইট",
+      "projects_all_description": "এই সংস্থার প্রতিটি সাইট, পরে যোগ করা সাইটসহ।",
+      "projects_selected": "নির্বাচিত সাইট",
+      "projects_selected_description": "শুধু আপনার বেছে নেওয়া সাইটগুলো।",
+      "select_all": "সব নির্বাচন করুন",
+      "selected_count": "{total}টির মধ্যে {count}টি নির্বাচিত",
+      "no_projects": "এই প্রতিষ্ঠানে এখনো কোনো সাইট নেই।",
+      "permissions": "অনুমতি",
+      "write_mode": "পরিবর্তন কীভাবে সেভ হবে",
+      "write_direct": "সরাসরি কমিট",
+      "write_direct_description": "পরিবর্তন সরাসরি সাইটের ব্রাঞ্চে যায়, Sitepins বট কমিট করে।",
+      "write_pull_request": "পুল রিকোয়েস্ট খুলুন",
+      "write_pull_request_description": "পরিবর্তন নতুন একটি ব্রাঞ্চে যায়, সাথে আপনার পর্যালোচনার জন্য পুল রিকোয়েস্ট।"
+    },
+    "settings": {
+      "title": "MCP সংযোগ",
+      "description": "Claude, Codex, Cursor ও Antigravity-এর মতো AI এজেন্টকে আপনার সাইটে অ্যাক্সেস দিন। একটি টোকেন তৈরি করুন, তারপর সেটআপ প্রম্পটটি এজেন্টে পেস্ট করুন। তাদের কমিট আসে Sitepins বট থেকে।",
+      "connect_title": "আপনার এজেন্ট যুক্ত করুন",
+      "connect_description": "এই প্রম্পট কপি করে আপনার AI এজেন্টে পেস্ট করুন। এটি এজেন্টের MCP সেটিংসে Sitepins যোগ করে। টোকেন শুধু একবারই দেখানো হয়।",
+      "mcp_label": "MCP সার্ভার URL",
+      "copy": "কপি",
+      "copied": "কপি হয়েছে",
+      "empty": "এখনো কোনো অ্যাক্সেস টোকেন নেই।",
+      "write_pr_badge": "পুল রিকোয়েস্ট",
+      "last_used": "শেষ ব্যবহার {date}",
+      "never_used": "কখনো ব্যবহার হয়নি",
+      "expires": "মেয়াদ শেষ {date}",
+      "revoke": "বাতিল করুন",
+      "revoke_title": "{name}-এর অ্যাক্সেস বাতিল করবেন?",
+      "revoke_description": "অ্যাক্সেস সাথে সাথে চলে যাবে। আগে কমিট করা পরিবর্তন রিপোজিটরিতে থেকে যাবে।",
+      "revoked": "অ্যাক্সেস বাতিল হয়েছে",
+      "cancel": "বাতিল",
+      "token_name": "নাম",
+      "token_name_placeholder": "যেমন: Claude Desktop",
+      "token_expiry": "মেয়াদ শেষ হবে",
+      "days": "{count} দিন",
+      "create_token": "টোকেন তৈরি করুন",
+      "done": "সম্পন্ন",
+      "create_title": "অ্যাক্সেস টোকেন তৈরি করুন",
+      "create_description": "এজেন্ট কোন সাইটে পৌঁছাতে পারবে এবং কী বদলাতে পারবে তা বেছে নিন।",
+      "copy_prompt": "প্রম্পট কপি করুন",
+      "manual_title": "ম্যানুয়াল সেটআপ",
+      "token_label": "অ্যাক্সেস টোকেন",
+      "header_hint": "এটি {example} হেডারে পাঠান।",
+      "all_sites": "সব সাইট"
+    },
+    "editor": {
+      "external_commit": "{name} {agent}-এর মাধ্যমে এই ফাইলটি বদলেছেন। প্রকাশ করার সময় আগে কী বদলেছে তা দেখবেন।"
+    }
+  }
+}

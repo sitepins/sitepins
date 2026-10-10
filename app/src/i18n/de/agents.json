@@ -1,0 +1,87 @@
+{
+  "agents": {
+    "scopes": {
+      "projects_read": {
+        "title": "Websites sehen",
+        "description": "Die unten ausgewählten Websites auflisten."
+      },
+      "content_read": {
+        "title": "Dateien lesen",
+        "description": "Inhalte, Schemas und Verlauf lesen und das Repository klonen."
+      },
+      "content_write": {
+        "title": "Inhalte bearbeiten",
+        "description": "Dateien in den Inhalts- und Konfigurationsordnern erstellen, bearbeiten und löschen."
+      },
+      "media_write": {
+        "title": "Medien verwalten",
+        "description": "Dateien im Medienordner hochladen, umbenennen und löschen."
+      },
+      "schema_write": {
+        "title": "Schemas bearbeiten",
+        "description": "Schemas und Snippets in .sitepins ändern. Für .sitepins/config.json ist „Code bearbeiten“ nötig."
+      },
+      "code_write": {
+        "title": "Code bearbeiten",
+        "description": "Alle anderen Dateien ändern, etwa Templates und package.json. CI-Workflow-Dateien sind nie beschreibbar."
+      },
+      "git_branch": {
+        "title": "Branches und Pull Requests",
+        "description": "In andere Branches committen und Pull Requests öffnen."
+      }
+    },
+    "fields": {
+      "organization": "Organisation",
+      "select_org": "Organisation auswählen",
+      "projects": "Websites",
+      "projects_all": "Alle Websites",
+      "projects_all_description": "Jede Website in dieser Organisation, auch später hinzugefügte.",
+      "projects_selected": "Ausgewählte Websites",
+      "projects_selected_description": "Nur die Websites, die du auswählst.",
+      "select_all": "Alle auswählen",
+      "selected_count": "{count} von {total} ausgewählt",
+      "no_projects": "Diese Organisation hat noch keine Websites.",
+      "permissions": "Berechtigungen",
+      "write_mode": "So werden Änderungen gespeichert",
+      "write_direct": "Direkt committen",
+      "write_direct_description": "Änderungen landen direkt im Branch der Website, committet vom Sitepins-Bot.",
+      "write_pull_request": "Pull Request öffnen",
+      "write_pull_request_description": "Änderungen kommen in einen neuen Branch mit einem Pull Request, den du prüfst."
+    },
+    "settings": {
+      "title": "MCP-Verbindung",
+      "description": "Gib KI-Agents wie Claude, Codex, Cursor und Antigravity Zugriff auf deine Websites. Erstelle ein Token und füge den Einrichtungs-Prompt in deinen Agent ein. Ihre Commits stammen vom Sitepins-Bot.",
+      "connect_title": "Agent verbinden",
+      "connect_description": "Kopiere diesen Prompt und füge ihn in deinen KI-Agent ein. Er fügt Sitepins zu den MCP-Einstellungen des Agents hinzu. Das Token wird nur einmal angezeigt.",
+      "mcp_label": "MCP-Server-URL",
+      "copy": "Kopieren",
+      "copied": "Kopiert",
+      "empty": "Noch keine Zugriffstokens.",
+      "write_pr_badge": "Pull Requests",
+      "last_used": "Zuletzt genutzt {date}",
+      "never_used": "Nie genutzt",
+      "expires": "Läuft ab am {date}",
+      "revoke": "Widerrufen",
+      "revoke_title": "{name} widerrufen?",
+      "revoke_description": "Der Zugriff endet sofort. Bereits committete Änderungen bleiben im Repository.",
+      "revoked": "Zugriff widerrufen",
+      "cancel": "Abbrechen",
+      "token_name": "Name",
+      "token_name_placeholder": "z. B. Claude Desktop",
+      "token_expiry": "Läuft ab nach",
+      "days": "{count} Tage",
+      "create_token": "Token erstellen",
+      "done": "Fertig",
+      "create_title": "Zugriffstoken erstellen",
+      "create_description": "Lege fest, welche Websites der Agent erreicht und was er ändern darf.",
+      "copy_prompt": "Prompt kopieren",
+      "manual_title": "Manuelle Einrichtung",
+      "token_label": "Zugriffstoken",
+      "header_hint": "Sende es als Header {example}.",
+      "all_sites": "Alle Websites"
+    },
+    "editor": {
+      "external_commit": "{name} hat diese Datei über {agent} geändert. Beim Veröffentlichen siehst du zuerst die Änderungen."
+    }
+  }
+}

@@ -1,0 +1,87 @@
+{
+  "agents": {
+    "scopes": {
+      "projects_read": {
+        "title": "Lihat situs",
+        "description": "Menampilkan situs yang kamu pilih di bawah."
+      },
+      "content_read": {
+        "title": "Baca file",
+        "description": "Membaca konten, skema, dan riwayat, serta meng-clone repositori."
+      },
+      "content_write": {
+        "title": "Edit konten",
+        "description": "Membuat, mengedit, dan menghapus file di folder konten dan konfigurasi."
+      },
+      "media_write": {
+        "title": "Kelola media",
+        "description": "Mengunggah, mengganti nama, dan menghapus file di folder media."
+      },
+      "schema_write": {
+        "title": "Edit skema",
+        "description": "Mengubah skema dan snippet di .sitepins. Mengubah .sitepins/config.json memerlukan Edit kode."
+      },
+      "code_write": {
+        "title": "Edit kode",
+        "description": "Mengubah file lain, seperti template dan package.json. File workflow CI tidak pernah bisa diubah."
+      },
+      "git_branch": {
+        "title": "Branch dan pull request",
+        "description": "Melakukan commit ke branch lain dan membuka pull request."
+      }
+    },
+    "fields": {
+      "organization": "Organisasi",
+      "select_org": "Pilih organisasi",
+      "projects": "Situs",
+      "projects_all": "Semua situs",
+      "projects_all_description": "Setiap situs di organisasi ini, termasuk yang ditambahkan nanti.",
+      "projects_selected": "Situs terpilih",
+      "projects_selected_description": "Hanya situs yang Anda pilih.",
+      "select_all": "Pilih semua",
+      "selected_count": "{count} dari {total} dipilih",
+      "no_projects": "Organisasi ini belum punya situs.",
+      "permissions": "Izin",
+      "write_mode": "Cara perubahan disimpan",
+      "write_direct": "Commit langsung",
+      "write_direct_description": "Perubahan langsung masuk ke branch situs, di-commit oleh bot Sitepins.",
+      "write_pull_request": "Buka pull request",
+      "write_pull_request_description": "Perubahan masuk ke branch baru dengan pull request untuk kamu tinjau."
+    },
+    "settings": {
+      "title": "Koneksi MCP",
+      "description": "Beri agen AI seperti Claude, Codex, Cursor, dan Antigravity akses ke situsmu. Buat token, lalu tempel prompt penyiapan ke agenmu. Commit mereka berasal dari bot Sitepins.",
+      "connect_title": "Hubungkan agenmu",
+      "connect_description": "Salin prompt ini dan tempel ke agen AI-mu. Prompt ini menambahkan Sitepins ke pengaturan MCP agen. Token hanya ditampilkan sekali.",
+      "mcp_label": "URL server MCP",
+      "copy": "Salin",
+      "copied": "Disalin",
+      "empty": "Belum ada token akses.",
+      "write_pr_badge": "Pull request",
+      "last_used": "Terakhir dipakai {date}",
+      "never_used": "Belum pernah dipakai",
+      "expires": "Kedaluwarsa {date}",
+      "revoke": "Cabut",
+      "revoke_title": "Cabut {name}?",
+      "revoke_description": "Aksesnya langsung hilang. Perubahan yang sudah di-commit tetap ada di repositori.",
+      "revoked": "Akses dicabut",
+      "cancel": "Batal",
+      "token_name": "Nama",
+      "token_name_placeholder": "mis. Claude Desktop",
+      "token_expiry": "Kedaluwarsa setelah",
+      "days": "{count} hari",
+      "create_token": "Buat token",
+      "done": "Selesai",
+      "create_title": "Buat token akses",
+      "create_description": "Pilih situs yang bisa dijangkau agen dan apa yang boleh diubahnya.",
+      "copy_prompt": "Salin prompt",
+      "manual_title": "Penyiapan manual",
+      "token_label": "Token akses",
+      "header_hint": "Kirim sebagai header {example}.",
+      "all_sites": "Semua situs"
+    },
+    "editor": {
+      "external_commit": "{name} mengubah file ini melalui {agent}. Saat menerbitkan, kamu akan melihat perubahannya terlebih dahulu."
+    }
+  }
+}

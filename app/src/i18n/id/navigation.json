@@ -6,13 +6,15 @@
         "updates": "Pembaruan",
         "support": "Bantuan",
         "ai_agent": "Agen AI",
+        "mcp_connection": "Koneksi MCP",
         "preferences": "Preferensi"
       },
       "user_dashboard": {
         "overview": "Ringkasan",
         "account": "Akun",
         "preferences": "Preferensi",
-        "ai_agent": "Agen AI"
+        "ai_agent": "Agen AI",
+        "mcp_connection": "Koneksi MCP"
       },
       "org_dashboard": {
         "websites": "Situs Web",

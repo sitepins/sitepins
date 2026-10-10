@@ -39,7 +39,38 @@ function isValidJoinPayload(p: JoinPayload): boolean {
 // Gateway
 // ---------------------------------------------------------------------------
 
+let gatewayIo: IOServer | undefined;
+
+export type TExternalCommit = {
+  file: string;
+  action: string;
+  user_id: string;
+  user_name: string;
+  via: string;
+  commit_sha: string;
+};
+
+/**
+ * Tells editors open on these files that the repository changed outside the
+ * shared document (an AI agent). Unlike `commit:completed`, the editor must not
+ * treat its own content as saved.
+ */
+export function broadcastExternalCommit(
+  org_id: string,
+  project_id: string,
+  commits: TExternalCommit[],
+): void {
+  if (!gatewayIo) return;
+  const committed_at = new Date().toISOString();
+  for (const commit of commits) {
+    gatewayIo
+      .to(getRoomKey(org_id, project_id, commit.file))
+      .emit("commit:external", { ...commit, committed_at });
+  }
+}
+
 export function initEditorGateway(io: IOServer): void {
+  gatewayIo = io;
   io.on("connection", (socket: Socket) => {
     // Join a file room — must be called by the client before emitting "commit".
     // Membership is verified server-side so a client can't join another

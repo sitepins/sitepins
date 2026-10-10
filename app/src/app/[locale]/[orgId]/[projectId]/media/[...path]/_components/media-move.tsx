@@ -1,5 +1,3 @@
-import { useGitProvider } from "@/hooks/use-git-provider";
-import { logger } from "@/lib/logger";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,7 +10,10 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { toast } from "@/components/ui/toast";
+import { useGitProvider } from "@/hooks/use-git-provider";
 import { GITHUB_API_VERSION, GITLAB_API_VERSION } from "@/lib/constant";
+import { logger } from "@/lib/logger";
 import { checkMedia } from "@/lib/utils/check-media-file";
 import { cn } from "@/lib/utils/cn";
 import { findFileByPath, searchByPath } from "@/lib/utils/common";
@@ -22,7 +23,8 @@ import { selectConfig } from "@/redux/features/config/slice";
 import { useUpdateGitHubFilesMutation } from "@/redux/features/github";
 import { useUpdateGitLabFilesMutation } from "@/redux/features/gitlab";
 import { selectMediaInfo, setMedia } from "@/redux/features/media/slice";
-import { useAppDispatch } from "@/redux/store";
+import { refreshDelegatedToken } from "@/redux/features/provider/delegated-token";
+import { store, useAppDispatch } from "@/redux/store";
 import { TFiles } from "@/types";
 import {
   ChevronDown,
@@ -37,7 +39,6 @@ import { useRouter } from "next/navigation";
 import path from "path";
 import { useRef, useState } from "react";
 import { useSelector } from "react-redux";
-import { toast } from "@/components/ui/toast";
 
 export default function MediaMove({
   selectedItemsDir,
@@ -237,6 +238,9 @@ export default function MediaMove({
       // Fetch file content properly based on file type
       const isMedia = checkMedia(selectedItemsDir);
       let content: string;
+      const authToken =
+        config.currentLoginUserToken ||
+        (await refreshDelegatedToken(store.getState, store.dispatch));
 
       if (isGitLabProvider(config.provider)) {
         // GitLab API always returns base64 encoded content
@@ -244,7 +248,7 @@ export default function MediaMove({
           `https://gitlab.com/api/${GITLAB_API_VERSION}/projects/${encodeURIComponent(config.repoName ? `${config.owner}/${config.repoName}` : config.owner)}/repository/files/${encodeURIComponent(selectedItemsDir)}?ref=${config.branch}`,
           {
             headers: {
-              Authorization: `Bearer ${config.currentLoginUserToken || config.token}`,
+              Authorization: `Bearer ${authToken}`,
             },
           },
         );
@@ -264,7 +268,7 @@ export default function MediaMove({
             `https://api.github.com/repos/${config.owner}/${config.repoName}/contents/${selectedItemsDir}?ref=${config.branch}`,
             {
               headers: {
-                Authorization: `token ${config.currentLoginUserToken || config.token}`,
+                Authorization: `token ${authToken}`,
                 Accept: "application/vnd.github+json",
                 "X-GitHub-Api-Version": GITHUB_API_VERSION,
               },
@@ -284,7 +288,7 @@ export default function MediaMove({
             `https://api.github.com/repos/${config.owner}/${config.repoName}/contents/${selectedItemsDir}?ref=${config.branch}`,
             {
               headers: {
-                Authorization: `token ${config.currentLoginUserToken || config.token}`,
+                Authorization: `token ${authToken}`,
                 Accept: "application/vnd.github.raw+json",
                 "X-GitHub-Api-Version": GITHUB_API_VERSION,
               },

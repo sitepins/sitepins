@@ -1,4 +1,5 @@
 import express from "express";
+import { agentGrantRouter } from "./modules/agent/agent.route";
 import bucketRouter from "./modules/common/bucket.route";
 import gitProviderRouter from "./modules/git-provider/git-provider.route";
 import organizationRouter from "./modules/organization/organization.route";
@@ -47,6 +48,10 @@ const moduleRoutes = [
   {
     path: "/project-content",
     route: projectContentRouter,
+  },
+  {
+    path: "/agent-grants",
+    route: agentGrantRouter,
   },
 ];
 

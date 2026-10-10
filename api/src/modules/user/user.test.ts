@@ -12,6 +12,7 @@ const organizationUpdateManyMock = vi.fn();
 const runUserDeletionHooksMock = vi.fn();
 const deleteProviderByUserIdServiceMock = vi.fn();
 const organizationDeleteManyMock = vi.fn();
+const agentGrantDeleteManyMock = vi.fn();
 const projectDeleteManyMock = vi.fn();
 const projectContentDeleteManyMock = vi.fn();
 const projectLogDeleteManyMock = vi.fn();
@@ -44,6 +45,13 @@ vi.mock("../organization/organization.model", () => ({
   Organization: {
     deleteMany: (...a: unknown[]) => organizationDeleteManyMock(...a),
     updateMany: (...a: unknown[]) => organizationUpdateManyMock(...a),
+    find: () => ({ distinct: async () => ["org-owned"] }),
+  },
+}));
+
+vi.mock("../agent/agent-grant.model", () => ({
+  AgentGrant: {
+    deleteMany: (...a: unknown[]) => agentGrantDeleteManyMock(...a),
   },
 }));
 
@@ -197,6 +205,7 @@ beforeEach(() => {
   sessionsDeleteManyMock.mockReset();
   deleteProviderByUserIdServiceMock.mockReset();
   organizationDeleteManyMock.mockReset();
+  agentGrantDeleteManyMock.mockReset();
   projectDeleteManyMock.mockReset();
   projectContentDeleteManyMock.mockReset();
   projectLogDeleteManyMock.mockReset();
@@ -284,6 +293,10 @@ describe("User Module", () => {
         expect(sessionsDeleteManyMock).toHaveBeenCalled();
         expect(organizationDeleteManyMock).toHaveBeenCalledWith(
           { owner: "u1" },
+          { session: sessionMock },
+        );
+        expect(agentGrantDeleteManyMock).toHaveBeenCalledWith(
+          { $or: [{ user_id: "u1" }, { org_id: { $in: ["org-owned"] } }] },
           { session: sessionMock },
         );
         // membership of orgs somebody else owns

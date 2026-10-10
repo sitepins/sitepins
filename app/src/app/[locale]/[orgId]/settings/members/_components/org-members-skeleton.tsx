@@ -6,9 +6,7 @@ export function MembersSettingsSkeleton() {
   return (
     <>
       <Card>
-        <CardHeaderSkeleton titleClassName="w-32" descriptionClassName="w-48">
-          <Skeleton className="hidden h-9 w-32 md:block" />
-        </CardHeaderSkeleton>
+        <CardHeaderSkeleton titleClassName="w-32" descriptionClassName="w-48" />
 
         <CardContent>
           <div className="divide-border border-border divide-y rounded-xl border">
@@ -35,8 +33,8 @@ export function MembersSettingsSkeleton() {
             ))}
           </div>
         </CardContent>
-        <CardFooter className="md:hidden">
-          <Skeleton className="h-9 w-full" />
+        <CardFooter>
+          <Skeleton className="h-9 w-full sm:w-32" />
         </CardFooter>
       </Card>
     </>

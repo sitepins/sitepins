@@ -1,0 +1,87 @@
+{
+  "agents": {
+    "scopes": {
+      "projects_read": {
+        "title": "عرض المواقع",
+        "description": "عرض المواقع التي تختارها أدناه."
+      },
+      "content_read": {
+        "title": "قراءة الملفات",
+        "description": "قراءة المحتوى والمخططات والسجل، واستنساخ المستودع."
+      },
+      "content_write": {
+        "title": "تعديل المحتوى",
+        "description": "إنشاء الملفات وتعديلها وحذفها في مجلدات المحتوى والإعدادات."
+      },
+      "media_write": {
+        "title": "إدارة الوسائط",
+        "description": "رفع الملفات وإعادة تسميتها وحذفها في مجلد الوسائط."
+      },
+      "schema_write": {
+        "title": "تعديل المخططات",
+        "description": "تغيير المخططات والمقتطفات في .sitepins. يتطلب تغيير .sitepins/config.json إذن تعديل الكود."
+      },
+      "code_write": {
+        "title": "تعديل الكود",
+        "description": "تغيير أي ملف آخر مثل القوالب وpackage.json. لا يمكن أبدًا تعديل ملفات سير عمل CI."
+      },
+      "git_branch": {
+        "title": "الفروع وطلبات الدمج",
+        "description": "الإيداع في فروع أخرى وفتح طلبات الدمج."
+      }
+    },
+    "fields": {
+      "organization": "المؤسسة",
+      "select_org": "اختر مؤسسة",
+      "projects": "المواقع",
+      "projects_all": "كل المواقع",
+      "projects_all_description": "كل مواقع هذه المؤسسة، بما فيها المواقع التي تُضاف لاحقًا.",
+      "projects_selected": "المواقع المحددة",
+      "projects_selected_description": "المواقع التي تختارها فقط.",
+      "select_all": "تحديد الكل",
+      "selected_count": "تم تحديد {count} من {total}",
+      "no_projects": "لا توجد مواقع في هذه المؤسسة بعد.",
+      "permissions": "الأذونات",
+      "write_mode": "طريقة حفظ التغييرات",
+      "write_direct": "إيداع مباشر",
+      "write_direct_description": "تذهب التغييرات مباشرة إلى فرع الموقع، ويودعها روبوت Sitepins.",
+      "write_pull_request": "فتح طلب دمج",
+      "write_pull_request_description": "تذهب التغييرات إلى فرع جديد مع طلب دمج لتراجعه."
+    },
+    "settings": {
+      "title": "اتصال MCP",
+      "description": "امنح وكلاء الذكاء الاصطناعي مثل Claude وCodex وCursor وAntigravity الوصول إلى مواقعك. أنشئ رمزًا ثم الصق موجّه الإعداد في وكيلك. تأتي إيداعاتهم من روبوت Sitepins.",
+      "connect_title": "اربط وكيلك",
+      "connect_description": "انسخ هذا الموجّه والصقه في وكيل الذكاء الاصطناعي. يضيف Sitepins إلى إعدادات MCP للوكيل. يُعرض الرمز مرة واحدة فقط.",
+      "mcp_label": "رابط خادم MCP",
+      "copy": "نسخ",
+      "copied": "تم النسخ",
+      "empty": "لا توجد رموز وصول بعد.",
+      "write_pr_badge": "طلبات الدمج",
+      "last_used": "آخر استخدام {date}",
+      "never_used": "لم يُستخدم قط",
+      "expires": "ينتهي في {date}",
+      "revoke": "إلغاء الوصول",
+      "revoke_title": "إلغاء وصول {name}؟",
+      "revoke_description": "يفقد الوصول فورًا. تبقى التغييرات التي أودعها في المستودع.",
+      "revoked": "تم إلغاء الوصول",
+      "cancel": "إلغاء",
+      "token_name": "الاسم",
+      "token_name_placeholder": "مثلًا Claude Desktop",
+      "token_expiry": "ينتهي بعد",
+      "days": "{count} يوم",
+      "create_token": "إنشاء رمز",
+      "done": "تم",
+      "create_title": "إنشاء رمز وصول",
+      "create_description": "اختر المواقع التي يصل إليها الوكيل وما يمكنه تغييره.",
+      "copy_prompt": "نسخ الموجّه",
+      "manual_title": "إعداد يدوي",
+      "token_label": "رمز الوصول",
+      "header_hint": "أرسله في الترويسة {example}.",
+      "all_sites": "كل المواقع"
+    },
+    "editor": {
+      "external_commit": "غيّر {name} هذا الملف عبر {agent}. عند النشر سترى أولًا ما تغيّر."
+    }
+  }
+}

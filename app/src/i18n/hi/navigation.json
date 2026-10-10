@@ -6,13 +6,15 @@
         "updates": "अपडेट्स",
         "support": "सहायता",
         "ai_agent": "एआई एजेंट",
+        "mcp_connection": "MCP कनेक्शन",
         "preferences": "प्राथमिकताएं"
       },
       "user_dashboard": {
         "overview": "अवलोकन",
         "account": "खाता",
         "preferences": "प्राथमिकताएं",
-        "ai_agent": "एआई एजेंट"
+        "ai_agent": "एआई एजेंट",
+        "mcp_connection": "MCP कनेक्शन"
       },
       "org_dashboard": {
         "websites": "वेबसाइटें",

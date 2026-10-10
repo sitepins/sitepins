@@ -1,0 +1,87 @@
+{
+  "agents": {
+    "scopes": {
+      "projects_read": {
+        "title": "사이트 보기",
+        "description": "아래에서 선택한 사이트 목록을 봅니다."
+      },
+      "content_read": {
+        "title": "파일 읽기",
+        "description": "콘텐츠, 스키마, 기록을 읽고 저장소를 클론합니다."
+      },
+      "content_write": {
+        "title": "콘텐츠 편집",
+        "description": "콘텐츠 및 설정 폴더의 파일을 만들고, 편집하고, 삭제합니다."
+      },
+      "media_write": {
+        "title": "미디어 관리",
+        "description": "미디어 폴더의 파일을 업로드하고, 이름을 바꾸고, 삭제합니다."
+      },
+      "schema_write": {
+        "title": "스키마 편집",
+        "description": ".sitepins의 스키마와 스니펫을 변경합니다. .sitepins/config.json을 바꾸려면 코드 편집 권한이 필요합니다."
+      },
+      "code_write": {
+        "title": "코드 편집",
+        "description": "템플릿, package.json 등 다른 모든 파일을 변경합니다. CI 워크플로 파일은 절대 수정할 수 없습니다."
+      },
+      "git_branch": {
+        "title": "브랜치와 풀 리퀘스트",
+        "description": "다른 브랜치에 커밋하고 풀 리퀘스트를 엽니다."
+      }
+    },
+    "fields": {
+      "organization": "조직",
+      "select_org": "조직 선택",
+      "projects": "사이트",
+      "projects_all": "모든 사이트",
+      "projects_all_description": "이 조직의 모든 사이트(나중에 추가되는 사이트 포함).",
+      "projects_selected": "선택한 사이트",
+      "projects_selected_description": "선택한 사이트만.",
+      "select_all": "모두 선택",
+      "selected_count": "{total}개 중 {count}개 선택됨",
+      "no_projects": "이 조직에는 아직 사이트가 없습니다.",
+      "permissions": "권한",
+      "write_mode": "변경 사항 저장 방식",
+      "write_direct": "바로 커밋",
+      "write_direct_description": "변경 사항이 사이트 브랜치에 바로 반영되며 Sitepins 봇이 커밋합니다.",
+      "write_pull_request": "풀 리퀘스트 열기",
+      "write_pull_request_description": "변경 사항이 새 브랜치에 들어가고 검토할 풀 리퀘스트가 열립니다."
+    },
+    "settings": {
+      "title": "MCP 연결",
+      "description": "Claude, Codex, Cursor, Antigravity 같은 AI 에이전트에 사이트 접근 권한을 주세요. 토큰을 만든 뒤 설정 프롬프트를 에이전트에 붙여 넣으세요. 커밋은 Sitepins 봇이 합니다.",
+      "connect_title": "에이전트 연결",
+      "connect_description": "이 프롬프트를 복사해 AI 에이전트에 붙여 넣으세요. 에이전트의 MCP 설정에 Sitepins가 추가됩니다. 토큰은 한 번만 표시됩니다.",
+      "mcp_label": "MCP 서버 URL",
+      "copy": "복사",
+      "copied": "복사됨",
+      "empty": "아직 접근 토큰이 없습니다.",
+      "write_pr_badge": "풀 리퀘스트",
+      "last_used": "마지막 사용 {date}",
+      "never_used": "사용한 적 없음",
+      "expires": "{date} 만료",
+      "revoke": "취소",
+      "revoke_title": "{name}의 접근을 취소할까요?",
+      "revoke_description": "즉시 접근할 수 없게 됩니다. 이미 커밋된 변경 사항은 저장소에 남습니다.",
+      "revoked": "접근이 취소되었습니다",
+      "cancel": "취소",
+      "token_name": "이름",
+      "token_name_placeholder": "예: Claude Desktop",
+      "token_expiry": "만료 기간",
+      "days": "{count}일",
+      "create_token": "토큰 만들기",
+      "done": "완료",
+      "create_title": "접근 토큰 만들기",
+      "create_description": "에이전트가 접근할 사이트와 변경할 수 있는 범위를 선택하세요.",
+      "copy_prompt": "프롬프트 복사",
+      "manual_title": "수동 설정",
+      "token_label": "접근 토큰",
+      "header_hint": "{example} 헤더로 보내세요.",
+      "all_sites": "모든 사이트"
+    },
+    "editor": {
+      "external_commit": "{name}님이 {agent}을(를) 통해 이 파일을 변경했습니다. 게시할 때 변경 내용을 먼저 보여 드립니다."
+    }
+  }
+}

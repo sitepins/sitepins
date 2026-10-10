@@ -1,0 +1,87 @@
+{
+  "agents": {
+    "scopes": {
+      "projects_read": {
+        "title": "Xem trang web",
+        "description": "Liệt kê các trang web bạn chọn bên dưới."
+      },
+      "content_read": {
+        "title": "Đọc tệp",
+        "description": "Đọc nội dung, schema và lịch sử, và clone kho mã."
+      },
+      "content_write": {
+        "title": "Sửa nội dung",
+        "description": "Tạo, sửa và xóa tệp trong thư mục nội dung và cấu hình."
+      },
+      "media_write": {
+        "title": "Quản lý media",
+        "description": "Tải lên, đổi tên và xóa tệp trong thư mục media."
+      },
+      "schema_write": {
+        "title": "Sửa schema",
+        "description": "Thay đổi schema và snippet trong .sitepins. Thay đổi .sitepins/config.json cần quyền Sửa mã."
+      },
+      "code_write": {
+        "title": "Sửa mã",
+        "description": "Thay đổi mọi tệp khác, như template và package.json. Tệp workflow CI không bao giờ được ghi."
+      },
+      "git_branch": {
+        "title": "Nhánh và pull request",
+        "description": "Commit lên nhánh khác và mở pull request."
+      }
+    },
+    "fields": {
+      "organization": "Tổ chức",
+      "select_org": "Chọn tổ chức",
+      "projects": "Trang web",
+      "projects_all": "Tất cả trang web",
+      "projects_all_description": "Mọi trang web trong tổ chức này, kể cả trang được thêm sau.",
+      "projects_selected": "Trang web đã chọn",
+      "projects_selected_description": "Chỉ những trang web bạn chọn.",
+      "select_all": "Chọn tất cả",
+      "selected_count": "Đã chọn {count}/{total}",
+      "no_projects": "Tổ chức này chưa có trang web nào.",
+      "permissions": "Quyền",
+      "write_mode": "Cách lưu thay đổi",
+      "write_direct": "Commit trực tiếp",
+      "write_direct_description": "Thay đổi đi thẳng vào nhánh của trang web, do bot Sitepins commit.",
+      "write_pull_request": "Mở pull request",
+      "write_pull_request_description": "Thay đổi đi vào nhánh mới kèm pull request để bạn xem xét."
+    },
+    "settings": {
+      "title": "Kết nối MCP",
+      "description": "Cho các AI agent như Claude, Codex, Cursor và Antigravity quyền truy cập trang web của bạn. Tạo token rồi dán prompt thiết lập vào agent. Commit của chúng đến từ bot Sitepins.",
+      "connect_title": "Kết nối agent",
+      "connect_description": "Sao chép prompt này và dán vào AI agent. Nó thêm Sitepins vào cài đặt MCP của agent. Token chỉ hiển thị một lần.",
+      "mcp_label": "URL máy chủ MCP",
+      "copy": "Sao chép",
+      "copied": "Đã sao chép",
+      "empty": "Chưa có token truy cập.",
+      "write_pr_badge": "Pull request",
+      "last_used": "Dùng lần cuối {date}",
+      "never_used": "Chưa từng dùng",
+      "expires": "Hết hạn {date}",
+      "revoke": "Thu hồi",
+      "revoke_title": "Thu hồi {name}?",
+      "revoke_description": "Nó mất quyền truy cập ngay lập tức. Các thay đổi đã commit vẫn còn trong kho mã.",
+      "revoked": "Đã thu hồi quyền truy cập",
+      "cancel": "Hủy",
+      "token_name": "Tên",
+      "token_name_placeholder": "vd: Claude Desktop",
+      "token_expiry": "Hết hạn sau",
+      "days": "{count} ngày",
+      "create_token": "Tạo token",
+      "done": "Xong",
+      "create_title": "Tạo token truy cập",
+      "create_description": "Chọn những trang web agent được truy cập và những gì nó được thay đổi.",
+      "copy_prompt": "Sao chép prompt",
+      "manual_title": "Thiết lập thủ công",
+      "token_label": "Token truy cập",
+      "header_hint": "Gửi trong header {example}.",
+      "all_sites": "Tất cả trang web"
+    },
+    "editor": {
+      "external_commit": "{name} đã thay đổi tệp này qua {agent}. Khi xuất bản, bạn sẽ thấy những gì đã thay đổi trước."
+    }
+  }
+}

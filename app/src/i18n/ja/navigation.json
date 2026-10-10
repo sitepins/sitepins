@@ -6,13 +6,15 @@
         "updates": "アップデート",
         "support": "サポート",
         "ai_agent": "AIエージェント",
+        "mcp_connection": "MCP 接続",
         "preferences": "環境設定"
       },
       "user_dashboard": {
         "overview": "概要",
         "account": "アカウント",
         "preferences": "環境設定",
-        "ai_agent": "AIエージェント"
+        "ai_agent": "AIエージェント",
+        "mcp_connection": "MCP 接続"
       },
       "org_dashboard": {
         "websites": "Webサイト",

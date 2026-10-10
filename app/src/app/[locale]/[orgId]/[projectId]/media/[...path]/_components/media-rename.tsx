@@ -23,6 +23,7 @@ import { getGitProviderAdapter } from "@/redux/features/git/provider-adapter";
 import { useUpdateGitHubFilesMutation } from "@/redux/features/github";
 import { useUpdateGitLabFilesMutation } from "@/redux/features/gitlab";
 import { selectMediaInfo, setMedia } from "@/redux/features/media/slice";
+import { refreshDelegatedToken } from "@/redux/features/provider/delegated-token";
 import { store, useAppDispatch } from "@/redux/store";
 import { useTranslations } from "next-intl";
 import path from "path";
@@ -74,6 +75,9 @@ export default function MediaRename({
       // Fetch file content properly based on file type
       const isMedia = checkMedia(filePath);
       let content: string;
+      const authToken =
+        config.currentLoginUserToken ||
+        (await refreshDelegatedToken(store.getState, store.dispatch));
 
       if (isGitLabProvider(config.provider)) {
         // GitLab API always returns base64 encoded content
@@ -81,7 +85,7 @@ export default function MediaRename({
           `https://gitlab.com/api/${GITLAB_API_VERSION}/projects/${encodeURIComponent(config.repoName ? `${config.owner}/${config.repoName}` : config.owner)}/repository/files/${encodeURIComponent(filePath)}?ref=${config.branch}`,
           {
             headers: {
-              Authorization: `Bearer ${config.currentLoginUserToken || config.token}`,
+              Authorization: `Bearer ${authToken}`,
             },
           },
         );
@@ -101,7 +105,7 @@ export default function MediaRename({
             `https://api.github.com/repos/${config.owner}/${config.repoName}/contents/${filePath}?ref=${config.branch}`,
             {
               headers: {
-                Authorization: `token ${config.currentLoginUserToken || config.token}`,
+                Authorization: `token ${authToken}`,
                 Accept: "application/vnd.github+json",
                 "X-GitHub-Api-Version": GITHUB_API_VERSION,
               },
@@ -121,7 +125,7 @@ export default function MediaRename({
             `https://api.github.com/repos/${config.owner}/${config.repoName}/contents/${filePath}?ref=${config.branch}`,
             {
               headers: {
-                Authorization: `token ${config.currentLoginUserToken || config.token}`,
+                Authorization: `token ${authToken}`,
                 Accept: "application/vnd.github.raw+json",
                 "X-GitHub-Api-Version": GITHUB_API_VERSION,
               },

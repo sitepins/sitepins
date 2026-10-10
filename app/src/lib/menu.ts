@@ -1,4 +1,7 @@
-import { SiDiscord } from "@icons-pack/react-simple-icons";
+import {
+  SiDiscord,
+  SiModelcontextprotocol,
+} from "@icons-pack/react-simple-icons";
 import {
   Box,
   Braces,
@@ -14,8 +17,8 @@ import {
   Sparkles,
   UserCog,
 } from "lucide-react";
-import { COMMUNITY_URL, UPDATES_URL } from "./brand";
 import type NavigationType from "../i18n/en/navigation.json";
+import { COMMUNITY_URL, UPDATES_URL } from "./brand";
 import {
   getExtraDashboardPrimaryItems,
   getExtraDashboardSecondaryItems,
@@ -71,6 +74,12 @@ export const getFooterAccountMenu = (locale?: string) => {
       icon: Sparkles,
       href: "/dashboard/ai-agent",
     },
+    {
+      name: tMenu.footer_account.mcp_connection,
+      tKey: "mcp_connection",
+      icon: SiModelcontextprotocol,
+      href: "/dashboard/mcp",
+    },
     ...getExtraFooterAccountItems(locale),
     {
       name: tMenu.footer_account.preferences,
@@ -102,6 +111,12 @@ export const getUserDashboardMenu = (locale?: string) => {
       tKey: "ai_agent",
       icon: Sparkles,
       href: "/dashboard/ai-agent",
+    },
+    {
+      name: tMenu.user_dashboard.mcp_connection,
+      tKey: "mcp_connection",
+      icon: SiModelcontextprotocol,
+      href: "/dashboard/mcp",
     },
     ...getExtraDashboardSecondaryItems(locale),
   ];

@@ -1,0 +1,87 @@
+{
+  "agents": {
+    "scopes": {
+      "projects_read": {
+        "title": "See sites",
+        "description": "List the sites you pick below."
+      },
+      "content_read": {
+        "title": "Read files",
+        "description": "Read content, schemas and history, and clone the repository."
+      },
+      "content_write": {
+        "title": "Edit content",
+        "description": "Create, edit and delete files in the content and config folders."
+      },
+      "media_write": {
+        "title": "Manage media",
+        "description": "Upload, rename and delete files in the media folder."
+      },
+      "schema_write": {
+        "title": "Edit schemas",
+        "description": "Change schemas and snippets in .sitepins. Changing .sitepins/config.json needs Edit code."
+      },
+      "code_write": {
+        "title": "Edit code",
+        "description": "Change any other file, such as templates and package.json. CI workflow files are never writable."
+      },
+      "git_branch": {
+        "title": "Branches and pull requests",
+        "description": "Commit to other branches and open pull requests."
+      }
+    },
+    "fields": {
+      "organization": "Organization",
+      "select_org": "Select an organization",
+      "projects": "Sites",
+      "projects_all": "All sites",
+      "projects_all_description": "Every site in this organization, including ones added later.",
+      "projects_selected": "Selected sites",
+      "projects_selected_description": "Only the sites you pick.",
+      "select_all": "Select all",
+      "selected_count": "{count} of {total} selected",
+      "no_projects": "This organization has no sites yet.",
+      "permissions": "Permissions",
+      "write_mode": "How changes are saved",
+      "write_direct": "Commit directly",
+      "write_direct_description": "Changes go straight to the site's branch, committed by the Sitepins bot.",
+      "write_pull_request": "Open a pull request",
+      "write_pull_request_description": "Changes go to a new branch with a pull request for you to review."
+    },
+    "settings": {
+      "title": "MCP Connection",
+      "description": "Give AI agents like Claude, Codex, Cursor and Antigravity access to your sites. Create a token, then paste the setup prompt into your agent. Their commits come from the Sitepins bot.",
+      "connect_title": "Connect your agent",
+      "connect_description": "Copy this prompt and paste it into your AI agent. It adds Sitepins to the agent's MCP settings. The token is shown only once.",
+      "mcp_label": "MCP server URL",
+      "copy": "Copy",
+      "copied": "Copied",
+      "empty": "No access tokens yet.",
+      "write_pr_badge": "Pull requests",
+      "last_used": "Last used {date}",
+      "never_used": "Never used",
+      "expires": "Expires {date}",
+      "revoke": "Revoke",
+      "revoke_title": "Revoke {name}?",
+      "revoke_description": "It loses access right away. Changes it already committed stay in the repository.",
+      "revoked": "Access revoked",
+      "cancel": "Cancel",
+      "token_name": "Name",
+      "token_name_placeholder": "e.g. Claude Desktop",
+      "token_expiry": "Expires after",
+      "days": "{count} days",
+      "create_token": "Create token",
+      "done": "Done",
+      "create_title": "Create an access token",
+      "create_description": "Choose which sites the agent can reach and what it may change.",
+      "copy_prompt": "Copy prompt",
+      "manual_title": "Manual setup",
+      "token_label": "Access token",
+      "header_hint": "Send it as the header {example}.",
+      "all_sites": "All sites"
+    },
+    "editor": {
+      "external_commit": "{name} changed this file via {agent}. Publishing will show you what changed first."
+    }
+  }
+}

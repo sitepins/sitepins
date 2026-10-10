@@ -1,10 +1,30 @@
+import { ENUM_ROLE_ORG } from "@/enums/roles";
 import catchAsync from "@/lib/catchAsync";
 import { requireUserId } from "@/lib/requireUser";
+import { readId, requireOrgRole } from "@/lib/resourceAuth";
 import { sendResponse } from "@/lib/sendResponse";
 import { Organization } from "@/modules/organization/organization.model";
 import { Project } from "@/modules/project/project.model";
 import { Request, Response } from "express";
 import { gitProviderService } from "./git-provider.service";
+import { TGitProviderType } from "./git-provider.type";
+
+type TProviderRow = Partial<TGitProviderType>;
+
+// The HMAC index is a server-side lookup key; no client ever needs it.
+const forOwner = ({ refresh_token_index: _index, ...row }: TProviderRow) => row;
+
+// Collaborators get project-scoped tokens from the app's /api/auth/project-token.
+// GitLab still ships the owner's access token until commits move server-side.
+const forCollaborator = ({
+  refresh_token: _refresh,
+  refresh_token_index: _index,
+  refresh_token_expires_at: _refreshExpiry,
+  ...row
+}: TProviderRow) =>
+  row.provider === "Github"
+    ? { ...row, access_token: "", installation_access_token: "" }
+    : row;
 
 // insert provider
 const createProviderController = catchAsync(
@@ -48,13 +68,82 @@ const getProviderController = catchAsync(
       if (sharesProject) effectiveUserId = targetId;
     }
 
-    const provider =
+    const providers =
       await gitProviderService.getProviderService(effectiveUserId);
+    const redact = effectiveUserId === requesterId ? forOwner : forCollaborator;
     sendResponse(res, {
       success: true,
       statusCode: 200,
-      result: provider,
+      result: providers.map((row) => (row ? redact(row) : row)),
       message: "provider get successfully",
+    });
+  },
+);
+
+// Internal only: hands the web server what it needs to mint a project token.
+const getProjectGrantController = catchAsync(
+  async (req: Request, res: Response) => {
+    const projectId = readId(req.params.projectId);
+    const userId = readId(req.query.user_id);
+    if (!projectId || !userId) {
+      sendResponse(res, {
+        success: false,
+        statusCode: 400,
+        result: null,
+        message: "projectId and user_id are required",
+      });
+      return;
+    }
+
+    const project = await Project.findOne({ project_id: projectId })
+      .select("user_id org_id provider repository")
+      .lean();
+    if (!project) {
+      sendResponse(res, {
+        success: false,
+        statusCode: 404,
+        result: null,
+        message: "project not found",
+      });
+      return;
+    }
+
+    await requireOrgRole(userId, project.org_id, [
+      ENUM_ROLE_ORG.OWNER,
+      ENUM_ROLE_ORG.ADMIN,
+      ENUM_ROLE_ORG.EDITOR,
+    ]);
+
+    const providerName =
+      project.provider.toLowerCase() === "gitlab" ? "Gitlab" : "Github";
+    const providers = await gitProviderService.getProviderService(
+      project.user_id,
+    );
+    const row = providers.find((p) => p?.provider === providerName);
+    if (!row?.access_token) {
+      sendResponse(res, {
+        success: false,
+        statusCode: 404,
+        result: null,
+        message: "project owner has no connected provider",
+      });
+      return;
+    }
+
+    sendResponse(res, {
+      success: true,
+      statusCode: 200,
+      result: {
+        provider: providerName,
+        repository: project.repository,
+        owner_user_id: project.user_id,
+        access_token: row.access_token,
+        access_token_expires_at: row.access_token_expires_at
+          ? new Date(row.access_token_expires_at).getTime()
+          : undefined,
+        refresh_token: row.refresh_token || undefined,
+      },
+      message: "project grant resolved",
     });
   },
 );
@@ -95,6 +184,9 @@ const rotateProviderController = catchAsync(
       typeof v === "number" && Number.isFinite(v) ? v : undefined;
 
     const updated = await gitProviderService.rotateProviderTokensService({
+      // Session callers may only rotate their own row; the web server rotates
+      // a project owner's row on a collaborator's behalf via the internal secret.
+      user_id: req.isInternal ? undefined : requireUserId(req),
       provider,
       old_refresh_token,
       access_token,
@@ -117,5 +209,6 @@ const rotateProviderController = catchAsync(
 export const gitProviderController = {
   createProviderController,
   getProviderController,
+  getProjectGrantController,
   rotateProviderController,
 };

@@ -6,13 +6,15 @@
         "updates": "Обновления",
         "support": "Поддержка",
         "ai_agent": "ИИ-агент",
+        "mcp_connection": "Подключение MCP",
         "preferences": "Настройки"
       },
       "user_dashboard": {
         "overview": "Обзор",
         "account": "Аккаунт",
         "preferences": "Настройки",
-        "ai_agent": "ИИ-агент"
+        "ai_agent": "ИИ-агент",
+        "mcp_connection": "Подключение MCP"
       },
       "org_dashboard": {
         "websites": "Сайты",

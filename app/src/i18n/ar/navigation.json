@@ -6,13 +6,15 @@
         "updates": "التحديثات",
         "support": "الدعم الفني",
         "ai_agent": "وكيل الذكاء الاصطناعي",
+        "mcp_connection": "اتصال MCP",
         "preferences": "التفضيلات"
       },
       "user_dashboard": {
         "overview": "نظرة عامة",
         "account": "الحساب",
         "preferences": "التفضيلات",
-        "ai_agent": "وكيل الذكاء الاصطناعي"
+        "ai_agent": "وكيل الذكاء الاصطناعي",
+        "mcp_connection": "اتصال MCP"
       },
       "org_dashboard": {
         "websites": "المواقع الإلكترونية",

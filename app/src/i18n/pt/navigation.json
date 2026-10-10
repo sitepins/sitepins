@@ -6,13 +6,15 @@
         "updates": "Novidades",
         "support": "Suporte",
         "ai_agent": "Agente IA",
+        "mcp_connection": "Conexão MCP",
         "preferences": "Preferências"
       },
       "user_dashboard": {
         "overview": "Visão geral",
         "account": "Conta",
         "preferences": "Preferências",
-        "ai_agent": "Agente IA"
+        "ai_agent": "Agente IA",
+        "mcp_connection": "Conexão MCP"
       },
       "org_dashboard": {
         "websites": "Sites",

@@ -1,0 +1,87 @@
+{
+  "agents": {
+    "scopes": {
+      "projects_read": {
+        "title": "サイトの表示",
+        "description": "下で選んだサイトを一覧表示します。"
+      },
+      "content_read": {
+        "title": "ファイルの読み取り",
+        "description": "コンテンツ、スキーマ、履歴を読み取り、リポジトリをクローンします。"
+      },
+      "content_write": {
+        "title": "コンテンツの編集",
+        "description": "コンテンツと設定フォルダー内のファイルを作成・編集・削除します。"
+      },
+      "media_write": {
+        "title": "メディアの管理",
+        "description": "メディアフォルダー内のファイルをアップロード・名前変更・削除します。"
+      },
+      "schema_write": {
+        "title": "スキーマの編集",
+        "description": ".sitepins 内のスキーマとスニペットを変更します。.sitepins/config.json の変更には「コードの編集」が必要です。"
+      },
+      "code_write": {
+        "title": "コードの編集",
+        "description": "テンプレートや package.json などその他のファイルを変更します。CI ワークフローのファイルは常に書き込めません。"
+      },
+      "git_branch": {
+        "title": "ブランチとプルリクエスト",
+        "description": "ほかのブランチにコミットし、プルリクエストを作成します。"
+      }
+    },
+    "fields": {
+      "organization": "組織",
+      "select_org": "組織を選択",
+      "projects": "サイト",
+      "projects_all": "すべてのサイト",
+      "projects_all_description": "この組織のすべてのサイト（今後追加されるサイトを含む）。",
+      "projects_selected": "選択したサイト",
+      "projects_selected_description": "選択したサイトのみ。",
+      "select_all": "すべて選択",
+      "selected_count": "{total} 件中 {count} 件を選択",
+      "no_projects": "この組織にはまだサイトがありません。",
+      "permissions": "権限",
+      "write_mode": "変更の保存方法",
+      "write_direct": "直接コミット",
+      "write_direct_description": "変更はサイトのブランチに直接反映され、Sitepins ボットがコミットします。",
+      "write_pull_request": "プルリクエストを作成",
+      "write_pull_request_description": "変更は新しいブランチに入り、確認用のプルリクエストが作成されます。"
+    },
+    "settings": {
+      "title": "MCP 接続",
+      "description": "Claude、Codex、Cursor、Antigravity などの AI エージェントにサイトへのアクセスを許可します。トークンを作成し、セットアップ用プロンプトをエージェントに貼り付けてください。コミットは Sitepins ボットが行います。",
+      "connect_title": "エージェントを接続",
+      "connect_description": "このプロンプトをコピーして AI エージェントに貼り付けてください。エージェントの MCP 設定に Sitepins が追加されます。トークンは一度しか表示されません。",
+      "mcp_label": "MCP サーバー URL",
+      "copy": "コピー",
+      "copied": "コピーしました",
+      "empty": "アクセストークンはまだありません。",
+      "write_pr_badge": "プルリクエスト",
+      "last_used": "最終使用 {date}",
+      "never_used": "未使用",
+      "expires": "{date} に期限切れ",
+      "revoke": "取り消す",
+      "revoke_title": "{name} のアクセスを取り消しますか？",
+      "revoke_description": "すぐにアクセスできなくなります。すでにコミットされた変更はリポジトリに残ります。",
+      "revoked": "アクセスを取り消しました",
+      "cancel": "キャンセル",
+      "token_name": "名前",
+      "token_name_placeholder": "例: Claude Desktop",
+      "token_expiry": "有効期限",
+      "days": "{count} 日",
+      "create_token": "トークンを作成",
+      "done": "完了",
+      "create_title": "アクセストークンを作成",
+      "create_description": "エージェントがアクセスできるサイトと変更できる内容を選んでください。",
+      "copy_prompt": "プロンプトをコピー",
+      "manual_title": "手動セットアップ",
+      "token_label": "アクセストークン",
+      "header_hint": "{example} ヘッダーで送信してください。",
+      "all_sites": "すべてのサイト"
+    },
+    "editor": {
+      "external_commit": "{name} が {agent} 経由でこのファイルを変更しました。公開時にまず変更内容が表示されます。"
+    }
+  }
+}

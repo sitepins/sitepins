@@ -1,12 +1,13 @@
-import { errorMessageOr, errorStatus } from "@/lib/utils/error";
-import { logger } from "@/lib/logger";
 import { GITHUB_API_VERSION, IS_DEMO } from "@/lib/constant";
+import { logger } from "@/lib/logger";
+import { errorMessageOr, errorStatus } from "@/lib/utils/error";
 import { isGitHubProvider } from "@/lib/utils/provider-checker";
 import { RootState } from "@/redux/store";
 import { Octokit } from "@octokit/rest";
 import { BaseQueryFn } from "@reduxjs/toolkit/query";
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { updateConfig } from "../config/slice";
+import { refreshDelegatedToken } from "../provider/delegated-token";
 import { TGitHubOption, TGitHubPromise } from "./github-type";
 
 /**
@@ -57,6 +58,10 @@ const octokitBaseQuery: BaseQueryFn<
       !optionToken ||
       optionToken === config.token ||
       optionToken === config.currentLoginUserToken;
+
+    if (config.delegatedProjectId && authToken === config.token) {
+      authToken = await refreshDelegatedToken(getState, dispatch);
+    }
 
     // Token refresh logic
     if (

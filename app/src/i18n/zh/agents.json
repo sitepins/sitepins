@@ -1,0 +1,87 @@
+{
+  "agents": {
+    "scopes": {
+      "projects_read": {
+        "title": "查看站点",
+        "description": "列出你在下方选择的站点。"
+      },
+      "content_read": {
+        "title": "读取文件",
+        "description": "读取内容、架构和历史记录，并克隆仓库。"
+      },
+      "content_write": {
+        "title": "编辑内容",
+        "description": "在内容和配置文件夹中创建、编辑和删除文件。"
+      },
+      "media_write": {
+        "title": "管理媒体",
+        "description": "在媒体文件夹中上传、重命名和删除文件。"
+      },
+      "schema_write": {
+        "title": "编辑架构",
+        "description": "修改 .sitepins 中的架构和代码片段。修改 .sitepins/config.json 需要“编辑代码”权限。"
+      },
+      "code_write": {
+        "title": "编辑代码",
+        "description": "修改其他任何文件，例如模板和 package.json。CI 工作流文件始终不可写入。"
+      },
+      "git_branch": {
+        "title": "分支和拉取请求",
+        "description": "提交到其他分支并创建拉取请求。"
+      }
+    },
+    "fields": {
+      "organization": "组织",
+      "select_org": "选择组织",
+      "projects": "站点",
+      "projects_all": "所有站点",
+      "projects_all_description": "此组织中的所有站点，包括以后添加的站点。",
+      "projects_selected": "所选站点",
+      "projects_selected_description": "仅限你选择的站点。",
+      "select_all": "全选",
+      "selected_count": "已选择 {count}/{total}",
+      "no_projects": "该组织还没有站点。",
+      "permissions": "权限",
+      "write_mode": "更改的保存方式",
+      "write_direct": "直接提交",
+      "write_direct_description": "更改直接进入站点分支，由 Sitepins 机器人提交。",
+      "write_pull_request": "创建拉取请求",
+      "write_pull_request_description": "更改进入新分支，并附带拉取请求供你审核。"
+    },
+    "settings": {
+      "title": "MCP 连接",
+      "description": "让 Claude、Codex、Cursor 和 Antigravity 等 AI 代理访问你的站点。创建一个令牌，然后把设置提示粘贴到你的代理中。它们的提交来自 Sitepins 机器人。",
+      "connect_title": "连接你的代理",
+      "connect_description": "复制此提示并粘贴到你的 AI 代理中。它会把 Sitepins 添加到代理的 MCP 设置里。令牌只显示一次。",
+      "mcp_label": "MCP 服务器 URL",
+      "copy": "复制",
+      "copied": "已复制",
+      "empty": "还没有访问令牌。",
+      "write_pr_badge": "拉取请求",
+      "last_used": "上次使用 {date}",
+      "never_used": "从未使用",
+      "expires": "{date} 过期",
+      "revoke": "撤销",
+      "revoke_title": "撤销 {name} 的访问？",
+      "revoke_description": "它会立即失去访问权限。已提交的更改会保留在仓库中。",
+      "revoked": "已撤销访问",
+      "cancel": "取消",
+      "token_name": "名称",
+      "token_name_placeholder": "例如：Claude Desktop",
+      "token_expiry": "有效期",
+      "days": "{count} 天",
+      "create_token": "创建令牌",
+      "done": "完成",
+      "create_title": "创建访问令牌",
+      "create_description": "选择代理可以访问的站点以及可以修改的内容。",
+      "copy_prompt": "复制提示",
+      "manual_title": "手动设置",
+      "token_label": "访问令牌",
+      "header_hint": "以 {example} 请求头发送。",
+      "all_sites": "所有站点"
+    },
+    "editor": {
+      "external_commit": "{name} 通过 {agent} 修改了此文件。发布时会先显示更改内容。"
+    }
+  }
+}

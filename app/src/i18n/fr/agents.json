@@ -1,0 +1,87 @@
+{
+  "agents": {
+    "scopes": {
+      "projects_read": {
+        "title": "Voir les sites",
+        "description": "Lister les sites que vous choisissez ci-dessous."
+      },
+      "content_read": {
+        "title": "Lire les fichiers",
+        "description": "Lire le contenu, les schémas et l'historique, et cloner le dépôt."
+      },
+      "content_write": {
+        "title": "Modifier le contenu",
+        "description": "Créer, modifier et supprimer des fichiers dans les dossiers de contenu et de configuration."
+      },
+      "media_write": {
+        "title": "Gérer les médias",
+        "description": "Téléverser, renommer et supprimer des fichiers dans le dossier des médias."
+      },
+      "schema_write": {
+        "title": "Modifier les schémas",
+        "description": "Modifier les schémas et snippets dans .sitepins. Modifier .sitepins/config.json nécessite Modifier le code."
+      },
+      "code_write": {
+        "title": "Modifier le code",
+        "description": "Changer tout autre fichier, comme les templates et package.json. Les fichiers de workflow CI ne sont jamais modifiables."
+      },
+      "git_branch": {
+        "title": "Branches et pull requests",
+        "description": "Committer sur d'autres branches et ouvrir des pull requests."
+      }
+    },
+    "fields": {
+      "organization": "Organisation",
+      "select_org": "Choisir une organisation",
+      "projects": "Sites",
+      "projects_all": "Tous les sites",
+      "projects_all_description": "Tous les sites de cette organisation, y compris ceux ajoutés plus tard.",
+      "projects_selected": "Sites sélectionnés",
+      "projects_selected_description": "Uniquement les sites que vous choisissez.",
+      "select_all": "Tout sélectionner",
+      "selected_count": "{count} sur {total} sélectionnés",
+      "no_projects": "Cette organisation n'a pas encore de sites.",
+      "permissions": "Autorisations",
+      "write_mode": "Enregistrement des modifications",
+      "write_direct": "Committer directement",
+      "write_direct_description": "Les modifications vont directement sur la branche du site, committées par le bot Sitepins.",
+      "write_pull_request": "Ouvrir une pull request",
+      "write_pull_request_description": "Les modifications vont sur une nouvelle branche avec une pull request à relire."
+    },
+    "settings": {
+      "title": "Connexion MCP",
+      "description": "Donnez à des agents IA comme Claude, Codex, Cursor et Antigravity l'accès à vos sites. Créez un jeton, puis collez le prompt de configuration dans votre agent. Leurs commits viennent du bot Sitepins.",
+      "connect_title": "Connecter votre agent",
+      "connect_description": "Copiez ce prompt et collez-le dans votre agent IA. Il ajoute Sitepins aux réglages MCP de l'agent. Le jeton n'est affiché qu'une fois.",
+      "mcp_label": "URL du serveur MCP",
+      "copy": "Copier",
+      "copied": "Copié",
+      "empty": "Aucun jeton d'accès pour l'instant.",
+      "write_pr_badge": "Pull requests",
+      "last_used": "Dernière utilisation {date}",
+      "never_used": "Jamais utilisé",
+      "expires": "Expire le {date}",
+      "revoke": "Révoquer",
+      "revoke_title": "Révoquer {name} ?",
+      "revoke_description": "Il perd l'accès immédiatement. Les modifications déjà committées restent dans le dépôt.",
+      "revoked": "Accès révoqué",
+      "cancel": "Annuler",
+      "token_name": "Nom",
+      "token_name_placeholder": "ex. Claude Desktop",
+      "token_expiry": "Expire après",
+      "days": "{count} jours",
+      "create_token": "Créer le jeton",
+      "done": "Terminé",
+      "create_title": "Créer un jeton d'accès",
+      "create_description": "Choisissez les sites que l'agent peut atteindre et ce qu'il peut modifier.",
+      "copy_prompt": "Copier le prompt",
+      "manual_title": "Configuration manuelle",
+      "token_label": "Jeton d'accès",
+      "header_hint": "Envoyez-le dans l'en-tête {example}.",
+      "all_sites": "Tous les sites"
+    },
+    "editor": {
+      "external_commit": "{name} a modifié ce fichier via {agent}. En publiant, vous verrez d'abord ce qui a changé."
+    }
+  }
+}

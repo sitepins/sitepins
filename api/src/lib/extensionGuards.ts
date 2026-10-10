@@ -44,6 +44,27 @@ export const setProjectMutationGuard = (guard: ProjectMutationGuard) => {
 export const runProjectMutationGuard = (mutation: ProjectMutation) =>
   projectMutationGuard?.(mutation);
 
+export type TAgentAccessCheck = {
+  user_id: string;
+  org_id: string;
+  project_id?: string;
+  project_owner_id: string;
+  write: boolean;
+};
+
+export type TAgentAccessGuard = (
+  check: TAgentAccessCheck,
+) => Promise<void> | void;
+
+let agentAccessGuard: TAgentAccessGuard | undefined;
+
+export const setAgentAccessGuard = (guard: TAgentAccessGuard) => {
+  agentAccessGuard = guard;
+};
+
+export const runAgentAccessGuard = async (check: TAgentAccessCheck) =>
+  agentAccessGuard?.(check);
+
 export type EntityDecorator<T> = (entity: T) => Promise<T> | T;
 
 let organizationDecorator: EntityDecorator<Record<string, unknown>> | undefined;

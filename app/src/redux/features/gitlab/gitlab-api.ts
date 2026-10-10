@@ -5,6 +5,7 @@ import { RootState } from "@/redux/store";
 import { BaseQueryFn } from "@reduxjs/toolkit/query";
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { updateConfig } from "../config/slice";
+import { refreshDelegatedToken } from "../provider/delegated-token";
 import {
   TGitLabBranch,
   TGitLabBranchParams,
@@ -115,6 +116,10 @@ const gitlabBaseQuery: BaseQueryFn<
       !optionToken ||
       optionToken === config.token ||
       optionToken === config.currentLoginUserToken;
+
+    if (config.delegatedProjectId && authToken === config.token) {
+      authToken = await refreshDelegatedToken(getState, dispatch);
+    }
 
     // Token refresh logic
     if (

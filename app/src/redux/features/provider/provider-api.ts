@@ -1,11 +1,9 @@
 import { authClient } from "@/lib/auth/auth-client";
-import {
-  isGitHubProvider,
-  isGitLabProvider,
-} from "@/lib/utils/provider-checker";
 import { RootState } from "@/redux/store";
 import { api } from "../api-slice";
 import { updateConfig } from "../config/slice";
+import { fetchDelegatedToken } from "./delegated-token";
+import { selectProviderConfig, withDelegatedToken } from "./provider-config";
 import { TProvider } from "./type";
 
 /** Provider record as the API returns it, before snake_case → camelCase mapping. */
@@ -32,7 +30,12 @@ export const providerApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getProviders: builder.query<
       TProvider[],
-      | { user_id: string | undefined; preferredProvider?: string }
+      | {
+          user_id: string | undefined;
+          preferredProvider?: string;
+          /** Lets a non-owner member fetch a project-scoped token. */
+          projectId?: string;
+        }
       | string
       | undefined
     >({
@@ -59,77 +62,28 @@ export const providerApi = api.injectEndpoints({
         const state = getState() as RootState;
         const preferredProvider =
           typeof arg === "object" ? arg.preferredProvider : undefined;
-        const targetProvider = preferredProvider || state.config.provider;
 
         const { data: auth } = await authClient.getSession();
-        const loginUserId = auth?.user.user_id;
-        const targetUserId = typeof arg === "object" ? arg.user_id : arg;
+        const selection = selectProviderConfig({
+          providers,
+          loginUserId: auth?.user.user_id,
+          targetUserId: typeof arg === "object" ? arg.user_id : arg,
+          targetProvider: preferredProvider || state.config.provider,
+        });
+        if (!selection) return;
 
-        // Find GitHub providers
-        const githubProviders = providers.filter((item) =>
-          isGitHubProvider(item.provider),
-        );
-
-        const loginUserGithubProvider = githubProviders.find(
-          (item) =>
-            item.user_id === loginUserId && isGitHubProvider(item.provider),
-        );
-
-        const selectedGithubProvider = githubProviders.find(
-          (item) =>
-            item.user_id === targetUserId && isGitHubProvider(item.provider),
-        );
-
-        // Find GitLab providers
-        const gitlabProviders = providers.filter((item) =>
-          isGitLabProvider(item.provider),
-        );
-
-        const loginUserGitlabProvider = gitlabProviders.find(
-          (item) =>
-            item.user_id === loginUserId && isGitLabProvider(item.provider),
-        );
-
-        const selectedGitlabProvider = gitlabProviders.find(
-          (item) =>
-            item.user_id === targetUserId && isGitLabProvider(item.provider),
-        );
-
-        // Determine which provider to use
-        // Use preferredProvider if specified, otherwise fallback to existing logic
-        const useGitlab = isGitLabProvider(targetProvider)
-          ? gitlabProviders.length > 0
-          : githubProviders.length === 0 && gitlabProviders.length > 0;
-
-        if (useGitlab) {
-          dispatch(
-            updateConfig({
-              currentLoginUserToken: loginUserGitlabProvider?.accessToken ?? "",
-              token: selectedGitlabProvider?.accessToken ?? "",
-              provider: "Gitlab",
-              refreshToken: selectedGitlabProvider?.refreshToken || "",
-              accessTokenExpiresAt:
-                selectedGitlabProvider?.accessTokenExpiresAt || 0,
-              refreshTokenExpiresAt:
-                selectedGitlabProvider?.refreshTokenExpiresAt || 0,
-              lastRefreshedAt: selectedGitlabProvider?.lastRefreshedAt || 0,
-            }),
-          );
-        } else if (githubProviders.length > 0) {
-          dispatch(
-            updateConfig({
-              currentLoginUserToken: loginUserGithubProvider?.accessToken ?? "",
-              token: selectedGithubProvider?.accessToken ?? "",
-              provider: "Github",
-              refreshToken: selectedGithubProvider?.refreshToken || "",
-              accessTokenExpiresAt:
-                selectedGithubProvider?.accessTokenExpiresAt || 0,
-              refreshTokenExpiresAt:
-                selectedGithubProvider?.refreshTokenExpiresAt || 0,
-              lastRefreshedAt: selectedGithubProvider?.lastRefreshedAt || 0,
-            }),
-          );
+        const projectId = typeof arg === "object" ? arg.projectId : undefined;
+        if (!selection.delegated || !projectId) {
+          dispatch(updateConfig(selection.config));
+          return;
         }
+
+        const delegated = await fetchDelegatedToken(projectId);
+        dispatch(
+          updateConfig(
+            withDelegatedToken(selection.config, projectId, delegated),
+          ),
+        );
       },
       providesTags: (result) =>
         result

@@ -6,13 +6,15 @@
         "updates": "Updates",
         "support": "Support",
         "ai_agent": "AI Agent",
+        "mcp_connection": "MCP Connection",
         "preferences": "Preferences"
       },
       "user_dashboard": {
         "overview": "Overview",
         "account": "Account",
         "preferences": "Preferences",
-        "ai_agent": "AI Agent"
+        "ai_agent": "AI Agent",
+        "mcp_connection": "MCP Connection"
       },
       "org_dashboard": {
         "websites": "Websites",

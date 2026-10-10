@@ -23,6 +23,8 @@ export type TLog = {
   file: string;
   file_type: EProjectLogType;
   user_name?: string;
+  /** AI agent that made the change on the user's behalf. */
+  via?: string;
   createdAt?: string | Date;
 };
 

@@ -6,13 +6,15 @@
         "updates": "Neuigkeiten",
         "support": "Hilfe & Support",
         "ai_agent": "KI-Assistent",
+        "mcp_connection": "MCP-Verbindung",
         "preferences": "Einstellungen"
       },
       "user_dashboard": {
         "overview": "Übersicht",
         "account": "Konto",
         "preferences": "Einstellungen",
-        "ai_agent": "KI-Assistent"
+        "ai_agent": "KI-Assistent",
+        "mcp_connection": "MCP-Verbindung"
       },
       "org_dashboard": {
         "websites": "Websites",

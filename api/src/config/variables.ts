@@ -75,6 +75,9 @@ export default {
   // Internal server-to-server secret (used by the web app's API routes)
   internal_secret: process.env.INTERNAL_API_SECRET,
 
+  // Public origin of this API (also better-auth's baseURL), e.g. https://api.example.com
+  base_url: process.env.BASE_URL?.replace(/\/+$/, ""),
+
   // AES-256-GCM key for encrypting sandbox tokens at rest (64-char hex)
   sandbox_encryption_key: process.env.SANDBOX_ENCRYPTION_KEY,
 };

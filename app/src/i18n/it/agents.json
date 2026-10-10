@@ -1,0 +1,87 @@
+{
+  "agents": {
+    "scopes": {
+      "projects_read": {
+        "title": "Vedere i siti",
+        "description": "Elencare i siti che scegli qui sotto."
+      },
+      "content_read": {
+        "title": "Leggere i file",
+        "description": "Leggere contenuti, schemi e cronologia, e clonare il repository."
+      },
+      "content_write": {
+        "title": "Modificare i contenuti",
+        "description": "Creare, modificare ed eliminare file nelle cartelle dei contenuti e della configurazione."
+      },
+      "media_write": {
+        "title": "Gestire i media",
+        "description": "Caricare, rinominare ed eliminare file nella cartella dei media."
+      },
+      "schema_write": {
+        "title": "Modificare gli schemi",
+        "description": "Cambiare schemi e snippet in .sitepins. Per modificare .sitepins/config.json serve Modificare il codice."
+      },
+      "code_write": {
+        "title": "Modificare il codice",
+        "description": "Cambiare qualsiasi altro file, come template e package.json. I file dei workflow CI non sono mai modificabili."
+      },
+      "git_branch": {
+        "title": "Branch e pull request",
+        "description": "Fare commit su altri branch e aprire pull request."
+      }
+    },
+    "fields": {
+      "organization": "Organizzazione",
+      "select_org": "Seleziona un'organizzazione",
+      "projects": "Siti",
+      "projects_all": "Tutti i siti",
+      "projects_all_description": "Ogni sito di questa organizzazione, inclusi quelli aggiunti in seguito.",
+      "projects_selected": "Siti selezionati",
+      "projects_selected_description": "Solo i siti che scegli.",
+      "select_all": "Seleziona tutto",
+      "selected_count": "{count} di {total} selezionati",
+      "no_projects": "Questa organizzazione non ha ancora siti.",
+      "permissions": "Autorizzazioni",
+      "write_mode": "Come vengono salvate le modifiche",
+      "write_direct": "Commit diretto",
+      "write_direct_description": "Le modifiche vanno direttamente nel branch del sito, con commit del bot Sitepins.",
+      "write_pull_request": "Apri una pull request",
+      "write_pull_request_description": "Le modifiche vanno in un nuovo branch con una pull request da revisionare."
+    },
+    "settings": {
+      "title": "Connessione MCP",
+      "description": "Dai ad agenti IA come Claude, Codex, Cursor e Antigravity l'accesso ai tuoi siti. Crea un token, poi incolla il prompt di configurazione nel tuo agente. I loro commit provengono dal bot Sitepins.",
+      "connect_title": "Collega il tuo agente",
+      "connect_description": "Copia questo prompt e incollalo nel tuo agente IA. Aggiunge Sitepins alle impostazioni MCP dell'agente. Il token viene mostrato una sola volta.",
+      "mcp_label": "URL del server MCP",
+      "copy": "Copia",
+      "copied": "Copiato",
+      "empty": "Nessun token di accesso.",
+      "write_pr_badge": "Pull request",
+      "last_used": "Ultimo uso {date}",
+      "never_used": "Mai usato",
+      "expires": "Scade il {date}",
+      "revoke": "Revoca",
+      "revoke_title": "Revocare {name}?",
+      "revoke_description": "Perde subito l'accesso. Le modifiche già confermate restano nel repository.",
+      "revoked": "Accesso revocato",
+      "cancel": "Annulla",
+      "token_name": "Nome",
+      "token_name_placeholder": "es. Claude Desktop",
+      "token_expiry": "Scade dopo",
+      "days": "{count} giorni",
+      "create_token": "Crea token",
+      "done": "Fatto",
+      "create_title": "Crea un token di accesso",
+      "create_description": "Scegli quali siti l'agente può raggiungere e cosa può modificare.",
+      "copy_prompt": "Copia prompt",
+      "manual_title": "Configurazione manuale",
+      "token_label": "Token di accesso",
+      "header_hint": "Invialo nell'intestazione {example}.",
+      "all_sites": "Tutti i siti"
+    },
+    "editor": {
+      "external_commit": "{name} ha modificato questo file tramite {agent}. Pubblicando vedrai prima cosa è cambiato."
+    }
+  }
+}

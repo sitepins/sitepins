@@ -1,15 +1,17 @@
+import { toast } from "@/components/ui/toast";
 import { useAddLog } from "@/hooks/use-add-log";
-import { errorMessageOr } from "@/lib/utils/error";
-import { logger } from "@/lib/logger";
 import { GITHUB_API_VERSION, GITLAB_API_VERSION } from "@/lib/constant";
+import { logger } from "@/lib/logger";
 import { checkMedia } from "@/lib/utils/check-media-file";
+import { errorMessageOr } from "@/lib/utils/error";
 import { isGitLabProvider } from "@/lib/utils/provider-checker";
 import { useUpdateGitHubFilesMutation } from "@/redux/features/github";
 import { useUpdateGitLabFilesMutation } from "@/redux/features/gitlab";
 import { EAction, EProjectLogType } from "@/redux/features/project-log/type";
+import { refreshDelegatedToken } from "@/redux/features/provider/delegated-token";
+import { store } from "@/redux/store";
 import { TFiles } from "@/types";
 import { useTranslations } from "next-intl";
-import { toast } from "@/components/ui/toast";
 
 type Config = {
   owner?: string;
@@ -48,6 +50,9 @@ export function useFolderOps({
   }) => {
     try {
       const isMedia = checkMedia(file.oldPath);
+      const authToken =
+        config.currentLoginUserToken ||
+        (await refreshDelegatedToken(store.getState, store.dispatch));
 
       if (isGitLabProvider(config.provider)) {
         const response = await fetch(
@@ -60,9 +65,7 @@ export function useFolderOps({
           )}?ref=${config.branch}`,
           {
             headers: {
-              Authorization: `Bearer ${
-                config.currentLoginUserToken || config.token
-              }`,
+              Authorization: `Bearer ${authToken}`,
             },
           },
         );
@@ -86,9 +89,7 @@ export function useFolderOps({
             `https://api.github.com/repos/${config.owner}/${config.repoName}/contents/${file.oldPath}?ref=${config.branch}`,
             {
               headers: {
-                Authorization: `token ${
-                  config.currentLoginUserToken || config.token
-                }`,
+                Authorization: `token ${authToken}`,
                 Accept: "application/vnd.github.raw+json",
                 "X-GitHub-Api-Version": GITHUB_API_VERSION,
               },
@@ -133,9 +134,7 @@ export function useFolderOps({
             `https://api.github.com/repos/${config.owner}/${config.repoName}/contents/${file.oldPath}?ref=${config.branch}`,
             {
               headers: {
-                Authorization: `token ${
-                  config.currentLoginUserToken || config.token
-                }`,
+                Authorization: `token ${authToken}`,
                 Accept: "application/vnd.github.raw+json",
                 "X-GitHub-Api-Version": GITHUB_API_VERSION,
               },

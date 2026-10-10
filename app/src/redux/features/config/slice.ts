@@ -13,6 +13,7 @@ const initialState: TConfig = {
   refreshTokenExpiresAt: 0,
   lastRefreshedAt: 0,
   token: "",
+  delegatedProjectId: "",
   provider: "",
   branch: "",
   isRawMode: false,

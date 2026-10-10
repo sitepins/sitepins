@@ -1,4 +1,5 @@
-import { rateLimit } from "express-rate-limit";
+import type { Request } from "express";
+import { ipKeyGenerator, rateLimit } from "express-rate-limit";
 
 // Limits are deliberately generous — they exist to stop credential/OTP
 // brute-force and scripted abuse, not to throttle normal editor use. Tune with
@@ -44,4 +45,24 @@ export const uploadLimiter = rateLimit({
   ...shared,
   windowMs: num(process.env.UPLOAD_RATELIMIT_WINDOW_MS, 60_000),
   limit: num(process.env.UPLOAD_RATELIMIT_MAX, 30),
+});
+
+// Keyed by the agent's grant, so one runaway agent can't starve others behind the same IP.
+const agentKey = (req: Request) =>
+  req.agent?.grant.grant_id ?? ipKeyGenerator(req.ip ?? "");
+
+/** Every agent request (MCP and git fetch). */
+export const agentLimiter = rateLimit({
+  ...shared,
+  keyGenerator: agentKey,
+  windowMs: 60_000,
+  limit: 300,
+});
+
+/** Clones and fetches stream whole repositories through the API. */
+export const agentGitLimiter = rateLimit({
+  ...shared,
+  keyGenerator: agentKey,
+  windowMs: 60 * 60_000,
+  limit: 120,
 });

@@ -1,8 +1,5 @@
 "use client";
 
-import { useRepositoryPathSync } from "@/hooks/use-repository-path-sync";
-import { normalizeGitProvider } from "@/lib/utils/provider-checker";
-import { useGitProvider } from "@/hooks/use-git-provider";
 import { SidebarSkeleton } from "@/components/sidebar-skeleton";
 import {
   Accordion,
@@ -11,12 +8,15 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Skeleton } from "@/components/ui/skeleton";
-import { openUnlockPrompt } from "@/hooks/use-unlock-prompt";
 import { useFeatureAccess } from "@/hooks/use-feature-access";
+import { useGitProvider } from "@/hooks/use-git-provider";
 import { useProjectBranch } from "@/hooks/use-project-branch";
+import { useRepositoryPathSync } from "@/hooks/use-repository-path-sync";
 import { useSafeLocale } from "@/hooks/use-safe-locale";
+import { openUnlockPrompt } from "@/hooks/use-unlock-prompt";
 import { getProjectDashboardMenu, getProjectSettingsMenu } from "@/lib/menu";
 import { cn } from "@/lib/utils/cn";
+import { normalizeGitProvider } from "@/lib/utils/provider-checker";
 import { slugify } from "@/lib/utils/text-converter";
 import { SidebarPageLayout } from "@/partials/sidebar-layout";
 import { resetConfig, selectConfig } from "@/redux/features/config/slice";
@@ -81,7 +81,11 @@ export default function Layout(
 
   const { isLoading: isProviderLoading, isFetching: isProviderFetching } =
     useGetProvidersQuery(
-      { user_id: project?.user_id, preferredProvider: project?.provider },
+      {
+        user_id: project?.user_id,
+        preferredProvider: project?.provider,
+        projectId: project?.project_id,
+      },
       {
         skip: !project?.user_id || isProjectFetching,
         refetchOnMountOrArgChange: true,

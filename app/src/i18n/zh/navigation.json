@@ -6,13 +6,15 @@
         "updates": "更新日志",
         "support": "帮助与支持",
         "ai_agent": "AI 助手",
+        "mcp_connection": "MCP 连接",
         "preferences": "偏好设置"
       },
       "user_dashboard": {
         "overview": "概览",
         "account": "账户",
         "preferences": "偏好设置",
-        "ai_agent": "AI 助手"
+        "ai_agent": "AI 助手",
+        "mcp_connection": "MCP 连接"
       },
       "org_dashboard": {
         "websites": "网站列表",

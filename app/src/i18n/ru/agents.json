@@ -1,0 +1,87 @@
+{
+  "agents": {
+    "scopes": {
+      "projects_read": {
+        "title": "Видеть сайты",
+        "description": "Показывать сайты, выбранные ниже."
+      },
+      "content_read": {
+        "title": "Читать файлы",
+        "description": "Читать контент, схемы и историю, клонировать репозиторий."
+      },
+      "content_write": {
+        "title": "Редактировать контент",
+        "description": "Создавать, изменять и удалять файлы в папках контента и конфигурации."
+      },
+      "media_write": {
+        "title": "Управлять медиа",
+        "description": "Загружать, переименовывать и удалять файлы в папке медиа."
+      },
+      "schema_write": {
+        "title": "Редактировать схемы",
+        "description": "Менять схемы и сниппеты в .sitepins. Для изменения .sitepins/config.json нужно «Редактировать код»."
+      },
+      "code_write": {
+        "title": "Редактировать код",
+        "description": "Менять любые другие файлы, например шаблоны и package.json. Файлы CI-воркфлоу изменять нельзя никогда."
+      },
+      "git_branch": {
+        "title": "Ветки и pull request",
+        "description": "Делать коммиты в другие ветки и открывать pull request."
+      }
+    },
+    "fields": {
+      "organization": "Организация",
+      "select_org": "Выберите организацию",
+      "projects": "Сайты",
+      "projects_all": "Все сайты",
+      "projects_all_description": "Все сайты этой организации, включая добавленные позже.",
+      "projects_selected": "Выбранные сайты",
+      "projects_selected_description": "Только выбранные вами сайты.",
+      "select_all": "Выбрать все",
+      "selected_count": "Выбрано {count} из {total}",
+      "no_projects": "В этой организации пока нет сайтов.",
+      "permissions": "Разрешения",
+      "write_mode": "Как сохраняются изменения",
+      "write_direct": "Коммитить напрямую",
+      "write_direct_description": "Изменения сразу попадают в ветку сайта, коммит делает бот Sitepins.",
+      "write_pull_request": "Открывать pull request",
+      "write_pull_request_description": "Изменения попадают в новую ветку с pull request на вашу проверку."
+    },
+    "settings": {
+      "title": "Подключение MCP",
+      "description": "Дайте ИИ-агентам вроде Claude, Codex, Cursor и Antigravity доступ к вашим сайтам. Создайте токен и вставьте подсказку для настройки в агента. Их коммиты делает бот Sitepins.",
+      "connect_title": "Подключите агента",
+      "connect_description": "Скопируйте эту подсказку и вставьте её в ИИ-агента. Она добавит Sitepins в настройки MCP агента. Токен показывается только один раз.",
+      "mcp_label": "URL MCP-сервера",
+      "copy": "Копировать",
+      "copied": "Скопировано",
+      "empty": "Токенов доступа пока нет.",
+      "write_pr_badge": "Pull request",
+      "last_used": "Последнее использование {date}",
+      "never_used": "Не использовался",
+      "expires": "Истекает {date}",
+      "revoke": "Отозвать",
+      "revoke_title": "Отозвать {name}?",
+      "revoke_description": "Доступ пропадёт сразу. Уже закоммиченные изменения останутся в репозитории.",
+      "revoked": "Доступ отозван",
+      "cancel": "Отмена",
+      "token_name": "Название",
+      "token_name_placeholder": "например, Claude Desktop",
+      "token_expiry": "Срок действия",
+      "days": "{count} дн.",
+      "create_token": "Создать токен",
+      "done": "Готово",
+      "create_title": "Создать токен доступа",
+      "create_description": "Выберите, к каким сайтам у агента будет доступ и что он может менять.",
+      "copy_prompt": "Скопировать подсказку",
+      "manual_title": "Ручная настройка",
+      "token_label": "Токен доступа",
+      "header_hint": "Передавайте его в заголовке {example}.",
+      "all_sites": "Все сайты"
+    },
+    "editor": {
+      "external_commit": "{name} изменил(а) этот файл через {agent}. При публикации вы сначала увидите, что изменилось."
+    }
+  }
+}

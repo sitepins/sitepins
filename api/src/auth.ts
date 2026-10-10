@@ -6,6 +6,7 @@ import { APIError, createAuthMiddleware } from "better-auth/api";
 import { customSession, emailOTP } from "better-auth/plugins";
 import mongoose from "mongoose";
 import { allowedOrigins } from "./config/cors-options";
+import { getAppUrl } from "./lib/appUrl";
 import { getRegisteredAuthPlugins } from "./lib/authExtensions";
 import { verifyEmailWithReoon } from "./lib/emailVerifier";
 import { emitAuthEvent, emitUserRegistration } from "./lib/lifecycleHooks";
@@ -90,14 +91,6 @@ if (!config.better_auth_secret) {
     logger.warn(secretWarning);
   }
 }
-
-const getAppUrl = (): string | undefined => {
-  if (process.env.APP_URL) return process.env.APP_URL.replace(/\/+$/, "");
-  if (allowedOrigins.length > 0 && allowedOrigins[0]) {
-    return allowedOrigins[0].replace(/\/+$/, "");
-  }
-  return undefined;
-};
 
 const appUrl = getAppUrl();
 

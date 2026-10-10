@@ -8,6 +8,7 @@ import { nanoId } from "@/lib/nanoId";
 import { emailMatcher } from "@/lib/pendingInvites";
 import { assertAssignableRole } from "@/lib/orgRoles";
 import { deleteFile } from "@/lib/s3-utils";
+import { AgentGrant } from "../agent/agent-grant.model";
 import { ProjectContent } from "../project-content/project-content.model";
 import { ProjectLog } from "../project-log/project-log.model";
 import { ProjectPreview } from "../project-preview/project-preview.model";
@@ -750,6 +751,7 @@ const deleteOrganizationService = async ({
 
   const deleteOrganization = await Organization.findOneAndDelete(filter);
   await Project.deleteMany({ org_id });
+  await AgentGrant.deleteMany({ org_id });
   return deleteOrganization;
 };
 

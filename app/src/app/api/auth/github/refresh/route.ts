@@ -1,15 +1,10 @@
 import { errorMessageOr } from "@/lib/utils/error";
 import { logger } from "@/lib/logger";
-import { rotateProviderTokens } from "@/actions/provider";
+import { getProviders, rotateProviderTokens } from "@/actions/provider";
 import { getAuth } from "@/lib/auth/auth-server";
+import { refreshGitHubUserToken } from "@/lib/git/oauth-refresh";
+import { isGitHubProvider } from "@/lib/utils/provider-checker";
 import { NextRequest, NextResponse } from "next/server";
-import { App } from "octokit";
-
-// GitHub returns these for expiring-token apps; octokit's types omit them.
-type TExpiringTokenFields = {
-  refreshToken?: string;
-  refreshTokenExpiresAt?: string;
-};
 
 export async function POST(request: NextRequest) {
   try {
@@ -21,50 +16,35 @@ export async function POST(request: NextRequest) {
 
     const { refresh_token } = await request.json();
 
-    if (!refresh_token) {
+    if (!refresh_token || typeof refresh_token !== "string") {
       return NextResponse.json(
         { error: "Missing refresh token" },
         { status: 400 },
       );
     }
 
-    const app = new App({
-      oauth: {
-        clientId: process.env.GITHUB_APP_CLIENT_ID!,
-        clientSecret: process.env.GITHUB_APP_CLIENT_SECRET!,
-      },
-      appId: process.env.GITHUB_APP_ID!,
-      privateKey: process.env.GITHUB_APP_PRIVATE_KEY!,
-    });
+    // Only the caller's own token: project members get /api/auth/project-token.
+    const own = await getProviders();
+    const ownsToken = own?.some(
+      (row) =>
+        isGitHubProvider(row.provider) && row.refresh_token === refresh_token,
+    );
+    if (!ownsToken) {
+      return NextResponse.json(
+        { error: "Refresh token does not belong to you" },
+        { status: 403 },
+      );
+    }
 
-    // Exchange refresh token for new access token
-    const { authentication } = await app.oauth.refreshToken({
-      refreshToken: refresh_token,
-    });
+    const fresh = await refreshGitHubUserToken(refresh_token);
 
-    const auth = authentication as typeof authentication & TExpiringTokenFields;
-
-    // Calculate absolute expiry times
-    const accessTokenExpiresAt = auth.expiresAt
-      ? new Date(auth.expiresAt).getTime()
-      : Date.now() + 28800000; // Default to 8 hours if missing
-
-    const refreshTokenExpiresAt = auth.refreshTokenExpiresAt
-      ? new Date(auth.refreshTokenExpiresAt).getTime()
-      : undefined;
-
-    // Persist onto the row that held the consumed refresh token — the token
-    // OWNER's row, which is not necessarily the session user (a collaborator
-    // refreshes the project creator's token). GitHub refresh tokens are
-    // single-use, so failing to persist would permanently break the row.
+    // GitHub refresh tokens are single-use, so failing to persist would
+    // permanently break the row.
     try {
       await rotateProviderTokens({
         provider: "Github",
         old_refresh_token: refresh_token,
-        access_token: auth.token,
-        refresh_token: auth.refreshToken || refresh_token,
-        access_token_expires_at: accessTokenExpiresAt,
-        refresh_token_expires_at: refreshTokenExpiresAt,
+        ...fresh,
       });
     } catch (persistError) {
       // Still return the fresh token so the current session keeps working.
@@ -73,10 +53,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      access_token: auth.token,
-      refresh_token: auth.refreshToken || refresh_token,
-      access_token_expires_at: accessTokenExpiresAt,
-      refresh_token_expires_at: refreshTokenExpiresAt,
+      ...fresh,
       last_refreshed_at: Date.now(),
     });
   } catch (error) {

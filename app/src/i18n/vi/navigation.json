@@ -6,13 +6,15 @@
         "updates": "Cập nhật",
         "support": "Hỗ trợ",
         "ai_agent": "Trợ lý AI",
+        "mcp_connection": "Kết nối MCP",
         "preferences": "Tùy chọn"
       },
       "user_dashboard": {
         "overview": "Tổng quan",
         "account": "Tài khoản",
         "preferences": "Tùy chọn",
-        "ai_agent": "Trợ lý AI"
+        "ai_agent": "Trợ lý AI",
+        "mcp_connection": "Kết nối MCP"
       },
       "org_dashboard": {
         "websites": "Trang web",

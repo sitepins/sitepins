@@ -90,6 +90,7 @@ const deleteProviderService = async (
 // updates the CREATOR's row instead of corrupting their own, and possession
 // of the row's current refresh token is itself the write authorization.
 const rotateProviderTokensService = async (payload: {
+  user_id?: string;
   provider: TGitProviderType["provider"];
   old_refresh_token: string;
   access_token: string;
@@ -101,8 +102,10 @@ const rotateProviderTokensService = async (payload: {
 
   // Match the encrypted-at-rest index first, falling back to the plaintext
   // column for rows written before encryption was turned on.
+  const owner = payload.user_id ? { user_id: payload.user_id } : {};
   const filter = index
     ? {
+        ...owner,
         provider: payload.provider,
         $or: [
           { refresh_token_index: index },
@@ -110,6 +113,7 @@ const rotateProviderTokensService = async (payload: {
         ],
       }
     : {
+        ...owner,
         provider: payload.provider,
         refresh_token: payload.old_refresh_token,
       };

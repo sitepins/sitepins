@@ -6,13 +6,15 @@
         "updates": "আপডেট",
         "support": "সহায়তা",
         "ai_agent": "এআই এজেন্ট",
+        "mcp_connection": "MCP সংযোগ",
         "preferences": "পছন্দসমূহ"
       },
       "user_dashboard": {
         "overview": "ওভারভিউ",
         "account": "অ্যাকাউন্ট",
         "preferences": "পছন্দসমূহ",
-        "ai_agent": "এআই এজেন্ট"
+        "ai_agent": "এআই এজেন্ট",
+        "mcp_connection": "MCP সংযোগ"
       },
       "org_dashboard": {
         "websites": "ওয়েবসাইটসমূহ",

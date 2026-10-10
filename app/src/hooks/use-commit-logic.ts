@@ -202,6 +202,7 @@ export function useCommitLogic({
   const tFeedback = useTranslations("common.feedback");
   const tCommon = useTranslations("common");
   const tConflict = useTranslations("editor.publish_conflict");
+  const tAgents = useTranslations("agents.editor");
 
   const { data: auth } = authClient.useSession();
   const params = useParams();
@@ -265,14 +266,29 @@ export function useCommitLogic({
       toast.error(payload.message);
     };
 
+    // Keeping the pinned sha makes the next publish hit the conflict dialog.
+    const onExternalCommit = (payload: {
+      user_name?: string;
+      via?: string;
+    }) => {
+      toast.warning(
+        tAgents("external_commit", {
+          name: payload.user_name ?? "",
+          agent: payload.via ?? "",
+        }),
+      );
+    };
+
     socket.on("commit:completed", onCommitCompleted);
     socket.on("commit:error", onCommitError);
+    socket.on("commit:external", onExternalCommit);
 
     return () => {
       socket.off("commit:completed", onCommitCompleted);
       socket.off("commit:error", onCommitError);
+      socket.off("commit:external", onExternalCommit);
     };
-  }, [socket]);
+  }, [socket, tAgents]);
 
   const getProcessedStateData = useCallback(() => {
     if (!state?.data) return state?.data;

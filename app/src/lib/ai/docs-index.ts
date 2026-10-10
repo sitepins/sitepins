@@ -33,6 +33,20 @@ export const DOCS_INDEX: TDocEntry[] = [
     keywords: ["password", "avatar", "delete account"],
   },
   {
+    path: "/ai-agents",
+    title: "AI Agents",
+    description:
+      "Connect Claude, Codex, Cursor, Antigravity and other AI agents with one access token and a copy-paste setup prompt. Every change is committed by the Sitepins bot.",
+    keywords: ["mcp", "agent", "claude", "cursor", "codex", "token", "prompt"],
+  },
+  {
+    path: "/ai-agents/permissions-and-security",
+    title: "AI Agent Permissions & Security",
+    description:
+      "What AI agents can and can't do in Sitepins, and how access is protected.",
+    keywords: ["scopes", "revoke", "permissions", "security"],
+  },
+  {
     path: "/collaboration/branches-and-pull-requests",
     title: "Branches & Pull Requests",
     description:

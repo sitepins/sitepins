@@ -1,7 +1,6 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { useTranslations } from "next-intl";
 import {
   Card,
   CardContent,
@@ -10,6 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useTranslations } from "next-intl";
 
 export default function SidebarTriggerMobile() {
   const tNavigationSidebarSidebarTriggerMobile = useTranslations(
@@ -17,7 +17,7 @@ export default function SidebarTriggerMobile() {
   );
 
   return (
-    <Card className="block xl:hidden">
+    <Card className="flex xl:hidden">
       <CardHeader className="border-border border-b">
         <CardTitle>{tNavigationSidebarSidebarTriggerMobile("title")}</CardTitle>
         <CardDescription>

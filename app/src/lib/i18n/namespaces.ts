@@ -1,6 +1,7 @@
 // Translation namespaces bundled with the app.
 export const namespaces = [
   "add-site",
+  "agents",
   "auth",
   "common",
   "dashboard",

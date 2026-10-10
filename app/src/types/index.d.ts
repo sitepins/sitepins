@@ -62,6 +62,8 @@ export type TConfig = TConfigFile & {
   refreshTokenExpiresAt?: number | Date | string;
   lastRefreshedAt: number | Date | string;
   token: string;
+  /** Set when `token` is a project-scoped token from /api/auth/project-token. */
+  delegatedProjectId: string;
   owner: string;
   repoName: string;
   /** GitLab's numeric project id, which survives a rename. GitLab only. */

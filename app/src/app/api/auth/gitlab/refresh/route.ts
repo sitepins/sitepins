@@ -1,7 +1,9 @@
-import { errorMessageOr } from "@/lib/utils/error";
-import { logger } from "@/lib/logger";
-import { rotateProviderTokens } from "@/actions/provider";
+import { getProviders, rotateProviderTokens } from "@/actions/provider";
 import { getAuth } from "@/lib/auth/auth-server";
+import { refreshGitLabToken, requestOrigin } from "@/lib/git/oauth-refresh";
+import { logger } from "@/lib/logger";
+import { errorMessageOr } from "@/lib/utils/error";
+import { isGitLabProvider } from "@/lib/utils/provider-checker";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
@@ -14,52 +16,36 @@ export async function POST(request: NextRequest) {
 
     const { refresh_token } = await request.json();
 
-    if (!refresh_token) {
+    if (!refresh_token || typeof refresh_token !== "string") {
       return NextResponse.json(
         { error: "Missing refresh token" },
         { status: 400 },
       );
     }
 
-    const host = request.headers.get("host") || "localhost:3000";
-    const protocol = request.headers.get("x-forwarded-proto") || "http";
-    const origin = `${protocol}://${host}`;
-
-    // Exchange refresh token for new access token
-    const tokenResponse = await fetch("https://gitlab.com/oauth/token", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        client_id: process.env.NEXT_PUBLIC_GITLAB_CLIENT_ID,
-        client_secret: process.env.GITLAB_CLIENT_SECRET,
-        refresh_token,
-        grant_type: "refresh_token",
-        redirect_uri: `${origin}/gitlab-installed`,
-      }),
-    });
-
-    if (!tokenResponse.ok) {
-      const errorData = await tokenResponse.json();
-      logger.error("GitLab token refresh error:", errorData);
-      throw new Error(errorData.error_description || "Failed to refresh token");
+    // Only the caller's own token: project members get /api/auth/project-token.
+    const own = await getProviders();
+    const ownsToken = own?.some(
+      (row) =>
+        isGitLabProvider(row.provider) && row.refresh_token === refresh_token,
+    );
+    if (!ownsToken) {
+      return NextResponse.json(
+        { error: "Refresh token does not belong to you" },
+        { status: 403 },
+      );
     }
 
-    const tokenData = await tokenResponse.json();
+    const fresh = await refreshGitLabToken(
+      refresh_token,
+      requestOrigin(request),
+    );
 
-    const accessTokenExpiresAt = Date.now() + tokenData.expires_in * 1000;
-
-    // Persist onto the row that held the consumed refresh token — the token
-    // OWNER's row, which is not necessarily the session user (a collaborator
-    // refreshes the project creator's token).
     try {
       await rotateProviderTokens({
         provider: "Gitlab",
         old_refresh_token: refresh_token,
-        access_token: tokenData.access_token,
-        refresh_token: tokenData.refresh_token,
-        access_token_expires_at: accessTokenExpiresAt,
+        ...fresh,
       });
     } catch (persistError) {
       // Still return the fresh token so the current session keeps working.
@@ -68,10 +54,8 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      access_token: tokenData.access_token,
-      refresh_token: tokenData.refresh_token,
-      access_token_expires_at: accessTokenExpiresAt,
-      last_refreshed_at: Date.now(), // Return current time for frontend tracking
+      ...fresh,
+      last_refreshed_at: Date.now(),
     });
   } catch (error) {
     logger.error("Error in GitLab refresh handler:", error);

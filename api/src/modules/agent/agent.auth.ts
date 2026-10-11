@@ -5,7 +5,9 @@ import { User } from "@/modules/user/user.model";
 import { createHash, randomBytes } from "crypto";
 import type { Request } from "express";
 import { AgentGrant } from "./agent-grant.model";
+import { agentCache } from "./agent.cache";
 import {
+  AGENT_SCOPE_LABELS,
   AGENT_SCOPES,
   EAgentScope,
   TAgentContext,
@@ -40,13 +42,15 @@ const isExpired = (grant: TAgentGrant) =>
 const touch = (grant: TAgentGrant) => {
   const last = grant.last_used_at?.getTime() ?? 0;
   if (Date.now() - last < LAST_USED_THROTTLE_MS) return;
+  // The grant may be the cached copy; keep it current so the throttle holds.
+  grant.last_used_at = new Date();
   AgentGrant.updateOne(
     { grant_id: grant.grant_id },
     { $set: { last_used_at: new Date() } },
   ).catch((error) => logger.error("[agents] last-used update failed", error));
 };
 
-/** Resolves and re-checks the caller on every request; revocation and membership changes apply immediately. */
+/** Cached for 30 s; revoking a token or removing a member clears the cache (forgetAgents), so both apply immediately. */
 export async function authenticateAgent(
   authorization: string | undefined,
 ): Promise<TAgentContext> {
@@ -57,9 +61,14 @@ export async function authenticateAgent(
     );
   }
 
-  const grant = await AgentGrant.findOne({
-    token_index: agentTokenIndex(token),
-  }).lean();
+  const tokenIndex = agentTokenIndex(token);
+  const cached = agentCache.getAgent(tokenIndex);
+  if (cached && !isExpired(cached.grant)) {
+    touch(cached.grant);
+    return { ...cached, token };
+  }
+
+  const grant = await AgentGrant.findOne({ token_index: tokenIndex }).lean();
   if (!grant) {
     throw new AgentAuthError("This access token was revoked or doesn't exist");
   }
@@ -80,15 +89,16 @@ export async function authenticateAgent(
   });
 
   touch(grant);
-  return {
+  const agent = {
     user_id: user.user_id,
     user_name: user.full_name,
     user_email: user.email,
     grant,
     scopes: new Set(grant.scopes.filter((s) => AGENT_SCOPES.includes(s))),
     client_name: grant.name,
-    token,
   };
+  agentCache.setAgent(tokenIndex, agent);
+  return { ...agent, token };
 }
 
 export const authenticateRequest = (
@@ -98,6 +108,10 @@ export const authenticateRequest = (
 
 export const requireScope = (agent: TAgentContext, scope: EAgentScope) => {
   if (!agent.scopes.has(scope)) {
-    throw new ApiError(`This token lacks the ${scope} permission`, 403, "");
+    throw new ApiError(
+      `This token lacks the ${scope} permission. The user can turn on "${AGENT_SCOPE_LABELS[scope]}" for it in Sitepins → Settings → MCP Connection.`,
+      403,
+      "",
+    );
   }
 };

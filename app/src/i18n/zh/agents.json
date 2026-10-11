@@ -28,6 +28,14 @@
       "git_branch": {
         "title": "分支和拉取请求",
         "description": "提交到其他分支并创建拉取请求。"
+      },
+      "org_read": {
+        "title": "查看组织",
+        "description": "读取组织的详情、成员及其角色，以及此服务器提供的其他账户信息。"
+      },
+      "members_write": {
+        "title": "管理成员",
+        "description": "邀请成员、更改其角色并移除成员。所有者无法被更改或移除。"
       }
     },
     "fields": {

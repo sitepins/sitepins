@@ -28,6 +28,14 @@
       "git_branch": {
         "title": "Branches und Pull Requests",
         "description": "In andere Branches committen und Pull Requests öffnen."
+      },
+      "org_read": {
+        "title": "Organisation ansehen",
+        "description": "Details, Mitglieder und Rollen der Organisation sowie weitere Kontodetails dieses Servers lesen."
+      },
+      "members_write": {
+        "title": "Mitglieder verwalten",
+        "description": "Mitglieder einladen, ihre Rollen ändern und sie entfernen. Der Eigentümer kann nicht geändert oder entfernt werden."
       }
     },
     "fields": {

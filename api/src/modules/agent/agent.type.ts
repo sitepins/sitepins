@@ -6,9 +6,32 @@ export enum EAgentScope {
   SCHEMA_WRITE = "schema:write",
   CODE_WRITE = "code:write",
   GIT_BRANCH = "git:branch",
+  ORG_READ = "org:read",
+  MEMBERS_WRITE = "members:write",
 }
 
 export const AGENT_SCOPES: readonly EAgentScope[] = Object.values(EAgentScope);
+
+/** The toggle names users see in Settings → MCP Connection, so agents can point at them. */
+export const AGENT_SCOPE_LABELS: Record<EAgentScope, string> = {
+  [EAgentScope.PROJECTS_READ]: "See sites",
+  [EAgentScope.CONTENT_READ]: "Read files",
+  [EAgentScope.CONTENT_WRITE]: "Edit content",
+  [EAgentScope.MEDIA_WRITE]: "Manage media",
+  [EAgentScope.SCHEMA_WRITE]: "Edit schemas",
+  [EAgentScope.CODE_WRITE]: "Edit code",
+  [EAgentScope.GIT_BRANCH]: "Branches and pull requests",
+  [EAgentScope.ORG_READ]: "See organization",
+  [EAgentScope.MEMBERS_WRITE]: "Manage members",
+};
+
+/** Optional detail sections of get_project_context. */
+export enum EContextPart {
+  SCHEMAS = "schemas",
+  FOLDERS = "folders",
+  SAMPLES = "samples",
+  CONFIG = "config",
+}
 
 export enum EAgentWriteMode {
   DIRECT = "direct",

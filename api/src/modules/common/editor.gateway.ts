@@ -1,5 +1,6 @@
 import { isOrgMember } from "@/lib/orgAccess";
 import { Server as IOServer, Socket } from "socket.io";
+import { forgetHead } from "../agent/agent.cache";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -130,6 +131,8 @@ export function initEditorGateway(io: IOServer): void {
         user_name: user.full_name || "Unknown",
         committed_at: new Date().toISOString(),
       };
+
+      forgetHead(project_id);
 
       // Excludes the sender — they already show their own success toast
       socket.to(roomKey).emit("commit:completed", broadcast);

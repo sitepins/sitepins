@@ -28,6 +28,14 @@
       "git_branch": {
         "title": "브랜치와 풀 리퀘스트",
         "description": "다른 브랜치에 커밋하고 풀 리퀘스트를 엽니다."
+      },
+      "org_read": {
+        "title": "조직 보기",
+        "description": "조직 정보, 멤버와 역할, 이 서버가 제공하는 기타 계정 정보를 읽습니다."
+      },
+      "members_write": {
+        "title": "멤버 관리",
+        "description": "멤버를 초대하고 역할을 변경하거나 삭제합니다. 소유자는 변경하거나 삭제할 수 없습니다."
       }
     },
     "fields": {

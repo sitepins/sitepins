@@ -2,6 +2,7 @@ import { runUserDeletionHooks } from "@/lib/lifecycleHooks";
 import { TAuthUser } from "@/types";
 import mongoose, { ClientSession } from "mongoose";
 import { AgentGrant } from "../agent/agent-grant.model";
+import { forgetAgents } from "../agent/agent.cache";
 import { Authentication } from "../authentication/authentication.model";
 import { gitProviderService } from "../git-provider/git-provider.service";
 import { Organization } from "../organization/organization.model";
@@ -83,6 +84,8 @@ export const purgeUserData = async ({
     { $or: [{ user_id: userId }, { org_id: { $in: ownedOrgIds } }] },
     { session },
   );
+  forgetAgents({ user_id: userId });
+  for (const org_id of ownedOrgIds) forgetAgents({ org_id });
   await Organization.deleteMany({ owner: userId }, { session });
   // Orgs owned by somebody else outlive this account — only its membership goes.
   await Organization.updateMany(

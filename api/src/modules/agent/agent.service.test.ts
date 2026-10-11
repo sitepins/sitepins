@@ -4,19 +4,36 @@ import { setAgentAccessGuard } from "@/lib/extensionGuards";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   applyAgentChangeset,
+  applyTextEdits,
+  editFile,
+  getDeployStatus,
+  getProjectContext,
+  getSchema,
+  listFiles,
   listProjects,
+  readFile,
+  readFiles,
+  searchContent,
+  undoChange,
   logTypeFor,
   policyFor,
   resolveProject,
   rootsFromConfig,
 } from "./agent.service";
-import { EAgentScope, EAgentWriteMode, TAgentContext } from "./agent.type";
+import { clearAgentCaches, forgetHead, withCache } from "./agent.cache";
+import {
+  EAgentScope,
+  EAgentWriteMode,
+  EContextPart,
+  TAgentContext,
+} from "./agent.type";
 
 const m = vi.hoisted(() => ({
   projectFindOne: vi.fn(),
   projectFind: vi.fn(),
   logInsertMany: vi.fn(),
   broadcast: vi.fn(),
+  upstream: 0,
   fake: undefined as unknown as ReturnType<
     typeof import("@/lib/git-engine/fake-hosts.fixture").createFakeGitHub
   >,
@@ -37,20 +54,27 @@ vi.mock("@/modules/project-log/project-log.model", () => ({
 vi.mock("@/modules/common/editor.gateway", () => ({
   broadcastExternalCommit: (...a: unknown[]) => m.broadcast(...a),
 }));
-vi.mock("./agent.git", () => ({
-  isGitLabProject: () => false,
-  createProjectGitClient: async (
-    _project: unknown,
-    _user: string,
-    branch = "main",
-  ) =>
+vi.mock("./agent.git", () => {
+  const client = (branch = "main") =>
     createGitHubClient({
       repository: m.fake.repository,
       branch,
       token: "ghs_test",
       fetchImpl: m.fake.fetchImpl,
-    }),
-}));
+      onRequest: () => m.upstream++,
+    });
+  return {
+    getProjectToken: async () => ({ token: "ghs_test" }),
+    isGitLabProject: () => false,
+    createProjectGitClient: async (
+      _project: unknown,
+      _user: string,
+      branch?: string,
+    ) => client(branch),
+    createCachedProjectGitClient: async () =>
+      withCache(client(), { repoKey: "github:acme/site", projectId: "p1" }),
+  };
+});
 
 const SITE_CONFIG = JSON.stringify({
   content: "src/content",
@@ -105,6 +129,9 @@ const upsert = (path: string, text: string) => ({
 });
 
 beforeEach(() => {
+  // The fake host reuses commit shas between tests, so cached trees must go.
+  clearAgentCaches();
+  m.upstream = 0;
   m.fake = createFakeGitHub({
     ".sitepins/config.json": SITE_CONFIG,
     "src/content/a.md": "A",
@@ -307,9 +334,14 @@ describe("applyAgentChangeset", () => {
       violations: [
         {
           path: "public/images/x.png",
-          reason: "needs the media:write permission",
+          reason: expect.stringMatching(
+            /^needs the media:write permission \("Manage media" in Sitepins/,
+          ),
         },
-        { path: "package.json", reason: "needs the code:write permission" },
+        {
+          path: "package.json",
+          reason: expect.stringContaining('"Edit code"'),
+        },
       ],
     });
   });
@@ -404,7 +436,7 @@ describe("applyAgentChangeset", () => {
 describe("agent access guard", () => {
   afterEach(() => setAgentAccessGuard(() => undefined));
 
-  it("lets a deployment refuse writes (e.g. by plan) before anything is committed", async () => {
+  it("lets a deployment refuse writes (e.g. by plan) before anything is committed, checking once", async () => {
     const seen: boolean[] = [];
     setAgentAccessGuard(({ write }) => {
       seen.push(write);
@@ -419,7 +451,7 @@ describe("agent access guard", () => {
         changes: [upsert("src/content/a.md", "A2")],
       }),
     ).rejects.toThrow("Upgrade needed");
-    expect(seen).toEqual([false, true]);
+    expect(seen).toEqual([true]);
     expect(m.fake.git.head()).toBe(head);
   });
 });
@@ -475,4 +507,368 @@ it("caps commits per token at 30 per 10 minutes, without counting dry runs", asy
       changes: [upsert("src/content/a.md", "x")],
     }),
   ).rejects.toMatchObject({ statusCode: 429 });
+});
+
+describe("cached reads", () => {
+  it("serves a repeated read from memory, and sees a new commit once the head moves", async () => {
+    const first = await readFile(agent(), "p1", { path: "src/content/a.md" });
+    const cold = m.upstream;
+    expect(cold).toBeGreaterThan(0);
+
+    const again = await readFile(agent(), "p1", { path: "src/content/a.md" });
+    expect(again.content).toBe("A");
+    expect(m.upstream).toBe(cold);
+
+    m.fake.git.push({ "src/content/a.md": "A2" });
+    forgetHead("p1");
+    const fresh = await readFile(agent(), "p1", { path: "src/content/a.md" });
+    expect(fresh.content).toBe("A2");
+    expect(fresh.sha).not.toBe(first.sha);
+  });
+
+  it("reads several files in one batch and reports missing ones", async () => {
+    m.fake.git.push({ "src/content/b.md": "B" });
+    const result = await readFiles(agent(), "p1", {
+      paths: ["src/content/a.md", "src/content/b.md", "nope.md"],
+    });
+    expect(result.files).toEqual([
+      expect.objectContaining({ path: "src/content/a.md", content: "A" }),
+      expect.objectContaining({ path: "src/content/b.md", content: "B" }),
+      { path: "nope.md", error: "not found" },
+    ]);
+    expect(
+      m.fake.state.requests.filter((r) => r === "POST /graphql"),
+    ).toHaveLength(1);
+  });
+
+  it("drops the cached head after the agent's own commit", async () => {
+    const before = await readFile(agent(), "p1", { path: "src/content/a.md" });
+    await applyAgentChangeset(agent(), "p1", {
+      message: "Edit",
+      expected_shas: { "src/content/a.md": before.sha },
+      changes: [upsert("src/content/a.md", "A3")],
+    });
+    const after = await readFile(agent(), "p1", { path: "src/content/a.md" });
+    expect(after.content).toBe("A3");
+  });
+});
+
+describe("listFiles", () => {
+  beforeEach(() => {
+    m.fake.git.push({
+      "src/content/blog/one.md": "1",
+      "src/content/blog/two.mdx": "2",
+      "src/content/blog/img.png": "P",
+    });
+  });
+
+  it("returns bare paths, filtered by glob relative to the folder", async () => {
+    const result = await listFiles(agent(), "p1", {
+      path: "src/content",
+      glob: "blog/*.{md,mdx}",
+    });
+    expect(result.files).toEqual([
+      "src/content/blog/one.md",
+      "src/content/blog/two.mdx",
+    ]);
+    expect(result).not.toHaveProperty("dirs");
+  });
+
+  it("pages with a cursor", async () => {
+    const page1 = await listFiles(agent(), "p1", { limit: 2 });
+    expect(page1.files).toHaveLength(2);
+    expect(page1.next_cursor).toBe("2");
+    const page2 = await listFiles(agent(), "p1", {
+      limit: 2,
+      cursor: page1.next_cursor,
+      include_sha: true,
+    });
+    expect(page2.files[0]).toEqual({
+      path: expect.any(String),
+      sha: expect.any(String),
+    });
+    expect(page2.total_files).toBe(page1.total_files);
+  });
+});
+
+describe("searchContent", () => {
+  it("searches the content folders and reports path:line matches", async () => {
+    m.fake.git.push({
+      "src/content/post.md": "---\ntitle: Hello\n---\nSay hello world",
+      "src/layouts/base.astro": "hello from code",
+    });
+    const result = await searchContent(agent(), "p1", { query: "HELLO" });
+    expect(result.searched_in).toEqual([
+      "src/content",
+      "src/config",
+      "(rest of the site: templates, styles, settings)",
+    ]);
+    expect(result.matches).toEqual([
+      {
+        path: "src/content/post.md",
+        line: 2,
+        text: "title: Hello",
+        area: "content",
+        can_edit: true,
+      },
+      {
+        path: "src/content/post.md",
+        line: 4,
+        text: "Say hello world",
+        area: "content",
+        can_edit: true,
+      },
+      {
+        path: "src/layouts/base.astro",
+        line: 1,
+        text: "hello from code",
+        area: "site",
+        can_edit: false,
+      },
+    ]);
+
+    const exact = await searchContent(agent(), "p1", {
+      query: "Hello",
+      case_sensitive: true,
+      path: "src",
+    });
+    expect(exact.matches.map((x) => x.line)).toEqual([2]);
+  });
+
+  it("finds templates and styles too, and says which setting unlocks them", async () => {
+    m.fake.git.push({
+      "src/layouts/components/Banner.astro": '<div class="banner bg-blue-500">',
+      "node_modules/x/banner.js": "banner",
+      "package-lock.json": '"banner"',
+    });
+    const result = await searchContent(agent(), "p1", { query: "banner" });
+    expect(result.searched_in).toEqual([
+      "src/content",
+      "src/config",
+      "(rest of the site: templates, styles, settings)",
+    ]);
+    expect(result.matches).toEqual([
+      expect.objectContaining({
+        path: "src/layouts/components/Banner.astro",
+        area: "site",
+        can_edit: false,
+      }),
+    ]);
+    expect(result.permission_hint).toContain('"Edit code"');
+  });
+});
+
+describe("editFile", () => {
+  it("replaces text and commits without the caller sending the file", async () => {
+    m.fake.git.push({ "src/content/a.md": "title: Old\nbody" });
+    const result = await editFile(agent(), "p1", {
+      path: "src/content/a.md",
+      edits: [{ old_string: "Old", new_string: "New" }],
+      message: "Rename",
+    });
+    expect(result.status).toBe("committed");
+    expect(m.fake.git.text("src/content/a.md")).toBe("title: New\nbody");
+  });
+
+  it("refuses an edit whose text is missing or ambiguous", () => {
+    expect(() =>
+      applyTextEdits("a.md", "x x", [{ old_string: "y", new_string: "z" }]),
+    ).toThrow(expect.objectContaining({ code: "no_match" }));
+    expect(() =>
+      applyTextEdits("a.md", "x x", [{ old_string: "x", new_string: "z" }]),
+    ).toThrow(expect.objectContaining({ code: "ambiguous" }));
+    expect(
+      applyTextEdits("a.md", "x x $&", [
+        { old_string: "x", new_string: "$1", replace_all: true },
+      ]),
+    ).toBe("$1 $1 $&");
+  });
+
+  it("reports a conflict when the file moved past the given sha", async () => {
+    const result = await editFile(agent(), "p1", {
+      path: "src/content/a.md",
+      edits: [{ old_string: "A", new_string: "B" }],
+      message: "Edit",
+      expected_sha: "0".repeat(40),
+    });
+    expect(result.status).toBe("conflict");
+    expect(m.fake.git.text("src/content/a.md")).toBe("A");
+  });
+
+  it("needs a write scope", async () => {
+    await expect(
+      editFile(
+        agent({}, [EAgentScope.PROJECTS_READ, EAgentScope.CONTENT_READ]),
+        "p1",
+        {
+          path: "src/content/a.md",
+          edits: [{ old_string: "A", new_string: "B" }],
+          message: "Edit",
+        },
+      ),
+    ).rejects.toMatchObject({ statusCode: 403 });
+  });
+});
+
+describe("getProjectContext", () => {
+  beforeEach(() => {
+    m.fake.git.push({
+      ".sitepins/schema/blog.json": JSON.stringify({
+        name: "blog",
+        file: "src/content/blog",
+        template: [{ name: "title", type: "text", isRequired: true }],
+      }),
+    });
+  });
+
+  it("returns a summary by default and details on request, built once per head", async () => {
+    const summary = await getProjectContext(agent(), "p1");
+    expect(summary.schemas).toEqual([
+      {
+        name: "blog",
+        path: ".sitepins/schema/blog.json",
+        file: "src/content/blog",
+      },
+    ]);
+    expect(summary).not.toHaveProperty("site_config");
+    const afterFirst = m.upstream;
+
+    const detailed = await getProjectContext(agent(), "p1", [
+      EContextPart.SCHEMAS,
+      EContextPart.CONFIG,
+    ]);
+    expect(detailed.schemas[0]).toMatchObject({
+      fields: [{ name: "title", type: "text", required: true }],
+    });
+    expect(detailed.site_config).toEqual(JSON.parse(SITE_CONFIG));
+    expect(m.upstream).toBe(afterFirst);
+  });
+
+  it("points plain-language requests at settings, styles and templates", async () => {
+    m.fake.git.push({
+      "src/config/menu.json": "{}",
+      "src/config/theme.json": "{}",
+      "src/styles/main.css": "",
+      "tailwind.config.js": "",
+      "src/layouts/components/Banner.astro": "",
+      "src/pages/index.astro": "",
+      "src/content/sections/cta.md": "",
+      "node_modules/pkg/style.css": "",
+    });
+    const context = await getProjectContext(agent(), "p1");
+    expect(context.where_to_edit).toMatchObject({
+      settings: ["src/config/menu.json", "src/config/theme.json"],
+      styles: [
+        "src/config/theme.json",
+        "src/styles/main.css",
+        "tailwind.config.js",
+      ],
+      templates: ["src/layouts", "src/layouts/components", "src/pages"],
+    });
+  });
+
+  it("returns one schema in full by name", async () => {
+    const result = await getSchema(agent(), "p1", "blog");
+    expect(result.path).toBe(".sitepins/schema/blog.json");
+    expect(result.schema).toMatchObject({ name: "blog" });
+    await expect(getSchema(agent(), "p1", "nope")).rejects.toMatchObject({
+      statusCode: 404,
+    });
+  });
+});
+
+describe("undoChange", () => {
+  it("puts back every file the commit touched, including removing a file it added", async () => {
+    const before = m.fake.git.head();
+    const change = m.fake.git.push({
+      "src/content/a.md": "A changed",
+      "src/content/new.md": "added",
+    });
+    const result = await undoChange(agent(), "p1", { commit_sha: change });
+    expect(result.status).toBe("committed");
+    expect(m.fake.git.text("src/content/a.md")).toBe("A");
+    expect(m.fake.git.text("src/content/new.md")).toBeNull();
+    expect(m.fake.git.lastCommit().message).toMatch(/^Undo "external"/);
+    expect(result.undone.files).toEqual([
+      { path: "src/content/a.md", action: "restored" },
+      { path: "src/content/new.md", action: "removed (it was added)" },
+    ]);
+    expect(before).not.toBe(m.fake.git.head());
+  });
+
+  it("won't overwrite a file someone changed after that commit", async () => {
+    const change = m.fake.git.push({ "src/content/a.md": "A changed" });
+    m.fake.git.push({ "src/content/a.md": "A edited again" });
+    const result = await undoChange(agent(), "p1", { commit_sha: change });
+    expect(result.status).toBe("conflict");
+    expect(m.fake.git.text("src/content/a.md")).toBe("A edited again");
+  });
+
+  it("previews with dry_run and refuses unknown commits", async () => {
+    const change = m.fake.git.push({ "src/content/a.md": "A changed" });
+    const preview = await undoChange(agent(), "p1", {
+      commit_sha: change,
+      dry_run: true,
+    });
+    expect(preview.status).toBe("dry_run");
+    expect(m.fake.git.text("src/content/a.md")).toBe("A changed");
+    await expect(
+      undoChange(agent(), "p1", { commit_sha: "f".repeat(40) }),
+    ).rejects.toMatchObject({ statusCode: 404 });
+  });
+});
+
+describe("getDeployStatus", () => {
+  it("summarises a successful deploy with its live URL", async () => {
+    const head = m.fake.git.head();
+    m.fake.state.statuses.set(head, [
+      { context: "netlify", state: "success", target_url: "https://n.test/1" },
+    ]);
+    m.fake.state.deployments.push({
+      id: 7,
+      sha: head,
+      environment: "production",
+      state: "success",
+      url: "https://site.test",
+    });
+    const result = await getDeployStatus(agent(), "p1", {});
+    expect(result).toMatchObject({
+      commit: head,
+      is_latest: true,
+      state: "live",
+      deployments: [
+        {
+          environment: "production",
+          state: "success",
+          url: "https://site.test",
+        },
+      ],
+    });
+    expect(result.summary).toContain("https://site.test");
+  });
+
+  it("reports a failed build with its reason, and building while pending", async () => {
+    const head = m.fake.git.head();
+    m.fake.state.statuses.set(head, [
+      {
+        context: "vercel",
+        state: "failure",
+        description: "Build failed",
+        target_url: "https://v.test/log",
+      },
+    ]);
+    const failed = await getDeployStatus(agent(), "p1", {});
+    expect(failed.state).toBe("failed");
+    expect(failed.summary).toContain("Build failed");
+    expect(failed.summary).toContain("https://v.test/log");
+
+    m.fake.state.statuses.set(head, [{ context: "vercel", state: "pending" }]);
+    expect((await getDeployStatus(agent(), "p1", {})).state).toBe("building");
+  });
+
+  it("says it can't tell when the host reports nothing", async () => {
+    const result = await getDeployStatus(agent(), "p1", {});
+    expect(result.state).toBe("unknown");
+    expect(result.summary).toMatch(/can't tell/);
+  });
 });

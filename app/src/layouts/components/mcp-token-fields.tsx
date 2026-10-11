@@ -34,11 +34,18 @@ import { ReactNode } from "react";
 
 const scopeKey = (scope: EAgentScope) => scope.replace(":", "_");
 
+// Opt-in: code changes, plan and member details, and managing members.
+const OPT_IN_SCOPES: readonly EAgentScope[] = [
+  EAgentScope.CODE_WRITE,
+  EAgentScope.ORG_READ,
+  EAgentScope.MEMBERS_WRITE,
+];
+
 export const defaultAgentSettings = (): TAgentGrantSettings => ({
   org_id: "",
   all_projects: false,
   project_ids: [],
-  scopes: AGENT_SCOPES.filter((s) => s !== EAgentScope.CODE_WRITE),
+  scopes: AGENT_SCOPES.filter((s) => !OPT_IN_SCOPES.includes(s)),
   write_mode: EAgentWriteMode.DIRECT,
 });
 

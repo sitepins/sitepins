@@ -6,6 +6,7 @@ import { Organization } from "@/modules/organization/organization.model";
 import { Project } from "@/modules/project/project.model";
 import { AgentGrant } from "./agent-grant.model";
 import { agentTokenIndex, generateAgentToken } from "./agent.auth";
+import { forgetAgents } from "./agent.cache";
 import { TAgentGrant } from "./agent.type";
 import { tokenGrantSchema } from "./agent.validation";
 
@@ -113,5 +114,6 @@ export const revokeGrant = async (userId: string, grantId: string) => {
     user_id: userId,
   }).lean();
   if (!grant) throw new ApiError("Access token not found", 404, "");
+  forgetAgents({ grant_id: grantId });
   return { grant_id: grantId, revoked: true };
 };

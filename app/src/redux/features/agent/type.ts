@@ -6,6 +6,8 @@ export enum EAgentScope {
   SCHEMA_WRITE = "schema:write",
   CODE_WRITE = "code:write",
   GIT_BRANCH = "git:branch",
+  ORG_READ = "org:read",
+  MEMBERS_WRITE = "members:write",
 }
 
 export const AGENT_SCOPES: readonly EAgentScope[] = Object.values(EAgentScope);

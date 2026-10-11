@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { agentTokenIndex, authenticateAgent } from "./agent.auth";
+import { clearAgentCaches, forgetAgents } from "./agent.cache";
 import { EAgentScope, EAgentWriteMode } from "./agent.type";
 
 const m = vi.hoisted(() => ({
@@ -42,6 +43,7 @@ const GRANT = {
 const USER = { user_id: "u1", full_name: "Ada", email: "ada@example.com" };
 
 beforeEach(() => {
+  clearAgentCaches();
   m.grantFindOne.mockReset().mockResolvedValue(GRANT);
   m.userFindOne.mockReset().mockResolvedValue(USER);
   m.requireOrgAccess.mockReset().mockResolvedValue({ role: "editor" });
@@ -85,5 +87,33 @@ describe("authenticateAgent", () => {
     await expect(authenticateAgent("Bearer spat_x")).rejects.toMatchObject({
       statusCode: 403,
     });
+  });
+
+  it("reuses a verified token without querying again", async () => {
+    await authenticateAgent("Bearer spat_x");
+    const again = await authenticateAgent("Bearer spat_x");
+    expect(again.token).toBe("spat_x");
+    expect(m.grantFindOne).toHaveBeenCalledTimes(1);
+    expect(m.requireOrgAccess).toHaveBeenCalledTimes(1);
+  });
+
+  it.each([
+    ["the token is revoked", { grant_id: "g1" }],
+    ["the member is removed", { user_id: "u1", org_id: "org-1" }],
+    ["the organization is deleted", { org_id: "org-1" }],
+  ])("re-checks at once when %s", async (_label, match) => {
+    await authenticateAgent("Bearer spat_x");
+    forgetAgents(match);
+    m.grantFindOne.mockResolvedValue(null);
+    await expect(authenticateAgent("Bearer spat_x")).rejects.toMatchObject({
+      statusCode: 401,
+    });
+  });
+
+  it("keeps other users' cached tokens when one member is removed", async () => {
+    await authenticateAgent("Bearer spat_x");
+    forgetAgents({ user_id: "someone-else", org_id: "org-1" });
+    await authenticateAgent("Bearer spat_x");
+    expect(m.grantFindOne).toHaveBeenCalledTimes(1);
   });
 });

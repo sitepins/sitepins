@@ -13,12 +13,15 @@ export const createHttp = ({
   baseUrl,
   headers,
   fetchImpl = fetch,
+  onRequest,
 }: {
   baseUrl: string;
   headers: Record<string, string>;
   fetchImpl?: typeof fetch;
+  onRequest?: () => void;
 }): THttp => {
   return async <T>(method: string, path: string, body?: unknown) => {
+    onRequest?.();
     const res = await fetchImpl(`${baseUrl}${path}`, {
       method,
       headers: {

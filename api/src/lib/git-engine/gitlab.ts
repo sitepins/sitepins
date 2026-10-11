@@ -35,6 +35,7 @@ export const createGitLabClient = ({
   token,
   apiBase = "https://gitlab.com/api/v4",
   fetchImpl,
+  onRequest,
 }: TGitClientOptions): TGitClient => {
   assertGitLabRepository(repository);
   const projectBase = `/projects/${encodeURIComponent(repository)}`;
@@ -42,6 +43,7 @@ export const createGitLabClient = ({
   const http = createHttp({
     baseUrl: apiBase,
     fetchImpl,
+    onRequest,
     headers: { Authorization: `Bearer ${token}`, "User-Agent": "sitepins" },
   });
   const q = encodeURIComponent;
@@ -59,19 +61,38 @@ export const createGitLabClient = ({
 
   const readTree = async (at: string, dir?: string) => {
     const entries: TTreeEntry[] = [];
-    for (let page = 1; page <= TREE_PAGE_LIMIT; page++) {
-      const { data, headers } = await http<TGlTreeEntry[]>(
+    const page = (n: number) =>
+      http<TGlTreeEntry[]>(
         "GET",
-        `${base}/tree?recursive=true&per_page=100&page=${page}&ref=${q(at)}${dir ? `&path=${q(dir)}` : ""}`,
+        `${base}/tree?recursive=true&per_page=100&page=${n}&ref=${q(at)}${dir ? `&path=${q(dir)}` : ""}`,
       );
+    const collect = (data: TGlTreeEntry[] | null) => {
       for (const e of data ?? []) {
         if (e.type === "blob" || e.type === "tree") {
           entries.push({ path: e.path, type: e.type, sha: e.id });
         }
       }
-      if (!headers.get("x-next-page")) return { entries, truncated: false };
+    };
+    const first = await page(1);
+    collect(first.data);
+    const totalPages = Number(first.headers.get("x-total-pages"));
+    if (Number.isInteger(totalPages) && totalPages > 0) {
+      const rest = Array.from(
+        { length: Math.min(totalPages, TREE_PAGE_LIMIT) - 1 },
+        (_, i) => i + 2,
+      );
+      const pages = await mapWithConcurrency(rest, 6, page);
+      for (const p of pages) collect(p.data);
+      return { entries, truncated: totalPages > TREE_PAGE_LIMIT };
     }
-    return { entries, truncated: true };
+    // GitLab omits the totals on large trees, so walk the pages in order.
+    let next = first.headers.get("x-next-page");
+    for (let n = 2; next && n <= TREE_PAGE_LIMIT; n++) {
+      const { data, headers } = await page(n);
+      collect(data);
+      next = headers.get("x-next-page");
+    }
+    return { entries, truncated: Boolean(next) };
   };
 
   const blobMap = async (at: string) => {
@@ -216,6 +237,39 @@ export const createGitLabClient = ({
         author: c.author_name,
         date: c.created_at,
       }));
+    },
+
+    async readCommit(sha) {
+      const { data } = await http<{
+        id: string;
+        message: string;
+        parent_ids: string[];
+      }>("GET", `${base}/commits/${q(sha)}`);
+      return data
+        ? { sha: data.id, message: data.message, parents: data.parent_ids }
+        : null;
+    },
+
+    async readDeployStatus(sha) {
+      const { data } = await http<
+        { status: string; web_url: string; source?: string }[]
+      >("GET", `${projectBase}/pipelines?sha=${q(sha)}&per_page=1`).catch(
+        () => ({ data: null }),
+      );
+      const pipeline = data?.[0];
+      return {
+        state: pipeline?.status ?? null,
+        checks: pipeline
+          ? [
+              {
+                name: "pipeline",
+                state: pipeline.status,
+                url: pipeline.web_url,
+              },
+            ]
+          : [],
+        deployments: [],
+      };
     },
 
     async createBranch(name, sha) {

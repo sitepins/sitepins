@@ -28,6 +28,14 @@
       "git_branch": {
         "title": "Nhánh và pull request",
         "description": "Commit lên nhánh khác và mở pull request."
+      },
+      "org_read": {
+        "title": "Xem tổ chức",
+        "description": "Đọc thông tin, thành viên và vai trò của tổ chức, cùng các thông tin tài khoản khác mà máy chủ này cung cấp."
+      },
+      "members_write": {
+        "title": "Quản lý thành viên",
+        "description": "Mời thành viên, thay đổi vai trò và xóa họ. Không thể thay đổi hoặc xóa chủ sở hữu."
       }
     },
     "fields": {

@@ -123,6 +123,22 @@ export const createFakeGitHub = (
     beforeRefUpdate: undefined as (() => void) | undefined,
     authHeader: undefined as string | undefined,
     pulls: [] as { number: number; head: string; base: string }[],
+    statuses: new Map<
+      string,
+      {
+        context: string;
+        state: string;
+        description?: string;
+        target_url?: string;
+      }[]
+    >(),
+    deployments: [] as {
+      id: number;
+      sha: string;
+      environment: string;
+      state: string;
+      url?: string;
+    }[],
   };
   const prefix = `/repos/${owner}/${repo}`;
 
@@ -132,6 +148,30 @@ export const createFakeGitHub = (
     const body = init?.body ? JSON.parse(String(init.body)) : undefined;
     state.authHeader = (init?.headers as Record<string, string>)?.Authorization;
     state.requests.push(`${method} ${url.pathname}`);
+    if (method === "POST" && url.pathname === "/graphql") {
+      const repository: Record<string, unknown> = {};
+      for (const [key, expression] of Object.entries(
+        body.variables as Record<string, string>,
+      )) {
+        if (!/^e\d+$/.test(key)) continue;
+        const split = expression.indexOf(":");
+        const sha = git
+          .treeAt(expression.slice(0, split))
+          ?.get(expression.slice(split + 1));
+        const content = sha ? git.blobs.get(sha)! : undefined;
+        const isBinary = content?.includes(0) ?? false;
+        repository[`f${key.slice(1)}`] = content
+          ? {
+              oid: sha,
+              byteSize: content.length,
+              isBinary,
+              isTruncated: false,
+              text: isBinary ? null : content.toString("utf-8"),
+            }
+          : null;
+      }
+      return json(200, { data: { repository } });
+    }
     if (!url.pathname.startsWith(prefix))
       return json(404, { message: "Not Found" });
     const path = decodeURIComponent(url.pathname.slice(prefix.length));
@@ -191,8 +231,44 @@ export const createFakeGitHub = (
     if (method === "GET" && (m = path.match(/^\/git\/commits\/(.+)$/))) {
       const commit = git.commits.get(m[1]);
       return commit
-        ? json(200, { sha: m[1], tree: { sha: `tree:${m[1]}` } })
+        ? json(200, {
+            sha: m[1],
+            tree: { sha: `tree:${m[1]}` },
+            message: commit.message,
+            parents: commit.parents.map((sha) => ({ sha })),
+          })
         : json(404, {});
+    }
+    if (method === "GET" && (m = path.match(/^\/commits\/(.+)\/status$/))) {
+      const statuses = state.statuses.get(git.resolve(m[1]) ?? "") ?? [];
+      const order = ["failure", "error", "pending", "success"];
+      const combined =
+        order.find((o) => statuses.some((s) => s.state === o)) ?? "pending";
+      return json(200, {
+        state: combined,
+        total_count: statuses.length,
+        statuses,
+      });
+    }
+    if (method === "GET" && path === "/deployments") {
+      return json(
+        200,
+        state.deployments
+          .filter((d) => d.sha === url.searchParams.get("sha"))
+          .map((d) => ({ id: d.id, environment: d.environment })),
+      );
+    }
+    if (
+      method === "GET" &&
+      (m = path.match(/^\/deployments\/(\d+)\/statuses$/))
+    ) {
+      const deployment = state.deployments.find((d) => d.id === Number(m![1]));
+      return json(
+        200,
+        deployment
+          ? [{ state: deployment.state, environment_url: deployment.url }]
+          : [],
+      );
     }
     if (method === "GET" && (m = path.match(/^\/compare\/(.+)\.\.\.(.+)$/))) {
       const [base, head] = [git.resolve(m[1]), git.resolve(m[2])];
@@ -249,6 +325,16 @@ export const createFakeGitHub = (
       }
       git.refs.set(m[1], body.sha);
       return json(200, { object: { sha: body.sha } });
+    }
+    if (method === "GET" && (m = path.match(/^\/commits\/([0-9a-f]+)$/))) {
+      const commit = git.commits.get(m[1]);
+      return commit
+        ? json(200, {
+            id: m[1],
+            message: commit.message,
+            parent_ids: commit.parents,
+          })
+        : json(404, { message: "404 Commit Not Found" });
     }
     if (method === "GET" && path === "/commits") {
       const shas = git.history(
@@ -317,6 +403,7 @@ export const createFakeGitLab = (
     beforeCommit: undefined as (() => void) | undefined,
     commitBodies: [] as Record<string, unknown>[],
     mergeRequests: [] as { iid: number; source: string; target: string }[],
+    pipelines: new Map<string, { status: string; web_url: string }>(),
   };
   const projectPrefix = `/api/v4/projects/${encodeURIComponent(project)}`;
   const prefix = `${projectPrefix}/repository`;
@@ -354,6 +441,10 @@ export const createFakeGitLab = (
             web_url: `https://gitlab.test/mr/${m.iid}`,
           })),
       );
+    }
+    if (method === "GET" && rawPath === `${projectPrefix}/pipelines`) {
+      const pipeline = state.pipelines.get(url.searchParams.get("sha") ?? "");
+      return json(200, pipeline ? [pipeline] : []);
     }
     if (!rawPath.startsWith(prefix))
       return json(404, { message: "404 Project Not Found" });
@@ -413,6 +504,16 @@ export const createFakeGitLab = (
         .filter(([p]) => !dir || p.startsWith(`${dir}/`))
         .map(([p, s]) => ({ path: p, type: "blob", id: s }));
       return json(200, entries, { "x-next-page": "" });
+    }
+    if (method === "GET" && (m = path.match(/^\/commits\/([0-9a-f]+)$/))) {
+      const commit = git.commits.get(m[1]);
+      return commit
+        ? json(200, {
+            id: m[1],
+            message: commit.message,
+            parent_ids: commit.parents,
+          })
+        : json(404, { message: "404 Commit Not Found" });
     }
     if (method === "GET" && path === "/commits") {
       const shas = git.history(

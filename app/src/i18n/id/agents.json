@@ -28,6 +28,14 @@
       "git_branch": {
         "title": "Branch dan pull request",
         "description": "Melakukan commit ke branch lain dan membuka pull request."
+      },
+      "org_read": {
+        "title": "Lihat organisasi",
+        "description": "Membaca detail, anggota, dan peran organisasi, serta detail akun lain yang disediakan server ini."
+      },
+      "members_write": {
+        "title": "Kelola anggota",
+        "description": "Mengundang anggota, mengubah peran mereka, dan menghapus mereka. Pemilik tidak dapat diubah atau dihapus."
       }
     },
     "fields": {

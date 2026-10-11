@@ -48,5 +48,7 @@ ${json({ httpUrl: url, headers: { Authorization: header } })}
 
 If you can't change your own settings (for example, you have no file access), tell me exactly which file to open and what to paste.
 
-When it's added, tell me if the app needs a restart. Then call the sitepins list_projects tool to confirm the connection, and get_project_context before editing a site.`;
+When it's added, tell me if the app needs a restart. Then call the sitepins list_projects tool to confirm the connection, and get_project_context before editing a site.
+
+From then on I'll ask for website changes in plain words, like "change the banner to red" or "save my changes". Use the sitepins tools for them, follow the server's instructions, and explain what you changed without technical jargon.`;
 }

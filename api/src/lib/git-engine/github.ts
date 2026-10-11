@@ -1,6 +1,12 @@
 import { GitEngineError } from "./errors";
 import { createHttp, diffTrees, encodePath, mapWithConcurrency } from "./http";
-import { TGitClient, TGitClientOptions, TGitFile, TTreeEntry } from "./types";
+import {
+  TDeployStatus,
+  TGitClient,
+  TGitClientOptions,
+  TGitFile,
+  TTreeEntry,
+} from "./types";
 
 type TGhContentFile = {
   type: string;
@@ -14,6 +20,13 @@ type TGhTree = {
   truncated: boolean;
   tree: { path: string; type: string; sha: string }[];
 };
+type TGhGraphBlob = {
+  oid: string;
+  byteSize: number;
+  isBinary: boolean | null;
+  isTruncated: boolean;
+  text: string | null;
+} | null;
 type TGhCompare = {
   status: "identical" | "ahead" | "behind" | "diverged";
   files?: { filename: string; previous_filename?: string }[];
@@ -23,6 +36,10 @@ const NAME = /^[A-Za-z0-9_.-]+$/;
 // GitHub's compare API stops listing files at 300.
 const COMPARE_FILE_LIMIT = 300;
 const DIR_LISTING_LIMIT = 1000;
+const DEPLOYMENTS_SHOWN = 3;
+// Installations may not grant statuses/deployments; report nothing rather than fail.
+const unavailable = () => ({ data: null });
+const GRAPHQL_BATCH = 50;
 
 export const parseGitHubRepository = (repository: string) => {
   const [owner, repo, ...rest] = repository.split("/");
@@ -38,12 +55,14 @@ export const createGitHubClient = ({
   token,
   apiBase = "https://api.github.com",
   fetchImpl,
+  onRequest,
 }: TGitClientOptions): TGitClient => {
   const { owner, repo } = parseGitHubRepository(repository);
   const base = `/repos/${owner}/${repo}`;
   const http = createHttp({
     baseUrl: apiBase,
     fetchImpl,
+    onRequest,
     headers: {
       Authorization: `Bearer ${token}`,
       Accept: "application/vnd.github+json",
@@ -103,6 +122,53 @@ export const createGitHubClient = ({
     };
   };
 
+  // One GraphQL query reads a whole batch; binary or oversized blobs fall back to REST.
+  const readFiles = async (at: string, paths: string[]) => {
+    const result = new Map<string, TGitFile | null>();
+    const batches: string[][] = [];
+    for (let i = 0; i < paths.length; i += GRAPHQL_BATCH) {
+      batches.push(paths.slice(i, i + GRAPHQL_BATCH));
+    }
+    await mapWithConcurrency(batches, 3, async (batch) => {
+      const variables: Record<string, string> = { owner, name: repo };
+      batch.forEach((path, i) => (variables[`e${i}`] = `${at}:${path}`));
+      const query = `query(${["$owner: String!", "$name: String!", ...batch.map((_, i) => `$e${i}: String!`)].join(", ")}) { repository(owner: $owner, name: $name) { ${batch
+        .map(
+          (_, i) =>
+            `f${i}: object(expression: $e${i}) { ... on Blob { oid byteSize isBinary isTruncated text } }`,
+        )
+        .join(" ")} } }`;
+      const { data } = await http<{
+        data?: { repository: Record<string, TGhGraphBlob> | null };
+        errors?: unknown[];
+      }>("POST", "/graphql", { query, variables });
+      const repository = data?.data?.repository;
+      if (!repository || data?.errors?.length) {
+        for (const path of batch) result.set(path, await readFile(at, path));
+        return;
+      }
+      for (const [i, path] of batch.entries()) {
+        const blob = repository[`f${i}`];
+        if (!blob?.oid) result.set(path, null);
+        else if (
+          blob.isBinary ||
+          blob.isTruncated ||
+          blob.text === null ||
+          // Non-UTF-8 text decodes lossily; REST returns the exact bytes.
+          Buffer.byteLength(blob.text) !== blob.byteSize
+        )
+          result.set(path, await readFile(at, path));
+        else
+          result.set(path, {
+            path,
+            sha: blob.oid,
+            content: Buffer.from(blob.text, "utf-8"),
+          });
+      }
+    });
+    return result;
+  };
+
   return {
     host: "Github",
     branch,
@@ -116,6 +182,8 @@ export const createGitHubClient = ({
     },
 
     readFile,
+
+    readFiles,
 
     async statFiles(at, paths) {
       const result = new Map<string, string | null>();
@@ -246,6 +314,71 @@ export const createGitHubClient = ({
         throw error;
       }
       return commit!.sha;
+    },
+
+    async readCommit(sha) {
+      const { data } = await http<{
+        sha: string;
+        message: string;
+        parents: { sha: string }[];
+      }>("GET", `${base}/git/commits/${ref(sha)}`);
+      return data
+        ? {
+            sha: data.sha,
+            message: data.message,
+            parents: data.parents.map((p) => p.sha),
+          }
+        : null;
+    },
+
+    async readDeployStatus(sha): Promise<TDeployStatus> {
+      const [{ data: combined }, { data: deployments }] = await Promise.all([
+        http<{
+          state: string;
+          total_count: number;
+          statuses: {
+            context: string;
+            state: string;
+            description: string | null;
+            target_url: string | null;
+          }[];
+        }>("GET", `${base}/commits/${ref(sha)}/status`).catch(unavailable),
+        http<{ id: number; environment: string }[]>(
+          "GET",
+          `${base}/deployments?sha=${ref(sha)}&per_page=${DEPLOYMENTS_SHOWN}`,
+        ).catch(unavailable),
+      ]);
+      const latest = await mapWithConcurrency(
+        deployments ?? [],
+        DEPLOYMENTS_SHOWN,
+        async (d) => {
+          const { data } = await http<
+            {
+              state: string;
+              environment_url?: string;
+              target_url?: string;
+            }[]
+          >("GET", `${base}/deployments/${d.id}/statuses?per_page=1`).catch(
+            unavailable,
+          );
+          const status = data?.[0];
+          return {
+            environment: d.environment,
+            state: status?.state ?? "pending",
+            url: status?.environment_url || status?.target_url || undefined,
+          };
+        },
+      );
+      return {
+        state: combined && combined.total_count > 0 ? combined.state : null,
+        checks: (combined?.statuses ?? []).map((s) => ({
+          name: s.context,
+          state: s.state,
+          ...(s.description && { description: s.description }),
+          ...(s.target_url && { url: s.target_url }),
+        })),
+        deployments: latest,
+      };
     },
 
     async listCommits({ path, limit }) {

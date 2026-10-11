@@ -1,26 +1,68 @@
 import type { NextFunction, Request, Response } from "express";
 
 // Optional policy hooks. Core never assigns a policy, so installs stay
-// unmetered.
-export type RequestGuardEvent =
-  "organization:create" | "organization:member:add" | "project:create";
+// unmetered. Checks carry plain ids so they run the same from HTTP routes and
+// from agent tools.
+export type TPolicyCheck =
+  | { event: "organization:create"; user_id: string }
+  | { event: "organization:member:add"; user_id: string; org_id: string }
+  | {
+      event: "project:create";
+      user_id: string;
+      org_id: string;
+      visibility?: string;
+    };
 
-export type RequestGuard = (req: Request) => Promise<void> | void;
+export type TPolicyEvent = TPolicyCheck["event"];
 
-const requestGuards = new Map<RequestGuardEvent, RequestGuard>();
+export type TPolicyGuard<E extends TPolicyEvent = TPolicyEvent> = (
+  check: Extract<TPolicyCheck, { event: E }>,
+) => Promise<void> | void;
 
-export const setRequestGuard = (
-  event: RequestGuardEvent,
-  guard: RequestGuard,
+const policyGuards = new Map<
+  TPolicyEvent,
+  (check: TPolicyCheck) => Promise<void> | void
+>();
+
+export const setPolicyGuard = <E extends TPolicyEvent>(
+  event: E,
+  guard: TPolicyGuard<E>,
 ) => {
-  requestGuards.set(event, guard);
+  policyGuards.set(event, guard as (check: TPolicyCheck) => void);
+};
+
+export const runPolicyGuard = async (check: TPolicyCheck) =>
+  policyGuards.get(check.event)?.(check);
+
+const readString = (value: unknown) => (typeof value === "string" ? value : "");
+
+const checkFromRequest = (
+  event: TPolicyEvent,
+  req: Request,
+): TPolicyCheck | undefined => {
+  const user_id = req.user?.user_id;
+  if (!user_id) return undefined;
+  switch (event) {
+    case "organization:create":
+      return { event, user_id };
+    case "organization:member:add":
+      return { event, user_id, org_id: readString(req.params.org_id) };
+    case "project:create":
+      return {
+        event,
+        user_id,
+        org_id: readString(req.body?.org_id),
+        visibility: req.body?.visibility,
+      };
+  }
 };
 
 export const runRequestGuard =
-  (event: RequestGuardEvent) =>
+  (event: TPolicyEvent) =>
   async (req: Request, _res: Response, next: NextFunction) => {
     try {
-      await requestGuards.get(event)?.(req);
+      const check = checkFromRequest(event, req);
+      if (check) await runPolicyGuard(check);
       next();
     } catch (error) {
       next(error);

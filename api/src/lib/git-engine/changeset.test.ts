@@ -352,6 +352,29 @@ describe("GitHub specifics", () => {
     expect(fake.state.authHeader).toBe("Bearer ghs_test");
   });
 
+  it("reads a batch of files in one GraphQL request", async () => {
+    const fake = createFakeGitHub({ ...INITIAL, "bin.dat": "a\u0000b" });
+    let requests = 0;
+    const client = createGitHubClient({
+      ...fake,
+      token: "ghs_test",
+      onRequest: () => requests++,
+    });
+    const files = await client.readFiles!(fake.git.head(), [
+      "src/content/a.md",
+      "src/content/b.md",
+      "missing.md",
+    ]);
+    expect(requests).toBe(1);
+    expect(files.get("src/content/a.md")?.content.toString()).toBe("A");
+    expect(files.get("src/content/b.md")?.sha).toMatch(/^[0-9a-f]{40}$/);
+    expect(files.get("missing.md")).toBeNull();
+
+    const binary = await client.readFiles!(fake.git.head(), ["bin.dat"]);
+    expect(binary.get("bin.dat")?.content).toEqual(Buffer.from("a\u0000b"));
+    expect(fake.state.requests.at(-1)).toMatch(/contents\/bin\.dat$/);
+  });
+
   it("rejects malformed repository names", () => {
     expect(() =>
       createGitHubClient({
@@ -364,6 +387,31 @@ describe("GitHub specifics", () => {
 });
 
 describe("GitLab specifics", () => {
+  it("reads a commit's parents and the latest pipeline as deploy status", async () => {
+    const fake = createFakeGitLab(INITIAL);
+    const client = createGitLabClient({ ...fake, token: "glpat_test" });
+    const first = fake.git.head();
+    const second = fake.git.push({ "src/content/a.md": "A2" }, "Edit A");
+    await expect(client.readCommit(second)).resolves.toEqual({
+      sha: second,
+      message: "Edit A",
+      parents: [first],
+    });
+    await expect(client.readDeployStatus(second)).resolves.toEqual({
+      state: null,
+      checks: [],
+      deployments: [],
+    });
+    fake.state.pipelines.set(second, {
+      status: "running",
+      web_url: "https://gitlab.test/p/1",
+    });
+    await expect(client.readDeployStatus(second)).resolves.toMatchObject({
+      state: "running",
+      checks: [{ name: "pipeline", state: "running" }],
+    });
+  });
+
   it("sends the bot identity and guards updates with last_commit_id", async () => {
     const fake = createFakeGitLab(INITIAL);
     const client = createGitLabClient({ ...fake, token: "glpat_test" });

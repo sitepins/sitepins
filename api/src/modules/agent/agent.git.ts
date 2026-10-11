@@ -11,6 +11,8 @@ import {
 } from "@/lib/git-engine/gitlab";
 import { TGitClient } from "@/lib/git-engine/types";
 import { TProjectType } from "@/modules/project/project.type";
+import { TCachedGitClient, withCache } from "./agent.cache";
+import { countUpstream } from "./agent.metrics";
 
 type TProjectToken = {
   provider: "Github" | "Gitlab";
@@ -60,6 +62,8 @@ const fetchProjectToken = async (
   return body as TProjectToken;
 };
 
+const inflight = new Map<string, Promise<TProjectToken>>();
+
 export const getProjectToken = async (
   projectId: string,
   userId: string,
@@ -67,12 +71,20 @@ export const getProjectToken = async (
   const key = `${projectId}:${userId}`;
   const hit = cache.get(key);
   if (hit && hit.until > Date.now()) return hit.token;
-  const token = await fetchProjectToken(projectId, userId);
-  const until = token.expires_at
-    ? token.expires_at - REFRESH_MARGIN_MS
-    : Date.now() + UNKNOWN_EXPIRY_TTL_MS;
-  cache.set(key, { token, until });
-  return token;
+  // Concurrent callers (e.g. the list_projects warm-up and the next tool call) share one mint.
+  const pending = inflight.get(key);
+  if (pending) return pending;
+  const request = fetchProjectToken(projectId, userId)
+    .then((token) => {
+      const until = token.expires_at
+        ? token.expires_at - REFRESH_MARGIN_MS
+        : Date.now() + UNKNOWN_EXPIRY_TTL_MS;
+      cache.set(key, { token, until });
+      return token;
+    })
+    .finally(() => inflight.delete(key));
+  inflight.set(key, request);
+  return request;
 };
 
 export const createProjectGitClient = async (
@@ -84,11 +96,29 @@ export const createProjectGitClient = async (
   branch = project.branch,
 ): Promise<TGitClient> => {
   const { token } = await getProjectToken(project.project_id, userId);
-  const options = { repository: project.repository, branch, token };
+  const options = {
+    repository: project.repository,
+    branch,
+    token,
+    onRequest: countUpstream,
+  };
   return isGitLabProject(project)
     ? createGitLabClient(options)
     : createGitHubClient(options);
 };
+
+/** For reads only; writes need the live head, so they use createProjectGitClient. */
+export const createCachedProjectGitClient = async (
+  project: Pick<
+    TProjectType,
+    "project_id" | "provider" | "repository" | "branch"
+  >,
+  userId: string,
+): Promise<TCachedGitClient> =>
+  withCache(await createProjectGitClient(project, userId), {
+    repoKey: `${project.provider.toLowerCase()}:${project.repository}`,
+    projectId: project.project_id,
+  });
 
 /** Upstream URL for git's smart-HTTP protocol, plus the Basic credentials the host expects. */
 export const gitRemoteFor = async (

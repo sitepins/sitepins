@@ -28,6 +28,14 @@
       "git_branch": {
         "title": "Branches e pull requests",
         "description": "Fazer commits em outros branches e abrir pull requests."
+      },
+      "org_read": {
+        "title": "Ver organização",
+        "description": "Ler os detalhes, membros e funções da organização, e outros detalhes da conta oferecidos por este servidor."
+      },
+      "members_write": {
+        "title": "Gerenciar membros",
+        "description": "Convidar membros, alterar suas funções e removê-los. O proprietário não pode ser alterado nem removido."
       }
     },
     "fields": {

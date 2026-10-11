@@ -28,6 +28,14 @@
       "git_branch": {
         "title": "Ramas y pull requests",
         "description": "Hacer commits en otras ramas y abrir pull requests."
+      },
+      "org_read": {
+        "title": "Ver organización",
+        "description": "Leer los datos, miembros y roles de la organización, y otros datos de la cuenta que ofrezca este servidor."
+      },
+      "members_write": {
+        "title": "Gestionar miembros",
+        "description": "Invitar miembros, cambiar sus roles y eliminarlos. El propietario no se puede cambiar ni eliminar."
       }
     },
     "fields": {

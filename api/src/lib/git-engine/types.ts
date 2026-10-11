@@ -19,6 +19,16 @@ export type TCommitSummary = {
 
 export type TPullRequest = { number: number; url: string };
 
+export type TCommitInfo = { sha: string; parents: string[]; message: string };
+
+/** What the host knows about builds and deploys of one commit. */
+export type TDeployStatus = {
+  /** Host's combined state, or null when nothing reports to this commit. */
+  state: string | null;
+  checks: { name: string; state: string; description?: string; url?: string }[];
+  deployments: { environment: string; state: string; url?: string }[];
+};
+
 export type TCommitRequest = {
   parent: string;
   changes: TFileChange[];
@@ -32,6 +42,11 @@ export type TGitClient = {
   /** Head commit sha of the branch, or null when the branch doesn't exist. */
   readHead(): Promise<string | null>;
   readFile(ref: string, path: string): Promise<TGitFile | null>;
+  /** Several files in as few requests as the host allows; null for paths that aren't files. */
+  readFiles?(
+    ref: string,
+    paths: string[],
+  ): Promise<Map<string, TGitFile | null>>;
   /** Blob sha per path at `ref`; null when the path isn't a file there. */
   statFiles(ref: string, paths: string[]): Promise<Map<string, string | null>>;
   readTree(
@@ -46,6 +61,9 @@ export type TGitClient = {
     path?: string;
     limit: number;
   }): Promise<TCommitSummary[]>;
+  readCommit(sha: string): Promise<TCommitInfo | null>;
+  /** Build and deploy reports for a commit (GitHub statuses and deployments, GitLab pipelines). */
+  readDeployStatus(sha: string): Promise<TDeployStatus>;
   /** Creates `name` at `sha`; false when it already exists. */
   createBranch(name: string, sha: string): Promise<boolean>;
   /** Opens (or returns the open) pull request from `head` into this client's branch. */
@@ -62,4 +80,6 @@ export type TGitClientOptions = {
   token: string;
   apiBase?: string;
   fetchImpl?: typeof fetch;
+  /** Called before every upstream request; used for metrics. */
+  onRequest?: () => void;
 };

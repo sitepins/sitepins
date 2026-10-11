@@ -5,10 +5,11 @@ import { decorateOrganization } from "@/lib/extensionGuards";
 import { logger } from "@/lib/logger";
 import { sendMail } from "@/lib/mailer";
 import { nanoId } from "@/lib/nanoId";
-import { emailMatcher } from "@/lib/pendingInvites";
 import { assertAssignableRole } from "@/lib/orgRoles";
+import { emailMatcher } from "@/lib/pendingInvites";
 import { deleteFile } from "@/lib/s3-utils";
 import { AgentGrant } from "../agent/agent-grant.model";
+import { forgetAgents } from "../agent/agent.cache";
 import { ProjectContent } from "../project-content/project-content.model";
 import { ProjectLog } from "../project-log/project-log.model";
 import { ProjectPreview } from "../project-preview/project-preview.model";
@@ -580,6 +581,7 @@ const removeTeamMemberService = async ({
       },
     },
   );
+  if (target.user_id) forgetAgents({ user_id: target.user_id, org_id });
 
   const recipientUser = await User.findOne({
     $or: [{ user_id: userId }, { email: { $regex: emailMatcher(userId) } }],
@@ -643,6 +645,7 @@ const leaveOrganizationService = async ({
       },
     },
   );
+  forgetAgents({ user_id: loggedInUserId, org_id });
 
   return {
     user_id: loggedInUserId,
@@ -752,6 +755,7 @@ const deleteOrganizationService = async ({
   const deleteOrganization = await Organization.findOneAndDelete(filter);
   await Project.deleteMany({ org_id });
   await AgentGrant.deleteMany({ org_id });
+  forgetAgents({ org_id });
   return deleteOrganization;
 };
 

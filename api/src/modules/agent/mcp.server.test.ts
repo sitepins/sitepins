@@ -1,4 +1,6 @@
+import { defineAgentTool, registerAgentTools } from "@/lib/agentExtensions";
 import { createMcpHandler } from "@modelcontextprotocol/server";
+import { z } from "zod";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { EAgentScope, EAgentWriteMode, TAgentContext } from "./agent.type";
 import { buildMcpServer } from "./mcp.server";
@@ -12,9 +14,21 @@ vi.mock("./agent.service", () => ({
   applyAgentChangeset: (...a: unknown[]) => m.applyAgentChangeset(...a),
   listProjects: (...a: unknown[]) => m.listProjects(...a),
   getProjectContext: vi.fn(),
+  getSchema: vi.fn(),
   listFiles: vi.fn(),
   readFile: vi.fn(),
+  readFiles: vi.fn(),
+  searchContent: vi.fn(),
+  editFile: vi.fn(),
+  undoChange: vi.fn(),
+  getDeployStatus: vi.fn(),
   listHistory: vi.fn(),
+}));
+vi.mock("./agent.org", () => ({
+  getOrganization: vi.fn(),
+  inviteMember: vi.fn(),
+  updateMemberRole: vi.fn(),
+  removeMember: vi.fn(),
 }));
 
 const AGENT: TAgentContext = {
@@ -23,7 +37,11 @@ const AGENT: TAgentContext = {
   user_email: "ada@example.com",
   client_name: "Claude Code",
   token: "t",
-  scopes: new Set([EAgentScope.CONTENT_READ]),
+  scopes: new Set([
+    EAgentScope.PROJECTS_READ,
+    EAgentScope.CONTENT_READ,
+    EAgentScope.CONTENT_WRITE,
+  ]),
   grant: {
     grant_id: "g1",
     user_id: "u1",
@@ -32,18 +50,42 @@ const AGENT: TAgentContext = {
     name: "Claude Code",
     org_id: "o1",
     project_ids: ["p1"],
-    scopes: [EAgentScope.CONTENT_READ],
+    scopes: [
+      EAgentScope.PROJECTS_READ,
+      EAgentScope.CONTENT_READ,
+      EAgentScope.CONTENT_WRITE,
+    ],
     write_mode: EAgentWriteMode.DIRECT,
   },
 };
 
-const handler = createMcpHandler(() => buildMcpServer(AGENT), {
-  legacy: "stateless",
-  responseMode: "json",
+registerAgentTools(
+  defineAgentTool({
+    name: "echo_plan",
+    description: "Test extension tool",
+    scope: EAgentScope.ORG_READ,
+    inputSchema: z.object({ word: z.string() }),
+    handler: async (agent, { word }) => ({ word, user: agent.user_id }),
+  }),
+);
+
+const withScopes = (scopes: EAgentScope[]): TAgentContext => ({
+  ...AGENT,
+  scopes: new Set(scopes),
 });
 
-const rpc = async (method: string, params: Record<string, unknown> = {}) => {
-  const res = await handler.fetch(
+const handlerFor = (agent: TAgentContext) =>
+  createMcpHandler(() => buildMcpServer(agent), {
+    legacy: "stateless",
+    responseMode: "json",
+  });
+
+const rpc = async (
+  method: string,
+  params: Record<string, unknown> = {},
+  agent: TAgentContext = AGENT,
+) => {
+  const res = await handlerFor(agent).fetch(
     new Request("http://api.test/mcp", {
       method: "POST",
       headers: {
@@ -65,11 +107,23 @@ const rpc = async (method: string, params: Record<string, unknown> = {}) => {
   };
 };
 
-const callTool = async (name: string, args: Record<string, unknown>) =>
-  (await rpc("tools/call", { name, arguments: args })).result as {
+const callTool = async (
+  name: string,
+  args: Record<string, unknown>,
+  agent: TAgentContext = AGENT,
+) =>
+  (await rpc("tools/call", { name, arguments: args }, agent)).result as {
     isError?: boolean;
     content: { text: string }[];
+    structuredContent?: unknown;
   };
+
+const toolNames = async (agent: TAgentContext) =>
+  (
+    ((await rpc("tools/list", {}, agent)).result?.tools ?? []) as {
+      name: string;
+    }[]
+  ).map((t) => t.name);
 
 beforeEach(() => {
   m.applyAgentChangeset.mockReset().mockResolvedValue({
@@ -90,11 +144,17 @@ describe("remote MCP tools", () => {
     expect(tools.map((t) => t.name)).toEqual([
       "list_projects",
       "get_project_context",
+      "get_schema",
       "list_files",
       "read_file",
+      "read_files",
+      "search_content",
       "list_history",
+      "get_deploy_status",
       "get_clone_command",
+      "edit_file",
       "write_files",
+      "undo_change",
       "move_file",
     ]);
     expect(
@@ -174,5 +234,53 @@ describe("remote MCP tools", () => {
       remote_sha: "s",
       remote_content: "theirs",
     });
+  });
+
+  it("lists only what the token's scopes allow", async () => {
+    const readOnly = await toolNames(
+      withScopes([EAgentScope.PROJECTS_READ, EAgentScope.CONTENT_READ]),
+    );
+    expect(readOnly).toContain("read_files");
+    expect(readOnly).not.toContain("write_files");
+    expect(readOnly).not.toContain("edit_file");
+
+    const orgAdmin = await toolNames(
+      withScopes([EAgentScope.ORG_READ, EAgentScope.MEMBERS_WRITE]),
+    );
+    expect(orgAdmin).toEqual([
+      "get_organization",
+      "invite_member",
+      "update_member_role",
+      "remove_member",
+      "echo_plan",
+    ]);
+  });
+
+  it("returns compact JSON once, without a structured copy", async () => {
+    const result = await callTool("list_projects", {});
+    expect(result.content[0].text).toBe('{"projects":[{"project_id":"p1"}]}');
+    expect(result.structuredContent).toBeUndefined();
+  });
+
+  it("runs registered extension tools with the verified agent", async () => {
+    const agent = withScopes([EAgentScope.ORG_READ]);
+    const result = await callTool("echo_plan", { word: "hi" }, agent);
+    expect(JSON.parse(result.content[0].text)).toEqual({
+      word: "hi",
+      user: "u1",
+    });
+  });
+
+  it("refuses duplicate extension tool names", () => {
+    expect(() =>
+      registerAgentTools(
+        defineAgentTool({
+          name: "echo_plan",
+          description: "dup",
+          scope: EAgentScope.ORG_READ,
+          handler: async () => null,
+        }),
+      ),
+    ).toThrow(/already registered/);
   });
 });

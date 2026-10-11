@@ -1,3 +1,4 @@
+import config from "@/config/variables";
 import ApiError from "@/errors/ApiError";
 import {
   applyChangeset,
@@ -19,7 +20,12 @@ import {
 } from "@/modules/project-log/project-log.type";
 import { Project } from "@/modules/project/project.model";
 import { TProjectType } from "@/modules/project/project.type";
-import { requireScope } from "./agent.auth";
+import {
+  issueGitReadToken,
+  issueUploadTicket,
+  requireScope,
+  TUploadClaims,
+} from "./agent.auth";
 import { agentCache, forgetHead, TCachedGitClient } from "./agent.cache";
 import {
   createCachedProjectGitClient,
@@ -27,6 +33,16 @@ import {
   getProjectToken,
   isGitLabProject,
 } from "./agent.git";
+import {
+  checkEntryFields,
+  defaultsFromTemplate,
+  missingRequired,
+  serializeEntry,
+  TDocFormat,
+  TFieldChanges,
+  TTemplateField,
+  updateFields,
+} from "./agent.fields";
 import { globToRegExp } from "./agent.glob";
 import { canWrite } from "./agent.tools";
 import {
@@ -1205,6 +1221,29 @@ export const editFile = async (
 };
 
 const MAX_UNDO_FILES = 100;
+const UNDO_LOOKBACK = 30;
+
+const trailerValue = (value: string) => value.replace(/\s+/g, " ").trim();
+
+/** "Undo that": the newest commit on the branch this token made, matched by its trailers. */
+const lastChangeBy = async (agent: TAgentContext, client: TGitClient) => {
+  const mine = [
+    `Sitepins-Agent: ${trailerValue(agent.client_name)}`,
+    `Sitepins-User: ${trailerValue(agent.user_name)}`,
+  ];
+  const commits = await client.listCommits({ limit: UNDO_LOOKBACK });
+  const found = commits.find((c) =>
+    mine.every((line) => c.message.split("\n").includes(line)),
+  );
+  if (!found) {
+    throw new ApiError(
+      `No change made with this token in the last ${UNDO_LOOKBACK} commits. Pass commit_sha (see list_history).`,
+      404,
+      "",
+    );
+  }
+  return found.sha;
+};
 
 const subjectOf = (message: string) => message.split("\n")[0].trim();
 
@@ -1213,7 +1252,7 @@ export const undoChange = async (
   agent: TAgentContext,
   projectId: unknown,
   input: {
-    commit_sha: string;
+    commit_sha?: string;
     message?: string;
     dry_run?: boolean;
     branch?: string;
@@ -1223,9 +1262,10 @@ export const undoChange = async (
   const project = await resolveWritableProject(agent, projectId);
   const raw = await createProjectGitClient(project, agent.user_id);
   const head = await requireHead(raw);
-  const commit = await raw.readCommit(input.commit_sha);
+  const sha = input.commit_sha?.trim() || (await lastChangeBy(agent, raw));
+  const commit = await raw.readCommit(sha);
   if (!commit) {
-    throw new ApiError(`Commit ${input.commit_sha} not found`, 404, "");
+    throw new ApiError(`Commit ${sha} not found`, 404, "");
   }
   const parent = commit.parents[0];
   if (!parent) {
@@ -1368,3 +1408,402 @@ export const getDeployStatus = async (
     deployments: status.deployments,
   };
 };
+
+export enum ELocalCloneState {
+  NOT_GIVEN = "unknown",
+  UP_TO_DATE = "up_to_date",
+  BEHIND = "behind",
+  LOCAL_ONLY = "has_unsaved_local_commits",
+  DIVERGED = "diverged",
+}
+
+const MAX_LISTED_CHANGES = 50;
+
+/**
+ * Ready-to-run clone and sync commands with a one-hour read-only git token, so
+ * git never prompts and no long-lived token lands in .git/config. With the
+ * clone's current commit it also says whether a sync is needed and what changed.
+ */
+export const getGitCommands = async (
+  agent: TAgentContext,
+  projectId: unknown,
+  input: { local_head?: string },
+) => {
+  const project = await resolveProject(
+    agent,
+    projectId,
+    EAgentScope.CONTENT_READ,
+  );
+  if (!config.base_url) {
+    throw new ApiError("This server has no BASE_URL configured", 500, "");
+  }
+  const raw = await createProjectGitClient(project, agent.user_id);
+  const head = await requireHead(raw);
+  const { token, expires_at } = issueGitReadToken(agent, project.project_id);
+  const url = `${config.base_url}/git/${project.project_id}.git`;
+  const branch = project.branch;
+  // Empty values clear any helper or header already in .git/config, so a stale token can't interfere.
+  const git = `GIT_TERMINAL_PROMPT=0 git -c credential.helper= -c http.extraHeader= -c "http.extraHeader=Authorization: Bearer ${token}"`;
+  const dir = project.project_name.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+
+  let state = ELocalCloneState.NOT_GIVEN;
+  let changed: string[] | undefined;
+  const local = input.local_head?.trim();
+  if (local) {
+    if (local === head) state = ELocalCloneState.UP_TO_DATE;
+    else if (!(await raw.readCommit(local).catch(() => null))) {
+      state = ELocalCloneState.LOCAL_ONLY;
+    } else {
+      const paths = await raw.changedPaths(local, head);
+      if (paths === "diverged") state = ELocalCloneState.DIVERGED;
+      else {
+        state = ELocalCloneState.BEHIND;
+        changed = [...paths].sort();
+      }
+    }
+  }
+
+  const next = {
+    [ELocalCloneState.NOT_GIVEN]:
+      "Run clone for a new copy. For an existing clone, call again with local_head (the output of git rev-parse HEAD) to see whether it needs a sync.",
+    [ELocalCloneState.UP_TO_DATE]:
+      "The local copy already matches the site. Nothing to do.",
+    [ELocalCloneState.BEHIND]:
+      "Run sync once from the clone's folder. It fetches and rebases; local commits that were already saved through Sitepins are dropped automatically.",
+    [ELocalCloneState.LOCAL_ONLY]:
+      "The clone has commits Sitepins hasn't saved. Save them with write_files (base_commit: git merge-base HEAD origin/" +
+      branch +
+      "), then run sync.",
+    [ELocalCloneState.DIVERGED]:
+      "The site's history was rewritten since this clone was made. Run sync; if the rebase can't apply cleanly, run reset to match the site (local edits that weren't saved are lost).",
+  }[state];
+
+  return {
+    remote_head: head,
+    branch,
+    local_state: state,
+    next_step: next,
+    ...(changed && {
+      changed_files_since_local: changed.slice(0, MAX_LISTED_CHANGES),
+      ...(changed.length > MAX_LISTED_CHANGES && {
+        changed_files_total: changed.length,
+      }),
+    }),
+    commands: {
+      clone: `${git} clone --branch ${branch} ${url} ${dir}`,
+      sync: `${git} fetch ${url} +refs/heads/${branch}:refs/remotes/origin/${branch} && git rebase --autostash origin/${branch}`,
+      ...(state === ELocalCloneState.DIVERGED && {
+        reset: `${git} fetch ${url} +refs/heads/${branch}:refs/remotes/origin/${branch} && git reset --hard origin/${branch}`,
+      }),
+      base_commit: "git rev-parse HEAD",
+      remove_stored_token: "git config --unset-all http.extraheader",
+    },
+    token_expires_at: expires_at.toISOString(),
+    rules: [
+      "Run the commands exactly as given; they never prompt for a password. When they stop working (after an hour), call this tool again.",
+      "Never write a token into .git/config or the remote URL. If one is there from before, run remove_stored_token.",
+      "git push is refused. Save edits with write_files, base_commit = the clone's HEAD after the last sync.",
+    ],
+  };
+};
+
+type TWriteOptions = {
+  message?: string;
+  description?: string;
+  dry_run?: boolean;
+  branch?: string;
+  open_pr?: boolean;
+};
+
+/** Sets or removes named frontmatter (or data-file) fields; the rest of the file is untouched. */
+export const updateEntryFields = async (
+  agent: TAgentContext,
+  projectId: unknown,
+  input: TWriteOptions &
+    TFieldChanges & { path: unknown; message: string; expected_sha?: string },
+) => {
+  const project = await resolveWritableProject(agent, projectId);
+  const path = normalizeRepoPath(input.path);
+  const head = await requireHead(
+    await createProjectGitClient(project, agent.user_id),
+  );
+  const reader = await createCachedProjectGitClient(project, agent.user_id);
+  const file = await reader.readFile(head, path);
+  if (!file) throw new ApiError(`${path} doesn't exist`, 404, "");
+  const updated = updateFields(path, file.content.toString("utf-8"), {
+    set: input.set,
+    unset: input.unset,
+  });
+  const result = await commitChangeset(agent, project, {
+    message: input.message,
+    description: input.description,
+    expected_shas: { [path]: input.expected_sha ?? file.sha },
+    dry_run: input.dry_run,
+    branch: input.branch,
+    open_pr: input.open_pr,
+    changes: [
+      { op: "upsert", path, content: Buffer.from(updated.text, "utf-8") },
+    ],
+  });
+  return {
+    ...result,
+    path,
+    changed: [
+      ...Object.keys(input.set ?? {}),
+      ...(input.unset ?? []).map((k) => `-${k}`),
+    ],
+    ...(input.dry_run && { new_frontmatter: updated.data }),
+  };
+};
+
+type TSchemaFile = {
+  name?: string;
+  file?: string;
+  fileType?: string;
+  fmType?: TDocFormat;
+  template?: TTemplateField[];
+};
+
+const slugify = (value: string) =>
+  value
+    .normalize("NFKD")
+    .replace(/[̀-ͯ]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 80);
+
+/** Same lookup as the editor (use-schema-data.ts): the folder's schema, else its nearest parent's. */
+const findSchema = async (
+  reader: TCachedGitClient,
+  head: string,
+  contentRoot: string | undefined,
+  input: { schema?: string; folder?: string },
+) => {
+  const relative = (folder: string) =>
+    contentRoot && under(folder, contentRoot)
+      ? folder.slice(contentRoot.length).replace(/^\/+/, "")
+      : folder;
+  let candidates: string[];
+  if (input.schema) {
+    const name = input.schema
+      .replace(/^\.sitepins\/schema\//, "")
+      .replace(/\.json$/, "");
+    candidates = [name];
+  } else {
+    candidates = [];
+    let current = relative(input.folder!);
+    while (current) {
+      candidates.push(current);
+      current = current.includes("/")
+        ? current.slice(0, current.lastIndexOf("/"))
+        : "";
+    }
+  }
+  const paths = candidates.map((c) => `${SCHEMA_DIR}/${c}.json`);
+  const files = await reader.readFiles(head, paths);
+  for (const [i, path] of paths.entries()) {
+    const raw = files.get(path)?.content.toString("utf-8");
+    if (!raw) continue;
+    try {
+      return { name: candidates[i], schema: JSON.parse(raw) as TSchemaFile };
+    } catch {
+      throw new ApiError(`${path} isn't valid JSON`, 400, "");
+    }
+  }
+  if (input.schema)
+    throw new ApiError(`No schema named ${input.schema}`, 404, "");
+  return undefined;
+};
+
+/** A new content file from its folder's schema: defaults filled, fields checked, nothing overwritten. */
+export const createEntry = async (
+  agent: TAgentContext,
+  projectId: unknown,
+  input: TWriteOptions & {
+    folder?: string;
+    schema?: string;
+    title?: string;
+    slug?: string;
+    fields?: Record<string, unknown>;
+    body?: string;
+  },
+) => {
+  const project = await resolveWritableProject(agent, projectId);
+  if (!input.folder && !input.schema) {
+    throw new ApiError("Pass folder or schema", 400, "");
+  }
+  const head = await requireHead(
+    await createProjectGitClient(project, agent.user_id),
+  );
+  const reader = await createCachedProjectGitClient(project, agent.user_id);
+  const siteConfig = await readSiteConfig(reader, head);
+  const contentRoot = cleanRoot(siteConfig?.content);
+  const folder = input.folder
+    ? normalizeRepoPath(input.folder.replace(/\/+$/, ""))
+    : undefined;
+  const found = await findSchema(reader, head, contentRoot, {
+    schema: input.schema,
+    folder,
+  });
+  const targetFolder =
+    folder ??
+    normalizeRepoPath([contentRoot, found!.name].filter(Boolean).join("/"));
+  const template = found?.schema.template ?? [];
+  const fields = input.fields ?? {};
+
+  const problems = found ? checkEntryFields(template, fields) : [];
+  const data = {
+    ...defaultsFromTemplate(template, input.title),
+    ...(input.title !== undefined && !found && { title: input.title }),
+    ...fields,
+  };
+  const missing = missingRequired(template, data);
+  if (missing.length) {
+    problems.push(`Required fields are empty: ${missing.join(", ")}`);
+  }
+  if (problems.length) {
+    throw Object.assign(new ApiError(problems.join("; "), 400, ""), {
+      code: "invalid_fields",
+    });
+  }
+
+  const slug = input.slug
+    ? slugify(input.slug)
+    : slugify(String(data.title ?? ""));
+  if (!slug)
+    throw new ApiError("Pass a title or slug for the file name", 400, "");
+  const ext = (found?.schema.fileType || "md").replace(/^\./, "");
+  const path = `${targetFolder}/${slug}.${ext}`;
+  const body = input.body?.trim()
+    ? `\n${input.body.replace(/^\n+/, "").replace(/\n*$/, "\n")}`
+    : "\n";
+  const content = serializeEntry(found?.schema.fmType ?? "yaml", data, body);
+
+  const result = await commitChangeset(agent, project, {
+    message:
+      input.message?.trim() ||
+      `Add ${String(data.title || slug)}`.slice(0, 200),
+    description: input.description,
+    expected_shas: { [path]: null },
+    dry_run: input.dry_run,
+    branch: input.branch,
+    open_pr: input.open_pr,
+    changes: [{ op: "upsert", path, content: Buffer.from(content, "utf-8") }],
+  });
+  if (result.status === "conflict") {
+    throw Object.assign(
+      new ApiError(
+        `${path} already exists. Pick another slug, or change it with update_fields.`,
+        409,
+        "",
+      ),
+      { code: "exists" },
+    );
+  }
+  return {
+    ...result,
+    path,
+    schema: found ? `${SCHEMA_DIR}/${found.name}.json` : null,
+    ...(input.dry_run && { content }),
+  };
+};
+
+export const MAX_UPLOAD_BYTES = 25 * 1024 * 1024;
+
+/** Where a file under the public folder is served on the site, e.g. public/images/a.png → /images/a.png. */
+const sitePathFor = (path: string, siteConfig: TSiteConfig | null) => {
+  const publicRoot = cleanRoot(siteConfig?.public) ?? "public";
+  return under(path, publicRoot) ? path.slice(publicRoot.length) : undefined;
+};
+
+/** A one-time upload link, so agents send files with curl instead of base64 through the model. */
+export const prepareUpload = async (
+  agent: TAgentContext,
+  projectId: unknown,
+  input: { path: unknown; overwrite?: boolean; message?: string },
+) => {
+  const project = await resolveWritableProject(agent, projectId);
+  if (!config.base_url) {
+    throw new ApiError("This server has no BASE_URL configured", 500, "");
+  }
+  const path = normalizeRepoPath(input.path);
+  const reader = await createCachedProjectGitClient(project, agent.user_id);
+  const head = await requireHead(reader);
+  const siteConfig = await readSiteConfig(reader, head);
+  const roots = rootsFromConfig(siteConfig);
+  const needed = scopeForPath(path, roots);
+  if (!agent.scopes.has(needed)) {
+    throw new ApiError(
+      `${path} needs the ${needed} permission ("${AGENT_SCOPE_LABELS[needed]}" in Sitepins → Settings → MCP Connection)${roots.media.length ? `. Media goes under ${roots.media.join(", ")}` : ""}.`,
+      403,
+      "",
+    );
+  }
+  if (!input.overwrite && (await reader.readFile(head, path))) {
+    throw Object.assign(
+      new ApiError(
+        `${path} already exists. Pick another name, or pass overwrite: true to replace it.`,
+        409,
+        "",
+      ),
+      { code: "exists" },
+    );
+  }
+  const { ticket, expires_at } = issueUploadTicket(agent, {
+    projectId: project.project_id,
+    path,
+    overwrite: Boolean(input.overwrite),
+    message: input.message?.trim() || undefined,
+  });
+  const url = `${config.base_url}/agent-upload/${ticket}`;
+  const sitePath = sitePathFor(path, siteConfig);
+  return {
+    upload_url: url,
+    method: "PUT",
+    command: `curl -sS --fail-with-body -T "<local file>" "${url}"`,
+    path,
+    ...(sitePath && { site_path: sitePath }),
+    max_bytes: MAX_UPLOAD_BYTES,
+    expires_at: expires_at.toISOString(),
+    note: "Replace <local file> with the file's path and run the command once; the server commits the file. Then reference it in content by site_path (or path).",
+  };
+};
+
+/** Commits the bytes sent to an upload link; the link fixed the site, path and overwrite choice. */
+export const commitUpload = async (
+  agent: TAgentContext,
+  claims: TUploadClaims,
+  content: Buffer,
+) => {
+  const project = await resolveWritableProject(agent, claims.p);
+  const name = claims.f.slice(claims.f.lastIndexOf("/") + 1);
+  const result = await commitChangeset(agent, project, {
+    message: claims.m ?? `Upload ${name}`,
+    expected_shas: claims.o ? undefined : { [claims.f]: null },
+    changes: [{ op: "upsert", path: claims.f, content }],
+  });
+  const reader = await createCachedProjectGitClient(project, agent.user_id);
+  const siteConfig = await readSiteConfig(reader, await requireHead(reader));
+  const sitePath = sitePathFor(claims.f, siteConfig);
+  return {
+    ...describeUploadResult(result),
+    path: claims.f,
+    bytes: content.length,
+    ...(sitePath && { site_path: sitePath }),
+  };
+};
+
+const describeUploadResult = (result: TAgentChangesetResult) =>
+  result.status === "conflict"
+    ? {
+        status: result.status,
+        error:
+          "A file appeared at this path in the meantime; nothing was saved.",
+      }
+    : {
+        status: result.status,
+        branch: result.branch,
+        ...("commitSha" in result && { commit: result.commitSha }),
+        ...(result.pull_request && { pull_request: result.pull_request }),
+      };

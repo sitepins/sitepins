@@ -1,5 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { agentTokenIndex, authenticateAgent } from "./agent.auth";
+import {
+  agentTokenIndex,
+  authenticateAgent,
+  authenticateGitReadToken,
+  issueGitReadToken,
+} from "./agent.auth";
 import { clearAgentCaches, forgetAgents } from "./agent.cache";
 import { EAgentScope, EAgentWriteMode } from "./agent.type";
 
@@ -15,6 +20,9 @@ const m = vi.hoisted(() => ({
     }),
 }));
 
+vi.mock("@/config/variables", () => ({
+  default: { better_auth_secret: "test-secret" },
+}));
 vi.mock("./agent-grant.model", () => ({
   AgentGrant: {
     findOne: m.lean((...a) => m.grantFindOne(...a)),
@@ -115,5 +123,48 @@ describe("authenticateAgent", () => {
     forgetAgents({ user_id: "someone-else", org_id: "org-1" });
     await authenticateAgent("Bearer spat_x");
     expect(m.grantFindOne).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe("read-only git tokens", () => {
+  const issueFor = async (projectId = "p1", ttl?: number) =>
+    issueGitReadToken(await authenticateAgent("Bearer spat_x"), projectId, ttl)
+      .token;
+
+  it("works for git fetches of the site it was issued for", async () => {
+    const token = await issueFor();
+    expect(token.startsWith("spgt_")).toBe(true);
+    await expect(authenticateGitReadToken(token, "p1")).resolves.toMatchObject({
+      user_id: "u1",
+    });
+    expect(m.grantFindOne).toHaveBeenLastCalledWith({ grant_id: "g1" });
+  });
+
+  it("is useless as an MCP token", async () => {
+    const token = await issueFor();
+    await expect(authenticateAgent(`Bearer ${token}`)).rejects.toMatchObject({
+      statusCode: 401,
+    });
+  });
+
+  it.each([
+    ["a tampered token", (t: string) => `${t.slice(0, -2)}xx`, "p1", 401],
+    ["another site", (t: string) => t, "p2", 403],
+  ])("rejects %s", async (_label, mutate, projectId, status) => {
+    const token = mutate(await issueFor());
+    await expect(
+      authenticateGitReadToken(token, projectId),
+    ).rejects.toMatchObject({ statusCode: status });
+  });
+
+  it("rejects an expired token, and one whose access token was revoked", async () => {
+    await expect(
+      authenticateGitReadToken(await issueFor("p1", -1), "p1"),
+    ).rejects.toThrow(/expired/);
+    const token = await issueFor();
+    m.grantFindOne.mockResolvedValue(null);
+    await expect(authenticateGitReadToken(token, "p1")).rejects.toMatchObject({
+      statusCode: 401,
+    });
   });
 });

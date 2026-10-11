@@ -15,6 +15,7 @@ import {
 } from "./config/cors-options";
 import { gitProxyRouter } from "./modules/agent/git-proxy";
 import { mcpRoute } from "./modules/agent/mcp.route";
+import { agentUploadRouter } from "./modules/agent/agent.upload";
 
 const app: Application = express();
 
@@ -73,9 +74,10 @@ if (config.demo_mode) {
   });
 }
 
-// MCP and the git proxy read raw request bodies, so they sit before the JSON parser.
+// MCP, the git proxy and agent uploads read raw request bodies, so they sit before the JSON parser.
 app.all("/mcp", mcpRoute);
 app.use("/git", gitProxyRouter);
+app.use("/agent-upload", agentUploadRouter);
 
 // Cap request body size to prevent trivial memory-exhaustion DoS. Override
 // with JSON_BODY_LIMIT if your content payloads are larger.

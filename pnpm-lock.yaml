@@ -181,6 +181,9 @@ importers:
       '@hocuspocus/server':
         specifier: ^4.7.0
         version: 4.7.0(y-protocols@1.0.7(yjs@13.6.32))(yjs@13.6.32)
+      '@ltd/j-toml':
+        specifier: ^1.38.0
+        version: 1.38.0
       '@modelcontextprotocol/node':
         specifier: ^2.1.1
         version: 2.1.1(@modelcontextprotocol/server@2.3.1)
@@ -241,6 +244,9 @@ importers:
       ws:
         specifier: ^8.21.3
         version: 8.21.3
+      yaml:
+        specifier: ^2.9.1
+        version: 2.9.1
       yjs:
         specifier: ^13.6.32
         version: 13.6.32

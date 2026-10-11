@@ -6,6 +6,7 @@ import { EAgentScope, EAgentWriteMode, TAgentContext } from "./agent.type";
 import { buildMcpServer } from "./mcp.server";
 
 const m = vi.hoisted(() => ({
+  updateEntryFields: vi.fn(),
   applyAgentChangeset: vi.fn(),
   listProjects: vi.fn(),
 }));
@@ -22,6 +23,10 @@ vi.mock("./agent.service", () => ({
   editFile: vi.fn(),
   undoChange: vi.fn(),
   getDeployStatus: vi.fn(),
+  getGitCommands: vi.fn(),
+  updateEntryFields: (...a: unknown[]) => m.updateEntryFields(...a),
+  createEntry: vi.fn(),
+  prepareUpload: vi.fn(),
   listHistory: vi.fn(),
 }));
 vi.mock("./agent.org", () => ({
@@ -146,19 +151,21 @@ describe("remote MCP tools", () => {
       "get_project_context",
       "get_schema",
       "list_files",
-      "read_file",
       "read_files",
       "search_content",
       "list_history",
       "get_deploy_status",
       "get_clone_command",
       "edit_file",
+      "update_fields",
+      "create_entry",
+      "create_upload_url",
       "write_files",
-      "undo_change",
       "move_file",
+      "undo_change",
     ]);
     expect(
-      tools.find((t) => t.name === "read_file")?.annotations?.readOnlyHint,
+      tools.find((t) => t.name === "read_files")?.annotations?.readOnlyHint,
     ).toBe(true);
     expect(
       tools.find((t) => t.name === "write_files")?.annotations?.destructiveHint,
@@ -282,5 +289,76 @@ describe("remote MCP tools", () => {
         }),
       ),
     ).toThrow(/already registered/);
+  });
+
+  it("advertises schemas Gemini-style clients accept, while still validating", async () => {
+    const everything = withScopes(Object.values(EAgentScope));
+    const { result } = await rpc("tools/list", {}, everything);
+    const text = JSON.stringify(result?.tools);
+    expect(text).not.toContain("$schema");
+    expect(text).not.toMatch(/"type":\[/);
+    expect(text).not.toContain('"format":"email"');
+    const emptyObjects: string[] = [];
+    const walk = (node: unknown, where: string, root = false): void => {
+      if (!node || typeof node !== "object") return;
+      const n = node as Record<string, unknown>;
+      if (
+        !root &&
+        n.type === "object" &&
+        !Object.keys((n.properties as object) ?? {}).length
+      ) {
+        emptyObjects.push(where);
+      }
+      for (const [k, v] of Object.entries(n)) walk(v, `${where}.${k}`);
+    };
+    for (const t of result?.tools as { name: string; inputSchema: unknown }[]) {
+      walk(t.inputSchema, t.name, true);
+    }
+    expect(emptyObjects).toEqual([]);
+    const tools = result?.tools as {
+      name: string;
+      inputSchema: { properties: Record<string, Record<string, unknown>> };
+    }[];
+    const files = tools.find((t) => t.name === "write_files")!.inputSchema
+      .properties.files as { items: { properties: Record<string, unknown> } };
+    expect(files.items.properties.expected_sha).toMatchObject({
+      type: "string",
+      nullable: true,
+    });
+
+    const invite = await callTool(
+      "invite_member",
+      { email: "not-an-email", role: "editor" },
+      everything,
+    );
+    expect(invite.isError).toBe(true);
+    expect(invite.content[0].text).toMatch(/email/i);
+  });
+
+  it("takes update_fields values as text or JSON", async () => {
+    m.updateEntryFields.mockResolvedValue({ status: "dry_run" });
+    await callTool("update_fields", {
+      project_id: "p1",
+      path: "src/content/a.md",
+      message: "Edit",
+      set: [
+        { field: "title", value: "Hello" },
+        { field: "draft", value_json: "false" },
+        { field: "tags", value_json: '["a","b"]' },
+      ],
+    });
+    expect(m.updateEntryFields.mock.calls[0][2].set).toEqual({
+      title: "Hello",
+      draft: false,
+      tags: ["a", "b"],
+    });
+    const bad = await callTool("update_fields", {
+      project_id: "p1",
+      path: "a.md",
+      message: "x",
+      set: [{ field: "title" }],
+    });
+    expect(bad.isError).toBe(true);
+    expect(bad.content[0].text).toMatch(/exactly one of value or value_json/);
   });
 });

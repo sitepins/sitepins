@@ -67,3 +67,65 @@ const WRITE_SCOPES = [
 
 export const canWrite = (agent: TAgentContext) =>
   WRITE_SCOPES.some((s) => agent.scopes.has(s));
+
+type TJsonObject = Record<string, unknown>;
+
+// Keys some clients' function-calling APIs (notably Gemini) reject; the server still validates with zod.
+const DROPPED_KEYS = new Set([
+  "$schema",
+  "default",
+  "additionalProperties",
+  "propertyNames",
+  "pattern",
+]);
+const PORTABLE_FORMATS = new Set(["date-time", "enum"]);
+
+/** The JSON Schema subset every MCP client accepts: no $schema, no type arrays (nullable instead), no exotic formats. */
+export const toPortableJsonSchema = (node: unknown): unknown => {
+  if (Array.isArray(node)) return node.map(toPortableJsonSchema);
+  if (!node || typeof node !== "object") return node;
+  const out: TJsonObject = {};
+  for (const [key, value] of Object.entries(node as TJsonObject)) {
+    if (DROPPED_KEYS.has(key)) continue;
+    if (key === "format" && !PORTABLE_FORMATS.has(String(value))) continue;
+    out[key] =
+      key === "properties" && value && typeof value === "object"
+        ? Object.fromEntries(
+            Object.entries(value as TJsonObject).map(([name, schema]) => [
+              name,
+              toPortableJsonSchema(schema),
+            ]),
+          )
+        : toPortableJsonSchema(value);
+  }
+  if (Array.isArray(out.type)) {
+    const types = out.type.filter((t) => t !== "null");
+    if (types.length < out.type.length) out.nullable = true;
+    out.type = types.length === 1 ? types[0] : types;
+  }
+  return out;
+};
+
+type TStandardJsonSchema = {
+  "~standard": {
+    jsonSchema?: Record<"input" | "output", (options: unknown) => unknown>;
+  };
+};
+
+/** Same schema and validation, advertised to clients as portable JSON Schema. */
+export const portableSchema = <S extends TStandardJsonSchema>(schema: S): S => {
+  const standard = schema["~standard"];
+  const { jsonSchema } = standard;
+  if (!jsonSchema) return schema;
+  return {
+    "~standard": {
+      ...standard,
+      jsonSchema: {
+        input: (options: unknown) =>
+          toPortableJsonSchema(jsonSchema.input(options)),
+        output: (options: unknown) =>
+          toPortableJsonSchema(jsonSchema.output(options)),
+      },
+    },
+  } as unknown as S;
+};

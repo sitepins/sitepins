@@ -4,7 +4,12 @@ import { agentGitLimiter } from "@/middlewares/rateLimiters";
 import express, { NextFunction, Request, Response } from "express";
 import { Readable } from "node:stream";
 import type { ReadableStream as TWebReadableStream } from "node:stream/web";
-import { AgentAuthError, authenticateRequest } from "./agent.auth";
+import {
+  AgentAuthError,
+  authenticateGitReadToken,
+  authenticateRequest,
+  GIT_READ_TOKEN_PREFIX,
+} from "./agent.auth";
 import { gitRemoteFor } from "./agent.git";
 import { resolveProject } from "./agent.service";
 import { EAgentScope } from "./agent.type";
@@ -37,16 +42,20 @@ const normalizeAuthorization = (header: string | undefined) => {
   return password ? `Bearer ${password}` : undefined;
 };
 
+const repoParam = (req: Request) =>
+  String(req.params.repo ?? "").replace(/\.git$/, "");
+
 const authenticate = async (
   req: Request,
   res: Response,
   next: NextFunction,
 ) => {
   try {
-    req.agent = await authenticateRequest(
-      req,
-      normalizeAuthorization(req.headers.authorization),
-    );
+    const authorization = normalizeAuthorization(req.headers.authorization);
+    const bearer = authorization?.match(/^Bearer\s+(.+)$/i)?.[1]?.trim();
+    req.agent = bearer?.startsWith(GIT_READ_TOKEN_PREFIX)
+      ? await authenticateGitReadToken(bearer, repoParam(req))
+      : await authenticateRequest(req, authorization);
     next();
   } catch (error) {
     if (error instanceof AgentAuthError && error.statusCode === 401) {
@@ -54,7 +63,7 @@ const authenticate = async (
       plain(
         res,
         401,
-        `Sitepins: ${error.message}. Check the access token in your clone command.`,
+        `Sitepins: ${error.message}. Call the get_clone_command tool for fresh commands.`,
       );
       return;
     }
@@ -66,9 +75,6 @@ const authenticate = async (
     );
   }
 };
-
-const repoParam = (req: Request) =>
-  String(req.params.repo ?? "").replace(/\.git$/, "");
 
 const proxy =
   (path: "info/refs" | typeof UPLOAD_PACK) =>

@@ -62,15 +62,14 @@ const files = await call("list_files", {
 });
 const paths = (files?.files ?? []).slice(0, 5);
 for (const path of paths)
-  await call("read_file", { project_id: projectId, path });
+  await call("read_files", { project_id: projectId, paths: [path] });
 if (paths.length) await call("read_files", { project_id: projectId, paths });
 await call("search_content", { project_id: projectId, query: "title" });
 await call("get_deploy_status", { project_id: projectId });
 if (paths[0]) {
-  const file = await call("read_file", {
-    project_id: projectId,
-    path: paths[0],
-  });
+  const file = (
+    await call("read_files", { project_id: projectId, paths: [paths[0]] })
+  )?.files?.[0];
   const lines = file?.content?.split("\n") ?? [];
   const firstLine = lines.find(
     (l) => l.trim().length > 3 && lines.filter((x) => x === l).length === 1,

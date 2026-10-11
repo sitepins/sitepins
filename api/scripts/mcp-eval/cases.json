@@ -1,0 +1,128 @@
+[
+  {
+    "id": "homepage-heading",
+    "tags": ["content"],
+    "prompt": "Change the main heading on the homepage to \"Websites that grow with you\".",
+    "tools": ["search_content", "update_fields"],
+    "alternatives": ["edit_file"]
+  },
+  {
+    "id": "fix-spelling",
+    "tags": ["content"],
+    "prompt": "The contact page says \"recieve\" somewhere, fix the spelling.",
+    "tools": ["search_content", "edit_file"]
+  },
+  {
+    "id": "new-blog-post",
+    "tags": ["content"],
+    "prompt": "Write a short blog post announcing our new office in Dhaka.",
+    "tools": ["get_project_context", "create_entry"]
+  },
+  {
+    "id": "unpublish-post",
+    "tags": ["content"],
+    "prompt": "Take down the post about the spring sale, it's over now.",
+    "tools": ["search_content", "update_fields"],
+    "notes": "Usually draft: true; deleting the file is the fallback only if the user asks."
+  },
+  {
+    "id": "about-page-title",
+    "tags": ["content"],
+    "prompt": "Change the About page title to \"About our team\".",
+    "tools": ["search_content", "update_fields"]
+  },
+  {
+    "id": "footer-phone",
+    "tags": ["settings"],
+    "prompt": "Our phone number changed to +880 1711 000000, update it on the site.",
+    "tools": ["search_content", "update_fields"],
+    "alternatives": ["edit_file"]
+  },
+  {
+    "id": "menu-link",
+    "tags": ["settings"],
+    "prompt": "Add a Pricing link to the top menu that goes to /pricing.",
+    "tools": ["get_project_context", "read_files", "update_fields"],
+    "alternatives": ["edit_file"]
+  },
+  {
+    "id": "social-links",
+    "tags": ["settings"],
+    "prompt": "Remove the Twitter link and add our LinkedIn page instead.",
+    "tools": ["search_content", "update_fields"],
+    "alternatives": ["edit_file"]
+  },
+  {
+    "id": "replace-logo",
+    "tags": ["media"],
+    "prompt": "Here's our new logo (~/Downloads/logo.png), put it on the site.",
+    "tools": ["get_project_context", "create_upload_url", "update_fields"]
+  },
+  {
+    "id": "team-photo",
+    "tags": ["media"],
+    "prompt": "Add this photo of the team to the About page.",
+    "tools": ["create_upload_url", "edit_file"],
+    "alternatives": ["update_fields"]
+  },
+  {
+    "id": "save-changes",
+    "tags": ["vocabulary"],
+    "prompt": "Save my changes.",
+    "tools": ["list_history"],
+    "forbidden": ["write_files", "edit_file", "update_fields", "create_entry"],
+    "notes": "Every edit is already saved; confirm what was saved instead of writing again."
+  },
+  {
+    "id": "publish",
+    "tags": ["vocabulary"],
+    "prompt": "Publish it.",
+    "tools": ["get_deploy_status"],
+    "forbidden": ["write_files", "edit_file", "update_fields", "create_entry"]
+  },
+  {
+    "id": "is-it-live",
+    "tags": ["deploy"],
+    "prompt": "I don't see the change on my website yet, is it live?",
+    "tools": ["get_deploy_status"]
+  },
+  {
+    "id": "undo",
+    "tags": ["undo"],
+    "prompt": "That doesn't look right, put it back how it was.",
+    "tools": ["undo_change"]
+  },
+  {
+    "id": "what-changed",
+    "tags": ["history"],
+    "prompt": "What changed on the site this week?",
+    "tools": ["list_history"],
+    "forbidden": [
+      "write_files",
+      "edit_file",
+      "update_fields",
+      "create_entry",
+      "undo_change"
+    ]
+  },
+  {
+    "id": "sync-copy",
+    "tags": ["git"],
+    "prompt": "Sync my local copy of the site.",
+    "tools": ["get_clone_command"]
+  },
+  {
+    "id": "plan-check",
+    "tags": ["plan"],
+    "prompt": "Which plan am I on, and can I add another website?",
+    "tools": ["get_plan_usage", "check_limit"],
+    "scope": "org:read"
+  },
+  {
+    "id": "invite-editor",
+    "tags": ["team"],
+    "prompt": "Invite sara@example.com so she can edit the blog.",
+    "tools": ["check_limit", "invite_member"],
+    "scope": "members:write"
+  }
+]

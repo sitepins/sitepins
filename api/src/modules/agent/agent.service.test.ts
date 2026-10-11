@@ -5,11 +5,15 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   applyAgentChangeset,
   applyTextEdits,
+  commitUpload,
+  createEntry,
   editFile,
   getDeployStatus,
+  getGitCommands,
   getProjectContext,
   getSchema,
   listFiles,
+  prepareUpload,
   listProjects,
   readFile,
   readFiles,
@@ -19,7 +23,9 @@ import {
   policyFor,
   resolveProject,
   rootsFromConfig,
+  updateEntryFields,
 } from "./agent.service";
+import { redeemUploadTicket } from "./agent.auth";
 import { clearAgentCaches, forgetHead, withCache } from "./agent.cache";
 import {
   EAgentScope,
@@ -40,6 +46,16 @@ const m = vi.hoisted(() => ({
 }));
 const { projectFindOne, logInsertMany, broadcast } = m;
 
+vi.mock("@/config/variables", async (importOriginal) => {
+  const actual = await importOriginal<{ default: Record<string, unknown> }>();
+  return {
+    default: {
+      ...actual.default,
+      base_url: "http://api.test",
+      better_auth_secret: "test-secret",
+    },
+  };
+});
 vi.mock("@/modules/project/project.model", () => ({
   Project: {
     findOne: (...a: unknown[]) => ({ lean: () => m.projectFindOne(...a) }),
@@ -47,6 +63,34 @@ vi.mock("@/modules/project/project.model", () => ({
       select: () => ({ lean: () => m.projectFind(...a) }),
     }),
   },
+}));
+vi.mock("./agent-grant.model", () => ({
+  AgentGrant: {
+    findOne: () => ({
+      lean: async () => ({
+        grant_id: "g1",
+        user_id: "u1",
+        name: "Claude Code",
+        org_id: "org-1",
+        project_ids: ["p1"],
+        scopes: ["projects:read", "content:read", "media:write"],
+        write_mode: "direct",
+      }),
+    }),
+    updateOne: () => ({ catch: () => undefined }),
+  },
+}));
+vi.mock("@/modules/user/user.model", () => ({
+  User: {
+    findOne: () => ({
+      select: () => ({
+        lean: async () => ({ user_id: "u1", full_name: "Ada", email: "a@x" }),
+      }),
+    }),
+  },
+}));
+vi.mock("@/lib/resourceAuth", () => ({
+  requireOrgAccess: async () => ({ role: "editor" }),
 }));
 vi.mock("@/modules/project-log/project-log.model", () => ({
   ProjectLog: { insertMany: (...a: unknown[]) => m.logInsertMany(...a) },
@@ -870,5 +914,197 @@ describe("getDeployStatus", () => {
     const result = await getDeployStatus(agent(), "p1", {});
     expect(result.state).toBe("unknown");
     expect(result.summary).toMatch(/can't tell/);
+  });
+});
+
+describe("getGitCommands", () => {
+  it("returns prompt-free commands with a short-lived read-only token", async () => {
+    const result = await getGitCommands(
+      { ...agent(), token: "spat_real_secret" },
+      "p1",
+      {},
+    );
+    expect(result.local_state).toBe("unknown");
+    expect(result.commands.clone).toMatch(
+      /^GIT_TERMINAL_PROMPT=0 git -c credential.helper= -c http.extraHeader= -c "http.extraHeader=Authorization: Bearer spgt_[^"]+" clone --branch main http:\/\/api.test\/git\/p1.git site$/,
+    );
+    expect(result.commands.sync).toContain(
+      "+refs/heads/main:refs/remotes/origin/main && git rebase --autostash origin/main",
+    );
+    expect(JSON.stringify(result)).not.toContain("spat_real_secret");
+  });
+
+  it("tells whether the clone is up to date or behind, and what changed", async () => {
+    const old = m.fake.git.head();
+    expect(
+      (await getGitCommands(agent(), "p1", { local_head: old })).local_state,
+    ).toBe("up_to_date");
+
+    m.fake.git.push({ "src/content/b.md": "B" });
+    forgetHead("p1");
+    const behind = await getGitCommands(agent(), "p1", { local_head: old });
+    expect(behind).toMatchObject({
+      local_state: "behind",
+      changed_files_since_local: ["src/content/b.md"],
+    });
+  });
+
+  it("spots local commits Sitepins never saw", async () => {
+    const result = await getGitCommands(agent(), "p1", {
+      local_head: "a".repeat(40),
+    });
+    expect(result.local_state).toBe("has_unsaved_local_commits");
+    expect(result.next_step).toMatch(/write_files/);
+  });
+});
+
+describe("updateEntryFields", () => {
+  it("changes only the named frontmatter fields", async () => {
+    m.fake.git.push({
+      "src/content/post.md":
+        "---\ntitle: Old # keep\ndraft: true\n---\nBody text\n",
+    });
+    const result = await updateEntryFields(agent(), "p1", {
+      path: "src/content/post.md",
+      set: { title: "New", "banner.color": "red" },
+      unset: ["draft"],
+      message: "Update post",
+    });
+    expect(result.status).toBe("committed");
+    expect(m.fake.git.text("src/content/post.md")).toBe(
+      "---\ntitle: New # keep\nbanner:\n  color: red\n---\nBody text\n",
+    );
+    expect(result.changed).toEqual(["title", "banner.color", "-draft"]);
+  });
+
+  it("previews the new frontmatter with dry_run", async () => {
+    m.fake.git.push({ "src/config/theme.json": '{\n  "color": "blue"\n}\n' });
+    const result = await updateEntryFields(agent(), "p1", {
+      path: "src/config/theme.json",
+      set: { color: "red" },
+      message: "Make it red",
+      dry_run: true,
+    });
+    expect(result.status).toBe("dry_run");
+    expect(result.new_frontmatter).toBe('{\n  "color": "red"\n}\n');
+    expect(m.fake.git.text("src/config/theme.json")).toContain("blue");
+  });
+});
+
+describe("createEntry", () => {
+  beforeEach(() => {
+    m.fake.git.push({
+      ".sitepins/schema/blog.json": JSON.stringify({
+        name: "blog",
+        fileType: "mdx",
+        fmType: "yaml",
+        template: [
+          { name: "title", type: "string", isRequired: true },
+          { name: "draft", type: "boolean", defaultValue: "true" },
+          { name: "tags", type: "Array" },
+        ],
+      }),
+    });
+  });
+
+  it("writes a new post from the folder's schema with defaults", async () => {
+    const result = await createEntry(agent(), "p1", {
+      folder: "src/content/blog/2026",
+      title: "Hello World!",
+      fields: { tags: ["news"] },
+      body: "First paragraph.",
+    });
+    expect(result).toMatchObject({
+      status: "committed",
+      path: "src/content/blog/2026/hello-world.mdx",
+      schema: ".sitepins/schema/blog.json",
+    });
+    expect(m.fake.git.text("src/content/blog/2026/hello-world.mdx")).toBe(
+      "---\ntitle: Hello World!\ndraft: true\ntags:\n  - news\n---\n\nFirst paragraph.\n",
+    );
+    expect(m.fake.git.lastCommit().message).toMatch(/^Add Hello World!/);
+  });
+
+  it("explains bad fields and never overwrites", async () => {
+    await expect(
+      createEntry(agent(), "p1", {
+        schema: "blog",
+        title: "",
+        fields: { titel: "x" },
+      }),
+    ).rejects.toThrow(
+      /"titel" isn't a field.*Required fields are empty: title/,
+    );
+    m.fake.git.push({ "src/content/blog/taken.mdx": "x" });
+    await expect(
+      createEntry(agent(), "p1", { schema: "blog", title: "Taken" }),
+    ).rejects.toMatchObject({ statusCode: 409, code: "exists" });
+  });
+});
+
+describe("undoChange without a commit", () => {
+  it("undoes this token's newest change, skipping other people's", async () => {
+    await editFile(agent(), "p1", {
+      path: "src/content/a.md",
+      edits: [{ old_string: "A", new_string: "Mine" }],
+      message: "My edit",
+    });
+    m.fake.git.push({ "package.json": '{"name":"x"}' }, "someone else");
+    const result = await undoChange(agent(), "p1", {});
+    expect(result.status).toBe("committed");
+    expect(result.undone.message).toBe("My edit");
+    expect(m.fake.git.text("src/content/a.md")).toBe("A");
+    expect(m.fake.git.text("package.json")).toBe('{"name":"x"}');
+  });
+
+  it("says so when this token hasn't changed anything recently", async () => {
+    await expect(
+      undoChange(agent({ name: "Other agent" }), "p1", {}),
+    ).rejects.toMatchObject({ statusCode: 404 });
+  });
+});
+
+describe("uploads", () => {
+  it("gives a one-time link and commits what is sent to it", async () => {
+    const link = await prepareUpload(
+      agent({}, [
+        EAgentScope.PROJECTS_READ,
+        EAgentScope.CONTENT_READ,
+        EAgentScope.MEDIA_WRITE,
+      ]),
+      "p1",
+      { path: "public/images/hero.png" },
+    );
+    expect(link).toMatchObject({
+      method: "PUT",
+      path: "public/images/hero.png",
+      site_path: "/images/hero.png",
+    });
+    expect(link.command).toMatch(
+      /^curl -sS --fail-with-body -T "<local file>" "http:\/\/api.test\/agent-upload\/spup_/,
+    );
+
+    const ticket = link.upload_url.split("/").pop()!;
+    const { claims, agent: uploader } = await redeemUploadTicket(ticket);
+    const result = await commitUpload(uploader, claims, Buffer.from("PNGDATA"));
+    expect(result).toMatchObject({
+      status: "committed",
+      path: "public/images/hero.png",
+      site_path: "/images/hero.png",
+      bytes: 7,
+    });
+    expect(m.fake.git.text("public/images/hero.png")).toBe("PNGDATA");
+    await expect(redeemUploadTicket(ticket)).rejects.toMatchObject({
+      statusCode: 410,
+    });
+  });
+
+  it("refuses paths the token can't write, and existing files unless asked", async () => {
+    await expect(
+      prepareUpload(agent(), "p1", { path: "src/layouts/x.png" }),
+    ).rejects.toThrow(/"Edit code"/);
+    await expect(
+      prepareUpload(agent(), "p1", { path: "src/content/a.md" }),
+    ).rejects.toMatchObject({ statusCode: 409, code: "exists" });
   });
 });

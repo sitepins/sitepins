@@ -23,6 +23,7 @@ const getSingleUserService = async (id: string): Promise<TUserType | null> => {
         country: 1,
         image: 1,
         email: 1,
+        verified: 1,
         note: 1,
         provider: 1,
         status: 1,

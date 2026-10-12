@@ -96,7 +96,7 @@
     },
     "setup-steps": {
       "getting_started": "Bắt đầu",
-      "description": "Hoàn thành các bước này để thiết lập Sitepins và xuất bản nội dung đầu tiên của bạn",
+      "description": "Hoàn thành các bước này để thiết lập {brand} và xuất bản nội dung đầu tiên của bạn",
       "progress": "Tiến độ",
       "progress_count": "{completed} của {total}",
       "steps": {

@@ -1,5 +1,6 @@
 "use client";
 
+import { BRAND_NAME } from "@/lib/brand";
 import AddSite from "@/components/add-site";
 import { useGetOrgsQuery } from "@/redux/features/orgs/org-api";
 import { Plus } from "lucide-react";
@@ -18,7 +19,7 @@ export default function OrgNoSites({ orgId }: Props) {
   return (
     <div className="flex flex-1 flex-col items-center justify-center">
       <div className="mx-auto mb-8 max-w-sm text-center">
-        <h1 className="mb-2">Welcome to Sitepins 👋</h1>
+        <h1 className="mb-2">Welcome to {BRAND_NAME} 👋</h1>
         <p className="text-muted-foreground text-sm">
           Connect your existing website to get started in minutes.
         </p>

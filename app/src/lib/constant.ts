@@ -1,17 +1,15 @@
+import { STORAGE_PREFIX } from "@/lib/brand";
+
 export const IS_DEMO = process.env.NEXT_PUBLIC_IS_DEMO === "true";
 export const DEMO_EMAIL = process.env.NEXT_PUBLIC_DEMO_EMAIL;
 export const DEMO_PASSWORD = process.env.NEXT_PUBLIC_DEMO_PASSWORD;
-export const SCHEMA_FOLDER = ".sitepins/schema";
-export const SNIPPET_FOLDER = ".sitepins/snippet";
 export const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 export const BUCKET_URL = process.env.NEXT_PUBLIC_BUCKET_URL;
-export const GITHUB_APP_NAME =
-  process.env.NEXT_PUBLIC_GITHUB_APP_NAME || "Sitepins";
-export const GITLAB_APP_NAME =
-  process.env.NEXT_PUBLIC_GITLAB_APP_NAME || "Sitepins";
+// GitHub App slug (install URL, `<slug>[bot]` commits) and GitLab commit author.
+export const GIT_APP_NAME = process.env.NEXT_PUBLIC_GIT_APP_NAME ?? "";
 export const GITHUB_API_VERSION = "2026-03-10";
 export const GITLAB_API_VERSION = "v4";
-export const POST_LOGIN_REDIRECT_KEY = "sitepins_post_login_redirect";
+export const POST_LOGIN_REDIRECT_KEY = `${STORAGE_PREFIX}_post_login_redirect`;
 // Auth
 export const OTP_LENGTH = 6;
 

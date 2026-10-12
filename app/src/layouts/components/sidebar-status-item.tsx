@@ -2,6 +2,7 @@
 
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { useSystemStatus } from "@/hooks/use-system-status";
+import { STATUS_URL } from "@/lib/brand";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 
@@ -10,10 +11,13 @@ interface SidebarStatusItemProps {
   className?: string;
 }
 
-export default function SidebarStatusItem({
-  onClick,
-  className,
-}: SidebarStatusItemProps) {
+// Hidden when the instance has no status page (NEXT_PUBLIC_STATUS_URL=none).
+export default function SidebarStatusItem(props: SidebarStatusItemProps) {
+  if (!STATUS_URL) return null;
+  return <StatusItem {...props} />;
+}
+
+function StatusItem({ onClick, className }: SidebarStatusItemProps) {
   const systemStatus = useSystemStatus();
   const tCommon = useTranslations("common");
 

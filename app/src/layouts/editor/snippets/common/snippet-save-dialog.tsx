@@ -9,7 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { SCHEMA_FOLDER } from "@/lib/constant";
+import { schemaFolder } from "@/lib/config-dir";
 import { treeItemsOf } from "@/lib/utils/tree-items";
 import type { TTree } from "@/types";
 import {
@@ -90,7 +90,7 @@ export function SnippetSaveDialog({
             (item): item is TTree & { path: string } =>
               item.type === "blob" &&
               !!item.path &&
-              item.path.startsWith(SCHEMA_FOLDER + "/") &&
+              item.path.startsWith(schemaFolder() + "/") &&
               item.path.endsWith(".json"),
           );
 

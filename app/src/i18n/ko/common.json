@@ -142,7 +142,7 @@
     },
     "pwa": {
       "install_app": "앱 설치",
-      "update_available": "Sitepins의 새 버전을 사용할 수 있습니다.",
+      "update_available": "{brand}의 새 버전을 사용할 수 있습니다.",
       "reload": "새로고침",
       "offline_warning": "현재 오프라인 상태입니다. 인터넷이 복구될 때까지 동기화가 일시 중지됩니다.",
       "online_restored": "다시 온라인 상태입니다! 연결이 복구되었습니다.",

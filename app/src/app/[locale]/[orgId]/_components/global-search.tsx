@@ -1,5 +1,6 @@
 "use client";
 
+import { COMMUNITY_URL, UPDATES_URL } from "@/lib/brand";
 import { AiMarkdown } from "@/components/ai-markdown";
 import {
   Command,
@@ -588,9 +589,14 @@ export function GlobalSearch({
       },
       {
         groupLabel: tSearch("groupLabels.support_updates"),
+        // An instance can turn these off (NEXT_PUBLIC_*_URL=none).
         items: [
-          createSearchItem("discord-support"),
-          createSearchItem("updates-feedback"),
+          ...(COMMUNITY_URL
+            ? [{ ...createSearchItem("discord-support"), href: COMMUNITY_URL }]
+            : []),
+          ...(UPDATES_URL
+            ? [{ ...createSearchItem("updates-feedback"), href: UPDATES_URL }]
+            : []),
         ],
       },
       {

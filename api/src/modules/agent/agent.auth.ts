@@ -1,3 +1,4 @@
+import brand from "@/config/brand";
 import ApiError from "@/errors/ApiError";
 import { logger } from "@/lib/logger";
 import { requireOrgAccess } from "@/lib/resourceAuth";
@@ -25,7 +26,7 @@ export const generateAgentToken = () =>
 export const agentTokenIndex = (token: string) =>
   createHash("sha256").update(token).digest("hex");
 
-export const BEARER_CHALLENGE = 'Bearer realm="Sitepins"';
+export const BEARER_CHALLENGE = `Bearer realm="${brand.name.replace(/["\\]/g, "")}"`;
 
 export class AgentAuthError extends ApiError {
   constructor(message: string, statusCode = 401) {
@@ -58,7 +59,7 @@ export async function authenticateAgent(
   const token = bearerOf(authorization);
   if (!token?.startsWith(AGENT_TOKEN_PREFIX)) {
     throw new AgentAuthError(
-      "Missing Sitepins access token. Create one in Settings → MCP Connection.",
+      `Missing ${brand.name} access token. Create one in Settings → MCP Connection.`,
     );
   }
 
@@ -281,7 +282,7 @@ export const authenticateRequest = (
 export const requireScope = (agent: TAgentContext, scope: EAgentScope) => {
   if (!agent.scopes.has(scope)) {
     throw new ApiError(
-      `This token lacks the ${scope} permission. The user can turn on "${AGENT_SCOPE_LABELS[scope]}" for it in Sitepins → Settings → MCP Connection.`,
+      `This token lacks the ${scope} permission. The user can turn on "${AGENT_SCOPE_LABELS[scope]}" for it in ${brand.name} → Settings → MCP Connection.`,
       403,
       "",
     );

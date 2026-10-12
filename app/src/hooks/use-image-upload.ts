@@ -1,3 +1,4 @@
+import type { TUploadFolder } from "@/lib/brand";
 import { updateImage } from "@/actions/user";
 import { IS_DEMO } from "@/lib/constant";
 import { useTranslations } from "next-intl";
@@ -6,7 +7,7 @@ import { FileRejection } from "react-dropzone";
 import { toast } from "@/components/ui/toast";
 
 type UseImageUploadOptions = {
-  folder: "sitepins/users" | "sitepins/orgs" | "sitepins/sites";
+  folder: TUploadFolder;
   onError?: (message: string) => void;
   onSelectFile?: (file: File) => void;
 };

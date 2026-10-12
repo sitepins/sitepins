@@ -12,7 +12,7 @@
     },
     "github_integration": {
       "title": "Kết nối tài khoản GitHub của bạn",
-      "description": "Sitepins cần quyền truy cập để tạo nhánh và đồng bộ nội dung cho dự án của bạn.",
+      "description": "{brand} cần quyền truy cập để tạo nhánh và đồng bộ nội dung cho dự án của bạn.",
       "allow_all_repos": "Tôi sẽ cấp quyền cho tất cả kho lưu trữ",
       "connect_btn": "Kết nối với GitHub",
       "grant_access_link": "Tôi chỉ muốn cấp quyền cho một số kho lưu trữ",
@@ -22,7 +22,7 @@
       "step_download": "Tải xuống mẫu (template) theo cách thủ công.",
       "step_fork": "Fork kho lưu trữ theo cách thủ công.",
       "step_push": "Đẩy mã nguồn lên kho lưu trữ GitHub của bạn.",
-      "step_go_to": "Truy cập Sitepins",
+      "step_go_to": "Truy cập {brand}",
       "step_new_site": "Nhấp vào nút + Tạo trang web ở góc trên bên phải.",
       "step_grant_access": "Chọn GitHub và cấp quyền truy cập vào kho lưu trữ của bạn.",
       "step_grant_forked": "Chọn GitHub và chỉ cấp quyền truy cập vào kho lưu trữ đã fork của bạn.",

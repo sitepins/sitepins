@@ -1,5 +1,6 @@
 "use client";
 
+import { STORAGE_PREFIX } from "@/lib/brand";
 import { useFeatureAccess } from "@/hooks/use-feature-access";
 import { openUnlockPrompt } from "@/hooks/use-unlock-prompt";
 import { useSyncExternalStore } from "react";
@@ -11,7 +12,9 @@ import { useSyncExternalStore } from "react";
 export function isAiAutocompleteEnabled(): boolean {
   if (typeof window === "undefined") return true;
   try {
-    return localStorage.getItem("sitepins-ai-autocomplete") !== "false";
+    return (
+      localStorage.getItem(`${STORAGE_PREFIX}-ai-autocomplete`) !== "false"
+    );
   } catch {
     return true;
   }
@@ -24,7 +27,7 @@ export function isAiAutocompleteEnabled(): boolean {
 export function isEditorAiEnabled(): boolean {
   if (typeof window === "undefined") return true;
   try {
-    return localStorage.getItem("sitepins-ai-editor") !== "false";
+    return localStorage.getItem(`${STORAGE_PREFIX}-ai-editor`) !== "false";
   } catch {
     return true;
   }
@@ -37,7 +40,7 @@ export function isEditorAiEnabled(): boolean {
 export function isCodeAiEnabled(): boolean {
   if (typeof window === "undefined") return true;
   try {
-    return localStorage.getItem("sitepins-ai-code") !== "false";
+    return localStorage.getItem(`${STORAGE_PREFIX}-ai-code`) !== "false";
   } catch {
     return true;
   }
@@ -50,7 +53,7 @@ export function isCodeAiEnabled(): boolean {
 export function isAiCommitEnabled(): boolean {
   if (typeof window === "undefined") return true;
   try {
-    return localStorage.getItem("sitepins-ai-commit") !== "false";
+    return localStorage.getItem(`${STORAGE_PREFIX}-ai-commit`) !== "false";
   } catch {
     return true;
   }
@@ -63,7 +66,7 @@ export function isAiCommitEnabled(): boolean {
 export function isAiSeoEnabled(): boolean {
   if (typeof window === "undefined") return true;
   try {
-    return localStorage.getItem("sitepins-ai-seo") !== "false";
+    return localStorage.getItem(`${STORAGE_PREFIX}-ai-seo`) !== "false";
   } catch {
     return true;
   }
@@ -76,7 +79,7 @@ export function isAiSeoEnabled(): boolean {
 export function isAiSearchEnabled(): boolean {
   if (typeof window === "undefined") return true;
   try {
-    return localStorage.getItem("sitepins-ai-search") !== "false";
+    return localStorage.getItem(`${STORAGE_PREFIX}-ai-search`) !== "false";
   } catch {
     return true;
   }
@@ -207,8 +210,8 @@ export function useAiAccess() {
   const getHasConfiguredModel = () =>
     typeof window !== "undefined"
       ? Boolean(
-          localStorage.getItem("sitepins-ai-model") &&
-          localStorage.getItem("sitepins-ai-apiKey"),
+          localStorage.getItem(`${STORAGE_PREFIX}-ai-model`) &&
+          localStorage.getItem(`${STORAGE_PREFIX}-ai-apiKey`),
         )
       : false;
 

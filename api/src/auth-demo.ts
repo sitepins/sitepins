@@ -1,3 +1,4 @@
+import brand from "@/config/brand";
 import config from "@/config/variables";
 import bcrypt from "bcrypt";
 import { betterAuth } from "better-auth";
@@ -28,7 +29,7 @@ const createAuthDemoInstance = () =>
         maxAge: 5 * 60, // Cache duration in seconds
       },
     },
-    appName: "Sitepins Demo",
+    appName: `${brand.name} Demo`,
     rateLimit: {
       // enabled: true, // enabled only if you want to test it in development
       window: parseInt(process.env.RATELIMIT_WINDOW || "10"), // seconds
@@ -120,11 +121,13 @@ const createAuthDemoInstance = () =>
           "x-forwarded-for",
         ],
       },
-      cookiePrefix: "sitepins-demo",
+      cookiePrefix: brand.demo_cookie_prefix,
       crossSubDomainCookies: {
         enabled: process.env.NODE_ENV === "production",
         domain:
-          process.env.NODE_ENV === "production" ? ".sitepins.com" : undefined,
+          process.env.NODE_ENV === "production"
+            ? process.env.DEMO_COOKIE_DOMAIN || ".sitepins.com"
+            : undefined,
       },
       defaultCookieAttributes: {
         sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",

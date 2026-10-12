@@ -12,7 +12,7 @@
     },
     "github_integration": {
       "title": "ربط حسابك على GitHub",
-      "description": "يحتاج Sitepins إلى إذن لإنشاء الفروع ومزامنة محتوى مشاريعك.",
+      "description": "يحتاج {brand} إلى إذن لإنشاء الفروع ومزامنة محتوى مشاريعك.",
       "allow_all_repos": "سأمنح الوصول لجميع المستودعات",
       "connect_btn": "الاتصال بـ GitHub",
       "grant_access_link": "أفضّل عدم منح الوصول لجميع المستودعات",
@@ -22,7 +22,7 @@
       "step_download": "تنزيل القالب يدوياً.",
       "step_fork": "عمل Fork للمستودع يدوياً.",
       "step_push": "رفع الرمز المصدري إلى مستودع GitHub الخاص بك.",
-      "step_go_to": "الانتقال إلى Sitepins",
+      "step_go_to": "الانتقال إلى {brand}",
       "step_new_site": "النقر على زر + موقع جديد في الأعلى.",
       "step_grant_access": "اختيار GitHub ومنح الإذن للمستودع المطلوب.",
       "step_grant_forked": "اختيار GitHub ومنح الإذن فقط للمستودع المنسوخ (Forked).",

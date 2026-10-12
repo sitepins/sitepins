@@ -1,7 +1,8 @@
+import { BRAND_NAME, DOCS_URL } from "@/lib/brand";
 import { logger } from "@/lib/logger";
 
 /**
- * Public Sitepins documentation used to ground the search Copilot's "how do
+ * Public product documentation used to ground the search Copilot's "how do
  * I…" answers. Mirrors the public pages of sp-docs (never its password
  * protected section). Keep in sync when docs pages are added.
  */
@@ -13,16 +14,14 @@ export type TDocEntry = {
   keywords?: string[];
 };
 
-export const DOCS_BASE_URL = (
-  process.env.SITEPINS_DOCS_URL || "https://docs.sitepins.com"
-).replace(/\/$/, "");
+/** Empty when the instance has no docs site; docs grounding is then off. */
+export const DOCS_BASE_URL = DOCS_URL.replace(/\/$/, "");
 
 export const DOCS_INDEX: TDocEntry[] = [
   {
     path: "/account/preferences",
     title: "Preferences",
-    description:
-      "Set your interface language and theme, and choose whether commits are attributed to you or to the Sitepins bot.",
+    description: `Set your interface language and theme, and choose whether commits are attributed to you or to the ${BRAND_NAME} bot.`,
     keywords: ["language", "theme", "dark", "coauthor"],
   },
   {
@@ -35,22 +34,19 @@ export const DOCS_INDEX: TDocEntry[] = [
   {
     path: "/ai-agents",
     title: "AI Agents",
-    description:
-      "Connect Claude, Codex, Cursor, Antigravity and other AI agents with one access token and a copy-paste setup prompt. Every change is committed by the Sitepins bot.",
+    description: `Connect Claude, Codex, Cursor, Antigravity and other AI agents with one access token and a copy-paste setup prompt. Every change is committed by the ${BRAND_NAME} bot.`,
     keywords: ["mcp", "agent", "claude", "cursor", "codex", "token", "prompt"],
   },
   {
     path: "/ai-agents/permissions-and-security",
     title: "AI Agent Permissions & Security",
-    description:
-      "What AI agents can and can't do in Sitepins, and how access is protected.",
+    description: `What AI agents can and can't do in ${BRAND_NAME}, and how access is protected.`,
     keywords: ["scopes", "revoke", "permissions", "security"],
   },
   {
     path: "/collaboration/branches-and-pull-requests",
     title: "Branches & Pull Requests",
-    description:
-      "Draft on a branch, open a pull request, and merge — without leaving Sitepins.",
+    description: `Draft on a branch, open a pull request, and merge — without leaving ${BRAND_NAME}.`,
     keywords: ["branch", "pr", "merge", "review"],
   },
   {
@@ -188,8 +184,7 @@ export const DOCS_INDEX: TDocEntry[] = [
   {
     path: "/getting-started/configure-site",
     title: "Configure Your Site",
-    description:
-      "Point Sitepins at your content, media, public, and config folders, and choose how commit messages are written.",
+    description: `Point ${BRAND_NAME} at your content, media, public, and config folders, and choose how commit messages are written.`,
     keywords: ["content folder", "media folder", "setup"],
   },
   {
@@ -229,8 +224,7 @@ export const DOCS_INDEX: TDocEntry[] = [
   {
     path: "/project-settings/deployment",
     title: "Deployment",
-    description:
-      "How Sitepins commits trigger builds, one-click Vercel deployment, and reading build status.",
+    description: `How ${BRAND_NAME} commits trigger builds, one-click Vercel deployment, and reading build status.`,
     keywords: ["deploy", "build", "vercel", "netlify"],
   },
   {
@@ -243,22 +237,19 @@ export const DOCS_INDEX: TDocEntry[] = [
   {
     path: "/project-settings/git-repository",
     title: "Git Repository",
-    description:
-      "Connect, switch, or disconnect the repository behind a project, and understand the permissions Sitepins asks for.",
+    description: `Connect, switch, or disconnect the repository behind a project, and understand the permissions ${BRAND_NAME} asks for.`,
     keywords: ["github", "gitlab", "disconnect", "permission"],
   },
   {
     path: "/self-hosting/overview",
     title: "Self-Hosting Overview",
-    description:
-      "What you get by running Sitepins yourself, prerequisites, architecture summary, and guide roadmap.",
+    description: `What you get by running ${BRAND_NAME} yourself, prerequisites, architecture summary, and guide roadmap.`,
     keywords: ["self host", "docker"],
   },
   {
     path: "/self-hosting/environment-variables",
     title: "Environment Variables",
-    description:
-      "Complete configuration reference for all backend (api/.env) and frontend (app/.env) variables in Sitepins Core.",
+    description: `Complete configuration reference for all backend (api/.env) and frontend (app/.env) variables in ${BRAND_NAME} Core.`,
     keywords: ["env", "environment"],
   },
   {
@@ -284,6 +275,7 @@ const tokenize = (value: string): string[] =>
 
 /** Scores docs pages against a question by keyword overlap. */
 export function findRelevantDocs(query: string, limit = 3): TDocEntry[] {
+  if (!DOCS_BASE_URL) return [];
   const terms = tokenize(query);
   if (terms.length === 0) return [];
   const lowerQuery = query.toLowerCase();

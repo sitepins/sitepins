@@ -34,7 +34,7 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { SNIPPET_FOLDER } from "@/lib/constant";
+import { snippetFolder } from "@/lib/config-dir";
 import { isGitLabProvider } from "@/lib/utils/provider-checker";
 import { slugify } from "@/lib/utils/text-converter";
 import { snippetSchema } from "@/lib/validate";
@@ -155,7 +155,7 @@ export default function SnippetForm({
     try {
       const filePath = snippet
         ? snippet.path
-        : `${SNIPPET_FOLDER}/${slugify(data.label)}.json`;
+        : `${snippetFolder()}/${slugify(data.label)}.json`;
       const isCreate = !snippet;
 
       const result = isGitLabProvider(config.provider)

@@ -18,7 +18,7 @@ import {
   UserCog,
 } from "lucide-react";
 import type NavigationType from "../i18n/en/navigation.json";
-import { COMMUNITY_URL, UPDATES_URL } from "./brand";
+import { COMMUNITY_URL, SOURCE_URL, UPDATES_URL } from "./brand";
 import {
   getExtraDashboardPrimaryItems,
   getExtraDashboardSecondaryItems,
@@ -56,18 +56,27 @@ export const getFooterAccountMenu = (locale?: string) => {
       href: "/dashboard/account",
       icon: UserCog,
     },
-    {
-      name: tMenu.footer_account.updates,
-      tKey: "updates",
-      href: UPDATES_URL,
-      icon: MegaphoneIcon,
-    },
-    {
-      name: tMenu.footer_account.support,
-      tKey: "support",
-      href: COMMUNITY_URL,
-      icon: SiDiscord,
-    },
+    // An instance can turn these off (NEXT_PUBLIC_*_URL=none).
+    ...(UPDATES_URL
+      ? [
+          {
+            name: tMenu.footer_account.updates,
+            tKey: "updates",
+            href: UPDATES_URL,
+            icon: MegaphoneIcon,
+          },
+        ]
+      : []),
+    ...(COMMUNITY_URL
+      ? [
+          {
+            name: tMenu.footer_account.support,
+            tKey: "support",
+            href: COMMUNITY_URL,
+            icon: SiDiscord,
+          },
+        ]
+      : []),
     {
       name: tMenu.footer_account.ai_agent,
       tKey: "ai_agent",
@@ -87,6 +96,17 @@ export const getFooterAccountMenu = (locale?: string) => {
       icon: Settings,
       href: "/dashboard/preference",
     },
+    // AGPL §13: a modified instance offered over a network links its source.
+    ...(SOURCE_URL
+      ? [
+          {
+            name: tMenu.footer_account.source_code,
+            tKey: "source_code",
+            icon: CodeXml,
+            href: SOURCE_URL,
+          },
+        ]
+      : []),
   ];
 };
 

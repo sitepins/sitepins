@@ -26,7 +26,8 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { IS_DEMO, SCHEMA_FOLDER } from "@/lib/constant";
+import { IS_DEMO } from "@/lib/constant";
+import { schemaFolder } from "@/lib/config-dir";
 import { getLogType } from "@/lib/utils/project-log-type-detector";
 import {
   isGitHubProvider,
@@ -65,7 +66,7 @@ import SchemaSkeleton from "./schema-skeleton";
 
 type SchemaFile = {
   name: string; // filename without extension
-  path: string; // full path including .sitepins/schema/
+  path: string; // full path including <config dir>/schema/
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data?: any;
 };
@@ -81,7 +82,7 @@ const SchemaList = () => {
   const [selectedSchema, setSelectedSchema] = useState<SchemaFile | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
 
-  // Fetch all schema files from .sitepins/schema folder
+  // Fetch all schema files from the config schema folder
   useEffect(() => {
     let cancelled = false;
 
@@ -135,7 +136,7 @@ const SchemaList = () => {
           (item): item is TTree & { path: string } =>
             item.type === "blob" &&
             !!item.path &&
-            item.path.startsWith(SCHEMA_FOLDER + "/") &&
+            item.path.startsWith(schemaFolder() + "/") &&
             item.path.endsWith(".json"),
         );
 
@@ -338,7 +339,7 @@ const SchemaList = () => {
                     (item): item is TTree & { path: string } =>
                       item.type === "blob" &&
                       !!item.path &&
-                      item.path.startsWith(SCHEMA_FOLDER + "/") &&
+                      item.path.startsWith(schemaFolder() + "/") &&
                       item.path.endsWith(".json"),
                   );
 

@@ -32,6 +32,9 @@ jobs:
       - name: Formatting
         run: pnpm format:check
 
+      - name: White-label guard
+        run: pnpm brand:check
+
   typecheck:
     runs-on: ubuntu-latest
     steps:
@@ -95,8 +98,12 @@ jobs:
       # Placeholders only. `next build` collects page data for the API routes,
       # which construct URLs from these at module scope and throw on an empty
       # value — the build does not reach the network.
+      - name: Seed app env
+        run: cp app/.env.example app/.env
+
       - name: Build web
         run: pnpm build:app
         env:
           NEXT_PUBLIC_BACKEND_URL: http://localhost:4000
           NEXT_PUBLIC_HP_WS_URL: ws://localhost:4000/api/v1/editor/collab
+          NEXT_PUBLIC_GIT_APP_NAME: sitepins-ci

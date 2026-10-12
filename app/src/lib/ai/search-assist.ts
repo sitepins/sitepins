@@ -1,3 +1,5 @@
+import { BRAND_NAME } from "@/lib/brand";
+
 /**
  * File picking for the global search's Copilot (`/api/ai/search`): given a
  * question and an index of the project's files, the model returns the few
@@ -66,7 +68,7 @@ export function buildSearchAssistPrompt({
 }): { system: string; prompt: string } {
   const { block, omitted } = buildFileIndexBlock(files, maxIndexChars);
 
-  const system = `You pick files for an assistant inside Sitepins, a Git-based CMS.
+  const system = `You pick files for an assistant inside ${BRAND_NAME}, a Git-based CMS.
 Given the user's question and the list of files in their site's repository, return ONLY a JSON object:
 { "fileIds": number[] }
 

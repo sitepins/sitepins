@@ -42,14 +42,16 @@ export function useSystemStatus() {
       }
 
       try {
-        // Try fetching from status API (status.sitepins.com)
+        // Try the instance's status API first, when it has one
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 4000);
 
-        const res = await fetch(STATUS_API_URL, {
-          signal: controller.signal,
-          headers: { Accept: "application/json" },
-        }).catch(() => null);
+        const res = STATUS_API_URL
+          ? await fetch(STATUS_API_URL, {
+              signal: controller.signal,
+              headers: { Accept: "application/json" },
+            }).catch(() => null)
+          : null;
 
         clearTimeout(timeoutId);
 

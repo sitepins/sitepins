@@ -43,7 +43,7 @@ export type TArrangement =
       groupName: string;
     };
 
-// Persistent project configuration stored in .sitepins/config.json
+// Persistent project configuration stored in <config dir>/config.json
 export type TConfigFile = {
   content: string;
   media: string;

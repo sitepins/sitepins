@@ -80,7 +80,7 @@
         "choose_branch_placeholder": "Chọn chi nhánh",
         "disconnect_btn": "Ngắt kết nối",
         "disconnect_confirm_title": "Bạn có hoàn toàn chắc chắn không?",
-        "disconnect_confirm_desc": "Hành động này sẽ ngắt kết nối kho lưu trữ khỏi Sitepins. Bạn luôn có thể kết nối lại sau.",
+        "disconnect_confirm_desc": "Hành động này sẽ ngắt kết nối kho lưu trữ khỏi {brand}. Bạn luôn có thể kết nối lại sau.",
         "connect_repo_btn": "Kết nối kho lưu trữ",
         "error_missing_info": "Thiếu thông tin dự án hoặc tổ chức",
         "success_disconnect": "Đã ngắt kết nối kho lưu trữ thành công",
@@ -225,7 +225,7 @@
         "title": "Cấu hình cam kết",
         "description": "Xác định cách xử lý thông báo cam kết khi bạn lưu thay đổi",
         "custom_commit_label": "Tin nhắn cam kết tùy chỉnh",
-        "custom_commit_desc": "Kích hoạt tính năng này để viết thông báo cam kết của riêng bạn khi lưu. Khi hoạt động, bạn có thể cung cấp tin nhắn tùy chỉnh; nếu không, Sitepins sẽ tự động tạo một cái cho bạn.",
+        "custom_commit_desc": "Kích hoạt tính năng này để viết thông báo cam kết của riêng bạn khi lưu. Khi hoạt động, bạn có thể cung cấp tin nhắn tùy chỉnh; nếu không, {brand} sẽ tự động tạo một cái cho bạn.",
         "save_btn": "Lưu thay đổi",
         "success_update": "Đã cập nhật cài đặt hộp thoại cam kết thành công",
         "error_update": "Không cập nhật được cài đặt"

@@ -1,12 +1,13 @@
 "use client";
 
+import { STORAGE_PREFIX } from "@/lib/brand";
 import Loading from "@/components/loading";
 import { useHydrated } from "@/hooks/use-hydrated";
 import { authClient, isSigningOut, Session } from "@/lib/auth/auth-client";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useSyncExternalStore } from "react";
 
-const CACHED_SESSION_KEY = "sitepins_cached_session";
+const CACHED_SESSION_KEY = `${STORAGE_PREFIX}_cached_session`;
 
 function getIsOnline() {
   if (typeof window === "undefined") return true;

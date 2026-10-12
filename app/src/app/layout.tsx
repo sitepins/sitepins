@@ -1,4 +1,5 @@
 import { AppProviders } from "@/helpers/app-providers";
+import { BRAND_APPLE_ICON, BRAND_FAVICON, BRAND_NAME } from "@/lib/brand";
 import config from "@/lib/config";
 import MaintenanceScreen from "@/partials/maintenance";
 import { getDirection } from "@/lib/i18n/direction";
@@ -42,35 +43,28 @@ export default async function RootLayout({
         />
 
         {/* favicon & app icons */}
-        <link rel="icon" href={config.site.favicon} />
-        <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+        <link rel="icon" href={BRAND_FAVICON} />
+        <link rel="apple-touch-icon" href={BRAND_APPLE_ICON} />
         <link rel="manifest" href="/manifest.webmanifest" />
 
         {/* PWA metadata */}
-        <meta
-          name="application-name"
-          content={config.site.title || "Sitepins"}
-        />
+        <meta name="application-name" content={BRAND_NAME} />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        <meta
-          name="apple-mobile-web-app-title"
-          content={config.site.title || "Sitepins"}
-        />
+        <meta name="apple-mobile-web-app-title" content={BRAND_NAME} />
         <meta name="mobile-web-app-capable" content="yes" />
-        <meta name="msapplication-TileColor" content="#5D5FE5" />
         <meta
           name="theme-color"
           media="(prefers-color-scheme: light)"
-          content="#5D5FE5"
+          content="#ffffff"
         />
         <meta
           name="theme-color"
           media="(prefers-color-scheme: dark)"
-          content="#000000"
+          content="#1c1c1c"
         />
 
-        <title>{config.site.title}</title>
+        <title>{BRAND_NAME}</title>
       </head>
 
       <body className={primaryFont.className} suppressHydrationWarning={true}>

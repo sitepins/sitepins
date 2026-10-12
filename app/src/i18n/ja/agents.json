@@ -19,7 +19,7 @@
       },
       "schema_write": {
         "title": "スキーマの編集",
-        "description": ".sitepins 内のスキーマとスニペットを変更します。.sitepins/config.json の変更には「コードの編集」が必要です。"
+        "description": "{configDir} 内のスキーマとスニペットを変更します。{configDir}/config.json の変更には「コードの編集」が必要です。"
       },
       "code_write": {
         "title": "コードの編集",
@@ -52,15 +52,15 @@
       "permissions": "権限",
       "write_mode": "変更の保存方法",
       "write_direct": "直接コミット",
-      "write_direct_description": "変更はサイトのブランチに直接反映され、Sitepins ボットがコミットします。",
+      "write_direct_description": "変更はサイトのブランチに直接反映され、{brand} ボットがコミットします。",
       "write_pull_request": "プルリクエストを作成",
       "write_pull_request_description": "変更は新しいブランチに入り、確認用のプルリクエストが作成されます。"
     },
     "settings": {
       "title": "MCP 接続",
-      "description": "Claude、Codex、Cursor、Antigravity などの AI エージェントにサイトへのアクセスを許可します。トークンを作成し、セットアップ用プロンプトをエージェントに貼り付けてください。コミットは Sitepins ボットが行います。",
+      "description": "Claude、Codex、Cursor、Antigravity などの AI エージェントにサイトへのアクセスを許可します。トークンを作成し、セットアップ用プロンプトをエージェントに貼り付けてください。コミットは {brand} ボットが行います。",
       "connect_title": "エージェントを接続",
-      "connect_description": "このプロンプトをコピーして AI エージェントに貼り付けてください。エージェントの MCP 設定に Sitepins が追加されます。トークンは一度しか表示されません。",
+      "connect_description": "このプロンプトをコピーして AI エージェントに貼り付けてください。エージェントの MCP 設定に {brand} が追加されます。トークンは一度しか表示されません。",
       "mcp_label": "MCP サーバー URL",
       "copy": "コピー",
       "copied": "コピーしました",

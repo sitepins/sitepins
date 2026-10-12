@@ -1,27 +1,44 @@
+import {
+  BRAND_FAVICON,
+  BRAND_ICONS,
+  BRAND_LOGO,
+  BRAND_LOGO_DARK,
+  BRAND_LOGO_ICON,
+  BRAND_NAME,
+  STORAGE_PREFIX,
+} from "@/lib/brand";
 import { APP_VERSION } from "@/lib/version";
 
 export const dynamic = "force-static";
 export const revalidate = false;
 
+// Same-origin brand assets, in the order the upstream list used. Absolute
+// URLs (a CDN) aren't precached.
+const precacheAssets = () =>
+  [
+    "/offline.html",
+    BRAND_LOGO_ICON,
+    BRAND_LOGO,
+    BRAND_LOGO_DARK,
+    BRAND_FAVICON,
+    ...BRAND_ICONS.map((icon) => icon.src),
+  ].filter((p, i, all) => p.startsWith("/") && all.indexOf(p) === i);
+
 function buildServiceWorkerScript(version: string) {
-  return `// Sitepins PWA Service Worker
-const SW_VERSION = "sitepins-v${version}";
-const CACHE_STATIC_NAME = \`sitepins-static-\${SW_VERSION}\`;
-const CACHE_RUNTIME_NAME = \`sitepins-runtime-\${SW_VERSION}\`;
-const CACHE_OFFLINE_NAME = \`sitepins-offline-\${SW_VERSION}\`;
+  const prefix = STORAGE_PREFIX;
+  const precache = precacheAssets()
+    .map((p) => `  ${JSON.stringify(p)},`)
+    .join("\n");
+  const name = BRAND_NAME.replace(/[&<>"'`$\\]/g, "");
+  return `// ${name} PWA Service Worker
+const SW_VERSION = "${prefix}-v${version}";
+const CACHE_STATIC_NAME = \`${prefix}-static-\${SW_VERSION}\`;
+const CACHE_RUNTIME_NAME = \`${prefix}-runtime-\${SW_VERSION}\`;
+const CACHE_OFFLINE_NAME = \`${prefix}-offline-\${SW_VERSION}\`;
+const CACHE_PREFIXES = ${JSON.stringify([`${prefix}-`])};
 
 const PRECACHE_RESOURCES = [
-  "/offline.html",
-  "/images/logo-icon.svg",
-  "/images/logo.svg",
-  "/images/logo-white.svg",
-  "/images/favicon.png",
-  "/icons/icon-192x192.png",
-  "/icons/icon-512x512.png",
-  "/icons/icon-maskable-512x512.png",
-  "/icons/apple-touch-icon.png",
-  "/icons/favicon-32x32.png",
-  "/icons/favicon-16x16.png",
+${precache}
 ];
 
 // Fallback HTML template if cache is ever empty
@@ -30,7 +47,7 @@ const OFFLINE_FALLBACK_HTML = \`<!DOCTYPE html>
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Offline — Sitepins</title>
+  <title>Offline — ${name}</title>
   <style>
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #090d16; color: #f8fafc; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; padding: 1.5rem; text-align: center; }
     .card { max-width: 420px; width: 100%; background: #0f172a; border: 1px solid #1e293b; border-radius: 1.25rem; padding: 2.5rem 2rem; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.5); }
@@ -42,7 +59,7 @@ const OFFLINE_FALLBACK_HTML = \`<!DOCTYPE html>
 <body>
   <div class="card">
     <h1>You are offline</h1>
-    <p>Sitepins requires an active network connection. Reconnect to restore your workspace.</p>
+    <p>${name} requires an active network connection. Reconnect to restore your workspace.</p>
     <button onclick="window.history.length > 1 ? window.history.back() : (window.location.href = '/')">Retry Connection</button>
   </div>
 </body>
@@ -74,7 +91,7 @@ self.addEventListener("activate", (event) => {
         return Promise.all(
           cacheNames.map((cacheName) => {
             if (
-              cacheName.startsWith("sitepins-") &&
+              CACHE_PREFIXES.some((p) => cacheName.startsWith(p)) &&
               !currentCaches.includes(cacheName)
             ) {
               return caches.delete(cacheName);

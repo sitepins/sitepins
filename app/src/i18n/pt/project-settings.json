@@ -80,7 +80,7 @@
         "choose_branch_placeholder": "Escolha um ramo",
         "disconnect_btn": "Desconectar",
         "disconnect_confirm_title": "Você tem absolutamente certeza?",
-        "disconnect_confirm_desc": "Esta ação desconectará o repositório do Sitepins. Você sempre pode reconectá-lo mais tarde.",
+        "disconnect_confirm_desc": "Esta ação desconectará o repositório do {brand}. Você sempre pode reconectá-lo mais tarde.",
         "connect_repo_btn": "Conectar Repositório",
         "error_missing_info": "Informações de projeto ou organização ausentes",
         "success_disconnect": "Repositório desconectado com sucesso",
@@ -225,7 +225,7 @@
         "title": "Configuração de Commit",
         "description": "Determine como as mensagens de commit são tratadas ao salvar alterações",
         "custom_commit_label": "Mensagens de Commit Personalizadas",
-        "custom_commit_desc": "Habilite isto para escrever suas próprias mensagens de commit ao salvar. Quando ativo, você pode fornecer uma mensagem personalizada; caso contrário, o Sitepins gerará uma automaticamente para você.",
+        "custom_commit_desc": "Habilite isto para escrever suas próprias mensagens de commit ao salvar. Quando ativo, você pode fornecer uma mensagem personalizada; caso contrário, o {brand} gerará uma automaticamente para você.",
         "save_btn": "Salvar Alterações",
         "success_update": "Configurações de diálogo de commit atualizadas com sucesso",
         "error_update": "Falha ao atualizar as configurações"

@@ -298,7 +298,7 @@
       },
       "updates-feedback": {
         "label": "Обновления и отзывы",
-        "href": "https://updates.sitepins.com/",
+        "href": "https://updates{configDir}.com/",
         "target": "_blank",
         "keywords": [
           "обновления",

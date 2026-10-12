@@ -96,7 +96,7 @@
     },
     "setup-steps": {
       "getting_started": "शुरुआत करना",
-      "description": "Sitepins सेट अप करने और अपनी पहली सामग्री प्रकाशित करने के लिए इन चरणों को पूरा करें",
+      "description": "{brand} सेट अप करने और अपनी पहली सामग्री प्रकाशित करने के लिए इन चरणों को पूरा करें",
       "progress": "प्रगति",
       "progress_count": "{total} में से {completed}",
       "steps": {

@@ -1,4 +1,5 @@
-import { SCHEMA_FOLDER, SNIPPET_FOLDER } from "@/lib/constant";
+import { CONFIG_DIR } from "@/lib/brand";
+import { isSchemaPath, isSnippetPath } from "@/lib/config-dir";
 import isConfigFile from "@/lib/utils/is-config-file";
 import { EProjectLogType } from "@/redux/features/project-log/type";
 
@@ -10,23 +11,15 @@ export function getLogType(
   if (!filePath) return EProjectLogType.CONTENT;
   const p = String(filePath).replace(/^\/+/, "");
   // explicit schema/snippet folders
-  if (p.startsWith(SCHEMA_FOLDER.replace(/^\/+/, "")))
-    return EProjectLogType.SCHEMA;
-  if (p.startsWith(SNIPPET_FOLDER.replace(/^\/+/, "")))
-    return EProjectLogType.SNIPPET;
+  if (isSchemaPath(p)) return EProjectLogType.SCHEMA;
+  if (isSnippetPath(p)) return EProjectLogType.SNIPPET;
   if (p.startsWith("media/")) return EProjectLogType.MEDIA;
   if (config && config.content) {
     const contentRoot = String(config.content).replace(/^\/+/, "");
     if (p.startsWith(contentRoot)) return EProjectLogType.CONTENT;
   }
 
-  if (
-    p.startsWith(".sitepins") ||
-    p.includes(".sitepins") ||
-    p === ".sitepins/config.json" ||
-    isConfigFile(p)
-  )
-    return EProjectLogType.CONFIG;
+  if (p.includes(CONFIG_DIR) || isConfigFile(p)) return EProjectLogType.CONFIG;
 
   // If not content, media, config, schema, or snippet - it's code
   return EProjectLogType.CODE;

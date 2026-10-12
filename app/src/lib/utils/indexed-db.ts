@@ -1,5 +1,6 @@
+import { STORAGE_PREFIX } from "@/lib/brand";
 import { logger } from "@/lib/logger";
-const DB_NAME = "sitepins-cache";
+const DB_NAME = `${STORAGE_PREFIX}-cache`;
 const STORE_NAME = "screenshots";
 const DB_VERSION = 1;
 

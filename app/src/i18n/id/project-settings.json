@@ -80,7 +80,7 @@
         "choose_branch_placeholder": "Pilih cabang",
         "disconnect_btn": "Putuskan sambungan",
         "disconnect_confirm_title": "Apakah Anda benar-benar yakin?",
-        "disconnect_confirm_desc": "Tindakan ini akan memutuskan sambungan repositori dari Sitepins. Anda selalu dapat menghubungkannya kembali nanti.",
+        "disconnect_confirm_desc": "Tindakan ini akan memutuskan sambungan repositori dari {brand}. Anda selalu dapat menghubungkannya kembali nanti.",
         "connect_repo_btn": "Hubungkan Repositori",
         "error_missing_info": "Informasi proyek atau organisasi tidak ada",
         "success_disconnect": "Repositori berhasil terputus",
@@ -225,7 +225,7 @@
         "title": "Konfigurasi Komit",
         "description": "Tentukan bagaimana pesan komit ditangani saat Anda menyimpan perubahan",
         "custom_commit_label": "Pesan Komit Khusus",
-        "custom_commit_desc": "Aktifkan ini untuk menulis pesan komit Anda sendiri saat disimpan. Saat aktif, Anda dapat memberikan pesan khusus; jika tidak, Sitepins akan secara otomatis membuatkannya untuk Anda.",
+        "custom_commit_desc": "Aktifkan ini untuk menulis pesan komit Anda sendiri saat disimpan. Saat aktif, Anda dapat memberikan pesan khusus; jika tidak, {brand} akan secara otomatis membuatkannya untuk Anda.",
         "save_btn": "Simpan Perubahan",
         "success_update": "Pengaturan dialog komit berhasil diperbarui",
         "error_update": "Gagal memperbarui pengaturan"

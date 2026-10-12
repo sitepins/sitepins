@@ -19,7 +19,7 @@
       },
       "schema_write": {
         "title": "Modificare gli schemi",
-        "description": "Cambiare schemi e snippet in .sitepins. Per modificare .sitepins/config.json serve Modificare il codice."
+        "description": "Cambiare schemi e snippet in {configDir}. Per modificare {configDir}/config.json serve Modificare il codice."
       },
       "code_write": {
         "title": "Modificare il codice",
@@ -52,15 +52,15 @@
       "permissions": "Autorizzazioni",
       "write_mode": "Come vengono salvate le modifiche",
       "write_direct": "Commit diretto",
-      "write_direct_description": "Le modifiche vanno direttamente nel branch del sito, con commit del bot Sitepins.",
+      "write_direct_description": "Le modifiche vanno direttamente nel branch del sito, con commit del bot {brand}.",
       "write_pull_request": "Apri una pull request",
       "write_pull_request_description": "Le modifiche vanno in un nuovo branch con una pull request da revisionare."
     },
     "settings": {
       "title": "Connessione MCP",
-      "description": "Dai ad agenti IA come Claude, Codex, Cursor e Antigravity l'accesso ai tuoi siti. Crea un token, poi incolla il prompt di configurazione nel tuo agente. I loro commit provengono dal bot Sitepins.",
+      "description": "Dai ad agenti IA come Claude, Codex, Cursor e Antigravity l'accesso ai tuoi siti. Crea un token, poi incolla il prompt di configurazione nel tuo agente. I loro commit provengono dal bot {brand}.",
       "connect_title": "Collega il tuo agente",
-      "connect_description": "Copia questo prompt e incollalo nel tuo agente IA. Aggiunge Sitepins alle impostazioni MCP dell'agente. Il token viene mostrato una sola volta.",
+      "connect_description": "Copia questo prompt e incollalo nel tuo agente IA. Aggiunge {brand} alle impostazioni MCP dell'agente. Il token viene mostrato una sola volta.",
       "mcp_label": "URL del server MCP",
       "copy": "Copia",
       "copied": "Copiato",

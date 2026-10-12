@@ -1,5 +1,6 @@
 "use client";
 
+import { uploadFolder } from "@/lib/brand";
 import { BucketImageUpload } from "@/components/bucket-image-upload";
 import {
   Card,
@@ -49,7 +50,7 @@ export default function OrgAvatar(org: TOrg & { canUpdate?: boolean }) {
         <CardAction>
           <BucketImageUpload
             usedFor="org"
-            folder="sitepins/orgs"
+            folder={uploadFolder("orgs")}
             defaultImage={org_image}
             defaultLabel={org_name?.charAt(0)}
             onUploadSuccess={onUploadSuccess}

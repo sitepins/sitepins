@@ -41,7 +41,7 @@ export type SavedField = {
   referenceField?: string;
 };
 
-/** A schema JSON file as it sits in `.sitepins/schema`, per `createSchema`. */
+/** A schema JSON file as it sits in `<config dir>/schema`, per `createSchema`. */
 export type SavedSchema = {
   file?: string;
   name: string;

@@ -96,7 +96,7 @@
     },
     "setup-steps": {
       "getting_started": "はじめに",
-      "description": "これらのステップを完了して Sitepins をセットアップし、最初のコンテンツを公開しましょう",
+      "description": "これらのステップを完了して {brand} をセットアップし、最初のコンテンツを公開しましょう",
       "progress": "進捗",
       "progress_count": "{total} 中 {completed} 完了",
       "steps": {

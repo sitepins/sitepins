@@ -12,7 +12,7 @@
     },
     "github_integration": {
       "title": "GitHub 계정 연결",
-      "description": "Sitepins가 프로젝트의 브랜치를 생성하고 콘텐츠를 동기화하려면 접근 권한이 필요합니다.",
+      "description": "{brand}가 프로젝트의 브랜치를 생성하고 콘텐츠를 동기화하려면 접근 권한이 필요합니다.",
       "allow_all_repos": "모든 저장소에 대한 접근 권한 부여",
       "connect_btn": "GitHub으로 연결",
       "grant_access_link": "일부 저장소에만 접근 권한 부여",
@@ -22,7 +22,7 @@
       "step_download": "템플릿을 수동으로 다운로드합니다.",
       "step_fork": "저장소를 수동으로 포크(Fork)합니다.",
       "step_push": "소스 코드를 본인의 GitHub 저장소로 푸시합니다.",
-      "step_go_to": "Sitepins로 이동합니다.",
+      "step_go_to": "{brand}로 이동합니다.",
       "step_new_site": "오른쪽 상단의 + 새 사이트 버튼을 클릭합니다.",
       "step_grant_access": "GitHub을 선택하고 저장소에 대한 접근 권한을 부여합니다.",
       "step_grant_forked": "GitHub을 선택하고 포크한 저장소에만 접근 권한을 부여합니다.",

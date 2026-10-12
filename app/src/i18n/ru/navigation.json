@@ -7,7 +7,8 @@
         "support": "Поддержка",
         "ai_agent": "ИИ-агент",
         "mcp_connection": "Подключение MCP",
-        "preferences": "Настройки"
+        "preferences": "Настройки",
+        "source_code": "Исходный код"
       },
       "user_dashboard": {
         "overview": "Обзор",

@@ -1,3 +1,4 @@
+import brand from "@/config/brand";
 import config from "@/config/variables";
 import type { JwtPayload } from "jsonwebtoken";
 
@@ -18,7 +19,7 @@ export type JwtIssuerEntry = {
 
 const coreIssuer: JwtIssuerEntry = {
   secret: config.jwt_secret,
-  issuer: "sitepins-api",
+  issuer: brand.jwt_issuer,
 };
 
 const issuers: JwtIssuerEntry[] = [coreIssuer];

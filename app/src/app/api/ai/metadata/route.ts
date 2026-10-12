@@ -1,3 +1,4 @@
+import { BRAND_NAME } from "@/lib/brand";
 import { handleAiRouteError } from "@/lib/ai/ai-error-handler";
 import {
   extractJsonFromText,
@@ -115,11 +116,11 @@ Return ONLY a valid JSON object matching this structure:
   }
 
   const systemPrompt = targetField
-    ? `You are an expert SEO specialist and content editor for Sitepins, a Git-based headless CMS.
+    ? `You are an expert SEO specialist and content editor for ${BRAND_NAME}, a Git-based headless CMS.
 Analyze the provided document markdown content, file name, and existing frontmatter.
 
 ${fieldPrompt}`
-    : `You are an expert SEO specialist and content editor for Sitepins, a Git-based headless CMS.
+    : `You are an expert SEO specialist and content editor for ${BRAND_NAME}, a Git-based headless CMS.
 Analyze the provided document markdown content, file name, and existing frontmatter to generate optimized, production-ready metadata.
 
 GUIDELINES:

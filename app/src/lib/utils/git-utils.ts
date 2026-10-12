@@ -1,9 +1,9 @@
 import { MdxSnippet } from "@/editor/utils/plate-types";
-import { BRAND_NAME, GIT_COMMIT_EMAIL_DOMAIN } from "@/lib/brand";
+import { COMMIT_TRAILER_PREFIX, GIT_COMMIT_EMAIL_DOMAIN } from "@/lib/brand";
 import { logger } from "@/lib/logger";
 import { isGitLabProvider, TGitProvider } from "@/lib/utils/provider-checker";
 import path from "path";
-import { GITHUB_APP_NAME, GITLAB_APP_NAME } from "../constant";
+import { GIT_APP_NAME } from "../constant";
 
 /**
  * Common Git utility functions for GitHub and GitLab providers.
@@ -159,16 +159,15 @@ export async function retry<T>(
  */
 export function getGitAuthDetails(provider: TGitProvider) {
   if (isGitLabProvider(provider)) {
-    const appName = GITLAB_APP_NAME || "Sitepins";
     return {
-      email: `${appName.toLowerCase().replace(/[^a-z0-9]/g, "")}@${GIT_COMMIT_EMAIL_DOMAIN}`,
-      name: appName,
+      email: `${GIT_APP_NAME.toLowerCase().replace(/[^a-z0-9]/g, "")}@${GIT_COMMIT_EMAIL_DOMAIN}`,
+      name: GIT_APP_NAME,
     };
   }
 
   return {
-    email: `${GITHUB_APP_NAME}[bot]@users.noreply.github.com`,
-    name: `${GITHUB_APP_NAME}[bot]`,
+    email: `${GIT_APP_NAME}[bot]@users.noreply.github.com`,
+    name: `${GIT_APP_NAME}[bot]`,
   };
 }
 
@@ -243,7 +242,7 @@ export function parseSnippetFile(
 }
 
 /** Trailer key crediting a CMS user by name; trailer keys can't contain spaces. */
-export const USER_TRAILER_KEY = `${BRAND_NAME.replace(/[^A-Za-z0-9]+/g, "-")}-User`;
+export const USER_TRAILER_KEY = `${COMMIT_TRAILER_PREFIX}-User`;
 
 /**
  * Standardizes commit message with attribution

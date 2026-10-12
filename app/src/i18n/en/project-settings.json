@@ -80,7 +80,7 @@
         "choose_branch_placeholder": "Choose a branch",
         "disconnect_btn": "Disconnect",
         "disconnect_confirm_title": "Are you absolutely sure?",
-        "disconnect_confirm_desc": "This action will disconnect the repository from Sitepins. You can always connect it back later.",
+        "disconnect_confirm_desc": "This action will disconnect the repository from {brand}. You can always connect it back later.",
         "connect_repo_btn": "Connect Repository",
         "error_missing_info": "Missing project or organization information",
         "success_disconnect": "Repository disconnected successfully",
@@ -225,7 +225,7 @@
         "title": "Commit Configuration",
         "description": "Determine how commit messages are handled when you save changes",
         "custom_commit_label": "Custom Commit Messages",
-        "custom_commit_desc": "Enable this to write your own commit messages on save. When active, you can provide a custom message; otherwise, Sitepins will automatically generate one for you.",
+        "custom_commit_desc": "Enable this to write your own commit messages on save. When active, you can provide a custom message; otherwise, {brand} will automatically generate one for you.",
         "save_btn": "Save Changes",
         "success_update": "Commit dialog settings updated successfully",
         "error_update": "Failed to update settings"

@@ -1,13 +1,16 @@
+import brand from "@/config/brand";
 import type { TAuthUser } from "@/types";
+
+/** True for an S3 key the app itself uploaded (avatars, logos). */
+export const isUploadKey = (key: string) =>
+  key.startsWith(`${brand.upload_prefix}/`);
 
 // Bucket keys carry no ownership metadata, so an unconstrained `folder` would
 // let a caller write anywhere in the bucket. Each prefix the app uploads to is
 // listed here; UPLOAD_FOLDERS and registerUploadFolder extend it.
-const DEFAULT_UPLOAD_FOLDERS = [
-  "sitepins/users",
-  "sitepins/orgs",
-  "sitepins/sites",
-];
+const DEFAULT_UPLOAD_FOLDERS = ["users", "orgs", "sites"].map(
+  (kind) => `${brand.upload_prefix}/${kind}`,
+);
 
 const ENV_UPLOAD_FOLDERS = (process.env.UPLOAD_FOLDERS ?? "")
   .split(",")

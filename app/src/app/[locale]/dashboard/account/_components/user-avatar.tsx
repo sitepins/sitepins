@@ -1,5 +1,6 @@
 "use client";
 
+import { uploadFolder } from "@/lib/brand";
 import { BucketImageUpload } from "@/components/bucket-image-upload";
 import FormError from "@/components/form-error";
 import {
@@ -62,7 +63,7 @@ export default function UserAvatar({ auth }: { auth: Session }) {
         <CardAction className="space-y-4">
           <BucketImageUpload
             usedFor="user"
-            folder="sitepins/users"
+            folder={uploadFolder("users")}
             defaultImage={user.image || ""}
             defaultLabel={user.full_name?.charAt(0)}
             onUploadSuccess={onUploadSuccess}

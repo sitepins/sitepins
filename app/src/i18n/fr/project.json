@@ -96,7 +96,7 @@
     },
     "setup-steps": {
       "getting_started": "Premiers pas",
-      "description": "Complétez ces étapes pour configurer Sitepins et publier votre premier contenu",
+      "description": "Complétez ces étapes pour configurer {brand} et publier votre premier contenu",
       "progress": "Progression",
       "progress_count": "{completed} sur {total}",
       "steps": {

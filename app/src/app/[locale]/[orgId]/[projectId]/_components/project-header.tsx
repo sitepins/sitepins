@@ -9,7 +9,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { SCHEMA_FOLDER } from "@/lib/constant";
+import { schemaFolder } from "@/lib/config-dir";
 import { getProjectSettingsMenu } from "@/lib/menu";
 import { cn } from "@/lib/utils/cn";
 import { resolveRepoPath } from "@/lib/utils/common";
@@ -87,7 +87,7 @@ export default function ProjectHeader({ project }: { project?: TProject }) {
         // Schema keyed by raw URL slug, not resolved repo path.
         const schemaName = generateSchemaName(filePathStr, config.content);
         let schemaDir: string | undefined =
-          SCHEMA_FOLDER + "/" + schemaName + ".json";
+          schemaFolder() + "/" + schemaName + ".json";
 
         // Resolve slug to real path just for the content-route check.
         const resolvedFilePathStr = resolveRepoPath(filePathStr, config);

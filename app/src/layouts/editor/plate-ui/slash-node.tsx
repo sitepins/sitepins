@@ -1,5 +1,6 @@
 "use client";
 
+import { STORAGE_PREFIX } from "@/lib/brand";
 import { insertBlock } from "@/editor/utils/transforms";
 import { useIsEditorAiEnabled } from "@/hooks/use-ai-access";
 import { useFeatureAccess } from "@/hooks/use-feature-access";
@@ -56,8 +57,8 @@ const groups: Group[] = [
         value: "AI",
         onSelect: (editor) => {
           if (
-            !localStorage.getItem("sitepins-ai-model") ||
-            !localStorage.getItem("sitepins-ai-apiKey")
+            !localStorage.getItem(`${STORAGE_PREFIX}-ai-model`) ||
+            !localStorage.getItem(`${STORAGE_PREFIX}-ai-apiKey`)
           ) {
             window.open("/dashboard/ai-agent", "_blank");
             return;

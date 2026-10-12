@@ -1,3 +1,4 @@
+import brand from "@/config/brand";
 import config from "@/config/variables";
 import { globalErrorhandler } from "@/middlewares/globalErrorHandler";
 import { apiLimiter } from "@/middlewares/rateLimiters";
@@ -13,9 +14,9 @@ import {
   corsProtectedOptions,
   corsUnprotectedOptions,
 } from "./config/cors-options";
+import { agentUploadRouter } from "./modules/agent/agent.upload";
 import { gitProxyRouter } from "./modules/agent/git-proxy";
 import { mcpRoute } from "./modules/agent/mcp.route";
-import { agentUploadRouter } from "./modules/agent/agent.upload";
 
 const app: Application = express();
 
@@ -55,6 +56,7 @@ const conditionalCors = (req: Request, res: Response, next: NextFunction) => {
 };
 
 app.use(conditionalCors);
+
 // must place better auth handlers before express.json()
 let authHandler: ReturnType<typeof toNodeHandler> | null = null;
 app.all("/api/v1/auth/*splat", (req, res) => {
@@ -86,7 +88,7 @@ app.use(express.json({ limit: bodyLimit }));
 app.use(express.urlencoded({ extended: true, limit: bodyLimit }));
 
 app.get("/", async (req, res) => {
-  res.send("Welcome to Sitepins API");
+  res.send(`Welcome to ${brand.name} API`);
 });
 
 // Liveness/readiness probe for orchestrators (Docker, DO App Platform, k8s).

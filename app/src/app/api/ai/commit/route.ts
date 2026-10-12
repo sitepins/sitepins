@@ -1,3 +1,4 @@
+import { BRAND_NAME } from "@/lib/brand";
 import { handleAiRouteError } from "@/lib/ai/ai-error-handler";
 import {
   extractJsonFromText,
@@ -50,7 +51,7 @@ export async function POST(req: NextRequest) {
     fileName,
   );
 
-  const systemPrompt = `You are an expert Git commit assistant for Sitepins, a Git-based headless CMS.
+  const systemPrompt = `You are an expert Git commit assistant for ${BRAND_NAME}, a Git-based headless CMS.
 Analyze the provided Git diff (or file content) to generate an accurate, semantic conventional commit message and a brief bulleted description.
 
 CRITICAL INSTRUCTIONS:

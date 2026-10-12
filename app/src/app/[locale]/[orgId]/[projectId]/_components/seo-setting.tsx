@@ -1,5 +1,6 @@
 "use client";
 
+import { STORAGE_PREFIX } from "@/lib/brand";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/toast";
 import {
@@ -160,7 +161,7 @@ export default function SeoSetting({
 
   // The target keyphrase is a per-file editor preference, so it is kept in
   // localStorage rather than written into the user's frontmatter.
-  const focusKeywordStorageKey = `sitepins:seo-focus-keyword:${orgId}/${projectId}/${
+  const focusKeywordStorageKey = `${STORAGE_PREFIX}:seo-focus-keyword:${orgId}/${projectId}/${
     fileParams?.join("/") ?? ""
   }`;
 

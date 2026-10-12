@@ -1,3 +1,4 @@
+import { BRAND_NAME, BRAND_URL } from "@/lib/brand";
 import { createAnthropic } from "@ai-sdk/anthropic";
 import { createGoogle } from "@ai-sdk/google";
 import { createOpenAI } from "@ai-sdk/openai";
@@ -179,12 +180,8 @@ export function resolveLanguageModel(options?: {
         apiKey,
         baseURL: process.env.AI_BASE_URL || "https://openrouter.ai/api/v1",
         headers: {
-          "HTTP-Referer":
-            process.env.NEXT_PUBLIC_BRAND_URL ||
-            process.env.NEXT_PUBLIC_APP_URL ||
-            "https://sitepins.com",
-          "X-Title":
-            process.env.NEXT_PUBLIC_BRAND_NAME || "Sitepins Headless CMS",
+          "HTTP-Referer": BRAND_URL,
+          "X-Title": BRAND_NAME,
         },
       });
       modelInstance = openRouterProvider.chat(modelName);

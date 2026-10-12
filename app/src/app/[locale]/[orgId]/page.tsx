@@ -1,5 +1,6 @@
 "use client";
 
+import { BRAND_NAME } from "@/lib/brand";
 import Container from "@/components/container";
 import { cn } from "@/lib/utils/cn";
 import { useGetOrgsQuery } from "@/redux/features/orgs/org-api";
@@ -40,7 +41,7 @@ export default function Projects(props: PageProps<"/[locale]/[orgId]">) {
       className="flex flex-1 flex-col"
       wrapperClassName="flex flex-1 flex-col"
     >
-      <title>{org?.org_name + " - Sitepins"}</title>
+      <title>{`${org?.org_name} - ${BRAND_NAME}`}</title>
 
       {isArchived && (!projects || projects.length === 0) ? (
         <OrgArchived variant="full" />

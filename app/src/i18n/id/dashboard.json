@@ -6,7 +6,7 @@
         "title": "Penulisan Bersama Git",
         "description": "Pilih identitas mana yang akan digunakan untuk tindakan repositori.",
         "as_you": "Bertindak sebagai Anda",
-        "as_you_desc": "Commit dibuat oleh bot dan mencantumkan Anda di pesannya: sebagai rekan penulis jika Anda masuk dengan akun Git, jika tidak dengan nama Anda. Email Sitepins Anda tidak pernah dipublikasikan.",
+        "as_you_desc": "Commit dibuat oleh bot dan mencantumkan Anda di pesannya: sebagai rekan penulis jika Anda masuk dengan akun Git, jika tidak dengan nama Anda. Email {brand} Anda tidak pernah dipublikasikan.",
         "as_you_fallback": "Secara otomatis kembali ke bot jika izin pribadi tidak cukup untuk memastikan tugas diselesaikan.",
         "as_bot": "Bertindak sebagai Bot",
         "as_bot_desc": "Semua tindakan repositori akan dikaitkan dengan bot sistem. Hal ini memastikan jejak audit yang konsisten dan merupakan pengaturan yang direkomendasikan untuk alur kerja otomatis.",
@@ -169,7 +169,7 @@
       "open_settings": "Buka Pengaturan"
     },
     "repo_access": {
-      "title": "Sitepins tidak dapat mengakses <repo>{repository}</repo>",
+      "title": "{brand} tidak dapat mengakses <repo>{repository}</repo>",
       "github_description": "Berikan akses ke GitHub App {app}, atau pastikan repositori tidak diganti nama atau dihapus.",
       "gitlab_description": "Akun GitLab Anda memerlukan akses Developer atau lebih tinggi, atau proyek telah diganti nama atau dihapus.",
       "manage_access": "Berikan akses",

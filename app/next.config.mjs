@@ -26,11 +26,7 @@ function getOrigin(url) {
 
 // Returns [apex, *.apex] for the root domain derived from env — no hardcoded hostname.
 function getFrameAncestors() {
-  const url =
-    process.env.NEXT_PUBLIC_BRAND_URL ||
-    process.env.NEXT_PUBLIC_APP_URL ||
-    process.env.NEXT_PUBLIC_BACKEND_URL ||
-    "";
+  const url = process.env.NEXT_PUBLIC_BRAND_URL ?? "";
   if (!url) return [];
   try {
     const { protocol, hostname } = new URL(url);
@@ -208,7 +204,53 @@ function buildHeaders(overlay) {
 }
 
 /** @returns {Promise<import('next').NextConfig>} */
+// Hosts of absolute brand logo URLs, so next/image may load them.
+function getBrandImageHosts() {
+  const hosts = [
+    process.env.NEXT_PUBLIC_BRAND_LOGO,
+    process.env.NEXT_PUBLIC_BRAND_LOGO_DARK,
+  ].map((url) => {
+    try {
+      return url && /^https?:\/\//.test(url) ? new URL(url).host : null;
+    } catch {
+      return null;
+    }
+  });
+  return [...new Set(hosts.filter(Boolean))];
+}
+
+const REQUIRED_BRAND_ENV = [
+  "NEXT_PUBLIC_BRAND_NAME",
+  "NEXT_PUBLIC_BRAND_URL",
+  "NEXT_PUBLIC_BRAND_SLUG",
+  "NEXT_PUBLIC_BRAND_LOGO",
+  "NEXT_PUBLIC_BRAND_LOGO_DARK",
+  "NEXT_PUBLIC_BRAND_LOGO_ICON",
+  "NEXT_PUBLIC_BRAND_LOGO_WIDTH",
+  "NEXT_PUBLIC_BRAND_LOGO_HEIGHT",
+  "NEXT_PUBLIC_BRAND_FAVICON",
+  "NEXT_PUBLIC_TERMS_URL",
+  "NEXT_PUBLIC_PRIVACY_URL",
+  "NEXT_PUBLIC_SUPPORT_URL",
+  "NEXT_PUBLIC_UPDATES_URL",
+  "NEXT_PUBLIC_STATUS_URL",
+  "NEXT_PUBLIC_COMMUNITY_URL",
+  "NEXT_PUBLIC_DOCS_URL",
+  "NEXT_PUBLIC_SOURCE_URL",
+  "NEXT_PUBLIC_GIT_APP_NAME",
+];
+
+function assertBrandEnv() {
+  const missing = REQUIRED_BRAND_ENV.filter((name) => !process.env[name]?.trim());
+  if (missing.length) {
+    throw new Error(
+      `Missing required env vars (see app/.env.example): ${missing.join(", ")}`,
+    );
+  }
+}
+
 export default async function nextConfig() {
+  assertBrandEnv();
   const overlay = await loadOverlay();
   const bucketHost = getBucketHost();
 
@@ -272,6 +314,8 @@ export default async function nextConfig() {
         remotePattern("*.googleusercontent.com"),
         // hosts an edition overlay serves its own imagery from
         ...(overlay.imageHosts || []).map(remotePattern),
+        // white-label logos hosted off-site (NEXT_PUBLIC_BRAND_LOGO*)
+        ...getBrandImageHosts().map(remotePattern),
       ],
     },
 

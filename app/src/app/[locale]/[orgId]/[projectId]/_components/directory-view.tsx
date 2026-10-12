@@ -6,7 +6,7 @@ import Search from "@/components/search";
 import { SelectItem } from "@/components/ui/select";
 import { useGitProvider } from "@/hooks/use-git-provider";
 import config from "@/lib/config";
-import { SCHEMA_FOLDER } from "@/lib/constant";
+import { schemaFolder } from "@/lib/config-dir";
 import { cn } from "@/lib/utils/cn";
 import { findFileByPath, mergePatterns } from "@/lib/utils/common";
 import { sorts } from "@/lib/utils/filter-options";
@@ -88,7 +88,7 @@ export default function DirectoryView({
 
   // Schema logic for AddFile. Keyed by raw URL slug, not resolved repo path.
   const schemaPath =
-    SCHEMA_FOLDER +
+    schemaFolder() +
     "/" +
     generateSchemaName(params.file?.join("/") || "", config.content) +
     ".json";

@@ -12,7 +12,7 @@
     },
     "github_integration": {
       "title": "关联您的 GitHub 账户",
-      "description": "Sitepins 需要访问权限以创建分支并为您同步项目内容。",
+      "description": "{brand} 需要访问权限以创建分支并为您同步项目内容。",
       "allow_all_repos": "我将选择所有代码仓库",
       "connect_btn": "关联 GitHub 账户",
       "grant_access_link": "我只想授予部分仓库的访问权限",
@@ -22,7 +22,7 @@
       "step_download": "手动下载模板代码。",
       "step_fork": "手动 Fork 该仓库到您的账户。",
       "step_push": "将源代码推送至您的 GitHub 仓库。",
-      "step_go_to": "返回 Sitepins",
+      "step_go_to": "返回 {brand}",
       "step_new_site": "点击右上角的「+ 新建网站」按钮。",
       "step_grant_access": "选择 GitHub 并授予您仓库的访问权限。",
       "step_grant_forked": "选择 GitHub 并仅授予已 Fork 仓库的访问权限。",

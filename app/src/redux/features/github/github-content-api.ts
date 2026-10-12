@@ -1,5 +1,6 @@
 import { MdxSnippet } from "@/editor/utils/plate-types";
-import { GITHUB_API_VERSION, IS_DEMO, SNIPPET_FOLDER } from "@/lib/constant";
+import { GITHUB_API_VERSION, IS_DEMO } from "@/lib/constant";
+import { siteConfigPath, snippetFolder } from "@/lib/config-dir";
 import { logger } from "@/lib/logger";
 import { checkMedia } from "@/lib/utils/check-media-file";
 import {
@@ -391,7 +392,7 @@ export const githubContentApi = githubApi.injectEndpoints({
         const { owner, repo, ref, ...rest } = arg;
         const result = await fetchWithBQ({
           endpoint: "GET /repos/{owner}/{repo}/contents/{path}",
-          options: { owner, repo, path: SNIPPET_FOLDER, ref, ...rest },
+          options: { owner, repo, path: snippetFolder(), ref, ...rest },
         });
 
         if (result.error) {
@@ -411,7 +412,7 @@ export const githubContentApi = githubApi.injectEndpoints({
       providesTags: (_result, _error, arg) => [
         {
           type: "GitHubContent",
-          id: `${arg.owner}/${arg.repo}/${arg.ref}/${SNIPPET_FOLDER}`,
+          id: `${arg.owner}/${arg.repo}/${arg.ref}/${snippetFolder()}`,
         },
         { type: "GitHubContent" }, // Add general tag for easier invalidation
       ],
@@ -447,7 +448,7 @@ export const githubContentApi = githubApi.injectEndpoints({
                 tree: arg.ref || "main",
                 files: [
                   {
-                    path: arg.path,
+                    path: siteConfigPath(),
                     content: JSON.stringify(migrated, null, 2),
                   },
                   getManifestFile(migrated.public),

@@ -1,5 +1,6 @@
 "use client";
 
+import { STORAGE_PREFIX } from "@/lib/brand";
 import { errorMessage } from "@/lib/utils/error";
 import { logger } from "@/lib/logger";
 import { Button } from "@/components/ui/button";
@@ -65,10 +66,10 @@ export default function PreviewButton({
   spProjectId,
 }: PreviewButtonProps) {
   const cacheKey = `${repository}#${branch}`;
-  const lsPreviewKey = `sitepins_preview_${cacheKey}`;
-  const lsSandboxKey = `sitepins_sandbox_${cacheKey}`;
-  const lsShaKey = `sitepins_sha_${cacheKey}`;
-  const lsStartedAtKey = `sitepins_sandbox_started_${cacheKey}`;
+  const lsPreviewKey = `${STORAGE_PREFIX}_preview_${cacheKey}`;
+  const lsSandboxKey = `${STORAGE_PREFIX}_sandbox_${cacheKey}`;
+  const lsShaKey = `${STORAGE_PREFIX}_sha_${cacheKey}`;
+  const lsStartedAtKey = `${STORAGE_PREFIX}_sandbox_started_${cacheKey}`;
 
   const SANDBOX_SESSION_MAX_MS = 45 * 60 * 1000;
 
@@ -187,7 +188,7 @@ export default function PreviewButton({
       if (!targetUrl) return;
       const cleanRepo = repository.replace(/[^a-zA-Z0-9]/g, "-");
       const cleanBranch = branch.replace(/[^a-zA-Z0-9]/g, "-");
-      const tabName = `sitepins-preview-${cleanRepo}-${cleanBranch}`;
+      const tabName = `${STORAGE_PREFIX}-preview-${cleanRepo}-${cleanBranch}`;
       const win = window.open(targetUrl, tabName);
       if (win) {
         if (previewWindowRef) previewWindowRef.current = win;

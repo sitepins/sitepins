@@ -80,7 +80,7 @@
         "choose_branch_placeholder": "Choisissez une branche",
         "disconnect_btn": "Déconnecter",
         "disconnect_confirm_title": "Êtes-vous absolument sûr ?",
-        "disconnect_confirm_desc": "Cette action déconnectera le dépôt de Sitepins. Vous pourrez toujours le reconnecter ultérieurement.",
+        "disconnect_confirm_desc": "Cette action déconnectera le dépôt de {brand}. Vous pourrez toujours le reconnecter ultérieurement.",
         "connect_repo_btn": "Connecter le dépôt",
         "error_missing_info": "Informations du projet ou de l'organisation manquantes",
         "success_disconnect": "Dépôt déconnecté avec succès",
@@ -225,7 +225,7 @@
         "title": "Configuration des commits",
         "description": "Déterminez comment les messages de commit sont gérés lors de l'enregistrement des modifications",
         "custom_commit_label": "Messages de commit personnalisés",
-        "custom_commit_desc": "Activez cette option pour écrire vos propres messages de commit lors de l'enregistrement. Lorsqu'elle est active, vous pouvez fournir un message personnalisé ; sinon, Sitepins en générera automatiquement un pour vous.",
+        "custom_commit_desc": "Activez cette option pour écrire vos propres messages de commit lors de l'enregistrement. Lorsqu'elle est active, vous pouvez fournir un message personnalisé ; sinon, {brand} en générera automatiquement un pour vous.",
         "save_btn": "Enregistrer les modifications",
         "success_update": "Paramètres du dialogue de commit mis à jour avec succès",
         "error_update": "Échec de la mise à jour des paramètres"

@@ -1,3 +1,4 @@
+import { BRAND_NAME } from "@/lib/brand";
 import { handleAiRouteError } from "@/lib/ai/ai-error-handler";
 import {
   extractJsonFromText,
@@ -103,7 +104,7 @@ export async function POST(req: NextRequest) {
     (typeof recommendation === "string" &&
       recommendation.toLowerCase().includes("300 words"));
 
-  const systemPrompt = `You are an expert SEO auditor, copywriter, and editor for Sitepins, a Git-based headless CMS.
+  const systemPrompt = `You are an expert SEO auditor, copywriter, and editor for ${BRAND_NAME}, a Git-based headless CMS.
 You are tasked with fixing a specific SEO or readability issue reported by our SEO Doctor analysis.
 
 CRITICAL INSTRUCTIONS:

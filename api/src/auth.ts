@@ -1,3 +1,4 @@
+import brand from "@/config/brand";
 import config from "@/config/variables";
 import bcrypt from "bcrypt";
 import { betterAuth } from "better-auth";
@@ -8,6 +9,7 @@ import mongoose from "mongoose";
 import { allowedOrigins } from "./config/cors-options";
 import { getAppUrl } from "./lib/appUrl";
 import { getRegisteredAuthPlugins } from "./lib/authExtensions";
+import { isUploadKey } from "./lib/uploadFolders";
 import { verifyEmailWithReoon } from "./lib/emailVerifier";
 import { emitAuthEvent, emitUserRegistration } from "./lib/lifecycleHooks";
 import { logger } from "./lib/logger";
@@ -24,6 +26,7 @@ import { registerSchema } from "./modules/user/user.zod-schema";
 // Constants
 export const OTP_LENGTH = 6; // six digits
 const OTP_VALIDITY = 60 * 15; // 15 minutes
+const SESSION_EXPIRES_IN = 60 * 60 * 24 * 7; // 7 days
 const MAX_ALLOWED_ATTEMPTS = 3; // max wrong attempts before invalidating the otp
 
 const authConnection = mongoose.createConnection(process.env.MONGO_URI!);
@@ -41,12 +44,13 @@ export const client = authConnection.getClient();
 export const db = client.db(authConnection.name); // use MongoClient to obtain db regardless of readyState
 
 // Helper function to check if image is from our bucket
-// Handles both S3 keys (e.g., "sitepins/users/123.png") and full URLs
+// Handles both S3 keys (e.g., "<prefix>/users/123.png") and full URLs
 const isOurBucketImage = (imageValue: string): boolean => {
   if (!imageValue) return false;
 
-  // If it starts with our folder prefix, it's a direct S3 key from our bucket
-  if (imageValue.startsWith("sitepins/")) {
+  // If it starts with an upload prefix (current or legacy), it's a direct S3
+  // key from our bucket
+  if (isUploadKey(imageValue)) {
     return true;
   }
 
@@ -106,14 +110,14 @@ const createAuthInstance = () =>
       debugLogs: false,
     }),
     session: {
-      expiresIn: 60 * 60 * 24 * 7, // 7 days
+      expiresIn: SESSION_EXPIRES_IN, // 7 days
       updateAge: 60 * 60 * 24, // 1 day (every 1 day the session expiration is updated)
       cookieCache: {
         enabled: true,
         maxAge: 5 * 60, // Cache duration in seconds
       },
     },
-    appName: "Sitepins",
+    appName: brand.name,
     rateLimit: {
       // enabled: true, // enabled only if you want to test it in development
       window: parseInt(process.env.RATELIMIT_WINDOW || "10"), // seconds
@@ -433,7 +437,7 @@ const createAuthInstance = () =>
           "x-forwarded-for",
         ],
       },
-      cookiePrefix: "sitepins-app",
+      cookiePrefix: brand.auth_cookie_prefix,
       // Only share the session cookie across subdomains when COOKIE_DOMAIN is
       // set (e.g. hosted deploys with app + api on different subdomains). A
       // single-host self-hosted deploy leaves it unset and the cookie is scoped

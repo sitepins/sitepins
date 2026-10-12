@@ -12,7 +12,7 @@
     },
     "github_integration": {
       "title": "Connectez votre compte GitHub",
-      "description": "Sitepins a besoin d'accès pour créer des branches et synchroniser le contenu de vos projets.",
+      "description": "{brand} a besoin d'accès pour créer des branches et synchroniser le contenu de vos projets.",
       "allow_all_repos": "J'autorise l'accès à tous les dépôts",
       "connect_btn": "Se connecter avec GitHub",
       "grant_access_link": "Je préfère limiter l'accès à certains dépôts",
@@ -22,7 +22,7 @@
       "step_download": "Téléchargez manuellement le modèle.",
       "step_fork": "Forkez manuellement le dépôt.",
       "step_push": "Poussez le code source vers votre dépôt GitHub.",
-      "step_go_to": "Rendez-vous sur Sitepins",
+      "step_go_to": "Rendez-vous sur {brand}",
       "step_new_site": "Cliquez sur le bouton + Nouveau site en haut à droite.",
       "step_grant_access": "Sélectionnez GitHub et autorisez l'accès à votre dépôt.",
       "step_grant_forked": "Sélectionnez GitHub et autorisez l'accès uniquement au dépôt forké.",

@@ -293,7 +293,7 @@
       },
       "updates-feedback": {
         "label": "Pembaruan & Masukan",
-        "href": "https://updates.sitepins.com/",
+        "href": "https://updates{configDir}.com/",
         "target": "_blank",
         "keywords": [
           "pembaruan",

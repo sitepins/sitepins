@@ -1,5 +1,6 @@
 "use client";
 
+import { siteConfigPath } from "@/lib/config-dir";
 import { Button } from "@/components/ui/button";
 import { CardContent, CardFooter } from "@/components/ui/card";
 import {
@@ -287,7 +288,7 @@ export default function Arrangement({
                   message: "Update arrangement",
                   files: [
                     {
-                      path: ".sitepins/config.json",
+                      path: siteConfigPath(),
                       content: JSON.stringify(
                         {
                           content: config.content,
@@ -307,7 +308,7 @@ export default function Arrangement({
               : updateFile({
                   files: [
                     {
-                      path: ".sitepins/config.json",
+                      path: siteConfigPath(),
                       content: JSON.stringify(
                         {
                           content: config.content,
@@ -334,7 +335,7 @@ export default function Arrangement({
                 addLog({
                   project_id: params.projectId as string,
                   action: EAction.UPDATE,
-                  file: ".sitepins/config.json",
+                  file: siteConfigPath(),
                   file_type: EProjectLogType.CONFIG,
                 });
                 toast.success(tProjectSettingsArrangement("success_update"));

@@ -35,7 +35,7 @@ Connect your GitHub or GitLab repo and start editing. Sitepins reads your conten
 
 ## Why Sitepins
 
-Static sites are fast, secure, and cheap to host. But managing their content is a pain for non-technical people. 
+Static sites are fast, secure, and cheap to host. But managing their content is a pain for non-technical people.
 
 Nobody on your marketing team should need Git, Markdown, or a code editor to fix a heading or swap an image. Neither should the client you shipped a site to last year. So they message you instead. You become the bottleneck for every small change, on every site you touch.
 
@@ -85,6 +85,7 @@ Tell the AI tool to structure content that way before it writes the site. Retrof
 ## Key Features of Sitepins
 
 **Editing**
+
 - Visual editor for Markdown, MDX, and frontmatter. Direct file editing for HTML, JSON, YAML, TOML, TS, and JS.
 - Live preview in a sandbox before you publish. No rebuild required.
 - Save as draft locally without triggering a build.
@@ -94,27 +95,32 @@ Tell the AI tool to structure content that way before it writes the site. Retrof
 - Edit as code when you need to work at that level.
 
 **Git control**
+
 - Every change is a commit. Full history, full attribution.
 - Undo and restore previous versions from inside the CMS. No repo digging.
 - Create branches, open pull requests, and merge without leaving Sitepins.
 
 **Teams and clients**
+
 - Email invites. No GitHub or GitLab account needed for invited editors.
 - Roles and permissions per organization.
 - Live collaboration with cursors, avatars, and name labels.
 
 **Structure**
+
 - Visual schema editor for field types, input styles, defaults, and required fields.
 - Nested collections for large sites.
 - Folder management and global search with Cmd/Ctrl + K.
 - Media library with drag, drop, rename, and reuse. Media lives in your repo.
 
 **Publishing**
+
 - One-click Vercel deploy. Every later change triggers a rebuild automatically.
 - Built-in SEO tools: slug editing, SERP preview, link analysis, and content recommendations.
 - 100+ pre-configured Astro, Hugo, and Next.js templates to start from.
 
 **Everywhere**
+
 - 12 native languages: English, Chinese, Japanese, German, French, Spanish, Portuguese, Russian, Korean, Indonesian, Vietnamese, and Bengali.
 - Dark mode.
 - Works on mobile and tablet. Publish a post from your phone.
@@ -168,7 +174,7 @@ docker compose up --build
 
 Web runs on `http://localhost:3000`. API runs on `http://localhost:4000` with a health check at `/healthz`. MongoDB runs in the `mongo` service as a single-node replica set (transactions require one), so you can leave `MONGO_URI` unset to use it. If you bring your own MongoDB, it must be a replica set too.
 
-`NEXT_PUBLIC_*` values are inlined into the web image at build time. Compose reads them from your shell or a root-level `.env` file, not `app/.env`. At minimum set `NEXT_PUBLIC_GITHUB_APP_NAME` (and the GitLab ones if you use GitLab), then rebuild with `docker compose up --build`.
+`NEXT_PUBLIC_*` values are inlined into the web image at build time. Compose reads them from your shell or a root-level `.env` file, not `app/.env`. At minimum set `NEXT_PUBLIC_GIT_APP_NAME` (and `NEXT_PUBLIC_GITLAB_CLIENT_ID` if you use GitLab), then rebuild with `docker compose up --build`.
 
 ## Project structure
 

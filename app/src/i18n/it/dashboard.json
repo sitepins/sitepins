@@ -6,7 +6,7 @@
         "title": "Co-autorialità Git",
         "description": "Scegli quale identità utilizzare per le azioni sul repository.",
         "as_you": "Agisci come te",
-        "as_you_desc": "I commit vengono creati dal bot e ti accreditano nel messaggio: come coautore se hai effettuato l'accesso con il tuo account Git, altrimenti con il tuo nome. La tua email Sitepins non viene mai pubblicata.",
+        "as_you_desc": "I commit vengono creati dal bot e ti accreditano nel messaggio: come coautore se hai effettuato l'accesso con il tuo account Git, altrimenti con il tuo nome. La tua email {brand} non viene mai pubblicata.",
         "as_you_fallback": "Ripristina automaticamente il bot se i permessi personali sono insufficienti a completare le attività.",
         "as_bot": "Agisci come bot",
         "as_bot_desc": "Tutte le azioni del repository saranno attribuite al bot di sistema. Ciò garantisce una tracciabilità coerente ed è consigliato per flussi di lavoro automatizzati.",
@@ -169,7 +169,7 @@
       "open_settings": "Apri impostazioni"
     },
     "repo_access": {
-      "title": "Sitepins non può accedere a <repo>{repository}</repo>",
+      "title": "{brand} non può accedere a <repo>{repository}</repo>",
       "github_description": "Concedi l’accesso all’app GitHub {app}, oppure verifica che non sia stato rinominato o eliminato.",
       "gitlab_description": "Il tuo account GitLab richiede accesso Developer o superiore, oppure il progetto è stato rinominato o eliminato.",
       "manage_access": "Concedi accesso",

@@ -144,3 +144,38 @@ describe("mailer provider auto-detection & custom sender", () => {
     expect(transportSendMailMock).toHaveBeenCalled();
   });
 });
+
+describe("mailer branding", () => {
+  it("uses a per-message brand for sender, subject and footer", async () => {
+    mockConfig.smtp_host = "smtp.example.com";
+    const { sendMail } = await freshMailer();
+    await sendMail({
+      to: "a@b.com",
+      kind: "welcome",
+      brand: { name: "Agency CMS", logo_url: "https://agency.io/logo.png" },
+    });
+
+    const mail = transportSendMailMock.mock.calls[0]?.[0] as {
+      from: string;
+      subject: string;
+      html: string;
+    };
+    expect(mail.from).toBe('"Agency CMS" <noreply@example.com>');
+    expect(mail.subject).toBe("Welcome to Agency CMS");
+    expect(mail.html).toContain('<img src="https://agency.io/logo.png"');
+    expect(mail.html).not.toContain("Sitepins");
+  });
+
+  it("passes the brand to a custom sender", async () => {
+    const { sendMail, setMailSender } = await freshMailer();
+    const sender = vi.fn(async () => true);
+    setMailSender(sender);
+    await sendMail({ to: "a@b.com", kind: "otp", brand: { name: "Agency" } });
+    expect(sender).toHaveBeenCalledWith({
+      to: "a@b.com",
+      kind: "otp",
+      params: {},
+      brand: { name: "Agency" },
+    });
+  });
+});

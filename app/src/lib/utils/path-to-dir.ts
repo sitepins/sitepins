@@ -102,7 +102,7 @@ export function convertRepoTreeToTFiles(
 
   // For code files: everything NOT in content or media folders
   const codeTree = repoTree.filter((item) => {
-    // Exclude hidden files and .sitepins folder
+    // Exclude hidden files, including the config folder
     if (item.path?.startsWith(".")) return false;
 
     // Filter out media files from Code section

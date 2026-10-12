@@ -1,5 +1,6 @@
 "use client";
 
+import { STORAGE_PREFIX } from "@/lib/brand";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -475,8 +476,9 @@ function useAISettings(t: (key: string) => string) {
   const [isSeeded, setIsSeeded] = useState(false);
   if (isHydrated && !isSeeded) {
     setIsSeeded(true);
-    const loadedProvider = localStorage.getItem("sitepins-ai-provider") || "";
-    let loadedModel = localStorage.getItem("sitepins-ai-model") || "";
+    const loadedProvider =
+      localStorage.getItem(`${STORAGE_PREFIX}-ai-provider`) || "";
+    let loadedModel = localStorage.getItem(`${STORAGE_PREFIX}-ai-model`) || "";
     if (loadedProvider === "groq") {
       if (loadedModel === "qwen3.8-27b") loadedModel = "qwen/qwen3.8-27b";
       else if (loadedModel === "qwen3.6-27b") loadedModel = "qwen/qwen3.6-27b";
@@ -488,25 +490,27 @@ function useAISettings(t: (key: string) => string) {
       ) {
         loadedModel = "openai/gpt-oss-120b";
       }
-      if (loadedModel !== localStorage.getItem("sitepins-ai-model")) {
-        localStorage.setItem("sitepins-ai-model", loadedModel);
+      if (loadedModel !== localStorage.getItem(`${STORAGE_PREFIX}-ai-model`)) {
+        localStorage.setItem(`${STORAGE_PREFIX}-ai-model`, loadedModel);
       }
     }
     const loaded = {
       provider: loadedProvider,
       model: loadedModel,
-      apiKey: localStorage.getItem("sitepins-ai-apiKey") || "",
+      apiKey: localStorage.getItem(`${STORAGE_PREFIX}-ai-apiKey`) || "",
     };
     const loadedAutocomplete =
-      localStorage.getItem("sitepins-ai-autocomplete") !== "false";
+      localStorage.getItem(`${STORAGE_PREFIX}-ai-autocomplete`) !== "false";
     const loadedEditorAi =
-      localStorage.getItem("sitepins-ai-editor") !== "false";
-    const loadedCodeAi = localStorage.getItem("sitepins-ai-code") !== "false";
+      localStorage.getItem(`${STORAGE_PREFIX}-ai-editor`) !== "false";
+    const loadedCodeAi =
+      localStorage.getItem(`${STORAGE_PREFIX}-ai-code`) !== "false";
     const loadedCommitAi =
-      localStorage.getItem("sitepins-ai-commit") !== "false";
-    const loadedSeoAi = localStorage.getItem("sitepins-ai-seo") !== "false";
+      localStorage.getItem(`${STORAGE_PREFIX}-ai-commit`) !== "false";
+    const loadedSeoAi =
+      localStorage.getItem(`${STORAGE_PREFIX}-ai-seo`) !== "false";
     const loadedSearchAi =
-      localStorage.getItem("sitepins-ai-search") !== "false";
+      localStorage.getItem(`${STORAGE_PREFIX}-ai-search`) !== "false";
 
     setAiCredential(loaded);
     setInitialAiCredential(loaded);
@@ -577,30 +581,39 @@ function useAISettings(t: (key: string) => string) {
     try {
       const trimmedKey = aiCredential.apiKey.trim();
       if (trimmedKey) {
-        localStorage.setItem("sitepins-ai-apiKey", trimmedKey);
+        localStorage.setItem(`${STORAGE_PREFIX}-ai-apiKey`, trimmedKey);
         if (aiCredential.provider) {
-          localStorage.setItem("sitepins-ai-provider", aiCredential.provider);
+          localStorage.setItem(
+            `${STORAGE_PREFIX}-ai-provider`,
+            aiCredential.provider,
+          );
         } else {
-          localStorage.removeItem("sitepins-ai-provider");
+          localStorage.removeItem(`${STORAGE_PREFIX}-ai-provider`);
         }
 
         if (aiCredential.model) {
-          localStorage.setItem("sitepins-ai-model", aiCredential.model);
+          localStorage.setItem(
+            `${STORAGE_PREFIX}-ai-model`,
+            aiCredential.model,
+          );
         } else {
-          localStorage.removeItem("sitepins-ai-model");
+          localStorage.removeItem(`${STORAGE_PREFIX}-ai-model`);
         }
       } else {
-        localStorage.removeItem("sitepins-ai-apiKey");
-        localStorage.removeItem("sitepins-ai-provider");
-        localStorage.removeItem("sitepins-ai-model");
+        localStorage.removeItem(`${STORAGE_PREFIX}-ai-apiKey`);
+        localStorage.removeItem(`${STORAGE_PREFIX}-ai-provider`);
+        localStorage.removeItem(`${STORAGE_PREFIX}-ai-model`);
       }
 
-      localStorage.setItem("sitepins-ai-autocomplete", String(autocomplete));
-      localStorage.setItem("sitepins-ai-editor", String(editorAi));
-      localStorage.setItem("sitepins-ai-code", String(codeAi));
-      localStorage.setItem("sitepins-ai-commit", String(commitAi));
-      localStorage.setItem("sitepins-ai-seo", String(seoAi));
-      localStorage.setItem("sitepins-ai-search", String(searchAi));
+      localStorage.setItem(
+        `${STORAGE_PREFIX}-ai-autocomplete`,
+        String(autocomplete),
+      );
+      localStorage.setItem(`${STORAGE_PREFIX}-ai-editor`, String(editorAi));
+      localStorage.setItem(`${STORAGE_PREFIX}-ai-code`, String(codeAi));
+      localStorage.setItem(`${STORAGE_PREFIX}-ai-commit`, String(commitAi));
+      localStorage.setItem(`${STORAGE_PREFIX}-ai-seo`, String(seoAi));
+      localStorage.setItem(`${STORAGE_PREFIX}-ai-search`, String(searchAi));
 
       window.dispatchEvent(new Event("storage"));
       window.dispatchEvent(new CustomEvent("sitepins:ai-settings-changed"));
@@ -641,9 +654,9 @@ function useAISettings(t: (key: string) => string) {
 
   const deleteKey = () => {
     try {
-      localStorage.removeItem("sitepins-ai-apiKey");
-      localStorage.removeItem("sitepins-ai-provider");
-      localStorage.removeItem("sitepins-ai-model");
+      localStorage.removeItem(`${STORAGE_PREFIX}-ai-apiKey`);
+      localStorage.removeItem(`${STORAGE_PREFIX}-ai-provider`);
+      localStorage.removeItem(`${STORAGE_PREFIX}-ai-model`);
 
       window.dispatchEvent(new Event("storage"));
       window.dispatchEvent(new CustomEvent("sitepins:ai-settings-changed"));
@@ -661,7 +674,10 @@ function useAISettings(t: (key: string) => string) {
   const toggleAutocomplete = (checked: boolean) => {
     setAutocomplete(checked);
     try {
-      localStorage.setItem("sitepins-ai-autocomplete", String(checked));
+      localStorage.setItem(
+        `${STORAGE_PREFIX}-ai-autocomplete`,
+        String(checked),
+      );
       setInitialAutocomplete(checked);
       window.dispatchEvent(new Event("storage"));
       window.dispatchEvent(new CustomEvent("sitepins:ai-settings-changed"));
@@ -678,7 +694,7 @@ function useAISettings(t: (key: string) => string) {
   const toggleEditorAi = (checked: boolean) => {
     setEditorAi(checked);
     try {
-      localStorage.setItem("sitepins-ai-editor", String(checked));
+      localStorage.setItem(`${STORAGE_PREFIX}-ai-editor`, String(checked));
       setInitialEditorAi(checked);
       window.dispatchEvent(new Event("storage"));
       window.dispatchEvent(new CustomEvent("sitepins:ai-settings-changed"));
@@ -695,7 +711,7 @@ function useAISettings(t: (key: string) => string) {
   const toggleCodeAi = (checked: boolean) => {
     setCodeAi(checked);
     try {
-      localStorage.setItem("sitepins-ai-code", String(checked));
+      localStorage.setItem(`${STORAGE_PREFIX}-ai-code`, String(checked));
       setInitialCodeAi(checked);
       window.dispatchEvent(new Event("storage"));
       window.dispatchEvent(new CustomEvent("sitepins:ai-settings-changed"));
@@ -712,7 +728,7 @@ function useAISettings(t: (key: string) => string) {
   const toggleCommitAi = (checked: boolean) => {
     setCommitAi(checked);
     try {
-      localStorage.setItem("sitepins-ai-commit", String(checked));
+      localStorage.setItem(`${STORAGE_PREFIX}-ai-commit`, String(checked));
       setInitialCommitAi(checked);
       window.dispatchEvent(new Event("storage"));
       window.dispatchEvent(new CustomEvent("sitepins:ai-settings-changed"));
@@ -729,7 +745,7 @@ function useAISettings(t: (key: string) => string) {
   const toggleSeoAi = (checked: boolean) => {
     setSeoAi(checked);
     try {
-      localStorage.setItem("sitepins-ai-seo", String(checked));
+      localStorage.setItem(`${STORAGE_PREFIX}-ai-seo`, String(checked));
       setInitialSeoAi(checked);
       window.dispatchEvent(new Event("storage"));
       window.dispatchEvent(new CustomEvent("sitepins:ai-settings-changed"));
@@ -746,7 +762,7 @@ function useAISettings(t: (key: string) => string) {
   const toggleSearchAi = (checked: boolean) => {
     setSearchAi(checked);
     try {
-      localStorage.setItem("sitepins-ai-search", String(checked));
+      localStorage.setItem(`${STORAGE_PREFIX}-ai-search`, String(checked));
       setInitialSearchAi(checked);
       window.dispatchEvent(new Event("storage"));
       window.dispatchEvent(new CustomEvent("sitepins:ai-settings-changed"));

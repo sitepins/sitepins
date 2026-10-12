@@ -7,7 +7,8 @@
         "support": "सहायता",
         "ai_agent": "एआई एजेंट",
         "mcp_connection": "MCP कनेक्शन",
-        "preferences": "प्राथमिकताएं"
+        "preferences": "प्राथमिकताएं",
+        "source_code": "सोर्स कोड"
       },
       "user_dashboard": {
         "overview": "अवलोकन",

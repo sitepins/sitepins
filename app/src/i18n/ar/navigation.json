@@ -7,7 +7,8 @@
         "support": "الدعم الفني",
         "ai_agent": "وكيل الذكاء الاصطناعي",
         "mcp_connection": "اتصال MCP",
-        "preferences": "التفضيلات"
+        "preferences": "التفضيلات",
+        "source_code": "الشيفرة المصدرية"
       },
       "user_dashboard": {
         "overview": "نظرة عامة",

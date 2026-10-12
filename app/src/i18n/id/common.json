@@ -142,7 +142,7 @@
     },
     "pwa": {
       "install_app": "Instal Aplikasi",
-      "update_available": "Versi baru Sitepins telah tersedia.",
+      "update_available": "Versi baru {brand} telah tersedia.",
       "reload": "Muat ulang",
       "offline_warning": "Anda sedang offline. Sinkronisasi dijeda hingga koneksi internet pulih.",
       "online_restored": "Kembali online! Koneksi telah pulih.",

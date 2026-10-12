@@ -12,7 +12,7 @@
     },
     "github_integration": {
       "title": "Conecta tu cuenta de GitHub",
-      "description": "Sitepins necesita permisos para crear ramas y sincronizar el contenido de tus proyectos.",
+      "description": "{brand} necesita permisos para crear ramas y sincronizar el contenido de tus proyectos.",
       "allow_all_repos": "Seleccionaré todos los repositorios",
       "connect_btn": "Conectar con GitHub",
       "grant_access_link": "Prefiero acceso a repositorios específicos",
@@ -22,7 +22,7 @@
       "step_download": "Descarga manualmente la plantilla.",
       "step_fork": "Haz un fork manual del repositorio.",
       "step_push": "Sube el código fuente a tu repositorio de GitHub.",
-      "step_go_to": "Ve a Sitepins",
+      "step_go_to": "Ve a {brand}",
       "step_new_site": "Haz clic en el botón + Nuevo sitio en la esquina superior derecha.",
       "step_grant_access": "Selecciona GitHub y otorga acceso a tu repositorio.",
       "step_grant_forked": "Selecciona GitHub y otorga acceso solo al repositorio forkeado.",

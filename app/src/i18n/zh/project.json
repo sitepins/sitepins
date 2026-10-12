@@ -96,7 +96,7 @@
     },
     "setup-steps": {
       "getting_started": "开始使用",
-      "description": "完成这些步骤以设置 Sitepins 并发布您的第一个内容",
+      "description": "完成这些步骤以设置 {brand} 并发布您的第一个内容",
       "progress": "进度",
       "progress_count": "{completed} / {total}",
       "steps": {

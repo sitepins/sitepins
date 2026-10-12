@@ -7,7 +7,8 @@
         "support": "Hilfe & Support",
         "ai_agent": "KI-Assistent",
         "mcp_connection": "MCP-Verbindung",
-        "preferences": "Einstellungen"
+        "preferences": "Einstellungen",
+        "source_code": "Quellcode"
       },
       "user_dashboard": {
         "overview": "Übersicht",

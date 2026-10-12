@@ -1,5 +1,6 @@
 "use client";
 
+import { BRAND_NAME } from "@/lib/brand";
 import { SidebarSkeleton } from "@/components/sidebar-skeleton";
 import {
   Accordion,
@@ -214,7 +215,7 @@ export default function Layout(
 
   return (
     <>
-      <title>{project?.project_name + " - Sitepins"}</title>
+      <title>{`${project?.project_name} - ${BRAND_NAME}`}</title>
 
       <SidebarPageLayout
         sidebar={

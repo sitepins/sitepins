@@ -1,5 +1,6 @@
 "use client";
 
+import type { TUploadFolder } from "@/lib/brand";
 import Avatar from "@/components/avatar";
 import { useImageUpload } from "@/hooks/use-image-upload";
 import { AcceptImages, BUCKET_URL, MAX_SIZE } from "@/lib/constant";
@@ -22,7 +23,7 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 
 type BucketImageUploadProps = {
-  folder: "sitepins/users" | "sitepins/orgs" | "sitepins/sites";
+  folder: TUploadFolder;
   previewSrc?: string;
   defaultImage?: string;
   defaultLabel?: string;
@@ -42,7 +43,7 @@ const SIZES = {
   lg: "size-25",
 };
 
-// Raw S3 keys (e.g. "sitepins/users/123.png") or URLs pointing at our own
+// Raw S3 keys (e.g. "<prefix>/users/123.png") or URLs pointing at our own
 // bucket are deletable. External avatars (Google/GitHub OAuth) never are.
 function isBucketImage(src?: string): boolean {
   if (!src) return false;

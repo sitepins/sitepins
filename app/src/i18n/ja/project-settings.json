@@ -80,7 +80,7 @@
         "choose_branch_placeholder": "ブランチを選択",
         "disconnect_btn": "切断",
         "disconnect_confirm_title": "本当によろしいですか？",
-        "disconnect_confirm_desc": "この操作により、Sitepins からリポジトリが切断されます。後でいつでも再接続できます。",
+        "disconnect_confirm_desc": "この操作により、{brand} からリポジトリが切断されます。後でいつでも再接続できます。",
         "connect_repo_btn": "リポジトリに接続",
         "error_missing_info": "プロジェクトまたは組織の情報が見つかりません",
         "success_disconnect": "リポジトリが正常に切断されました",
@@ -225,7 +225,7 @@
         "title": "コミット設定",
         "description": "変更を保存するときのコミットメッセージの処理方法を決定します",
         "custom_commit_label": "カスタムコミットメッセージ",
-        "custom_commit_desc": "これを有効にすると、保存時に独自のコミットメッセージを入力できます。有効の場合はカスタムメッセージを入力できます。無効の場合は Sitepins が自動的に生成します。",
+        "custom_commit_desc": "これを有効にすると、保存時に独自のコミットメッセージを入力できます。有効の場合はカスタムメッセージを入力できます。無効の場合は {brand} が自動的に生成します。",
         "save_btn": "変更を保存",
         "success_update": "コミットダイアログの設定が正常に更新されました",
         "error_update": "設定の更新に失敗しました"

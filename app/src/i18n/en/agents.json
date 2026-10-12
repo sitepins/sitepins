@@ -19,7 +19,7 @@
       },
       "schema_write": {
         "title": "Edit schemas",
-        "description": "Change schemas and snippets in .sitepins. Changing .sitepins/config.json needs Edit code."
+        "description": "Change schemas and snippets in {configDir}. Changing {configDir}/config.json needs Edit code."
       },
       "code_write": {
         "title": "Edit code",
@@ -52,15 +52,15 @@
       "permissions": "Permissions",
       "write_mode": "How changes are saved",
       "write_direct": "Commit directly",
-      "write_direct_description": "Changes go straight to the site's branch, committed by the Sitepins bot.",
+      "write_direct_description": "Changes go straight to the site's branch, committed by the {brand} bot.",
       "write_pull_request": "Open a pull request",
       "write_pull_request_description": "Changes go to a new branch with a pull request for you to review."
     },
     "settings": {
       "title": "MCP Connection",
-      "description": "Give AI agents like Claude, Codex, Cursor and Antigravity access to your sites. Create a token, then paste the setup prompt into your agent. Their commits come from the Sitepins bot.",
+      "description": "Give AI agents like Claude, Codex, Cursor and Antigravity access to your sites. Create a token, then paste the setup prompt into your agent. Their commits come from the {brand} bot.",
       "connect_title": "Connect your agent",
-      "connect_description": "Copy this prompt and paste it into your AI agent. It adds Sitepins to the agent's MCP settings. The token is shown only once.",
+      "connect_description": "Copy this prompt and paste it into your AI agent. It adds {brand} to the agent's MCP settings. The token is shown only once.",
       "mcp_label": "MCP server URL",
       "copy": "Copy",
       "copied": "Copied",

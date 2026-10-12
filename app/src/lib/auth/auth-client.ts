@@ -1,3 +1,4 @@
+import { STORAGE_PREFIX } from "@/lib/brand";
 import { toast } from "@/components/ui/toast";
 import { API_URL, IS_DEMO } from "@/lib/constant";
 import {
@@ -75,7 +76,7 @@ export const isSigningOut = () => signingOut;
 export async function signOutToLogin() {
   signingOut = true;
   try {
-    localStorage.removeItem("sitepins_cached_session");
+    localStorage.removeItem(`${STORAGE_PREFIX}_cached_session`);
   } catch {
     // Silently catch storage errors
   }

@@ -111,13 +111,13 @@ S3_BUCKET_NAME="<your bucket name>"
 S3_FORCE_PATH_STYLE=false                           # true for MinIO
 ```
 
-3. Fill `app/.env` with the bucket's public base URL:
+1. Fill `app/.env` with the bucket's public base URL:
 
 ```bash
 NEXT_PUBLIC_BUCKET_URL="https://<bucket>.s3.<region>.amazonaws.com"
 ```
 
-4. In your bucket's CORS settings, allow your app origin (`http://localhost:3000` in dev) so uploads are not blocked.
+1. In your bucket's CORS settings, allow your app origin (`http://localhost:3000` in dev) so uploads are not blocked.
 
 > Existing DigitalOcean Spaces setups keep working. The legacy `DOS_PUBLIC_ACCESS_KEY`, `DOS_PUBLIC_SECRET_KEY`, `DOS_BUCKET_NAME`, and `DOS_REGION` vars are still honored and auto-derive the endpoint.
 

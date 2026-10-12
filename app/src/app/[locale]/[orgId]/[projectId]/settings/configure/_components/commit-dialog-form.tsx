@@ -1,5 +1,6 @@
 "use client";
 
+import { siteConfigPath } from "@/lib/config-dir";
 import { useAddLog } from "@/hooks/use-add-log";
 import { Button } from "@/components/ui/button";
 import {
@@ -69,7 +70,7 @@ export default function CommitDialogForm({
   const handleSubmit = async (data: z.infer<typeof commitDialogSchema>) => {
     const files = [
       {
-        path: ".sitepins/config.json",
+        path: siteConfigPath(),
         content: JSON.stringify(
           {
             media: config.media,
@@ -114,7 +115,7 @@ export default function CommitDialogForm({
         addLog({
           project_id: params.projectId as string,
           action: EAction.UPDATE,
-          file: ".sitepins/config.json",
+          file: siteConfigPath(),
           file_type: EProjectLogType.CONFIG,
         });
 

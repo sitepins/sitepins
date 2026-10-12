@@ -305,7 +305,7 @@
       },
       "updates-feedback": {
         "label": "التحديثات والملاحظات",
-        "href": "https://updates.sitepins.com/",
+        "href": "https://updates{configDir}.com/",
         "target": "_blank",
         "keywords": [
           "تحديثات",

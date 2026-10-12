@@ -11,7 +11,8 @@ import { Button } from "@/components/ui/button";
 import { ImageProvider } from "@/contexts/image-context";
 import { assignUniqueId } from "@/editor/utils/plate-utils";
 import { useGitProvider } from "@/hooks/use-git-provider";
-import { API_URL, SCHEMA_FOLDER } from "@/lib/constant";
+import { API_URL } from "@/lib/constant";
+import { schemaFolder } from "@/lib/config-dir";
 import { logger } from "@/lib/logger";
 import { resolveRepoPath } from "@/lib/utils/common";
 import {
@@ -128,11 +129,11 @@ export default function FileEditor() {
   // 1. Try exact match (e.g. blog/nested.json)
   const folderPath = path.dirname(filePathString);
   const generatedSchemaNameStr = generateSchemaName(folderPath, config.content);
-  const primarySchemaPath = `${SCHEMA_FOLDER}/${generatedSchemaNameStr}.json`;
+  const primarySchemaPath = `${schemaFolder()}/${generatedSchemaNameStr}.json`;
 
   // 2. Try root collection match (e.g. blog.json)
   const rootCollection = generatedSchemaNameStr.split("/")[0];
-  const secondarySchemaPath = `${SCHEMA_FOLDER}/${rootCollection}.json`;
+  const secondarySchemaPath = `${schemaFolder()}/${rootCollection}.json`;
   const hasSecondary =
     rootCollection && rootCollection !== generatedSchemaNameStr;
 

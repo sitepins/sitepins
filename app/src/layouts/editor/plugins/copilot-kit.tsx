@@ -1,5 +1,6 @@
 "use client";
 
+import { STORAGE_PREFIX } from "@/lib/brand";
 import { logger } from "@/lib/logger";
 import { CopilotPlugin } from "@platejs/ai/react";
 import { serializeMd, stripMarkdown } from "@platejs/markdown";
@@ -18,12 +19,13 @@ export function getAICredential():
   | undefined {
   if (typeof window !== "object") return undefined;
   try {
-    const provider = localStorage.getItem("sitepins-ai-provider");
-    const model = localStorage.getItem("sitepins-ai-model");
-    const apiKey = localStorage.getItem("sitepins-ai-apiKey");
+    const provider = localStorage.getItem(`${STORAGE_PREFIX}-ai-provider`);
+    const model = localStorage.getItem(`${STORAGE_PREFIX}-ai-model`);
+    const apiKey = localStorage.getItem(`${STORAGE_PREFIX}-ai-apiKey`);
     const autocomplete =
-      localStorage.getItem("sitepins-ai-autocomplete") !== "false";
-    const editorAi = localStorage.getItem("sitepins-ai-editor") !== "false";
+      localStorage.getItem(`${STORAGE_PREFIX}-ai-autocomplete`) !== "false";
+    const editorAi =
+      localStorage.getItem(`${STORAGE_PREFIX}-ai-editor`) !== "false";
 
     if (
       typeof provider !== "string" ||

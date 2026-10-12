@@ -19,7 +19,7 @@
       },
       "schema_write": {
         "title": "Редактировать схемы",
-        "description": "Менять схемы и сниппеты в .sitepins. Для изменения .sitepins/config.json нужно «Редактировать код»."
+        "description": "Менять схемы и сниппеты в {configDir}. Для изменения {configDir}/config.json нужно «Редактировать код»."
       },
       "code_write": {
         "title": "Редактировать код",
@@ -52,15 +52,15 @@
       "permissions": "Разрешения",
       "write_mode": "Как сохраняются изменения",
       "write_direct": "Коммитить напрямую",
-      "write_direct_description": "Изменения сразу попадают в ветку сайта, коммит делает бот Sitepins.",
+      "write_direct_description": "Изменения сразу попадают в ветку сайта, коммит делает бот {brand}.",
       "write_pull_request": "Открывать pull request",
       "write_pull_request_description": "Изменения попадают в новую ветку с pull request на вашу проверку."
     },
     "settings": {
       "title": "Подключение MCP",
-      "description": "Дайте ИИ-агентам вроде Claude, Codex, Cursor и Antigravity доступ к вашим сайтам. Создайте токен и вставьте подсказку для настройки в агента. Их коммиты делает бот Sitepins.",
+      "description": "Дайте ИИ-агентам вроде Claude, Codex, Cursor и Antigravity доступ к вашим сайтам. Создайте токен и вставьте подсказку для настройки в агента. Их коммиты делает бот {brand}.",
       "connect_title": "Подключите агента",
-      "connect_description": "Скопируйте эту подсказку и вставьте её в ИИ-агента. Она добавит Sitepins в настройки MCP агента. Токен показывается только один раз.",
+      "connect_description": "Скопируйте эту подсказку и вставьте её в ИИ-агента. Она добавит {brand} в настройки MCP агента. Токен показывается только один раз.",
       "mcp_label": "URL MCP-сервера",
       "copy": "Копировать",
       "copied": "Скопировано",

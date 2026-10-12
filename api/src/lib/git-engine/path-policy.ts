@@ -1,3 +1,4 @@
+import brand from "@/config/brand";
 import { GitEngineError } from "./errors";
 
 export type TPathPolicy = {
@@ -64,7 +65,7 @@ export const writeDenial = (
   const blocked = ALWAYS_BLOCKED.find((rule) =>
     rule.endsWith("/") ? lower.startsWith(rule) : lower === rule,
   );
-  if (blocked) return `${blocked} is never writable through Sitepins`;
+  if (blocked) return `${blocked} is never writable through ${brand.name}`;
 
   if (policy.writableRoots === "all") return null;
   const roots = policy.writableRoots.map((root) =>

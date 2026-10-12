@@ -1,5 +1,6 @@
 "use client";
 
+import { STORAGE_PREFIX } from "@/lib/brand";
 import { logger } from "@/lib/logger";
 import { frameworkSpec } from "@/lib/sandbox/frameworks";
 import { selectConfig } from "@/redux/features/config/slice";
@@ -81,7 +82,7 @@ export function useSandboxPreview({
       if (existing) return;
       const cleanRepo = repo.replace(/[^a-zA-Z0-9]/g, "-");
       const cleanBranch = branch.replace(/[^a-zA-Z0-9]/g, "-");
-      const tabName = `sitepins-preview-${cleanRepo}-${cleanBranch}`;
+      const tabName = `${STORAGE_PREFIX}-preview-${cleanRepo}-${cleanBranch}`;
       const baseUrl = url.endsWith("/") ? url.slice(0, -1) : url;
       const win = window.open(baseUrl, tabName);
       if (win) {
@@ -100,7 +101,8 @@ export function useSandboxPreview({
     const cacheKey = `${repo}#${config.branch}`;
     const sandboxName =
       typeof window !== "undefined"
-        ? localStorage.getItem(`sitepins_sandbox_${cacheKey}`) || undefined
+        ? localStorage.getItem(`${STORAGE_PREFIX}_sandbox_${cacheKey}`) ||
+          undefined
         : undefined;
 
     fetch("/api/sandbox/create", {
@@ -127,7 +129,7 @@ export function useSandboxPreview({
         if (!data.sandboxName && !data.previewUrl) return;
         const url =
           data.previewUrl ||
-          localStorage.getItem(`sitepins_preview_${cacheKey}`);
+          localStorage.getItem(`${STORAGE_PREFIX}_preview_${cacheKey}`);
         if (url) reopenIfClosed(url, repo, config.branch);
       })
       .catch((err) => {
@@ -153,14 +155,15 @@ export function useSandboxPreview({
 
     const hasActivePreview =
       typeof window !== "undefined" &&
-      !!localStorage.getItem(`sitepins_preview_${cacheKey}`);
+      !!localStorage.getItem(`${STORAGE_PREFIX}_preview_${cacheKey}`);
     if (!hasActivePreview) return;
 
     const timer = setTimeout(() => {
       const uncommittedFile = getUncommittedFileRef.current();
       const sandboxName =
         typeof window !== "undefined"
-          ? localStorage.getItem(`sitepins_sandbox_${cacheKey}`) || undefined
+          ? localStorage.getItem(`${STORAGE_PREFIX}_sandbox_${cacheKey}`) ||
+            undefined
           : undefined;
 
       fetch("/api/sandbox/create", {
@@ -188,7 +191,7 @@ export function useSandboxPreview({
 
           const url =
             data.previewUrl ||
-            localStorage.getItem(`sitepins_preview_${cacheKey}`);
+            localStorage.getItem(`${STORAGE_PREFIX}_preview_${cacheKey}`);
           if (!url) return;
           const baseUrl = url.endsWith("/") ? url.slice(0, -1) : url;
           const fw = (config.framework ?? "").toLowerCase();

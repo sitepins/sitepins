@@ -1,11 +1,46 @@
-<!DOCTYPE html>
+import { BRAND_FAVICON, BRAND_LOGO_ICON, BRAND_NAME } from "@/lib/brand";
+
+export const dynamic = "force-static";
+export const revalidate = false;
+
+// The offline fallback the service worker precaches. Rendered from the brand
+// so a rebranded instance doesn't show the upstream name or logo offline.
+
+const escape = (value: string) =>
+  value.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
+
+const DEFAULT_LOGO_ICON = "/images/logo-icon.svg";
+
+const DEFAULT_LOGO = `      <svg width="149" height="149" viewBox="0 0 149 149" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <g clip-path="url(#clip0_offline_logo)">
+          <path d="M107.803 33.5158C95.4224 13.2127 68.7928 7.34192 50.339 22.5081C36.557 34.005 34.9219 51.3728 34.9219 68.4959C34.9219 90.7559 34.9219 112.771 34.9219 135.031L58.2812 118.153C58.2812 98.5835 56.4124 78.0359 58.5148 58.7112C59.4491 50.8835 62.7194 41.3435 70.4279 38.4081C79.7716 34.7389 89.1154 42.8112 90.7505 52.3512C92.8529 65.0712 81.874 70.6974 75.3334 79.0143C68.3256 87.8205 66.9241 99.8066 68.5592 110.814C81.1732 101.519 96.1232 94.6697 105.934 81.7051C116.212 67.5174 116.679 48.4373 107.803 33.5158C115.044 45.502 100.094 21.0404 107.803 33.5158ZM109.204 72.4096C109.438 71.9204 110.139 70.2081 109.204 72.4096C109.204 72.4096 109.438 72.165 109.204 72.4096Z" fill="url(#paint0_linear_offline)"/>
+        </g>
+        <defs>
+          <linearGradient id="paint0_linear_offline" x1="118.487" y1="30.5618" x2="7.496" y2="115.075" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#5D5FE5"/>
+            <stop offset="1" stop-color="#5ECFF9"/>
+          </linearGradient>
+          <clipPath id="clip0_offline_logo">
+            <rect width="149" height="149" rx="9.3125" fill="white"/>
+          </clipPath>
+        </defs>
+      </svg>`;
+
+export function buildOfflinePage() {
+  const name = escape(BRAND_NAME);
+  const favicon = escape(BRAND_FAVICON);
+  const logo =
+    BRAND_LOGO_ICON === DEFAULT_LOGO_ICON
+      ? DEFAULT_LOGO
+      : `      <img src="${escape(BRAND_LOGO_ICON)}" alt="${name}" width="64" height="64" />`;
+  return `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Offline — Sitepins</title>
-  <meta name="theme-color" content="#5D5FE5" />
-  <link rel="icon" href="/images/favicon.png" />
+  <title>Offline — ${name}</title>
+  <meta name="theme-color" content="#ffffff" />
+  <link rel="icon" href="${favicon}" />
   <style>
     :root {
       --bg: #ffffff;
@@ -176,20 +211,7 @@
 <body>
   <div class="container">
     <div class="logo-wrap">
-      <svg width="149" height="149" viewBox="0 0 149 149" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <g clip-path="url(#clip0_offline_logo)">
-          <path d="M107.803 33.5158C95.4224 13.2127 68.7928 7.34192 50.339 22.5081C36.557 34.005 34.9219 51.3728 34.9219 68.4959C34.9219 90.7559 34.9219 112.771 34.9219 135.031L58.2812 118.153C58.2812 98.5835 56.4124 78.0359 58.5148 58.7112C59.4491 50.8835 62.7194 41.3435 70.4279 38.4081C79.7716 34.7389 89.1154 42.8112 90.7505 52.3512C92.8529 65.0712 81.874 70.6974 75.3334 79.0143C68.3256 87.8205 66.9241 99.8066 68.5592 110.814C81.1732 101.519 96.1232 94.6697 105.934 81.7051C116.212 67.5174 116.679 48.4373 107.803 33.5158C115.044 45.502 100.094 21.0404 107.803 33.5158ZM109.204 72.4096C109.438 71.9204 110.139 70.2081 109.204 72.4096C109.204 72.4096 109.438 72.165 109.204 72.4096Z" fill="url(#paint0_linear_offline)"/>
-        </g>
-        <defs>
-          <linearGradient id="paint0_linear_offline" x1="118.487" y1="30.5618" x2="7.496" y2="115.075" gradientUnits="userSpaceOnUse">
-            <stop stop-color="#5D5FE5"/>
-            <stop offset="1" stop-color="#5ECFF9"/>
-          </linearGradient>
-          <clipPath id="clip0_offline_logo">
-            <rect width="149" height="149" rx="9.3125" fill="white"/>
-          </clipPath>
-        </defs>
-      </svg>
+${logo}
     </div>
 
     <div class="badge" id="offline-badge">
@@ -198,7 +220,7 @@
     </div>
 
     <h1>You are currently offline</h1>
-    <p>Sitepins needs an active internet connection to access remote repositories, branches, and content. Reconnecting will automatically restore your workspace.</p>
+    <p>${name} needs an active internet connection to access remote repositories, branches, and content. Reconnecting will automatically restore your workspace.</p>
 
     <div class="actions">
       <button class="btn-primary" id="retry-btn" onclick="retryConnection()">
@@ -262,3 +284,11 @@
   </script>
 </body>
 </html>
+`;
+}
+
+export function GET() {
+  return new Response(buildOfflinePage(), {
+    headers: { "Content-Type": "text/html; charset=utf-8" },
+  });
+}

@@ -96,7 +96,7 @@
     },
     "setup-steps": {
       "getting_started": "শুরু করুন",
-      "description": "Sitepins সেটআপ করতে এবং আপনার প্রথম কন্টেন্ট পাবলিশ করতে এই ধাপগুলো সম্পন্ন করুন",
+      "description": "{brand} সেটআপ করতে এবং আপনার প্রথম কন্টেন্ট পাবলিশ করতে এই ধাপগুলো সম্পন্ন করুন",
       "progress": "অগ্রগতি",
       "progress_count": "{total}-এর মধ্যে {completed}",
       "steps": {

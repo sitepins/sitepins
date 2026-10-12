@@ -1,3 +1,4 @@
+import brand from "@/config/brand";
 import variables from "@/config/variables";
 import jwt, {
   JwtPayload,
@@ -23,7 +24,7 @@ const createToken = (
   return jwt.sign(enhancedPayload, secret as Secret, <SignOptions>{
     algorithm: "HS256",
     expiresIn: expires ? expires : "24h",
-    issuer: "sitepins-api",
+    issuer: brand.jwt_issuer,
   });
 };
 

@@ -1,7 +1,14 @@
 "use client";
 
 import useMounted from "@/hooks/use-mounted";
-import config from "@/lib/config";
+import {
+  BRAND_LOGO,
+  BRAND_LOGO_DARK,
+  BRAND_LOGO_HEIGHT,
+  BRAND_LOGO_TEXT,
+  BRAND_LOGO_WIDTH,
+  BRAND_NAME,
+} from "@/lib/brand";
 import { cn } from "@/lib/utils/cn";
 import { useTheme } from "next-themes";
 import Image from "next/image";
@@ -16,21 +23,12 @@ const Logo = ({
   link?: string;
   className?: string;
 }) => {
-  const {
-    logo,
-    logo_darkmode,
-    logo_width,
-    logo_height,
-    logo_text,
-    title,
-  }: {
-    logo: string;
-    logo_darkmode?: string;
-    logo_width: string;
-    logo_height: string;
-    logo_text: string;
-    title: string;
-  } = config.site;
+  const logo = BRAND_LOGO;
+  const logo_darkmode = BRAND_LOGO_DARK;
+  const logo_width = BRAND_LOGO_WIDTH;
+  const logo_height = BRAND_LOGO_HEIGHT;
+  const logo_text = BRAND_LOGO_TEXT;
+  const title = BRAND_NAME;
 
   // Theme handling: prefer a dark-mode logo if available when theme is dark.
   const { theme, resolvedTheme } = useTheme();

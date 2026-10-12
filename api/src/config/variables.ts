@@ -62,7 +62,7 @@ export default {
   // else "console" (logs the message + OTP/link to stdout). Extensions can
   // register custom delivery providers.
   mail_provider: process.env.MAIL_PROVIDER,
-  mail_from_name: process.env.MAIL_FROM_NAME || "Sitepins",
+  mail_from_name: process.env.MAIL_FROM_NAME,
   mail_from_email: process.env.MAIL_FROM_EMAIL,
 
   // SMTP (used when MAIL_PROVIDER=smtp or auto-detected)

@@ -28,7 +28,8 @@ import {
 import { useAddLog } from "@/hooks/use-add-log";
 import { useDialog } from "@/hooks/use-dialog";
 import { useGitProvider } from "@/hooks/use-git-provider";
-import { IS_DEMO, SCHEMA_FOLDER } from "@/lib/constant";
+import { IS_DEMO } from "@/lib/constant";
+import { schemaFolder } from "@/lib/config-dir";
 import { firstFormErrorMessage } from "@/lib/utils/form-errors";
 import { getLogType } from "@/lib/utils/project-log-type-detector";
 import { isGitLabProvider } from "@/lib/utils/provider-checker";
@@ -143,7 +144,7 @@ export default function CreateSchema({
         while (current && current.includes("/")) {
           current = current.substring(0, current.lastIndexOf("/"));
           const schemaName = generateSchemaName(current, config.content);
-          candidates.push(`${SCHEMA_FOLDER}/${schemaName}.json`);
+          candidates.push(`${schemaFolder()}/${schemaName}.json`);
         }
 
         if (candidates.length === 0) return;

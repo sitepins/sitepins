@@ -1,5 +1,6 @@
 "use client";
 
+import { uploadFolder } from "@/lib/brand";
 import { BucketImageUpload } from "@/components/bucket-image-upload";
 import {
   Card,
@@ -50,7 +51,7 @@ export default function ProjectAvatar(
         <CardAction>
           <BucketImageUpload
             usedFor="site"
-            folder="sitepins/sites"
+            folder={uploadFolder("sites")}
             defaultImage={project_image}
             defaultLabel={project_name?.charAt(0)}
             onUploadSuccess={onUploadSuccess}

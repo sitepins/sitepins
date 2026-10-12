@@ -1,5 +1,6 @@
 "use client";
 
+import { BRAND_NAME } from "@/lib/brand";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { safeInternalPath } from "@/lib/safe-redirect";
 import { AlertCircle } from "lucide-react";
@@ -34,7 +35,7 @@ export default function Register() {
       case "account_not_linked":
         return "An account with this email already exists. Please log in with your email and password first.";
       case "account_already_linked_to_different_user":
-        return "This social account is already linked to a different Sitepins user.";
+        return `This social account is already linked to a different ${BRAND_NAME} user.`;
       case "email_does_not_match":
         return "The email associated with this social account does not match your account.";
       case "access_denied":

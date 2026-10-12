@@ -1,3 +1,4 @@
+import brand from "@/config/brand";
 import ApiError from "@/errors/ApiError";
 import { logger } from "@/lib/logger";
 import { agentGitLimiter } from "@/middlewares/rateLimiters";
@@ -59,11 +60,14 @@ const authenticate = async (
     next();
   } catch (error) {
     if (error instanceof AgentAuthError && error.statusCode === 401) {
-      res.setHeader("WWW-Authenticate", 'Basic realm="Sitepins"');
+      res.setHeader(
+        "WWW-Authenticate",
+        `Basic realm="${brand.name.replace(/["\\]/g, "")}"`,
+      );
       plain(
         res,
         401,
-        `Sitepins: ${error.message}. Call the get_clone_command tool for fresh commands.`,
+        `${brand.name}: ${error.message}. Call the get_clone_command tool for fresh commands.`,
       );
       return;
     }
@@ -71,7 +75,7 @@ const authenticate = async (
     plain(
       res,
       status,
-      `Sitepins: ${error instanceof Error ? error.message : "request failed"}`,
+      `${brand.name}: ${error instanceof Error ? error.message : "request failed"}`,
     );
   }
 };
@@ -114,7 +118,7 @@ const proxy =
         plain(
           res,
           upstream.status === 404 ? 404 : 502,
-          "Sitepins: the git host refused the request",
+          `${brand.name}: the git host refused the request`,
         );
         return;
       }
@@ -148,7 +152,7 @@ const proxy =
       plain(
         res,
         status,
-        `Sitepins: ${error instanceof Error ? error.message : "request failed"}`,
+        `${brand.name}: ${error instanceof Error ? error.message : "request failed"}`,
       );
     }
   };
@@ -157,7 +161,7 @@ const readOnly = (_req: Request, res: Response) =>
   plain(
     res,
     403,
-    "Sitepins: this remote is read-only. Save changes with the Sitepins write_files tool.",
+    `${brand.name}: this remote is read-only. Save changes with the ${brand.name} write_files tool.`,
   );
 
 const uploadPackOnly = (req: Request, res: Response, next: NextFunction) =>

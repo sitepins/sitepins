@@ -7,7 +7,8 @@
         "support": "Assistance",
         "ai_agent": "Agent IA",
         "mcp_connection": "Connexion MCP",
-        "preferences": "Préférences"
+        "preferences": "Préférences",
+        "source_code": "Code source"
       },
       "user_dashboard": {
         "overview": "Vue d'ensemble",

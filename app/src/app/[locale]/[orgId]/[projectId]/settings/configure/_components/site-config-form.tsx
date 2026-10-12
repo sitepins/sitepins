@@ -1,5 +1,6 @@
 "use client";
 
+import { siteConfigPath } from "@/lib/config-dir";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Card,
@@ -316,7 +317,7 @@ export const ConfigForm = ({
   const handleSubmit = async (data: z.infer<typeof configFormSchema>) => {
     const files = [
       {
-        path: ".sitepins/config.json",
+        path: siteConfigPath(),
         content: JSON.stringify(
           {
             content: data.content.value,
@@ -386,7 +387,7 @@ export const ConfigForm = ({
         addLog({
           project_id: params.projectId as string,
           action: config.content ? EAction.UPDATE : EAction.CREATE,
-          file: ".sitepins/config.json",
+          file: siteConfigPath(),
           file_type: EProjectLogType.CONFIG,
         });
 

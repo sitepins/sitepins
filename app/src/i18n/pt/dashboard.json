@@ -6,7 +6,7 @@
         "title": "Co-autoria no Git",
         "description": "Escolha qual identidade usar para ações no repositório.",
         "as_you": "Agindo como Você",
-        "as_you_desc": "Os commits são feitos pelo bot e creditam você na mensagem: como coautor se você entrou com sua conta Git, caso contrário pelo seu nome. Seu e-mail do Sitepins nunca é publicado.",
+        "as_you_desc": "Os commits são feitos pelo bot e creditam você na mensagem: como coautor se você entrou com sua conta Git, caso contrário pelo seu nome. Seu e-mail do {brand} nunca é publicado.",
         "as_you_fallback": "Automaticamente retorna para o bot se as permissões pessoais forem insuficientes para garantir que as tarefas sejam concluídas.",
         "as_bot": "Agindo como o Bot",
         "as_bot_desc": "Todas as ações no repositório serão atribuídas ao bot do sistema. Isso garante uma trilha de auditoria consistente e é a configuração recomendada para fluxos de trabalho automatizados.",
@@ -169,7 +169,7 @@
       "open_settings": "Abrir Configurações"
     },
     "repo_access": {
-      "title": "O Sitepins não consegue acessar <repo>{repository}</repo>",
+      "title": "O {brand} não consegue acessar <repo>{repository}</repo>",
       "github_description": "Dê acesso ao GitHub App {app} ou verifique se ele não foi renomeado ou excluído.",
       "gitlab_description": "Sua conta do GitLab precisa de acesso Developer ou superior, ou o projeto foi renomeado ou excluído.",
       "manage_access": "Conceder acesso",

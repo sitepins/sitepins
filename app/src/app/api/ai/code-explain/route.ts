@@ -1,3 +1,4 @@
+import { BRAND_NAME } from "@/lib/brand";
 import { handleAiRouteError } from "@/lib/ai/ai-error-handler";
 import {
   getSafeInputCharLimit,
@@ -48,7 +49,7 @@ export async function POST(req: NextRequest) {
     instruction && typeof instruction === "string" && instruction.trim(),
   );
 
-  const systemPrompt = `You are an expert technical code analyst for Sitepins CMS.
+  const systemPrompt = `You are an expert technical code analyst for ${BRAND_NAME} CMS.
 You explain web development code, templates, and configurations clearly and concisely.
 
 Context:

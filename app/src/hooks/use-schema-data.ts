@@ -1,7 +1,7 @@
 "use client";
 
 import { useGitProvider } from "@/hooks/use-git-provider";
-import { SCHEMA_FOLDER } from "@/lib/constant";
+import { schemaFolder } from "@/lib/config-dir";
 import { isGitLabProvider } from "@/lib/utils/provider-checker";
 import { generateSchemaName } from "@/lib/utils/schema-generator";
 import { SavedSchema } from "@/lib/utils/schema-helpers";
@@ -52,7 +52,7 @@ export function useSchemaData(relativePath: string, schemaDir?: string) {
         while (current && current.includes("/")) {
           current = current.substring(0, current.lastIndexOf("/"));
           const schemaName = generateSchemaName(current, config.content);
-          candidates.push(`${SCHEMA_FOLDER}/${schemaName}.json`);
+          candidates.push(`${schemaFolder()}/${schemaName}.json`);
         }
 
         if (candidates.length === 0) return;

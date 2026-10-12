@@ -7,7 +7,8 @@
         "support": "고객지원",
         "ai_agent": "AI 에이전트",
         "mcp_connection": "MCP 연결",
-        "preferences": "환경설정"
+        "preferences": "환경설정",
+        "source_code": "소스 코드"
       },
       "user_dashboard": {
         "overview": "개요",

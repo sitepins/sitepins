@@ -296,7 +296,7 @@
       },
       "updates-feedback": {
         "label": "업데이트 및 피드백",
-        "href": "https://updates.sitepins.com/",
+        "href": "https://updates{configDir}.com/",
         "target": "_blank",
         "keywords": [
           "업데이트",

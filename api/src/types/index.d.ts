@@ -42,7 +42,7 @@ declare global {
       user?: TAuthUser | null;
       /** Set by internalOrAuth when the caller presented INTERNAL_API_SECRET. */
       isInternal?: boolean;
-      /** Set for AI agent requests authenticated with a Sitepins access token. */
+      /** Set for AI agent requests authenticated with an MCP access token. */
       agent?: import("../modules/agent/agent.type").TAgentContext;
     }
   }

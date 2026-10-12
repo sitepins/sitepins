@@ -80,7 +80,7 @@
         "choose_branch_placeholder": "Elige una rama",
         "disconnect_btn": "Desconectar",
         "disconnect_confirm_title": "¿Estás absolutamente seguro?",
-        "disconnect_confirm_desc": "Esta acción desconectará el repositorio de Sitepins. Siempre puedes conectarlo de nuevo más tarde.",
+        "disconnect_confirm_desc": "Esta acción desconectará el repositorio de {brand}. Siempre puedes conectarlo de nuevo más tarde.",
         "connect_repo_btn": "Conectar Repositorio",
         "error_missing_info": "Falta información del proyecto u organización",
         "success_disconnect": "Repositorio desconectado correctamente",
@@ -225,7 +225,7 @@
         "title": "Configuración de Confirmación",
         "description": "Determina cómo se manejan los mensajes de confirmación cuando guardas cambios",
         "custom_commit_label": "Mensajes de Confirmación Personalizados",
-        "custom_commit_desc": "Habilita esto para escribir tus propios mensajes de confirmación al guardar. Cuando está activo, puedes proporcionar un mensaje personalizado; de lo contrario, Sitepins generará uno automáticamente.",
+        "custom_commit_desc": "Habilita esto para escribir tus propios mensajes de confirmación al guardar. Cuando está activo, puedes proporcionar un mensaje personalizado; de lo contrario, {brand} generará uno automáticamente.",
         "save_btn": "Guardar Cambios",
         "success_update": "Configuración del diálogo de confirmación actualizada correctamente",
         "error_update": "Error al actualizar la configuración"

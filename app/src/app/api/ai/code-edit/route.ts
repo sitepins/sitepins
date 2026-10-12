@@ -1,3 +1,4 @@
+import { BRAND_NAME } from "@/lib/brand";
 import { handleAiRouteError } from "@/lib/ai/ai-error-handler";
 import {
   getSafeInputCharLimit,
@@ -64,7 +65,7 @@ export async function POST(req: NextRequest) {
     hasSelection ? 4096 : 8192,
   );
 
-  const systemPrompt = `You are an expert AI code copilot embedded inside the Sitepins code editor.
+  const systemPrompt = `You are an expert AI code copilot embedded inside the ${BRAND_NAME} code editor.
 You specialize in modern web development, template engines, and static site generators (including Hugo templates, Go html/template syntax, Astro components, Next.js / React JSX/TSX, HTML5, CSS/Tailwind, and Markdown/MDX).
 
 Task context:

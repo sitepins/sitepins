@@ -1,5 +1,7 @@
+import { BRAND_NAME } from "@/lib/brand";
 import { toast } from "@/components/ui/toast";
-import { IS_DEMO, SCHEMA_FOLDER } from "@/lib/constant";
+import { IS_DEMO } from "@/lib/constant";
+import { isSiteConfigPath, schemaFolder } from "@/lib/config-dir";
 import { logger } from "@/lib/logger";
 import { checkMedia } from "@/lib/utils/check-media-file";
 import { parseContentJson } from "@/lib/utils/content-serializer";
@@ -500,8 +502,8 @@ export const githubCommitApi = githubApi.injectEndpoints({
 
                 const batchMessage =
                   batches.length > 1
-                    ? `${effectiveMessage} (batch ${batchIndex + 1}/${batches.length}) by Sitepins`
-                    : `${effectiveMessage} by Sitepins`;
+                    ? `${effectiveMessage} (batch ${batchIndex + 1}/${batches.length}) by ${BRAND_NAME}`
+                    : `${effectiveMessage} by ${BRAND_NAME}`;
 
                 const commitMessage = createGitCommitMessage(
                   batchMessage,
@@ -718,8 +720,8 @@ export const githubCommitApi = githubApi.injectEndpoints({
 
               const batchMessage =
                 batches.length > 1
-                  ? `${effectiveMessage} (batch ${batchIndex + 1}/${batches.length}) by Sitepins`
-                  : `${effectiveMessage} by Sitepins`;
+                  ? `${effectiveMessage} (batch ${batchIndex + 1}/${batches.length}) by ${BRAND_NAME}`
+                  : `${effectiveMessage} by ${BRAND_NAME}`;
 
               const commitMessage = createGitCommitMessage(
                 batchMessage,
@@ -1047,7 +1049,7 @@ export const githubCommitApi = githubApi.injectEndpoints({
               return;
             }
             // Handle config file only when content is provided
-            if (file.path === ".sitepins/config.json") {
+            if (isSiteConfigPath(file.path)) {
               if (file.content) {
                 const config = JSON.parse(file.content);
                 dispatch(updateConfig(config));
@@ -1275,7 +1277,7 @@ export const githubCommitApi = githubApi.injectEndpoints({
                   },
                 ),
               );
-            } else if (file.path.startsWith(SCHEMA_FOLDER) && IS_DEMO) {
+            } else if (file.path.startsWith(schemaFolder()) && IS_DEMO) {
               if (file.content) {
                 const fm = fmDetector(file.content, path.parse(file.path).ext);
                 const parsedContent = parseContentJson(file.content, fm);
@@ -1364,7 +1366,7 @@ export const githubCommitApi = githubApi.injectEndpoints({
 
           const auth_details = getGitAuthDetails("Github");
           const commitMessage = createGitCommitMessage(
-            `${message} by Sitepins`,
+            `${message} by ${BRAND_NAME}`,
             description,
             trailer,
           );

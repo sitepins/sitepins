@@ -289,7 +289,7 @@
       },
       "updates-feedback": {
         "label": "Novità e feedback",
-        "href": "https://updates.sitepins.com/",
+        "href": "https://updates{configDir}.com/",
         "target": "_blank",
         "keywords": [
           "novità",

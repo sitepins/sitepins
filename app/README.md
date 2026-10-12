@@ -47,8 +47,9 @@ Copy `.env.example` to `.env` and fill in:
 | `NEXT_PUBLIC_HP_WS_URL`                                                                                                          | ✓        | WebSocket URL for the Hocuspocus collaborative editor (`ws://localhost:4000/api/v1/editor/collab` in dev)                                                                                 |
 | `NEXT_PUBLIC_BUCKET_URL`                                                                                                         | ✓        | Public base URL for uploaded media — your S3-compatible bucket's public URL (must match the API's `S3_*` config; see [Media storage setup](../api/README.md#media-storage-s3-compatible)) |
 | `INTERNAL_API_SECRET`                                                                                                            | ✓        | Must match the API's copy — authenticates this app's own internal routes                                                                                                                  |
-| `GITHUB_APP_ID` / `GITHUB_APP_CLIENT_ID` / `GITHUB_APP_CLIENT_SECRET` / `GITHUB_APP_PRIVATE_KEY` / `NEXT_PUBLIC_GITHUB_APP_NAME` | ✓        | GitHub App credentials — see [Setting up a GitHub App](#setting-up-a-github-app) below                                                                                                    |
-| `NEXT_PUBLIC_GITLAB_APP_NAME` / `NEXT_PUBLIC_GITLAB_CLIENT_ID` / `GITLAB_CLIENT_SECRET`                                          | ✓        | GitLab OAuth app credentials — see [Setting up a GitLab App](#setting-up-a-gitlab-app) below                                                                                              |
+| `NEXT_PUBLIC_GIT_APP_NAME` | ✓ | GitHub App slug (install URL, `<slug>[bot]` commits); also the author name on GitLab commits |
+| `GITHUB_APP_ID` / `GITHUB_APP_CLIENT_ID` / `GITHUB_APP_CLIENT_SECRET` / `GITHUB_APP_PRIVATE_KEY`                                 | ✓        | GitHub App credentials — see [Setting up a GitHub App](#setting-up-a-github-app) below                                                                                                    |
+| `NEXT_PUBLIC_GITLAB_CLIENT_ID` / `GITLAB_CLIENT_SECRET`                                                                          | ✓        | GitLab OAuth app credentials — see [Setting up a GitLab App](#setting-up-a-gitlab-app) below                                                                                              |
 | `AI_PROVIDER`                                                                                                                    | optional | Server-level default AI provider (`groq`, `openrouter`, `openai`, `gemini`, `anthropic`, `xai`). Defaults to `groq`.                                                                      |
 | `AI_MODEL`                                                                                                                       | optional | Default model override for the server AI provider (e.g. `llama-3.3-70b-versatile`)                                                                                                        |
 | `AI_API_KEY`                                                                                                                     | optional | Server-side key enabling free AI features for all users without requiring personal keys                                                                                                   |
@@ -57,16 +58,18 @@ Copy `.env.example` to `.env` and fill in:
 
 ### Branding
 
-A fork or self-hosted instance can override the upstream Sitepins name and links without editing code — all optional, all with sensible defaults (see `src/lib/brand.ts`):
+A fork or self-hosted instance can rebrand everything users see (name, logos, favicon, links) and every identifier the app writes (repo config folder, cookies, storage keys, upload paths, commit trailers) from env. Every branding var is required (`next.config.mjs` fails the build and lists any that are unset); `.env.example` ships the Sitepins values. Values are read in `src/lib/brand.ts`. Colors are not env-driven: edit `src/styles/theme.css`.
 
-| Variable                              | Default                         |
-| ------------------------------------- | ------------------------------- |
-| `NEXT_PUBLIC_BRAND_NAME`              | `Sitepins`                      |
-| `NEXT_PUBLIC_BRAND_URL`               | `https://sitepins.com`          |
-| `NEXT_PUBLIC_SUPPORT_URL`             | `<BRAND_URL>/contact`           |
-| `NEXT_PUBLIC_UPDATES_URL`             | `https://updates.sitepins.com`  |
-| `NEXT_PUBLIC_COMMUNITY_URL`           | `https://discord.gg/KrpvHfqcNA` |
-| `NEXT_PUBLIC_GIT_COMMIT_EMAIL_DOMAIN` | host of `BRAND_URL`             |
+The essentials:
+
+| Variable                      | Sitepins value         | Notes                                         |
+| ----------------------------- | ---------------------- | --------------------------------------------- |
+| `NEXT_PUBLIC_BRAND_NAME`      | `Sitepins`             | Display name                                  |
+| `NEXT_PUBLIC_BRAND_SLUG`      | `sitepins`             | Identifiers; must match the API's `BRAND_SLUG` |
+| `NEXT_PUBLIC_BRAND_URL`       | `https://sitepins.com` | Base for terms/privacy/support links          |
+| `NEXT_PUBLIC_BRAND_LOGO`      | `/images/logo.svg`     | Path under `public/` or absolute URL          |
+| `NEXT_PUBLIC_BRAND_FAVICON`   | `/images/favicon.png`  | One image for the tab, home screen and PWA icons; a custom one must be a square PNG, 512px or larger |
+| `NEXT_PUBLIC_GIT_APP_NAME`    | brand name             | GitHub App slug (commits show as `<slug>[bot]`) and GitLab commit author |
 
 ## AI Features
 
@@ -93,7 +96,7 @@ pnpm format       # prettier -w ./src
 
 Sitepins commits to your repos on your behalf, so it authenticates as a [GitHub App](https://github.com/settings/apps) rather than a plain OAuth app. This is purely an app-side concern — the backend never touches these credentials. Create one at **Settings → Developer settings → GitHub Apps → New GitHub App**:
 
-1. **GitHub App name** — anything unique on GitHub (e.g. `your-name-sitepins`). This exact name goes into `NEXT_PUBLIC_GITHUB_APP_NAME`; the install button links to `github.com/apps/<name>/installations/select_target`, so a typo here breaks the install flow silently.
+1. **GitHub App name** — anything unique on GitHub (e.g. `your-name-sitepins`). This exact name goes into `NEXT_PUBLIC_GIT_APP_NAME`; the install button links to `github.com/apps/<name>/installations/select_target`, so a typo here breaks the install flow silently.
 2. **Homepage URL** — your app's base URL (`http://localhost:3000` for local dev).
 3. **Callback URL** — `<APP_URL>/github-installed`, and check **"Request user authorization (OAuth) during installation"**. Without this box checked, GitHub never sends the `code` param and login silently fails.
 4. **Setup URL (optional)** — same as the callback URL, `<APP_URL>/github-installed`, with **"Redirect on update"** checked so re-installs/permission changes land on the same page.
@@ -124,7 +127,7 @@ GITHUB_APP_ID="<App ID>"
 GITHUB_APP_CLIENT_ID="<Client ID>"
 GITHUB_APP_CLIENT_SECRET="<Client secret>"
 GITHUB_APP_PRIVATE_KEY="<paste the full .pem contents, including the BEGIN/END lines>"
-NEXT_PUBLIC_GITHUB_APP_NAME="<GitHub App name from step 1>"
+NEXT_PUBLIC_GIT_APP_NAME="<GitHub App name from step 1>"
 ```
 
 `GITHUB_APP_PRIVATE_KEY` is used as-is (no file path, no transform) — quote it so the `.env` loader keeps the embedded newlines intact.
@@ -135,7 +138,7 @@ Finally, install the app on your own account/org from its public page (`github.c
 
 Unlike GitHub, GitLab access uses a plain OAuth application, not a GitLab "App" — again, app-side only, nothing the backend needs. Create one at **gitlab.com → your avatar → Edit profile → Applications** (or **Group → Settings → Applications** if you'd rather scope it to an org):
 
-1. **Name** — anything; only cosmetic, used for `NEXT_PUBLIC_GITLAB_APP_NAME` (a display label — it's not part of the OAuth URL, unlike the GitHub App name).
+1. **Name** — anything; only cosmetic. Commits on GitLab are authored as `NEXT_PUBLIC_GIT_APP_NAME`, the same var the GitHub App uses.
 2. **Redirect URI** — exactly `<APP_URL>/gitlab-installed` (e.g. `http://localhost:3000/gitlab-installed`). This must match what `src/app/api/auth/gitlab/route.ts` sends during token exchange, or GitLab will reject the callback.
 3. **Confidential** — check this. The client secret is used server-side in the token exchange, never in the browser.
 4. **Scopes** — check exactly `api` and `read_user`. Nothing else is requested by the app, and GitLab will reject a token request for scopes the app wasn't granted.
@@ -143,7 +146,6 @@ Unlike GitHub, GitLab access uses a plain OAuth application, not a GitLab "App" 
 After saving, GitLab shows the **Application ID** and **Secret** once. Fill `.env`:
 
 ```bash
-NEXT_PUBLIC_GITLAB_APP_NAME="<name from step 1>"
 NEXT_PUBLIC_GITLAB_CLIENT_ID="<Application ID>"
 GITLAB_CLIENT_SECRET="<Secret>"
 ```

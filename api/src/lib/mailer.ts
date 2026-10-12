@@ -1,3 +1,4 @@
+import brand from "@/config/brand";
 import config from "@/config/variables";
 import { logger } from "@/lib/logger";
 
@@ -27,12 +28,22 @@ export type MailKind =
 
 type MailParams = Record<string, unknown>;
 
+/**
+ * Optional per-message brand, e.g. an organization's own name and logo on an
+ * extension that brands mail per org. Unset fields fall back to the instance.
+ */
+export type TMailBrand = {
+  name?: string;
+  logo_url?: string;
+};
+
 type MailProvider = "smtp" | "console";
 
 export type CustomMailSender = (opts: {
   to: string;
   kind: MailKind;
   params?: MailParams;
+  brand?: TMailBrand;
 }) => Promise<boolean | void>;
 
 let customMailSender: CustomMailSender | null = null;
@@ -41,7 +52,7 @@ export const setMailSender = (sender: CustomMailSender | null) => {
   customMailSender = sender;
 };
 
-const FROM_NAME = config.mail_from_name || "Sitepins";
+const DEFAULT_FROM_NAME = config.mail_from_name || brand.name;
 const FROM_EMAIL = config.mail_from_email || "noreply@example.com";
 
 function resolveProvider(): MailProvider {
@@ -58,20 +69,29 @@ function resolveProvider(): MailProvider {
 // minimal and dependency-free — the hosted edition uses richer Brevo designs.
 // ---------------------------------------------------------------------------
 
-function layout(title: string, bodyHtml: string): string {
-  return `<!doctype html><html><body style="font-family:system-ui,Segoe UI,Arial,sans-serif;background:#f6f7f9;padding:24px;color:#111">
-    <div style="max-width:480px;margin:0 auto;background:#fff;border-radius:12px;padding:32px;border:1px solid #e5e7eb">
-      <h1 style="font-size:18px;margin:0 0 16px">${title}</h1>
-      ${bodyHtml}
-      <p style="color:#6b7280;font-size:12px;margin-top:24px">${FROM_NAME}</p>
-    </div>
-  </body></html>`;
-}
+const escapeHtml = (value: string) =>
+  value.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
 
 function render(
   kind: MailKind,
   params: MailParams,
+  mailBrand: TMailBrand = {},
 ): { subject: string; html: string } {
+  const FROM_NAME = mailBrand.name || DEFAULT_FROM_NAME;
+  const logoUrl = mailBrand.logo_url || brand.logo_url;
+  // An optional logo above the title (BRAND_LOGO_URL, or the per-message brand).
+  const logo = logoUrl
+    ? `<img src="${escapeHtml(logoUrl)}" alt="${escapeHtml(FROM_NAME)}" style="max-height:40px;margin:0 0 16px" />
+      `
+    : "";
+  const layout = (title: string, bodyHtml: string): string =>
+    `<!doctype html><html><body style="font-family:system-ui,Segoe UI,Arial,sans-serif;background:#f6f7f9;padding:24px;color:#111">
+    <div style="max-width:480px;margin:0 auto;background:#fff;border-radius:12px;padding:32px;border:1px solid #e5e7eb">
+      ${logo}<h1 style="font-size:18px;margin:0 0 16px">${title}</h1>
+      ${bodyHtml}
+      <p style="color:#6b7280;font-size:12px;margin-top:24px">${FROM_NAME}</p>
+    </div>
+  </body></html>`;
   switch (kind) {
     case "otp":
       return {
@@ -169,25 +189,32 @@ export async function sendMail({
   to,
   kind,
   params = {},
+  brand: mailBrand,
 }: {
   to: string;
   kind: MailKind;
   params?: MailParams;
+  brand?: TMailBrand;
 }): Promise<void> {
   if (customMailSender) {
-    const handled = await customMailSender({ to, kind, params });
+    const handled = await customMailSender({
+      to,
+      kind,
+      params,
+      ...(mailBrand && { brand: mailBrand }),
+    });
     if (handled !== false) {
       return;
     }
   }
 
   const provider = resolveProvider();
-  const { subject, html } = render(kind, params);
+  const { subject, html } = render(kind, params, mailBrand);
 
   if (provider === "smtp") {
     const transport = await getSmtpTransport();
     await transport.sendMail({
-      from: `"${FROM_NAME}" <${FROM_EMAIL}>`,
+      from: `"${mailBrand?.name || DEFAULT_FROM_NAME}" <${FROM_EMAIL}>`,
       to,
       subject,
       html,

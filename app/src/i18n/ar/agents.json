@@ -19,7 +19,7 @@
       },
       "schema_write": {
         "title": "تعديل المخططات",
-        "description": "تغيير المخططات والمقتطفات في .sitepins. يتطلب تغيير .sitepins/config.json إذن تعديل الكود."
+        "description": "تغيير المخططات والمقتطفات في {configDir}. يتطلب تغيير {configDir}/config.json إذن تعديل الكود."
       },
       "code_write": {
         "title": "تعديل الكود",
@@ -52,15 +52,15 @@
       "permissions": "الأذونات",
       "write_mode": "طريقة حفظ التغييرات",
       "write_direct": "إيداع مباشر",
-      "write_direct_description": "تذهب التغييرات مباشرة إلى فرع الموقع، ويودعها روبوت Sitepins.",
+      "write_direct_description": "تذهب التغييرات مباشرة إلى فرع الموقع، ويودعها روبوت {brand}.",
       "write_pull_request": "فتح طلب دمج",
       "write_pull_request_description": "تذهب التغييرات إلى فرع جديد مع طلب دمج لتراجعه."
     },
     "settings": {
       "title": "اتصال MCP",
-      "description": "امنح وكلاء الذكاء الاصطناعي مثل Claude وCodex وCursor وAntigravity الوصول إلى مواقعك. أنشئ رمزًا ثم الصق موجّه الإعداد في وكيلك. تأتي إيداعاتهم من روبوت Sitepins.",
+      "description": "امنح وكلاء الذكاء الاصطناعي مثل Claude وCodex وCursor وAntigravity الوصول إلى مواقعك. أنشئ رمزًا ثم الصق موجّه الإعداد في وكيلك. تأتي إيداعاتهم من روبوت {brand}.",
       "connect_title": "اربط وكيلك",
-      "connect_description": "انسخ هذا الموجّه والصقه في وكيل الذكاء الاصطناعي. يضيف Sitepins إلى إعدادات MCP للوكيل. يُعرض الرمز مرة واحدة فقط.",
+      "connect_description": "انسخ هذا الموجّه والصقه في وكيل الذكاء الاصطناعي. يضيف {brand} إلى إعدادات MCP للوكيل. يُعرض الرمز مرة واحدة فقط.",
       "mcp_label": "رابط خادم MCP",
       "copy": "نسخ",
       "copied": "تم النسخ",

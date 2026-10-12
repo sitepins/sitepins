@@ -19,7 +19,7 @@
       },
       "schema_write": {
         "title": "Modifier les schémas",
-        "description": "Modifier les schémas et snippets dans .sitepins. Modifier .sitepins/config.json nécessite Modifier le code."
+        "description": "Modifier les schémas et snippets dans {configDir}. Modifier {configDir}/config.json nécessite Modifier le code."
       },
       "code_write": {
         "title": "Modifier le code",
@@ -52,15 +52,15 @@
       "permissions": "Autorisations",
       "write_mode": "Enregistrement des modifications",
       "write_direct": "Committer directement",
-      "write_direct_description": "Les modifications vont directement sur la branche du site, committées par le bot Sitepins.",
+      "write_direct_description": "Les modifications vont directement sur la branche du site, committées par le bot {brand}.",
       "write_pull_request": "Ouvrir une pull request",
       "write_pull_request_description": "Les modifications vont sur une nouvelle branche avec une pull request à relire."
     },
     "settings": {
       "title": "Connexion MCP",
-      "description": "Donnez à des agents IA comme Claude, Codex, Cursor et Antigravity l'accès à vos sites. Créez un jeton, puis collez le prompt de configuration dans votre agent. Leurs commits viennent du bot Sitepins.",
+      "description": "Donnez à des agents IA comme Claude, Codex, Cursor et Antigravity l'accès à vos sites. Créez un jeton, puis collez le prompt de configuration dans votre agent. Leurs commits viennent du bot {brand}.",
       "connect_title": "Connecter votre agent",
-      "connect_description": "Copiez ce prompt et collez-le dans votre agent IA. Il ajoute Sitepins aux réglages MCP de l'agent. Le jeton n'est affiché qu'une fois.",
+      "connect_description": "Copiez ce prompt et collez-le dans votre agent IA. Il ajoute {brand} aux réglages MCP de l'agent. Le jeton n'est affiché qu'une fois.",
       "mcp_label": "URL du serveur MCP",
       "copy": "Copier",
       "copied": "Copié",

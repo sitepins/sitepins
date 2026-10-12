@@ -142,7 +142,7 @@
     },
     "pwa": {
       "install_app": "Installa app",
-      "update_available": "È disponibile una nuova versione di Sitepins.",
+      "update_available": "È disponibile una nuova versione di {brand}.",
       "reload": "Ricarica",
       "offline_warning": "Sei attualmente offline. La sincronizzazione è in pausa fino al ripristino della connessione.",
       "online_restored": "Di nuovo online! Connessione ripristinata.",

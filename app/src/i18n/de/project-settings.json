@@ -80,7 +80,7 @@
         "choose_branch_placeholder": "Einen Branch wählen",
         "disconnect_btn": "Trennen",
         "disconnect_confirm_title": "Bist du absolut sicher?",
-        "disconnect_confirm_desc": "Diese Aktion trennt das Repository von Sitepins. Du kannst es später jederzeit wieder verbinden.",
+        "disconnect_confirm_desc": "Diese Aktion trennt das Repository von {brand}. Du kannst es später jederzeit wieder verbinden.",
         "connect_repo_btn": "Repository verbinden",
         "error_missing_info": "Projekt- oder Organisationsinformationen fehlen",
         "success_disconnect": "Repository erfolgreich getrennt",
@@ -225,7 +225,7 @@
         "title": "Commit-Konfiguration",
         "description": "Lege fest, wie Commit-Nachrichten beim Speichern von Änderungen behandelt werden",
         "custom_commit_label": "Benutzerdefinierte Commit-Nachrichten",
-        "custom_commit_desc": "Aktiviere dies, um beim Speichern eigene Commit-Nachrichten zu schreiben. Wenn aktiv, kannst du eine benutzerdefinierte Nachricht angeben, andernfalls erzeugt Sitepins automatisch eine für dich.",
+        "custom_commit_desc": "Aktiviere dies, um beim Speichern eigene Commit-Nachrichten zu schreiben. Wenn aktiv, kannst du eine benutzerdefinierte Nachricht angeben, andernfalls erzeugt {brand} automatisch eine für dich.",
         "save_btn": "Änderungen speichern",
         "success_update": "Commit-Dialog-Einstellungen erfolgreich aktualisiert",
         "error_update": "Einstellungen konnten nicht aktualisiert werden"

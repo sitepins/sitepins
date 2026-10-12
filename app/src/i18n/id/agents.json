@@ -19,7 +19,7 @@
       },
       "schema_write": {
         "title": "Edit skema",
-        "description": "Mengubah skema dan snippet di .sitepins. Mengubah .sitepins/config.json memerlukan Edit kode."
+        "description": "Mengubah skema dan snippet di {configDir}. Mengubah {configDir}/config.json memerlukan Edit kode."
       },
       "code_write": {
         "title": "Edit kode",
@@ -52,15 +52,15 @@
       "permissions": "Izin",
       "write_mode": "Cara perubahan disimpan",
       "write_direct": "Commit langsung",
-      "write_direct_description": "Perubahan langsung masuk ke branch situs, di-commit oleh bot Sitepins.",
+      "write_direct_description": "Perubahan langsung masuk ke branch situs, di-commit oleh bot {brand}.",
       "write_pull_request": "Buka pull request",
       "write_pull_request_description": "Perubahan masuk ke branch baru dengan pull request untuk kamu tinjau."
     },
     "settings": {
       "title": "Koneksi MCP",
-      "description": "Beri agen AI seperti Claude, Codex, Cursor, dan Antigravity akses ke situsmu. Buat token, lalu tempel prompt penyiapan ke agenmu. Commit mereka berasal dari bot Sitepins.",
+      "description": "Beri agen AI seperti Claude, Codex, Cursor, dan Antigravity akses ke situsmu. Buat token, lalu tempel prompt penyiapan ke agenmu. Commit mereka berasal dari bot {brand}.",
       "connect_title": "Hubungkan agenmu",
-      "connect_description": "Salin prompt ini dan tempel ke agen AI-mu. Prompt ini menambahkan Sitepins ke pengaturan MCP agen. Token hanya ditampilkan sekali.",
+      "connect_description": "Salin prompt ini dan tempel ke agen AI-mu. Prompt ini menambahkan {brand} ke pengaturan MCP agen. Token hanya ditampilkan sekali.",
       "mcp_label": "URL server MCP",
       "copy": "Salin",
       "copied": "Disalin",

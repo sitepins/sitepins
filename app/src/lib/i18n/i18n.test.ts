@@ -38,9 +38,15 @@ function getAllKeyEntries(
   return entries;
 }
 
+// Brand tokens are substituted when messages load (lib/i18n/request.ts), not
+// passed at runtime, so a translation may leave the brand name out.
+const BRAND_TOKENS = new Set(["{brand}", "{configDir}"]);
+
 // Extracts variables like {count} or {name}
 function extractPlaceholders(str: string): string[] {
-  const matches = str.match(/\{[a-zA-Z0-9_-]+\}/g) || [];
+  const matches = (str.match(/\{[a-zA-Z0-9_-]+\}/g) || []).filter(
+    (m) => !BRAND_TOKENS.has(m),
+  );
   return Array.from(new Set(matches)).sort();
 }
 
@@ -366,4 +372,32 @@ describe("localized text resolution utilities", () => {
       expect(menu.user_dashboard).toBeDefined();
     },
   );
+});
+
+describe("white-label brand tokens", () => {
+  const files = localeDirectories.flatMap((locale) =>
+    readdirSync(path.join(I18N_DIR, locale))
+      .filter((f) => f.endsWith(".json"))
+      .map((f) => path.join(locale, f)),
+  );
+
+  it.each(files)("%s names the brand only through {brand}", (file) => {
+    const raw = readFileSync(path.join(I18N_DIR, file), "utf-8");
+    expect(raw).not.toMatch(/Sitepins|\.sitepins\b/);
+  });
+
+  it("substitutes brand tokens in every message string", async () => {
+    const { applyBrandTokens } = await import("@/lib/i18n/request");
+    expect(
+      applyBrandTokens({
+        a: "Sign in to your {brand} account",
+        b: ["Edit {configDir}/config.json"],
+        c: 3,
+      }),
+    ).toEqual({
+      a: "Sign in to your Sitepins account",
+      b: ["Edit .sitepins/config.json"],
+      c: 3,
+    });
+  });
 });

@@ -96,7 +96,7 @@
     },
     "setup-steps": {
       "getting_started": "البدء",
-      "description": "أكمل هذه الخطوات لإعداد Sitepins ونشر المحتوى الأول الخاص بك",
+      "description": "أكمل هذه الخطوات لإعداد {brand} ونشر المحتوى الأول الخاص بك",
       "progress": "التقدم",
       "progress_count": "{completed} من {total}",
       "steps": {

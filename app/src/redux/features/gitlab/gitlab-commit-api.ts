@@ -1,5 +1,7 @@
+import { BRAND_NAME } from "@/lib/brand";
 import { toast } from "@/components/ui/toast";
-import { IS_DEMO, SCHEMA_FOLDER } from "@/lib/constant";
+import { IS_DEMO } from "@/lib/constant";
+import { isSiteConfigPath, schemaFolder } from "@/lib/config-dir";
 import { logger } from "@/lib/logger";
 import { checkMedia } from "@/lib/utils/check-media-file";
 import { parseContentJson } from "@/lib/utils/content-serializer";
@@ -276,7 +278,7 @@ export const gitlabCommitApi = gitlabApi.injectEndpoints({
               body: {
                 branch,
                 commit_message: createGitCommitMessage(
-                  `${effectiveMessage} by Sitepins`,
+                  `${effectiveMessage} by ${BRAND_NAME}`,
                   description,
                   trailer,
                 ),
@@ -359,7 +361,7 @@ export const gitlabCommitApi = gitlabApi.injectEndpoints({
               } catch {
                 // Ignore cache update errors
               }
-            } else if (file.path === ".sitepins/config.json" && file.content) {
+            } else if (isSiteConfigPath(file.path) && file.content) {
               try {
                 const config = JSON.parse(file.content);
                 dispatch(updateConfig(config));
@@ -425,7 +427,7 @@ export const gitlabCommitApi = gitlabApi.injectEndpoints({
                   ),
                 );
               }
-            } else if (file.path.startsWith(SCHEMA_FOLDER) && IS_DEMO) {
+            } else if (file.path.startsWith(schemaFolder()) && IS_DEMO) {
               if (file.content) {
                 const fm = fmDetector(file.content, path.parse(file.path).ext);
                 const parsedContent = parseContentJson(file.content, fm);
@@ -533,7 +535,7 @@ export const gitlabCommitApi = gitlabApi.injectEndpoints({
               body: {
                 branch,
                 commit_message: createGitCommitMessage(
-                  `${message} by Sitepins`,
+                  `${message} by ${BRAND_NAME}`,
                   description,
                   trailer,
                 ),
@@ -831,7 +833,7 @@ export const gitlabCommitApi = gitlabApi.injectEndpoints({
 
           // Create commit with only changed files
           const commitMessage = createGitCommitMessage(
-            `Reset branch to commit by Sitepins`,
+            `Reset branch to commit by ${BRAND_NAME}`,
             `Reset to ${sha.substring(0, 7)}: ${commit.message}`,
             trailer,
           );

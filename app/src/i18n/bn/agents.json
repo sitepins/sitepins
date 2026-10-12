@@ -19,7 +19,7 @@
       },
       "schema_write": {
         "title": "স্কিমা সম্পাদনা",
-        "description": ".sitepins-এ স্কিমা ও স্নিপেট বদলানো। .sitepins/config.json বদলাতে কোড সম্পাদনা অনুমতি লাগে।"
+        "description": "{configDir}-এ স্কিমা ও স্নিপেট বদলানো। {configDir}/config.json বদলাতে কোড সম্পাদনা অনুমতি লাগে।"
       },
       "code_write": {
         "title": "কোড সম্পাদনা",
@@ -52,15 +52,15 @@
       "permissions": "অনুমতি",
       "write_mode": "পরিবর্তন কীভাবে সেভ হবে",
       "write_direct": "সরাসরি কমিট",
-      "write_direct_description": "পরিবর্তন সরাসরি সাইটের ব্রাঞ্চে যায়, Sitepins বট কমিট করে।",
+      "write_direct_description": "পরিবর্তন সরাসরি সাইটের ব্রাঞ্চে যায়, {brand} বট কমিট করে।",
       "write_pull_request": "পুল রিকোয়েস্ট খুলুন",
       "write_pull_request_description": "পরিবর্তন নতুন একটি ব্রাঞ্চে যায়, সাথে আপনার পর্যালোচনার জন্য পুল রিকোয়েস্ট।"
     },
     "settings": {
       "title": "MCP সংযোগ",
-      "description": "Claude, Codex, Cursor ও Antigravity-এর মতো AI এজেন্টকে আপনার সাইটে অ্যাক্সেস দিন। একটি টোকেন তৈরি করুন, তারপর সেটআপ প্রম্পটটি এজেন্টে পেস্ট করুন। তাদের কমিট আসে Sitepins বট থেকে।",
+      "description": "Claude, Codex, Cursor ও Antigravity-এর মতো AI এজেন্টকে আপনার সাইটে অ্যাক্সেস দিন। একটি টোকেন তৈরি করুন, তারপর সেটআপ প্রম্পটটি এজেন্টে পেস্ট করুন। তাদের কমিট আসে {brand} বট থেকে।",
       "connect_title": "আপনার এজেন্ট যুক্ত করুন",
-      "connect_description": "এই প্রম্পট কপি করে আপনার AI এজেন্টে পেস্ট করুন। এটি এজেন্টের MCP সেটিংসে Sitepins যোগ করে। টোকেন শুধু একবারই দেখানো হয়।",
+      "connect_description": "এই প্রম্পট কপি করে আপনার AI এজেন্টে পেস্ট করুন। এটি এজেন্টের MCP সেটিংসে {brand} যোগ করে। টোকেন শুধু একবারই দেখানো হয়।",
       "mcp_label": "MCP সার্ভার URL",
       "copy": "কপি",
       "copied": "কপি হয়েছে",

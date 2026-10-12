@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/dialog";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useFeatureAccess } from "@/hooks/use-feature-access";
-import { SCHEMA_FOLDER, SNIPPET_FOLDER } from "@/lib/constant";
+import { schemaFolder, snippetFolder } from "@/lib/config-dir";
 import {
   isGitHubProvider,
   isGitLabProvider,
@@ -43,7 +43,7 @@ import { SnippetSkeleton } from "./snippet-skeleton";
 
 type SnippetFile = {
   name: string; // filename without extension
-  path: string; // full path including .sitepins/snippet/
+  path: string; // full path including <config dir>/snippet/
   data?: z.infer<typeof snippetSchema>;
 };
 
@@ -120,8 +120,8 @@ const SnippetList = () => {
             item.path.endsWith(extension),
         );
 
-      const snippetFiles = findFiles(SNIPPET_FOLDER, ".json");
-      const schemaFiles = findFiles(SCHEMA_FOLDER, ".json");
+      const snippetFiles = findFiles(snippetFolder(), ".json");
+      const schemaFiles = findFiles(schemaFolder(), ".json");
 
       const fetchContentFor = async (files: (TTree & { path: string })[]) => {
         const filePromises = files.map(async (file) => {

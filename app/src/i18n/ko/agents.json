@@ -19,7 +19,7 @@
       },
       "schema_write": {
         "title": "스키마 편집",
-        "description": ".sitepins의 스키마와 스니펫을 변경합니다. .sitepins/config.json을 바꾸려면 코드 편집 권한이 필요합니다."
+        "description": "{configDir}의 스키마와 스니펫을 변경합니다. {configDir}/config.json을 바꾸려면 코드 편집 권한이 필요합니다."
       },
       "code_write": {
         "title": "코드 편집",
@@ -52,15 +52,15 @@
       "permissions": "권한",
       "write_mode": "변경 사항 저장 방식",
       "write_direct": "바로 커밋",
-      "write_direct_description": "변경 사항이 사이트 브랜치에 바로 반영되며 Sitepins 봇이 커밋합니다.",
+      "write_direct_description": "변경 사항이 사이트 브랜치에 바로 반영되며 {brand} 봇이 커밋합니다.",
       "write_pull_request": "풀 리퀘스트 열기",
       "write_pull_request_description": "변경 사항이 새 브랜치에 들어가고 검토할 풀 리퀘스트가 열립니다."
     },
     "settings": {
       "title": "MCP 연결",
-      "description": "Claude, Codex, Cursor, Antigravity 같은 AI 에이전트에 사이트 접근 권한을 주세요. 토큰을 만든 뒤 설정 프롬프트를 에이전트에 붙여 넣으세요. 커밋은 Sitepins 봇이 합니다.",
+      "description": "Claude, Codex, Cursor, Antigravity 같은 AI 에이전트에 사이트 접근 권한을 주세요. 토큰을 만든 뒤 설정 프롬프트를 에이전트에 붙여 넣으세요. 커밋은 {brand} 봇이 합니다.",
       "connect_title": "에이전트 연결",
-      "connect_description": "이 프롬프트를 복사해 AI 에이전트에 붙여 넣으세요. 에이전트의 MCP 설정에 Sitepins가 추가됩니다. 토큰은 한 번만 표시됩니다.",
+      "connect_description": "이 프롬프트를 복사해 AI 에이전트에 붙여 넣으세요. 에이전트의 MCP 설정에 {brand}가 추가됩니다. 토큰은 한 번만 표시됩니다.",
       "mcp_label": "MCP 서버 URL",
       "copy": "복사",
       "copied": "복사됨",

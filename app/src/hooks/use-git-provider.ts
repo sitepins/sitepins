@@ -1,3 +1,4 @@
+import { siteConfigPath } from "@/lib/config-dir";
 import { selectConfig } from "@/redux/features/config/slice";
 import { ExpectedShas } from "@/redux/features/git/commit-conflict";
 import {
@@ -31,7 +32,7 @@ import {
 import { useAppSelector } from "@/redux/store";
 import { useCallback } from "react";
 
-const SITE_CONFIG_PATH = ".sitepins/config.json";
+const SITE_CONFIG_PATH = siteConfigPath();
 
 const { github: gh, gitlab: gl } = gitProviderAdapters;
 

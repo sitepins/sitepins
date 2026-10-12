@@ -96,7 +96,7 @@
     },
     "setup-steps": {
       "getting_started": "Memulai",
-      "description": "Selesaikan langkah-langkah ini untuk menyiapkan Sitepins dan mempublikasikan konten pertama Anda",
+      "description": "Selesaikan langkah-langkah ini untuk menyiapkan {brand} dan mempublikasikan konten pertama Anda",
       "progress": "Kemajuan",
       "progress_count": "{completed} dari {total}",
       "steps": {

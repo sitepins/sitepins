@@ -1,3 +1,10 @@
+import brand from "@/config/brand";
+import {
+  configPaths,
+  isConfigDirPath,
+  isSchemaDirPath,
+  isSnippetDirPath,
+} from "@/lib/configDir";
 import config from "@/config/variables";
 import ApiError from "@/errors/ApiError";
 import {
@@ -53,9 +60,8 @@ import {
   TAgentContext,
 } from "./agent.type";
 
-export const SITE_CONFIG_PATH = ".sitepins/config.json";
-const SCHEMA_DIR = ".sitepins/schema";
-const SNIPPET_DIR = ".sitepins/snippet";
+/** Site config path for new sites. A repo may use the legacy folder instead. */
+export const SITE_CONFIG_PATH = configPaths().config;
 const MAX_READ_BYTES = 2 * 1024 * 1024;
 const BRANCH_NAME = /^[A-Za-z0-9._/-]{1,200}$/;
 
@@ -88,8 +94,11 @@ export type TAgentChangesetResult = TApplyChangesetResult & {
   pull_request?: { number: number; url: string };
 };
 
-// GitLab has no app identity, so agent commits carry the Sitepins name.
-const GITLAB_AUTHOR = { name: "Sitepins", email: "sitepins@sitepins.com" };
+// GitLab has no app identity, so agent commits carry the brand's bot name.
+const GITLAB_AUTHOR = { name: brand.bot_name, email: brand.bot_email };
+
+const USER_TRAILER = `${brand.commit_trailer_prefix}-User`;
+const AGENT_TRAILER = `${brand.commit_trailer_prefix}-Agent`;
 
 const gitAuthor = (project: TProjectType) =>
   isGitLabProject(project)
@@ -159,7 +168,7 @@ export const rootsFromConfig = (
   ].filter((r): r is string => Boolean(r)),
   media: [cleanRoot(siteConfig?.media)].filter((r): r is string => Boolean(r)),
   // config.json defines these roots, so changing it is a code change.
-  schema: [SCHEMA_DIR, SNIPPET_DIR],
+  schema: [configPaths().schema, configPaths().snippet],
 });
 
 /** The permission that would let this token write `path`. */
@@ -193,9 +202,9 @@ export const logTypeFor = (
   roots: TProjectRoots,
   siteConfig: TSiteConfig | null,
 ) => {
-  if (under(path, SCHEMA_DIR)) return EProjectLogType.SCHEMA;
-  if (under(path, SNIPPET_DIR)) return EProjectLogType.SNIPPET;
-  if (under(path, ".sitepins")) return EProjectLogType.CONFIG;
+  if (isSchemaDirPath(path)) return EProjectLogType.SCHEMA;
+  if (isSnippetDirPath(path)) return EProjectLogType.SNIPPET;
+  if (isConfigDirPath(path)) return EProjectLogType.CONFIG;
   if (roots.media.some((r) => under(path, r))) return EProjectLogType.MEDIA;
   const configs = (siteConfig?.configs ?? [])
     .map(cleanRoot)
@@ -209,7 +218,7 @@ const readSiteConfig = async (
   client: TGitClient,
   ref: string,
 ): Promise<TSiteConfig | null> => {
-  const file = await client.readFile(ref, SITE_CONFIG_PATH);
+  const file = await client.readFile(ref, configPaths().config);
   if (!file) return null;
   try {
     const parsed = JSON.parse(file.content.toString("utf-8"));
@@ -432,7 +441,7 @@ const buildContext = async (
   const files = entries.filter((e) => e.type === "blob").map((e) => e.path);
 
   const schemaPaths = files
-    .filter((p) => under(p, SCHEMA_DIR) && p.endsWith(".json"))
+    .filter((p) => under(p, configPaths().schema) && p.endsWith(".json"))
     .slice(0, 50);
   const toRead = [
     ...schemaPaths,
@@ -541,7 +550,7 @@ export const getProjectContext = async (
     },
     notes: context.siteConfig
       ? undefined
-      : `${SITE_CONFIG_PATH} is missing, so content and media folders are unknown. Writes need code:write until the project is opened in Sitepins once.`,
+      : `${SITE_CONFIG_PATH} is missing, so content and media folders are unknown. Writes need code:write until the project is opened in ${brand.name} once.`,
   };
 };
 
@@ -557,12 +566,13 @@ export const getSchema = async (
   );
   const client = await createCachedProjectGitClient(project, agent.user_id);
   const head = await requireHead(client);
-  const { entries } = await client.readTree(head, SCHEMA_DIR);
+  const schemaDir = configPaths().schema;
+  const { entries } = await client.readTree(head, schemaDir);
   const paths = entries
     .filter((e) => e.type === "blob" && e.path.endsWith(".json"))
     .map((e) => e.path);
   const byPath = paths.find(
-    (p) => p === name || p === `${SCHEMA_DIR}/${name}.json`,
+    (p) => p === name || p === `${schemaDir}/${name}.json`,
   );
   const candidates = byPath ? [byPath] : paths;
   const files = await client.readFiles(head, candidates);
@@ -861,7 +871,7 @@ export const searchContent = async (
     matches: result.matches.map((m) => ({ ...m, can_edit: canEdit(m.path) })),
     ...(result.more && { more_matches: true }),
     ...(blocked.length && {
-      permission_hint: `Some matches can't be changed with this token. The user can turn on ${blocked.map((s) => `"${AGENT_SCOPE_LABELS[s]}"`).join(" and ")} for it in Sitepins → Settings → MCP Connection.`,
+      permission_hint: `Some matches can't be changed with this token. The user can turn on ${blocked.map((s) => `"${AGENT_SCOPE_LABELS[s]}"`).join(" and ")} for it in ${brand.name} → Settings → MCP Connection.`,
     }),
     ...(skipped > 0 && {
       files_skipped: skipped,
@@ -887,7 +897,7 @@ export const listHistory = async (
 };
 
 const defaultAgentBranch = () =>
-  `sitepins/agent-${new Date().toISOString().slice(0, 10)}-${Math.random().toString(36).slice(2, 7)}`;
+  `${brand.agent_branch_prefix}agent-${new Date().toISOString().slice(0, 10)}-${Math.random().toString(36).slice(2, 7)}`;
 
 const resolveTargetBranch = (
   agent: TAgentContext,
@@ -910,9 +920,9 @@ const resolveTargetBranch = (
     throw new ApiError(`Invalid branch name: ${branch}`, 400, "");
   }
   // Under a pull-request-only grant the agent may not pick an arbitrary existing branch.
-  if (forced && !branch.startsWith("sitepins/")) {
+  if (forced && !branch.startsWith(brand.agent_branch_prefix)) {
     throw new ApiError(
-      "This agent may only push to branches under sitepins/",
+      `This agent may only push to branches under ${brand.agent_branch_prefix}`,
       403,
       "",
     );
@@ -999,8 +1009,8 @@ const commitChangeset = async (
     message: input.message,
     description: input.description,
     trailers: [
-      ["Sitepins-User", agent.user_name],
-      ["Sitepins-Agent", agent.client_name],
+      [USER_TRAILER, agent.user_name],
+      [AGENT_TRAILER, agent.client_name],
     ],
   });
 
@@ -1024,7 +1034,7 @@ const commitChangeset = async (
         v.reason.startsWith("outside")
           ? {
               ...v,
-              reason: `needs the ${scopeForPath(v.path, roots)} permission ("${AGENT_SCOPE_LABELS[scopeForPath(v.path, roots)]}" in Sitepins → Settings → MCP Connection)`,
+              reason: `needs the ${scopeForPath(v.path, roots)} permission ("${AGENT_SCOPE_LABELS[scopeForPath(v.path, roots)]}" in ${brand.name} → Settings → MCP Connection)`,
             }
           : v,
       );
@@ -1054,7 +1064,7 @@ const commitChangeset = async (
       .openPullRequest({
         head: branch,
         title: input.message.trim().slice(0, 200),
-        body: `${input.description ? `${input.description}\n\n` : ""}Proposed by ${agent.client_name} for ${agent.user_name} via Sitepins.`,
+        body: `${input.description ? `${input.description}\n\n` : ""}Proposed by ${agent.client_name} for ${agent.user_name} via ${brand.name}.`,
       })
       .catch((error: unknown) => {
         logger.error("[agents] opening pull request failed", error);
@@ -1228,8 +1238,8 @@ const trailerValue = (value: string) => value.replace(/\s+/g, " ").trim();
 /** "Undo that": the newest commit on the branch this token made, matched by its trailers. */
 const lastChangeBy = async (agent: TAgentContext, client: TGitClient) => {
   const mine = [
-    `Sitepins-Agent: ${trailerValue(agent.client_name)}`,
-    `Sitepins-User: ${trailerValue(agent.user_name)}`,
+    `${AGENT_TRAILER}: ${trailerValue(agent.client_name)}`,
+    `${USER_TRAILER}: ${trailerValue(agent.user_name)}`,
   ];
   const commits = await client.listCommits({ limit: UNDO_LOOKBACK });
   const found = commits.find((c) =>
@@ -1395,8 +1405,7 @@ export const getDeployStatus = async (
     [EDeployState.BUILDING]:
       "The site is still building or deploying; check again in a minute.",
     [EDeployState.FAILED]: `The build or deploy failed${failing?.description ? `: ${failing.description}` : ""}.${failing?.url ? ` Details: ${failing.url}` : ""} The change is saved but not live.`,
-    [EDeployState.UNKNOWN]:
-      "The hosting provider doesn't report builds to the repository, so Sitepins can't tell whether this change is live. It usually goes live once the host rebuilds; check the site or the host's dashboard.",
+    [EDeployState.UNKNOWN]: `The hosting provider doesn't report builds to the repository, so ${brand.name} can't tell whether this change is live. It usually goes live once the host rebuilds; check the site or the host's dashboard.`,
   }[state];
   return {
     commit: sha,
@@ -1468,12 +1477,8 @@ export const getGitCommands = async (
       "Run clone for a new copy. For an existing clone, call again with local_head (the output of git rev-parse HEAD) to see whether it needs a sync.",
     [ELocalCloneState.UP_TO_DATE]:
       "The local copy already matches the site. Nothing to do.",
-    [ELocalCloneState.BEHIND]:
-      "Run sync once from the clone's folder. It fetches and rebases; local commits that were already saved through Sitepins are dropped automatically.",
-    [ELocalCloneState.LOCAL_ONLY]:
-      "The clone has commits Sitepins hasn't saved. Save them with write_files (base_commit: git merge-base HEAD origin/" +
-      branch +
-      "), then run sync.",
+    [ELocalCloneState.BEHIND]: `Run sync once from the clone's folder. It fetches and rebases; local commits that were already saved through ${brand.name} are dropped automatically.`,
+    [ELocalCloneState.LOCAL_ONLY]: `The clone has commits ${brand.name} hasn't saved. Save them with write_files (base_commit: git merge-base HEAD origin/${branch}), then run sync.`,
     [ELocalCloneState.DIVERGED]:
       "The site's history was rewritten since this clone was made. Run sync; if the rebase can't apply cleanly, run reset to match the site (local edits that weren't saved are lost).",
   }[state];
@@ -1579,6 +1584,7 @@ const findSchema = async (
   head: string,
   contentRoot: string | undefined,
   input: { schema?: string; folder?: string },
+  schemaDir: string,
 ) => {
   const relative = (folder: string) =>
     contentRoot && under(folder, contentRoot)
@@ -1586,9 +1592,12 @@ const findSchema = async (
       : folder;
   let candidates: string[];
   if (input.schema) {
-    const name = input.schema
-      .replace(/^\.sitepins\/schema\//, "")
-      .replace(/\.json$/, "");
+    const prefix = `${schemaDir}/`;
+    const name = (
+      input.schema.startsWith(prefix)
+        ? input.schema.slice(prefix.length)
+        : input.schema
+    ).replace(/\.json$/, "");
     candidates = [name];
   } else {
     candidates = [];
@@ -1600,7 +1609,7 @@ const findSchema = async (
         : "";
     }
   }
-  const paths = candidates.map((c) => `${SCHEMA_DIR}/${c}.json`);
+  const paths = candidates.map((c) => `${schemaDir}/${c}.json`);
   const files = await reader.readFiles(head, paths);
   for (const [i, path] of paths.entries()) {
     const raw = files.get(path)?.content.toString("utf-8");
@@ -1642,10 +1651,13 @@ export const createEntry = async (
   const folder = input.folder
     ? normalizeRepoPath(input.folder.replace(/\/+$/, ""))
     : undefined;
-  const found = await findSchema(reader, head, contentRoot, {
-    schema: input.schema,
-    folder,
-  });
+  const found = await findSchema(
+    reader,
+    head,
+    contentRoot,
+    { schema: input.schema, folder },
+    configPaths().schema,
+  );
   const targetFolder =
     folder ??
     normalizeRepoPath([contentRoot, found!.name].filter(Boolean).join("/"));
@@ -1704,7 +1716,7 @@ export const createEntry = async (
   return {
     ...result,
     path,
-    schema: found ? `${SCHEMA_DIR}/${found.name}.json` : null,
+    schema: found ? `${configPaths().schema}/${found.name}.json` : null,
     ...(input.dry_run && { content }),
   };
 };
@@ -1735,7 +1747,7 @@ export const prepareUpload = async (
   const needed = scopeForPath(path, roots);
   if (!agent.scopes.has(needed)) {
     throw new ApiError(
-      `${path} needs the ${needed} permission ("${AGENT_SCOPE_LABELS[needed]}" in Sitepins → Settings → MCP Connection)${roots.media.length ? `. Media goes under ${roots.media.join(", ")}` : ""}.`,
+      `${path} needs the ${needed} permission ("${AGENT_SCOPE_LABELS[needed]}" in ${brand.name} → Settings → MCP Connection)${roots.media.length ? `. Media goes under ${roots.media.join(", ")}` : ""}.`,
       403,
       "",
     );

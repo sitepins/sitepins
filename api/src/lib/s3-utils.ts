@@ -25,7 +25,7 @@ export const s3Client = new S3Client(s3Config);
 
 /**
  * Delete a file from S3 bucket
- * @param key - S3 object key (e.g., "sitepins/users/123.png")
+ * @param key - S3 object key (e.g., "<prefix>/users/123.png")
  */
 export const deleteFile = async (key: string) => {
   const deleteParams = { Bucket: config.s3_bucket_name, Key: key };

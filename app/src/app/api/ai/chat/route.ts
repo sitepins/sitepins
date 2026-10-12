@@ -1,3 +1,4 @@
+import { BRAND_NAME } from "@/lib/brand";
 import { handleAiRouteError } from "@/lib/ai/ai-error-handler";
 import {
   getSafeInputCharLimit,
@@ -170,7 +171,7 @@ async function buildDocsBlock(question: string): Promise<string> {
     const url = `${DOCS_BASE_URL}${doc.path}`;
     return `### ${doc.title} — ${url}\n${excerpts[i] || doc.description}`;
   });
-  return `\nSITEPINS DOCS (official documentation relevant to the question):\n${blocks.join("\n\n")}\n`;
+  return `\n${BRAND_NAME.toUpperCase()} DOCS (official documentation relevant to the question):\n${blocks.join("\n\n")}\n`;
 }
 
 const MAX_ACCOUNT_CONTEXT_CHARS = 2_000;
@@ -301,7 +302,7 @@ export async function POST(req: NextRequest) {
   const orgRef = ctx.orgId || "org";
   const projectRef = ctx.projectId || "proj";
 
-  const systemPrompt = `You are Sitepins AI Copilot — an expert assistant inside Sitepins, a Git-backed Headless CMS.
+  const systemPrompt = `You are ${BRAND_NAME} AI Copilot — an expert assistant inside ${BRAND_NAME}, a Git-backed Headless CMS.
 ${projectInfo}
 ${filesBlock}
 ${docsBlock}
@@ -316,7 +317,7 @@ CORE PRINCIPLES:
    - NEVER strip or omit the content directory prefix!
 3. GROUNDING:
    - When REFERENCED FILES are provided, answer questions about content from them and say which file you used. Do not guess what a file contains if it is not provided — link to it instead.
-   - For "how do I…" questions about Sitepins itself, base the steps on SITEPINS DOCS when provided and end with a link to the relevant docs page. Never invent menu names or settings that are not in the docs or context.
+   - For "how do I…" questions about ${BRAND_NAME} itself, base the steps on ${BRAND_NAME.toUpperCase()} DOCS when provided and end with a link to the relevant docs page. Never invent menu names or settings that are not in the docs or context.
    - Use the updated/created dates in FILES IN REPO for time-based questions (today is ${new Date().toISOString().slice(0, 10)}).
 4. FORMAT:
    - Render URLs as markdown links: [Edit Homepage](url), [Edit Layout](url), [Go to Media](url).

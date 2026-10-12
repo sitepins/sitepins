@@ -1,4 +1,5 @@
 import { authClient } from "@/lib/auth/auth-client";
+import { GIT_APP_NAME } from "@/lib/constant";
 import { isGitLabProvider } from "@/lib/utils/provider-checker";
 import { useGetProvidersQuery } from "@/redux/features/provider/provider-api";
 import { TProvider } from "@/redux/features/provider/type";
@@ -105,7 +106,7 @@ export function useGitAuth({
 
       const url = isGitLabProvider(activeProvider)
         ? `https://gitlab.com/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_GITLAB_CLIENT_ID}&redirect_uri=${encodeURIComponent(window.location.origin + "/gitlab-installed")}&response_type=code&scope=api+read_user`
-        : `https://github.com/apps/${process.env.NEXT_PUBLIC_GITHUB_APP_NAME}/installations/select_target`;
+        : `https://github.com/apps/${GIT_APP_NAME}/installations/select_target`;
 
       window.open(
         url,

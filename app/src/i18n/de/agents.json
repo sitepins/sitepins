@@ -19,7 +19,7 @@
       },
       "schema_write": {
         "title": "Schemas bearbeiten",
-        "description": "Schemas und Snippets in .sitepins ändern. Für .sitepins/config.json ist „Code bearbeiten“ nötig."
+        "description": "Schemas und Snippets in {configDir} ändern. Für {configDir}/config.json ist „Code bearbeiten“ nötig."
       },
       "code_write": {
         "title": "Code bearbeiten",
@@ -52,15 +52,15 @@
       "permissions": "Berechtigungen",
       "write_mode": "So werden Änderungen gespeichert",
       "write_direct": "Direkt committen",
-      "write_direct_description": "Änderungen landen direkt im Branch der Website, committet vom Sitepins-Bot.",
+      "write_direct_description": "Änderungen landen direkt im Branch der Website, committet vom {brand}-Bot.",
       "write_pull_request": "Pull Request öffnen",
       "write_pull_request_description": "Änderungen kommen in einen neuen Branch mit einem Pull Request, den du prüfst."
     },
     "settings": {
       "title": "MCP-Verbindung",
-      "description": "Gib KI-Agents wie Claude, Codex, Cursor und Antigravity Zugriff auf deine Websites. Erstelle ein Token und füge den Einrichtungs-Prompt in deinen Agent ein. Ihre Commits stammen vom Sitepins-Bot.",
+      "description": "Gib KI-Agents wie Claude, Codex, Cursor und Antigravity Zugriff auf deine Websites. Erstelle ein Token und füge den Einrichtungs-Prompt in deinen Agent ein. Ihre Commits stammen vom {brand}-Bot.",
       "connect_title": "Agent verbinden",
-      "connect_description": "Kopiere diesen Prompt und füge ihn in deinen KI-Agent ein. Er fügt Sitepins zu den MCP-Einstellungen des Agents hinzu. Das Token wird nur einmal angezeigt.",
+      "connect_description": "Kopiere diesen Prompt und füge ihn in deinen KI-Agent ein. Er fügt {brand} zu den MCP-Einstellungen des Agents hinzu. Das Token wird nur einmal angezeigt.",
       "mcp_label": "MCP-Server-URL",
       "copy": "Kopieren",
       "copied": "Kopiert",

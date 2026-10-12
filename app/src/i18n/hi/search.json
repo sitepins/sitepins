@@ -294,7 +294,7 @@
       },
       "updates-feedback": {
         "label": "अपडेट और प्रतिक्रिया",
-        "href": "https://updates.sitepins.com/",
+        "href": "https://updates{configDir}.com/",
         "target": "_blank",
         "keywords": [
           "अपडेट",

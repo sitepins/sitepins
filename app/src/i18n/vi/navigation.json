@@ -7,7 +7,8 @@
         "support": "Hỗ trợ",
         "ai_agent": "Trợ lý AI",
         "mcp_connection": "Kết nối MCP",
-        "preferences": "Tùy chọn"
+        "preferences": "Tùy chọn",
+        "source_code": "Mã nguồn"
       },
       "user_dashboard": {
         "overview": "Tổng quan",

@@ -12,7 +12,7 @@
     },
     "github_integration": {
       "title": "Hubungkan akun GitHub Anda",
-      "description": "Sitepins memerlukan akses untuk membuat branch dan menyinkronkan konten untuk proyek Anda.",
+      "description": "{brand} memerlukan akses untuk membuat branch dan menyinkronkan konten untuk proyek Anda.",
       "allow_all_repos": "Saya akan memilih semua repositori",
       "connect_btn": "Hubungkan dengan GitHub",
       "grant_access_link": "Saya tidak ingin memberikan akses ke semua repositori",
@@ -22,7 +22,7 @@
       "step_download": "Unduh template secara manual.",
       "step_fork": "Fork repositori secara manual.",
       "step_push": "Push kode sumber ke repositori GitHub Anda.",
-      "step_go_to": "Buka Sitepins",
+      "step_go_to": "Buka {brand}",
       "step_new_site": "Klik tombol + Situs Baru di kanan atas.",
       "step_grant_access": "Pilih GitHub dan berikan akses ke repositori Anda.",
       "step_grant_forked": "Pilih GitHub dan berikan akses hanya ke repositori hasil fork Anda.",

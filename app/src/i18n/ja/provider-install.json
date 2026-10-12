@@ -12,7 +12,7 @@
     },
     "github_integration": {
       "title": "GitHubアカウントを連携",
-      "description": "Sitepinsがブランチを作成しコンテンツを同期するためにアクセス権が必要です。",
+      "description": "{brand}がブランチを作成しコンテンツを同期するためにアクセス権が必要です。",
       "allow_all_repos": "すべてのリポジトリへのアクセスを許可する",
       "connect_btn": "GitHubと連携",
       "grant_access_link": "特定のリポジトリのみにアクセスを制限する",
@@ -22,7 +22,7 @@
       "step_download": "テンプレートを手動でダウンロードします。",
       "step_fork": "リポジトリを手動でフォーク（Fork）します。",
       "step_push": "ソースコードをご自身のGitHubリポジトリにプッシュします。",
-      "step_go_to": "Sitepinsに移動します。",
+      "step_go_to": "{brand}に移動します。",
       "step_new_site": "右上の「+ 新規サイト」ボタンをクリックします。",
       "step_grant_access": "GitHubを選択し、リポジトリへのアクセス権を付与します。",
       "step_grant_forked": "GitHubを選択し、フォークしたリポジトリのみアクセス権を付与します。",

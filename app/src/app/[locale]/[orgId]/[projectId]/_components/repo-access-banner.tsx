@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { GITHUB_APP_NAME } from "@/lib/constant";
+import { GIT_APP_NAME } from "@/lib/constant";
 import { errorStatus } from "@/lib/utils/error";
 import { isGitLabProvider } from "@/lib/utils/provider-checker";
 import { selectConfig } from "@/redux/features/config/slice";
@@ -71,7 +71,7 @@ export default function RepoAccessBanner({
               {isGitLab
                 ? t("repo_access.gitlab_description")
                 : t("repo_access.github_description", {
-                    app: GITHUB_APP_NAME,
+                    app: GIT_APP_NAME,
                   })}
             </span>
           </p>
@@ -80,7 +80,7 @@ export default function RepoAccessBanner({
           {isGitHub && (
             <Button size="xs" asChild>
               <a
-                href={`https://github.com/apps/${GITHUB_APP_NAME}/installations/select_target`}
+                href={`https://github.com/apps/${GIT_APP_NAME}/installations/select_target`}
                 target="_blank"
                 rel="noreferrer"
               >

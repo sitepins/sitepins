@@ -142,7 +142,7 @@
     },
     "pwa": {
       "install_app": "安装应用",
-      "update_available": "Sitepins 有新版本可用。",
+      "update_available": "{brand} 有新版本可用。",
       "reload": "重新加载",
       "offline_warning": "您当前处于离线状态。在网络恢复前，同步已暂停。",
       "online_restored": "已恢复在线！连接已恢复。",

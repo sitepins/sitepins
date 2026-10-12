@@ -1,6 +1,7 @@
 import { logger } from "@/lib/logger";
 import { MdxSnippet } from "@/editor/utils/plate-types";
-import { GITLAB_API_VERSION, SNIPPET_FOLDER } from "@/lib/constant";
+import { GITLAB_API_VERSION } from "@/lib/constant";
+import { siteConfigPath, snippetFolder } from "@/lib/config-dir";
 import { checkMedia } from "@/lib/utils/check-media-file";
 import {
   isOldConfigFormat,
@@ -475,7 +476,7 @@ export const gitlabContentApi = gitlabApi.injectEndpoints({
     }),
 
     /**
-     * Get GitLab snippets (from .sitepins/snippets folder)
+     * Get GitLab snippets (from the config folder's snippet/)
      */
     getGitLabSnippets: builder.query<
       MdxSnippet[],
@@ -488,7 +489,7 @@ export const gitlabContentApi = gitlabApi.injectEndpoints({
         const result = await fetchWithBQ({
           endpoint: `/projects/${encodeProjectPath(String(id))}/repository/tree`,
           params: {
-            path: SNIPPET_FOLDER,
+            path: snippetFolder(),
             ref,
             per_page: 100,
           },
@@ -512,13 +513,13 @@ export const gitlabContentApi = gitlabApi.injectEndpoints({
       providesTags: (_result, _error, arg) => [
         {
           type: "GitLabContent",
-          id: `${arg.id}/${arg.ref}/${SNIPPET_FOLDER}`,
+          id: `${arg.id}/${arg.ref}/${snippetFolder()}`,
         },
       ],
     }),
 
     /**
-     * Get GitLab site config (from .sitepins/config.json)
+     * Get GitLab site config (from <config dir>/config.json)
      */
     getGitLabSiteConfig: builder.query<
       Record<string, unknown>,
@@ -552,7 +553,7 @@ export const gitlabContentApi = gitlabApi.injectEndpoints({
                 branch: arg.ref || "main",
                 files: [
                   {
-                    path: arg.file_path,
+                    path: siteConfigPath(),
                     content: JSON.stringify(migrated, null, 2),
                   },
                   getManifestFile(migrated.public),

@@ -1,3 +1,4 @@
+import brand from "@/config/brand";
 import ApiError from "@/errors/ApiError";
 import { getRegisteredAgentTools } from "@/lib/agentExtensions";
 import { TChangesetChange } from "@/lib/git-engine/changeset";
@@ -12,7 +13,7 @@ const MAX_CONFLICT_PREVIEW = 20_000;
 
 // Sent once per session, so every sentence has to earn its place.
 const INSTRUCTIONS = [
-  'Sitepins edits websites stored in Git. Users are usually not developers ("make the banner red", "save my changes"): map their words to these tools and reply in plain language, no git jargon.',
+  `${brand.name} edits websites stored in Git. Users are usually not developers ("make the banner red", "save my changes"): map their words to these tools and reply in plain language, no git jargon.`,
   "Start: list_projects (ask which site if unclear), then get_project_context once; its where_to_edit points to settings, styles and templates.",
   "Find with search_content using the user's words, read with read_files. Change text with edit_file, frontmatter or settings values with update_fields, add posts or pages with create_entry, images with create_upload_url, anything else with write_files.",
   "Every write is saved and published to the repository at once; there is no save or push step. In pull_request write mode, share the pull request link: it goes live after merging.",
@@ -108,7 +109,7 @@ const describeConflicts = <
 /** One server per request, bound to the already-verified agent. Tools the token can't use aren't listed. */
 export const buildMcpServer = (agent: TAgentContext): McpServer => {
   const server = new McpServer(
-    { name: "sitepins", version: "1.2.0" },
+    { name: brand.slug, version: "1.2.0" },
     { instructions: INSTRUCTIONS },
   );
   const run = createToolRunner(agent);

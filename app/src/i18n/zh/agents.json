@@ -19,7 +19,7 @@
       },
       "schema_write": {
         "title": "编辑架构",
-        "description": "修改 .sitepins 中的架构和代码片段。修改 .sitepins/config.json 需要“编辑代码”权限。"
+        "description": "修改 {configDir} 中的架构和代码片段。修改 {configDir}/config.json 需要“编辑代码”权限。"
       },
       "code_write": {
         "title": "编辑代码",
@@ -52,15 +52,15 @@
       "permissions": "权限",
       "write_mode": "更改的保存方式",
       "write_direct": "直接提交",
-      "write_direct_description": "更改直接进入站点分支，由 Sitepins 机器人提交。",
+      "write_direct_description": "更改直接进入站点分支，由 {brand} 机器人提交。",
       "write_pull_request": "创建拉取请求",
       "write_pull_request_description": "更改进入新分支，并附带拉取请求供你审核。"
     },
     "settings": {
       "title": "MCP 连接",
-      "description": "让 Claude、Codex、Cursor 和 Antigravity 等 AI 代理访问你的站点。创建一个令牌，然后把设置提示粘贴到你的代理中。它们的提交来自 Sitepins 机器人。",
+      "description": "让 Claude、Codex、Cursor 和 Antigravity 等 AI 代理访问你的站点。创建一个令牌，然后把设置提示粘贴到你的代理中。它们的提交来自 {brand} 机器人。",
       "connect_title": "连接你的代理",
-      "connect_description": "复制此提示并粘贴到你的 AI 代理中。它会把 Sitepins 添加到代理的 MCP 设置里。令牌只显示一次。",
+      "connect_description": "复制此提示并粘贴到你的 AI 代理中。它会把 {brand} 添加到代理的 MCP 设置里。令牌只显示一次。",
       "mcp_label": "MCP 服务器 URL",
       "copy": "复制",
       "copied": "已复制",

@@ -461,6 +461,15 @@ describe("guidance", () => {
     expect(pr).toContain("Write mode: pull_request");
   });
 
+  it("keeps write-only rules away from read-only tokens", async () => {
+    const readOnly = await instructionsFor(READ_ONLY);
+    expect(readOnly).not.toContain("expected_sha");
+    expect(readOnly).not.toContain("On a conflict");
+    const all = await instructionsFor(ALL);
+    expect(all).toContain("expected_sha");
+    expect(all).toContain("On a conflict");
+  });
+
   it("says which setting unlocks a recipe the token can't use", async () => {
     const guide = JSON.parse(
       (await callTool("get_guide", { topic: "editing_text" }, READ_ONLY))

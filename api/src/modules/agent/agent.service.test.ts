@@ -113,7 +113,8 @@ vi.mock("./agent.git", () => {
     });
   return {
     getProjectToken: async () => ({ token: "ghs_test" }),
-    isGitLabProject: () => false,
+    isGitLabProject: (project: { provider: string }) =>
+      project.provider.toLowerCase() === "gitlab",
     createProjectGitClient: async (
       _project: unknown,
       _user: string,
@@ -1113,10 +1114,40 @@ describe("uploads", () => {
       site_path: "/images/hero.png",
       bytes: 7,
     });
+    expect(result).toMatchObject({
+      files: [
+        {
+          path: "public/images/hero.png",
+          sha: expect.stringMatching(/^[0-9a-f]{40}$/),
+        },
+      ],
+      next_step: expect.any(String),
+    });
     expect(m.fake.git.text("public/images/hero.png")).toBe("PNGDATA");
     await expect(redeemUploadTicket(ticket)).rejects.toMatchObject({
       statusCode: 410,
     });
+  });
+
+  it("reports a conflict when the file appeared after the link was made", async () => {
+    const link = await prepareUpload(
+      agent({}, [
+        EAgentScope.PROJECTS_READ,
+        EAgentScope.CONTENT_READ,
+        EAgentScope.MEDIA_WRITE,
+      ]),
+      "p1",
+      { path: "public/images/new.png" },
+    );
+    const { claims, agent: uploader } = await redeemUploadTicket(
+      link.upload_url.split("/").pop()!,
+    );
+    m.fake.git.push({ "public/images/new.png": "OTHER" });
+    const result = await commitUpload(uploader, claims, Buffer.from("PNG"));
+    expect(result.status).toBe("conflict");
+    expect(result.next_step).toBe(
+      "Nothing was saved. Ask for a new upload link with another path, or with overwrite: true.",
+    );
   });
 
   it("refuses paths the token can't write, and existing files unless asked", async () => {
@@ -1401,6 +1432,24 @@ describe("listEntries", () => {
     expect(next.entries).toEqual([
       expect.objectContaining({ fields: { tags: ["a"] } }),
     ]);
+  });
+
+  it("caps the scan lower on GitLab, which reads one file per request", async () => {
+    m.fake.git.push(
+      Object.fromEntries(
+        Array.from({ length: 200 }, (_, i) => [
+          `src/content/many/p${i}.md`,
+          `---\ntitle: P${i}\n---\n`,
+        ]),
+      ),
+    );
+    projectFindOne.mockResolvedValue({ ...PROJECT, provider: "Gitlab" });
+    const result = await listEntries(agent(), "p1", {
+      folder: "src/content/many",
+    });
+    expect(result.scan_truncated).toBe(true);
+    expect(result.hint).toContain("150");
+    expect(result.total).toBe(150);
   });
 
   it("suggests a folder when the one given doesn't exist", async () => {

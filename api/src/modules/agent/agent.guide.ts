@@ -122,9 +122,6 @@ const RULES: string[][] = [
     "Never use an id, path, sha, schema or field name that didn't come from a tool result in this session.",
   ],
   [
-    "expected_sha is the sha from your latest read or write of that file; it changes after every write.",
-  ],
-  [
     '"Saved" isn\'t "live": only get_deploy_status state=live means live.',
     '"Saved" isn\'t "live"; don\'t say a change is live.',
   ],
@@ -132,9 +129,15 @@ const RULES: string[][] = [
   [
     "On a permission error, tell the user the exact setting it names; don't work around it with another tool.",
   ],
-  ["On a conflict, re-read, merge and retry once, then tell the user."],
   ["Never git push or store tokens."],
   ["Unsure which tool fits: call get_guide."],
+];
+
+const WRITE_RULES: string[][] = [
+  [
+    "expected_sha is the sha from your latest read or write of that file; it changes after every write.",
+  ],
+  ["On a conflict, re-read, merge and retry once, then tell the user."],
 ];
 
 const writeModeLine = (agent: TAgentContext) => {
@@ -174,7 +177,11 @@ export const buildInstructions = (agent: TAgentContext) => {
     ...pick(ROUTES),
     ...extensionLines,
     "Rules:",
-    ...pick(RULES),
+    ...pick(
+      canWrite(agent)
+        ? [...RULES.slice(0, 1), ...WRITE_RULES, ...RULES.slice(1)]
+        : RULES,
+    ),
   ].join("\n");
 };
 

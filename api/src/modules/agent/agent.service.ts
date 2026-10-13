@@ -1,12 +1,13 @@
 import brand from "@/config/brand";
+import config from "@/config/variables";
+import ApiError from "@/errors/ApiError";
 import {
   configPaths,
   isConfigDirPath,
   isSchemaDirPath,
   isSnippetDirPath,
 } from "@/lib/configDir";
-import config from "@/config/variables";
-import ApiError from "@/errors/ApiError";
+import { runAgentAccessGuard } from "@/lib/extensionGuards";
 import {
   applyChangeset,
   buildCommitMessage,
@@ -18,7 +19,6 @@ import {
 import { GitEngineError } from "@/lib/git-engine/errors";
 import { normalizeRepoPath, TPathPolicy } from "@/lib/git-engine/path-policy";
 import { TGitClient, TGitFile } from "@/lib/git-engine/types";
-import { runAgentAccessGuard } from "@/lib/extensionGuards";
 import { logger } from "@/lib/logger";
 import { broadcastExternalCommit } from "@/modules/common/editor.gateway";
 import { ProjectLog } from "@/modules/project-log/project-log.model";
@@ -35,12 +35,7 @@ import {
   TUploadClaims,
 } from "./agent.auth";
 import { agentCache, forgetHead, TCachedGitClient } from "./agent.cache";
-import {
-  createCachedProjectGitClient,
-  createProjectGitClient,
-  getProjectToken,
-  isGitLabProject,
-} from "./agent.git";
+import { unifiedDiff } from "./agent.diff";
 import {
   checkEntryFields,
   defaultsFromTemplate,
@@ -53,7 +48,12 @@ import {
   TTemplateField,
   updateFields,
 } from "./agent.fields";
-import { unifiedDiff } from "./agent.diff";
+import {
+  createCachedProjectGitClient,
+  createProjectGitClient,
+  getProjectToken,
+  isGitLabProject,
+} from "./agent.git";
 import { globToRegExp } from "./agent.glob";
 import { closestLines, closestPaths } from "./agent.suggest";
 import { agentError, canWrite, EToolErrorCode } from "./agent.tools";
@@ -2018,6 +2018,8 @@ export enum EEntrySort {
 
 const ENTRY_FILE = /\.(mdx?|markdown|html?|json|ya?ml|toml)$/i;
 const MAX_ENTRY_SCAN = 500;
+// GitLab has no batch read, so each file is its own request.
+const MAX_ENTRY_SCAN_GITLAB = 150;
 const MAX_FIELD_CHARS = 300;
 const DEFAULT_ENTRY_FIELDS = ["title", "date", "draft"];
 
@@ -2069,6 +2071,9 @@ export const listEntries = async (
       },
     );
   }
+  const scanLimit = isGitLabProject(project)
+    ? MAX_ENTRY_SCAN_GITLAB
+    : MAX_ENTRY_SCAN;
   const reader = await createCachedProjectGitClient(project, agent.user_id);
   const head = await requireHead(reader);
   const contentRoot = cleanRoot((await readSiteConfig(reader, head))?.content);
@@ -2112,7 +2117,7 @@ export const listEntries = async (
       );
     }
   }
-  const scanned = files.slice(0, MAX_ENTRY_SCAN);
+  const scanned = files.slice(0, scanLimit);
   const read = await reader.readFiles(head, scanned);
   const wanted = input.fields?.length ? input.fields : DEFAULT_ENTRY_FIELDS;
   const needle = input.query?.trim().toLowerCase();
@@ -2170,9 +2175,9 @@ export const listEntries = async (
     ...(offset + limit < rows.length && {
       next_cursor: String(offset + limit),
     }),
-    ...((files.length > MAX_ENTRY_SCAN || truncated) && {
+    ...((files.length > scanLimit || truncated) && {
       scan_truncated: true,
-      hint: `Only the first ${MAX_ENTRY_SCAN} files were read; pass a narrower folder.`,
+      hint: `Only the first ${scanLimit} files were read; pass a narrower folder.`,
     }),
   };
 };
@@ -2358,10 +2363,14 @@ const describeUploadResult = (result: TAgentChangesetResult) =>
         status: result.status,
         error:
           "A file appeared at this path in the meantime; nothing was saved.",
+        next_step:
+          "Nothing was saved. Ask for a new upload link with another path, or with overwrite: true.",
       }
     : {
         status: result.status,
         branch: result.branch,
         ...("commitSha" in result && { commit: result.commitSha }),
         ...(result.pull_request && { pull_request: result.pull_request }),
+        ...(result.files && { files: result.files }),
+        next_step: result.next_step,
       };

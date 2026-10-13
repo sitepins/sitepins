@@ -777,6 +777,7 @@ export const buildMcpServer = (agent: TAgentContext): McpServer => {
               .optional()
               .describe("From list_history; default: your last change"),
             message: message.optional(),
+            description,
             dry_run: dryRun,
             ...branchOptions,
           }),

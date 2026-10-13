@@ -1,12 +1,12 @@
+import ApiError from "@/errors/ApiError";
 import { defineAgentTool, registerAgentTools } from "@/lib/agentExtensions";
+import { GitEngineError } from "@/lib/git-engine/errors";
 import { createMcpHandler } from "@modelcontextprotocol/server";
-import { z } from "zod";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { z } from "zod";
 import { availableTools, EGuideTopic } from "./agent.guide";
 import { toolFailure } from "./agent.tools";
 import { EAgentScope, EAgentWriteMode, TAgentContext } from "./agent.type";
-import ApiError from "@/errors/ApiError";
-import { GitEngineError } from "@/lib/git-engine/errors";
 import { buildMcpServer } from "./mcp.server";
 
 const m = vi.hoisted(() => ({
@@ -515,7 +515,16 @@ describe("parameters", () => {
         expect.arrayContaining(["branch", "open_pr"]),
       );
     }
-    expect(await props(AGENT, "edit_file")).toContain("description");
+    for (const name of [
+      "edit_file",
+      "update_fields",
+      "create_entry",
+      "write_files",
+      "move_file",
+      "undo_change",
+    ]) {
+      expect(await props(AGENT, name), name).toContain("description");
+    }
   });
 
   it("makes project_id optional when the token has one site", async () => {

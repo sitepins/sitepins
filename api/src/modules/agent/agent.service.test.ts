@@ -849,6 +849,17 @@ describe("undoChange", () => {
     expect(before).not.toBe(m.fake.git.head());
   });
 
+  it("keeps the caller's description above the revert note", async () => {
+    const change = m.fake.git.push({ "src/content/a.md": "A changed" });
+    await undoChange(agent(), "p1", {
+      commit_sha: change,
+      description: "The user asked for the old wording back.",
+    });
+    expect(m.fake.git.lastCommit().message).toContain(
+      `The user asked for the old wording back.\n\nReverts ${change}.`,
+    );
+  });
+
   it("won't overwrite a file someone changed after that commit", async () => {
     const change = m.fake.git.push({ "src/content/a.md": "A changed" });
     m.fake.git.push({ "src/content/a.md": "A edited again" });

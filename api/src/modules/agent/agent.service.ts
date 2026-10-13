@@ -1459,6 +1459,7 @@ export const undoChange = async (
   input: {
     commit_sha?: string;
     message?: string;
+    description?: string;
     dry_run?: boolean;
     branch?: string;
     open_pr?: boolean;
@@ -1510,7 +1511,9 @@ export const undoChange = async (
   const subject = subjectOf(commit.message);
   const result = await commitChangeset(agent, project, {
     message: input.message?.trim() || `Undo "${subject}"`.slice(0, 200),
-    description: `Reverts ${commit.sha}.`,
+    description: [input.description?.trim(), `Reverts ${commit.sha}.`]
+      .filter(Boolean)
+      .join("\n\n"),
     // Conflicts are judged from the undone commit, so later edits to the same files are never overwritten.
     base_commit: commit.sha,
     changes,

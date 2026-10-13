@@ -321,12 +321,15 @@ export const createGitHubClient = ({
         sha: string;
         message: string;
         parents: { sha: string }[];
+        author?: { name?: string; date?: string } | null;
       }>("GET", `${base}/git/commits/${ref(sha)}`);
       return data
         ? {
             sha: data.sha,
             message: data.message,
             parents: data.parents.map((p) => p.sha),
+            author: data.author?.name,
+            date: data.author?.date,
           }
         : null;
     },

@@ -5,18 +5,20 @@ export { EAgentScope };
 export type { TAgentContext };
 
 export type TAgentToolAnnotations = {
+  title?: string;
   readOnlyHint?: boolean;
   destructiveHint?: boolean;
   idempotentHint?: boolean;
+  openWorldHint?: boolean;
 };
 
 export type TAgentToolDefinition<S extends z.ZodObject = z.ZodObject> = {
   name: string;
   description: string;
-  /** The tool is listed only for tokens holding this scope. */
   scope: EAgentScope;
   inputSchema?: S;
   annotations?: TAgentToolAnnotations;
+  guide?: string;
   handler: (agent: TAgentContext, input: z.infer<S>) => Promise<unknown>;
 };
 

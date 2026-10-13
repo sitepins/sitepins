@@ -24,22 +24,119 @@ const result = (value: unknown, isError = false): TToolResult => ({
   ...(isError && { isError }),
 });
 
+/** Every tool error carries one of these, so agents can branch on it and metrics can count it. */
+export enum EToolErrorCode {
+  NOT_FOUND = "not_found",
+  NO_MATCH = "no_match",
+  AMBIGUOUS = "ambiguous",
+  CONFLICT = "conflict",
+  PERMISSION = "permission",
+  INVALID_INPUT = "invalid_input",
+  INVALID_FIELDS = "invalid_fields",
+  UNKNOWN_FIELD = "unknown_field",
+  EXISTS = "exists",
+  RATE_LIMITED = "rate_limited",
+  READ_ONLY = "read_only",
+  ARCHIVED = "archived",
+  UNAVAILABLE = "unavailable",
+}
+
+const CODES = new Set<string>(Object.values(EToolErrorCode));
+
+const GIT_ENGINE_CODES: Record<string, EToolErrorCode> = {
+  ref_moved: EToolErrorCode.CONFLICT,
+  diverged: EToolErrorCode.CONFLICT,
+  busy: EToolErrorCode.CONFLICT,
+  not_found: EToolErrorCode.NOT_FOUND,
+  too_large: EToolErrorCode.INVALID_INPUT,
+  invalid: EToolErrorCode.INVALID_INPUT,
+  unsupported: EToolErrorCode.INVALID_INPUT,
+  policy: EToolErrorCode.PERMISSION,
+  forbidden: EToolErrorCode.PERMISSION,
+  upstream: EToolErrorCode.UNAVAILABLE,
+};
+
+const codeForStatus = (status: number) => {
+  if (status === 401 || status === 403) return EToolErrorCode.PERMISSION;
+  if (status === 404) return EToolErrorCode.NOT_FOUND;
+  if (status === 409) return EToolErrorCode.CONFLICT;
+  if (status === 429) return EToolErrorCode.RATE_LIMITED;
+  if (status >= 400 && status < 500) return EToolErrorCode.INVALID_INPUT;
+  return EToolErrorCode.UNAVAILABLE;
+};
+
+type TToolErrorExtra = { fix?: string; details?: Record<string, unknown> };
+
+/** An ApiError the tool layer reports as `{ error, code, fix?, ...details }`. */
+export const agentError = (
+  message: string,
+  status: number,
+  code: EToolErrorCode,
+  extra: TToolErrorExtra = {},
+) => Object.assign(new ApiError(message, status, ""), { code, ...extra });
+
+export const errorCodeOf = (error: unknown): EToolErrorCode => {
+  const raw = (error as { code?: unknown })?.code;
+  if (typeof raw === "string" && CODES.has(raw)) return raw as EToolErrorCode;
+  if (typeof raw === "string" && GIT_ENGINE_CODES[raw]) {
+    return GIT_ENGINE_CODES[raw];
+  }
+  if (error instanceof ApiError) return codeForStatus(error.statusCode);
+  if (error instanceof GitEngineError) return codeForStatus(error.status);
+  if (error instanceof z.ZodError) return EToolErrorCode.INVALID_INPUT;
+  if (error instanceof Error && error.name === "Error") {
+    return EToolErrorCode.INVALID_INPUT;
+  }
+  return EToolErrorCode.UNAVAILABLE;
+};
+
+type TIssue = { path?: readonly unknown[]; message: string };
+
+const issuePath = (issue: TIssue) =>
+  (issue.path ?? [])
+    .map((p) =>
+      typeof p === "object" && p ? String((p as { key: unknown }).key) : p,
+    )
+    .join(".");
+
+/** Names the bad field instead of dumping the validator's report. */
+export const invalidInput = (issues: readonly TIssue[]) => {
+  const first = issues[0];
+  const field = first ? issuePath(first) : "";
+  return {
+    error: `Invalid input${field ? ` in ${field}` : ""}: ${first?.message ?? "check the arguments"}`,
+    code: EToolErrorCode.INVALID_INPUT,
+    fix: field
+      ? `Fix ${field} (see the tool's input schema) and call again.`
+      : "Check the arguments against the tool's input schema and call again.",
+  };
+};
+
 export const toolFailure = (error: unknown): TToolResult => {
+  const code = errorCodeOf(error);
   if (error instanceof ApiError || error instanceof GitEngineError) {
-    const extra = error as { violations?: unknown; code?: unknown };
+    const extra = error as TToolErrorExtra & { violations?: unknown };
     return result(
-      { error: error.message, code: extra.code, violations: extra.violations },
+      {
+        error: error.message,
+        code,
+        ...(extra.fix && { fix: extra.fix }),
+        ...(extra.violations !== undefined && {
+          violations: extra.violations,
+        }),
+        ...extra.details,
+      },
       true,
     );
   }
   if (error instanceof z.ZodError) {
-    return result(`Invalid input: ${error.message}`, true);
+    return result(invalidInput(error.issues), true);
   }
   // Same rule as the HTTP error handler: plain Errors carry user-facing text.
   if (error instanceof Error && error.name === "Error") {
-    return result({ error: error.message }, true);
+    return result({ error: error.message, code }, true);
   }
-  return result("The tool failed unexpectedly.", true);
+  return result({ error: "The tool failed unexpectedly.", code }, true);
 };
 
 export const createToolRunner =
@@ -50,9 +147,9 @@ export const createToolRunner =
       agent.grant.grant_id,
       async () => {
         try {
-          return result(await fn());
+          return { value: result(await fn()) };
         } catch (error) {
-          return toolFailure(error);
+          return { value: toolFailure(error), code: errorCodeOf(error) };
         }
       },
       (r) => r.content[0]?.text.length ?? 0,

@@ -11,6 +11,7 @@ import {
   applyChangeset,
   buildCommitMessage,
   ChangesetPolicyError,
+  gitBlobSha,
   TApplyChangesetResult,
   TChangesetChange,
 } from "@/lib/git-engine/changeset";
@@ -44,14 +45,18 @@ import {
   checkEntryFields,
   defaultsFromTemplate,
   missingRequired,
+  parseFieldPath,
+  readFields,
   serializeEntry,
   TDocFormat,
   TFieldChanges,
   TTemplateField,
   updateFields,
 } from "./agent.fields";
+import { unifiedDiff } from "./agent.diff";
 import { globToRegExp } from "./agent.glob";
-import { canWrite } from "./agent.tools";
+import { closestLines, closestPaths } from "./agent.suggest";
+import { agentError, canWrite, EToolErrorCode } from "./agent.tools";
 import {
   AGENT_SCOPE_LABELS,
   EAgentScope,
@@ -92,6 +97,21 @@ export type TChangesetRequest = {
 export type TAgentChangesetResult = TApplyChangesetResult & {
   branch: string;
   pull_request?: { number: number; url: string };
+  /** New blob sha per written path (null: removed); the expected_sha for the next write. */
+  files?: { path: string; sha: string | null }[];
+  next_step: string;
+};
+
+export const CONFLICT_HINT =
+  "Someone changed these files. Re-read them, merge your edit, and retry with the new expected_sha.";
+
+const NEXT_STEP = {
+  saved: "Saved. Use get_deploy_status to see when it's live.",
+  pullRequest: "Share pull_request.url; it goes live after merging.",
+  noPullRequest:
+    "Saved on a separate branch, but the pull request couldn't be opened; tell the user it isn't live yet.",
+  noop: "Nothing changed; the file already had this.",
+  dryRun: "Show the preview and confirm, then call again without dry_run.",
 };
 
 // GitLab has no app identity, so agent commits carry the brand's bot name.
@@ -106,32 +126,69 @@ const gitAuthor = (project: TProjectType) =>
     : // GitHub attributes installation-token commits to the app itself.
       undefined;
 
+/** The one site a single-site grant can reach, so project_id can be left out. */
+export const onlyProjectId = (agent: TAgentContext) =>
+  !agent.grant.all_projects && agent.grant.project_ids.length === 1
+    ? agent.grant.project_ids[0]
+    : undefined;
+
+const unknownProject = async (agent: TAgentContext, given: unknown) => {
+  let projects: TProjectType[] = [];
+  try {
+    projects =
+      (await Project.find({
+        org_id: agent.grant.org_id,
+        ...(!agent.grant.all_projects && {
+          project_id: { $in: agent.grant.project_ids },
+        }),
+      })
+        .select("project_id project_name")
+        .lean<TProjectType[]>()) ?? [];
+  } catch (error) {
+    logger.error(
+      "[agents] listing projects for a not-found error failed",
+      error,
+    );
+  }
+  return agentError(
+    given === undefined
+      ? "project_id is required"
+      : "Project not found or not shared with this agent",
+    given === undefined ? 400 : 404,
+    given === undefined
+      ? EToolErrorCode.INVALID_INPUT
+      : EToolErrorCode.NOT_FOUND,
+    {
+      fix: "Use a project_id from projects (or list_projects); ask the user which site if unclear.",
+      details: {
+        projects: projects.slice(0, 50).map((p) => ({
+          project_id: p.project_id,
+          name: p.project_name,
+        })),
+      },
+    },
+  );
+};
+
 export const resolveProject = async (
   agent: TAgentContext,
-  projectId: unknown,
+  given: unknown,
   scope: EAgentScope,
   { write = false }: { write?: boolean } = {},
 ): Promise<TProjectType> => {
   requireScope(agent, scope);
+  const projectId = given ?? onlyProjectId(agent);
   if (
     typeof projectId !== "string" ||
     !(agent.grant.all_projects || agent.grant.project_ids.includes(projectId))
   ) {
-    throw new ApiError(
-      "Project not found or not shared with this agent",
-      404,
-      "",
-    );
+    throw await unknownProject(agent, projectId);
   }
   const project = await Project.findOne({
     project_id: projectId,
   }).lean<TProjectType>();
   if (!project || project.org_id !== agent.grant.org_id) {
-    throw new ApiError(
-      "Project not found or not shared with this agent",
-      404,
-      "",
-    );
+    throw await unknownProject(agent, projectId);
   }
   await runAgentAccessGuard({
     user_id: agent.user_id,
@@ -145,8 +202,30 @@ export const resolveProject = async (
 
 const assertWritable = (project: TProjectType) => {
   if (project.status === "archived") {
-    throw new ApiError("This project is archived", 403, "");
+    throw agentError("This project is archived", 403, EToolErrorCode.ARCHIVED, {
+      fix: "Tell the user; the site has to be restored in the app before it can be changed.",
+    });
   }
+};
+
+const blobPaths = async (reader: TCachedGitClient, ref: string) =>
+  (await reader.readTree(ref).catch(() => ({ entries: [] }))).entries
+    .filter((e) => e.type === "blob")
+    .map((e) => e.path);
+
+/** Not-found with the nearest real paths, from the (usually cached) tree. */
+const missingFile = async (
+  reader: TCachedGitClient,
+  ref: string,
+  path: string,
+) => {
+  const suggestions = closestPaths(path, await blobPaths(reader, ref));
+  return agentError(`${path} doesn't exist`, 404, EToolErrorCode.NOT_FOUND, {
+    fix: suggestions.length
+      ? "Use a path from did_you_mean, or find it with list_files or search_content."
+      : "Find the file with list_files or search_content.",
+    ...(suggestions.length && { details: { did_you_mean: suggestions } }),
+  });
 };
 
 const cleanRoot = (root: unknown): string | undefined => {
@@ -576,6 +655,7 @@ export const getSchema = async (
   );
   const candidates = byPath ? [byPath] : paths;
   const files = await client.readFiles(head, candidates);
+  const names: string[] = [];
   for (const path of candidates) {
     const raw = files.get(path)?.content.toString("utf-8");
     if (!raw) continue;
@@ -589,9 +669,18 @@ export const getSchema = async (
     if (byPath || schemaName === name) {
       return { path, sha: files.get(path)!.sha, schema };
     }
+    names.push(typeof schemaName === "string" ? schemaName : path);
   }
-  throw new ApiError(`No schema named ${name}`, 404, "");
+  throw unknownSchema(name, names);
 };
+
+const unknownSchema = (name: string, schemas: string[]) =>
+  agentError(`No schema named ${name}`, 404, EToolErrorCode.NOT_FOUND, {
+    fix: schemas.length
+      ? "Use one of schemas (also listed by get_project_context)."
+      : "This site has no schemas; pass a folder instead.",
+    details: { schemas },
+  });
 
 const DEFAULT_LIST_LIMIT = 500;
 const MAX_LIST_LIMIT = 2000;
@@ -686,7 +775,7 @@ export const readFile = async (
   const client = await createCachedProjectGitClient(project, agent.user_id);
   const ref = options.ref || (await requireHead(client));
   const file = await client.readFile(ref, path);
-  if (!file) throw new ApiError(`${path} doesn't exist at ${ref}`, 404, "");
+  if (!file) throw await missingFile(client, ref, path);
   return describeFile(path, ref, file);
 };
 
@@ -706,12 +795,23 @@ export const readFiles = async (
   const client = await createCachedProjectGitClient(project, agent.user_id);
   const ref = options.ref || (await requireHead(client));
   const read = await client.readFiles(ref, paths);
+  const existing = paths.some((p) => !read.get(p))
+    ? await blobPaths(client, ref)
+    : [];
   let budget = MAX_BATCH_BYTES;
   return {
     ref,
     files: paths.map((path) => {
       const file = read.get(path);
-      if (!file) return { path, error: "not found" };
+      if (!file) {
+        const suggestions = closestPaths(path, existing);
+        return {
+          path,
+          error: "not found",
+          code: EToolErrorCode.NOT_FOUND,
+          ...(suggestions.length && { did_you_mean: suggestions }),
+        };
+      }
       if (file.content.length > budget) {
         return {
           path,
@@ -946,10 +1046,18 @@ const assertCommitBudget = (grantId: string) => {
   const since = Date.now() - COMMIT_WINDOW_MS;
   const recent = (recentCommits.get(grantId) ?? []).filter((t) => t > since);
   if (recent.length >= COMMITS_PER_WINDOW) {
-    throw new ApiError(
+    const retry = Math.max(
+      1,
+      Math.ceil((Math.min(...recent) + COMMIT_WINDOW_MS - Date.now()) / 1000),
+    );
+    throw agentError(
       "Too many commits. Try again in a few minutes.",
       429,
-      "",
+      EToolErrorCode.RATE_LIMITED,
+      {
+        fix: "Wait retry_after_seconds, or combine several edits into one write_files call.",
+        details: { retry_after_seconds: retry },
+      },
     );
   }
   recentCommits.set(grantId, [...recent, Date.now()]);
@@ -959,8 +1067,25 @@ export const applyAgentChangeset = async (
   agent: TAgentContext,
   projectId: unknown,
   input: TChangesetRequest,
-): Promise<TAgentChangesetResult> =>
-  commitChangeset(agent, await resolveWritableProject(agent, projectId), input);
+): Promise<TAgentChangesetResult> => {
+  const project = await resolveWritableProject(agent, projectId);
+  const deletes = input.changes.filter((c) => c.op === "delete");
+  if (deletes.length && !input.base_commit) {
+    const reader = await createCachedProjectGitClient(project, agent.user_id);
+    const head = await requireHead(reader);
+    const { entries, truncated } = await reader.readTree(head);
+    const present = new Set(
+      entries.filter((e) => e.type === "blob").map((e) => e.path),
+    );
+    const missing = truncated
+      ? undefined
+      : deletes.find((c) => !present.has(normalizeRepoPath(c.path)));
+    if (missing) {
+      throw await missingFile(reader, head, normalizeRepoPath(missing.path));
+    }
+  }
+  return commitChangeset(agent, project, input);
+};
 
 const resolveWritableProject = async (
   agent: TAgentContext,
@@ -974,7 +1099,14 @@ const resolveWritableProject = async (
   );
   assertWritable(project);
   if (!canWrite(agent)) {
-    throw new ApiError("This agent has read-only access", 403, "");
+    throw agentError(
+      "This agent has read-only access",
+      403,
+      EToolErrorCode.READ_ONLY,
+      {
+        fix: `Tell the user; they can turn on "${AGENT_SCOPE_LABELS[EAgentScope.CONTENT_WRITE]}" in ${brand.name} → Settings → MCP Connection.`,
+      },
+    );
   }
   return project;
 };
@@ -1056,7 +1188,18 @@ const commitChangeset = async (
   }
 
   const targetBranch = branch ?? project.branch;
-  if (result.status !== "committed") return { ...result, branch: targetBranch };
+  if (result.status !== "committed") {
+    return {
+      ...result,
+      branch: targetBranch,
+      next_step:
+        result.status === "conflict"
+          ? CONFLICT_HINT
+          : result.status === "noop"
+            ? NEXT_STEP.noop
+            : NEXT_STEP.dryRun,
+    };
+  }
 
   let pull_request: TAgentChangesetResult["pull_request"];
   if (branch) {
@@ -1080,10 +1223,28 @@ const commitChangeset = async (
     siteConfig,
     Boolean(branch),
   );
+  const written = new Map<string, Buffer>();
+  for (const change of input.changes) {
+    if (change.op === "upsert" || (change.op === "rename" && change.content)) {
+      written.set(normalizeRepoPath(change.path), change.content!);
+    }
+  }
   return {
     ...result,
     branch: targetBranch,
     ...(pull_request && { pull_request }),
+    files: result.changes.map((c) => {
+      const content = written.get(c.path);
+      return {
+        path: c.path,
+        sha: c.op === "delete" || !content ? null : gitBlobSha(content),
+      };
+    }),
+    next_step: !branch
+      ? NEXT_STEP.saved
+      : pull_request
+        ? NEXT_STEP.pullRequest
+        : NEXT_STEP.noPullRequest,
   };
 };
 
@@ -1163,23 +1324,25 @@ export const applyTextEdits = (
     }
     const count = countOccurrences(out, edit.old_string);
     if (count === 0) {
-      throw Object.assign(
-        new ApiError(
-          `${path}: edit ${i + 1} old_string was not found. Re-read the file; it may have changed.`,
-          409,
-          "",
-        ),
-        { code: "no_match" },
+      const closest = closestLines(out, edit.old_string);
+      throw agentError(
+        `${path}: edit ${i + 1} old_string was not found. Re-read the file; it may have changed.`,
+        409,
+        EToolErrorCode.NO_MATCH,
+        {
+          fix: "Copy old_string exactly from read_files (or from closest), including spaces and quotes.",
+          ...(closest.length && { details: { closest } }),
+        },
       );
     }
     if (count > 1 && !edit.replace_all) {
-      throw Object.assign(
-        new ApiError(
-          `${path}: edit ${i + 1} old_string matches ${count} times. Add surrounding text to make it unique, or set replace_all.`,
-          409,
-          "",
-        ),
-        { code: "ambiguous" },
+      throw agentError(
+        `${path}: edit ${i + 1} old_string matches ${count} times. Add surrounding text to make it unique, or set replace_all.`,
+        409,
+        EToolErrorCode.AMBIGUOUS,
+        {
+          fix: "Include a neighbouring line in old_string, or set replace_all.",
+        },
       );
     }
     out = edit.replace_all
@@ -1212,7 +1375,7 @@ export const editFile = async (
   );
   const reader = await createCachedProjectGitClient(project, agent.user_id);
   const file = await reader.readFile(head, path);
-  if (!file) throw new ApiError(`${path} doesn't exist`, 404, "");
+  if (!file) throw await missingFile(reader, head, path);
   if (file.content.subarray(0, 8000).includes(0)) {
     throw new ApiError(`${path} is binary; use write_files`, 400, "");
   }
@@ -1227,7 +1390,39 @@ export const editFile = async (
     open_pr: input.open_pr,
     changes: [{ op: "upsert", path, content: Buffer.from(after, "utf-8") }],
   });
-  return { ...result, path, previous_sha: file.sha };
+  return { ...result, path };
+};
+
+/** Rename or move one file; expected_sha defaults to the file's current sha. */
+export const moveFile = async (
+  agent: TAgentContext,
+  projectId: unknown,
+  input: TWriteOptions & {
+    from: unknown;
+    to: unknown;
+    message: string;
+    expected_sha?: string;
+  },
+) => {
+  const project = await resolveWritableProject(agent, projectId);
+  const from = normalizeRepoPath(input.from);
+  const to = normalizeRepoPath(input.to);
+  const head = await requireHead(
+    await createProjectGitClient(project, agent.user_id),
+  );
+  const reader = await createCachedProjectGitClient(project, agent.user_id);
+  const file = await reader.readFile(head, from);
+  if (!file) throw await missingFile(reader, head, from);
+  const result = await commitChangeset(agent, project, {
+    message: input.message,
+    description: input.description,
+    expected_shas: { [from]: input.expected_sha ?? file.sha, [to]: null },
+    dry_run: input.dry_run,
+    branch: input.branch,
+    open_pr: input.open_pr,
+    changes: [{ op: "rename", from, path: to, content: file.content }],
+  });
+  return { ...result, from, to };
 };
 
 const MAX_UNDO_FILES = 100;
@@ -1334,7 +1529,8 @@ export const undoChange = async (
       })),
     },
     ...(result.status === "conflict" && {
-      hint: "Someone changed these files after that commit. Show the user what changed, then edit the current version instead.",
+      next_step:
+        "Someone changed these files after that commit. Show the user what changed, then edit the current version instead.",
     }),
   };
 };
@@ -1525,7 +1721,12 @@ export const updateEntryFields = async (
   agent: TAgentContext,
   projectId: unknown,
   input: TWriteOptions &
-    TFieldChanges & { path: unknown; message: string; expected_sha?: string },
+    TFieldChanges & {
+      path: unknown;
+      message: string;
+      expected_sha?: string;
+      allow_new_fields?: boolean;
+    },
 ) => {
   const project = await resolveWritableProject(agent, projectId);
   const path = normalizeRepoPath(input.path);
@@ -1534,7 +1735,13 @@ export const updateEntryFields = async (
   );
   const reader = await createCachedProjectGitClient(project, agent.user_id);
   const file = await reader.readFile(head, path);
-  if (!file) throw new ApiError(`${path} doesn't exist`, 404, "");
+  if (!file) throw await missingFile(reader, head, path);
+  if (input.set && Object.keys(input.set).length) {
+    await checkAgainstSchema(reader, head, path, file.content, {
+      set: input.set,
+      allowNew: Boolean(input.allow_new_fields),
+    });
+  }
   const updated = updateFields(path, file.content.toString("utf-8"), {
     set: input.set,
     unset: input.unset,
@@ -1559,6 +1766,62 @@ export const updateEntryFields = async (
     ],
     ...(input.dry_run && { new_frontmatter: updated.data }),
   };
+};
+
+/** Schema of the file's folder (create_entry's lookup); invented field names are refused unless allowNew. */
+const checkAgainstSchema = async (
+  reader: TCachedGitClient,
+  head: string,
+  path: string,
+  content: Buffer,
+  { set, allowNew }: { set: Record<string, unknown>; allowNew: boolean },
+) => {
+  const dir = path.includes("/") ? path.slice(0, path.lastIndexOf("/")) : "";
+  if (!dir) return;
+  const siteConfig = await readSiteConfig(reader, head);
+  const found = await findSchema(
+    reader,
+    head,
+    cleanRoot(siteConfig?.content),
+    { folder: dir },
+    configPaths().schema,
+  ).catch(() => undefined);
+  const template = found?.schema.template;
+  if (!found || !template?.length) return;
+  const valid = template.map((f) => f.name);
+  if (!allowNew) {
+    const existing = Object.keys(
+      readFields(path, content.toString("utf-8")) ?? {},
+    );
+    const unknown = Object.keys(set).filter((key) => {
+      const top = String(parseFieldPath(key)[0]);
+      return !valid.includes(top) && !existing.includes(top);
+    });
+    if (unknown.length) {
+      throw agentError(
+        `${unknown.map((k) => `"${k}"`).join(", ")} isn't a field of the ${found.name} schema`,
+        400,
+        EToolErrorCode.UNKNOWN_FIELD,
+        {
+          fix: "Use a name from valid_fields. Pass allow_new_fields: true only if the user asked for a new field.",
+          details: { schema: found.name, valid_fields: valid },
+        },
+      );
+    }
+  }
+  const problems = checkEntryFields(
+    template,
+    Object.fromEntries(
+      Object.entries(set).filter(
+        ([k]) => !k.includes(".") && valid.includes(k),
+      ),
+    ),
+  );
+  if (problems.length) {
+    throw agentError(problems.join("; "), 400, EToolErrorCode.INVALID_FIELDS, {
+      fix: "Fix the named fields (get_schema shows types and options) and retry.",
+    });
+  }
 };
 
 type TSchemaFile = {
@@ -1620,8 +1883,15 @@ const findSchema = async (
       throw new ApiError(`${path} isn't valid JSON`, 400, "");
     }
   }
-  if (input.schema)
-    throw new ApiError(`No schema named ${input.schema}`, 404, "");
+  if (input.schema) {
+    const { entries } = await reader.readTree(head, schemaDir);
+    throw unknownSchema(
+      input.schema,
+      entries
+        .filter((e) => e.type === "blob" && e.path.endsWith(".json"))
+        .map((e) => e.path.slice(schemaDir.length + 1, -".json".length)),
+    );
+  }
   return undefined;
 };
 
@@ -1658,6 +1928,24 @@ export const createEntry = async (
     { schema: input.schema, folder },
     configPaths().schema,
   );
+  if (folder && !found) {
+    const dirs = foldersOf(await blobPaths(reader, head));
+    if (!dirs.includes(folder)) {
+      const suggestions = closestPaths(
+        folder,
+        dirs.filter((d) => !contentRoot || under(d, contentRoot)),
+      );
+      throw agentError(
+        `${folder} doesn't exist and has no schema`,
+        404,
+        EToolErrorCode.NOT_FOUND,
+        {
+          fix: "Use a folder from did_you_mean or get_project_context content.folders, or pass schema.",
+          ...(suggestions.length && { details: { did_you_mean: suggestions } }),
+        },
+      );
+    }
+  }
   const targetFolder =
     folder ??
     normalizeRepoPath([contentRoot, found!.name].filter(Boolean).join("/"));
@@ -1675,8 +1963,8 @@ export const createEntry = async (
     problems.push(`Required fields are empty: ${missing.join(", ")}`);
   }
   if (problems.length) {
-    throw Object.assign(new ApiError(problems.join("; "), 400, ""), {
-      code: "invalid_fields",
+    throw agentError(problems.join("; "), 400, EToolErrorCode.INVALID_FIELDS, {
+      fix: "Fix the named fields (get_schema shows names, types and options) and retry.",
     });
   }
 
@@ -1704,13 +1992,10 @@ export const createEntry = async (
     changes: [{ op: "upsert", path, content: Buffer.from(content, "utf-8") }],
   });
   if (result.status === "conflict") {
-    throw Object.assign(
-      new ApiError(
-        `${path} already exists. Pick another slug, or change it with update_fields.`,
-        409,
-        "",
-      ),
-      { code: "exists" },
+    throw agentError(
+      `${path} already exists. Pick another slug, or change it with update_fields.`,
+      409,
+      EToolErrorCode.EXISTS,
     );
   }
   return {
@@ -1718,6 +2003,267 @@ export const createEntry = async (
     path,
     schema: found ? `${configPaths().schema}/${found.name}.json` : null,
     ...(input.dry_run && { content }),
+  };
+};
+
+export enum EEntrySort {
+  DATE_DESC = "date_desc",
+  DATE_ASC = "date_asc",
+  TITLE_ASC = "title_asc",
+  TITLE_DESC = "title_desc",
+}
+
+const ENTRY_FILE = /\.(mdx?|markdown|html?|json|ya?ml|toml)$/i;
+const MAX_ENTRY_SCAN = 500;
+const MAX_FIELD_CHARS = 300;
+const DEFAULT_ENTRY_FIELDS = ["title", "date", "draft"];
+
+const fieldPreview = (value: unknown) => {
+  if (value instanceof Date) return value.toISOString().slice(0, 10);
+  if (typeof value === "string") {
+    return value.length > MAX_FIELD_CHARS
+      ? `${value.slice(0, MAX_FIELD_CHARS)}…`
+      : value;
+  }
+  if (value === null || typeof value !== "object") return value;
+  const json = JSON.stringify(value);
+  return json.length > MAX_FIELD_CHARS ? "(too long; use read_files)" : value;
+};
+
+const timeOf = (value: unknown) => {
+  const time = Date.parse(
+    value instanceof Date ? value.toISOString() : String(value ?? ""),
+  );
+  return Number.isNaN(time) ? undefined : time;
+};
+
+/** Posts and pages of one folder with chosen frontmatter fields, so agents don't read files one by one. */
+export const listEntries = async (
+  agent: TAgentContext,
+  projectId: unknown,
+  input: {
+    folder?: string;
+    schema?: string;
+    fields?: string[];
+    query?: string;
+    sort?: EEntrySort;
+    limit?: number;
+    cursor?: string;
+  },
+) => {
+  const project = await resolveProject(
+    agent,
+    projectId,
+    EAgentScope.CONTENT_READ,
+  );
+  if (!input.folder && !input.schema) {
+    throw agentError(
+      "Pass folder or schema",
+      400,
+      EToolErrorCode.INVALID_INPUT,
+      {
+        fix: "Use a folder from get_project_context content.folders, or a schema name.",
+      },
+    );
+  }
+  const reader = await createCachedProjectGitClient(project, agent.user_id);
+  const head = await requireHead(reader);
+  const contentRoot = cleanRoot((await readSiteConfig(reader, head))?.content);
+  let folder: string;
+  if (input.folder) {
+    folder = normalizeRepoPath(input.folder.replace(/\/+$/, ""));
+  } else {
+    const found = await findSchema(
+      reader,
+      head,
+      contentRoot,
+      { schema: input.schema },
+      configPaths().schema,
+    );
+    folder = normalizeRepoPath(
+      [contentRoot, found!.name].filter(Boolean).join("/"),
+    );
+  }
+  const { entries, truncated } = await reader.readTree(head);
+  const files = entries
+    .filter(
+      (e) =>
+        e.type === "blob" && under(e.path, folder) && ENTRY_FILE.test(e.path),
+    )
+    .map((e) => e.path)
+    .sort();
+  if (!files.length) {
+    const dirs = foldersOf(
+      entries.filter((e) => e.type === "blob").map((e) => e.path),
+    );
+    if (!dirs.includes(folder)) {
+      const suggestions = closestPaths(folder, dirs);
+      throw agentError(
+        `${folder} doesn't exist`,
+        404,
+        EToolErrorCode.NOT_FOUND,
+        {
+          fix: "Use a folder from did_you_mean or get_project_context content.folders.",
+          ...(suggestions.length && { details: { did_you_mean: suggestions } }),
+        },
+      );
+    }
+  }
+  const scanned = files.slice(0, MAX_ENTRY_SCAN);
+  const read = await reader.readFiles(head, scanned);
+  const wanted = input.fields?.length ? input.fields : DEFAULT_ENTRY_FIELDS;
+  const needle = input.query?.trim().toLowerCase();
+  const rows = scanned.flatMap((path) => {
+    const file = read.get(path);
+    if (!file) return [];
+    const data =
+      (file.content.length <= MAX_READ_BYTES &&
+        readFields(path, file.content.toString("utf-8"))) ||
+      {};
+    if (
+      needle &&
+      !String(data.title ?? "")
+        .toLowerCase()
+        .includes(needle)
+    ) {
+      return [];
+    }
+    return [
+      {
+        path,
+        sha: file.sha,
+        fields: Object.fromEntries(
+          wanted
+            .filter((name) => data[name] !== undefined)
+            .map((name) => [name, fieldPreview(data[name])]),
+        ),
+        title: String(data.title ?? ""),
+        time: timeOf(data.date),
+      },
+    ];
+  });
+  const sort = input.sort ?? EEntrySort.DATE_DESC;
+  rows.sort((a, b) => {
+    if (sort === EEntrySort.TITLE_ASC || sort === EEntrySort.TITLE_DESC) {
+      const order =
+        a.title.localeCompare(b.title) || a.path.localeCompare(b.path);
+      return sort === EEntrySort.TITLE_ASC ? order : -order;
+    }
+    // Undated entries go last either way.
+    if (a.time === undefined || b.time === undefined) {
+      return (a.time === undefined ? 1 : 0) - (b.time === undefined ? 1 : 0);
+    }
+    return sort === EEntrySort.DATE_ASC ? a.time - b.time : b.time - a.time;
+  });
+  const limit = Math.min(Math.max(Number(input.limit) || 20, 1), 100);
+  const offset = Math.max(Number(input.cursor) || 0, 0);
+  return {
+    ref: head,
+    folder,
+    total: rows.length,
+    entries: rows
+      .slice(offset, offset + limit)
+      .map(({ path, sha, fields }) => ({ path, sha, fields })),
+    ...(offset + limit < rows.length && {
+      next_cursor: String(offset + limit),
+    }),
+    ...((files.length > MAX_ENTRY_SCAN || truncated) && {
+      scan_truncated: true,
+      hint: `Only the first ${MAX_ENTRY_SCAN} files were read; pass a narrower folder.`,
+    }),
+  };
+};
+
+const MAX_CHANGE_FILES = 50;
+const MAX_DIFF_LINES = 200;
+const MAX_DIFF_CHARS = 20_000;
+
+/** What one commit did, file by file, with capped diffs. */
+export const getChange = async (
+  agent: TAgentContext,
+  projectId: unknown,
+  input: { commit_sha: string },
+) => {
+  const project = await resolveProject(
+    agent,
+    projectId,
+    EAgentScope.CONTENT_READ,
+  );
+  const raw = await createProjectGitClient(project, agent.user_id);
+  const sha = input.commit_sha.trim();
+  const commit = await raw.readCommit(sha).catch(() => null);
+  if (!commit) {
+    throw agentError(`Commit ${sha} not found`, 404, EToolErrorCode.NOT_FOUND, {
+      fix: "Use a commit sha from list_history or from a write result.",
+    });
+  }
+  const reader = await createCachedProjectGitClient(project, agent.user_id);
+  const parent = commit.parents[0];
+  let paths: string[];
+  if (parent) {
+    const changed = await raw.changedPaths(parent, commit.sha);
+    paths = changed === "diverged" ? [] : [...changed].sort();
+  } else {
+    paths = (await blobPaths(reader, commit.sha)).sort();
+  }
+  const listed = paths.slice(0, MAX_CHANGE_FILES);
+  const [before, after] = await Promise.all([
+    parent
+      ? reader.readFiles(parent, listed)
+      : new Map<string, TGitFile | null>(),
+    reader.readFiles(commit.sha, listed),
+  ]);
+  let budget = MAX_DIFF_CHARS;
+  const files = listed.map((path) => {
+    const old = before.get(path) ?? null;
+    const now = after.get(path) ?? null;
+    const change = !old ? "added" : !now ? "removed" : "modified";
+    if ([old, now].some((f) => f?.content.subarray(0, 8000).includes(0))) {
+      return { path, change, diff: null, note: "binary file" };
+    }
+    const full = unifiedDiff(
+      old?.content.toString("utf-8") ?? "",
+      now?.content.toString("utf-8") ?? "",
+    );
+    const lines = full.split("\n");
+    let diff = lines.slice(0, MAX_DIFF_LINES).join("\n");
+    if (diff.length > budget) diff = diff.slice(0, Math.max(budget, 0));
+    budget -= diff.length;
+    return {
+      path,
+      change,
+      diff,
+      ...(diff.length < full.length && { diff_truncated: true }),
+    };
+  });
+  const messageLines = commit.message.split("\n");
+  const trailer = (key: string) =>
+    messageLines
+      .find((l) => l.startsWith(`${key}: `))
+      ?.slice(key.length + 2)
+      .trim();
+  const description = messageLines
+    .slice(1)
+    .filter((l) => !/^[A-Za-z-]+: /.test(l))
+    .join("\n")
+    .trim()
+    .slice(0, 1000);
+  const user = trailer(USER_TRAILER);
+  const via = trailer(AGENT_TRAILER);
+  return {
+    commit: commit.sha,
+    parent: parent ?? null,
+    subject: subjectOf(commit.message),
+    ...(description && { description }),
+    ...((user || via) && { made_by: { user, via } }),
+    ...(commit.author && { author: commit.author }),
+    ...(commit.date && { date: commit.date }),
+    total_files: paths.length,
+    files,
+    ...(paths.length > listed.length && {
+      files_truncated: true,
+      hint: `Only the first ${MAX_CHANGE_FILES} files are shown.`,
+    }),
   };
 };
 
@@ -1753,13 +2299,10 @@ export const prepareUpload = async (
     );
   }
   if (!input.overwrite && (await reader.readFile(head, path))) {
-    throw Object.assign(
-      new ApiError(
-        `${path} already exists. Pick another name, or pass overwrite: true to replace it.`,
-        409,
-        "",
-      ),
-      { code: "exists" },
+    throw agentError(
+      `${path} already exists. Pick another name, or pass overwrite: true to replace it.`,
+      409,
+      EToolErrorCode.EXISTS,
     );
   }
   const { ticket, expires_at } = issueUploadTicket(agent, {

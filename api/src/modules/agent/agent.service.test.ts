@@ -2,14 +2,18 @@ import { createFakeGitHub } from "@/lib/git-engine/fake-hosts.fixture";
 import { createGitHubClient } from "@/lib/git-engine/github";
 import { setAgentAccessGuard } from "@/lib/extensionGuards";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { gitBlobSha } from "@/lib/git-engine/changeset";
 import {
   applyAgentChangeset,
   applyTextEdits,
   commitUpload,
   createEntry,
   editFile,
+  getChange,
   getDeployStatus,
   getGitCommands,
+  listEntries,
+  moveFile,
   getProjectContext,
   getSchema,
   listFiles,
@@ -439,6 +443,7 @@ describe("applyAgentChangeset", () => {
     });
     expect(m.fake.git.head()).toBe(mainHead);
     expect(m.fake.git.text("src/content/a.md", result.branch)).toBe("A2");
+    expect(result.next_step).toMatch(/pull_request\.url/);
     expect(broadcast).not.toHaveBeenCalled();
     expect(logInsertMany).not.toHaveBeenCalled();
   });
@@ -550,7 +555,11 @@ it("caps commits per token at 30 per 10 minutes, without counting dry runs", asy
       message: "one too many",
       changes: [upsert("src/content/a.md", "x")],
     }),
-  ).rejects.toMatchObject({ statusCode: 429 });
+  ).rejects.toMatchObject({
+    statusCode: 429,
+    code: "rate_limited",
+    details: { retry_after_seconds: expect.any(Number) },
+  });
 });
 
 describe("cached reads", () => {
@@ -578,7 +587,7 @@ describe("cached reads", () => {
     expect(result.files).toEqual([
       expect.objectContaining({ path: "src/content/a.md", content: "A" }),
       expect.objectContaining({ path: "src/content/b.md", content: "B" }),
-      { path: "nope.md", error: "not found" },
+      { path: "nope.md", error: "not found", code: "not_found" },
     ]);
     expect(
       m.fake.state.requests.filter((r) => r === "POST /graphql"),
@@ -1106,5 +1115,327 @@ describe("uploads", () => {
     await expect(
       prepareUpload(agent(), "p1", { path: "src/content/a.md" }),
     ).rejects.toMatchObject({ statusCode: 409, code: "exists" });
+  });
+});
+
+describe("guesses become corrections", () => {
+  it("suggests real paths for a missing file, from the cached tree", async () => {
+    m.fake.git.push({ "src/content/blog/hello.md": "Hi" });
+    const read = await readFiles(agent(), "p1", {
+      paths: ["src/content/hello.md"],
+    });
+    expect(read.files[0]).toMatchObject({
+      code: "not_found",
+      did_you_mean: ["src/content/blog/hello.md"],
+    });
+    await expect(
+      editFile(agent(), "p1", {
+        path: "src/content/blog/helo.md",
+        edits: [{ old_string: "Hi", new_string: "Hey" }],
+        message: "x",
+      }),
+    ).rejects.toMatchObject({
+      code: "not_found",
+      details: { did_you_mean: ["src/content/blog/hello.md"] },
+    });
+  });
+
+  it("lists the reachable sites for an unknown project, and defaults a single-site grant", async () => {
+    m.projectFind.mockResolvedValue([PROJECT]);
+    await expect(
+      readFiles(agent(), "nope", { paths: ["src/content/a.md"] }),
+    ).rejects.toMatchObject({
+      code: "not_found",
+      details: { projects: [{ project_id: "p1", name: "Site" }] },
+    });
+    const read = await readFiles(agent(), undefined, {
+      paths: ["src/content/a.md"],
+    });
+    expect(read.files[0]).toMatchObject({ content: "A" });
+    await expect(
+      readFiles(agent({ project_ids: ["p1", "p2"] }), undefined, {
+        paths: ["src/content/a.md"],
+      }),
+    ).rejects.toMatchObject({ code: "invalid_input" });
+  });
+
+  it("returns the closest lines when old_string doesn't match", async () => {
+    m.fake.git.push({
+      "src/content/a.md": 'title: "Hello World"\nbody text\n',
+    });
+    await expect(
+      editFile(agent(), "p1", {
+        path: "src/content/a.md",
+        edits: [{ old_string: "title:  'Hello World'", new_string: "x" }],
+        message: "x",
+      }),
+    ).rejects.toMatchObject({
+      code: "no_match",
+      fix: expect.stringMatching(/copy old_string exactly from read_files/i),
+      details: { closest: [{ line: 1, text: 'title: "Hello World"' }] },
+    });
+  });
+
+  it("lists schema names for an unknown schema, and folders for an unknown folder", async () => {
+    m.fake.git.push({
+      ".sitepins/schema/blog.json": JSON.stringify({ name: "blog" }),
+      "src/content/blog/x.md": "---\ntitle: X\n---\n",
+    });
+    await expect(getSchema(agent(), "p1", "blgo")).rejects.toMatchObject({
+      code: "not_found",
+      details: { schemas: ["blog"] },
+    });
+    await expect(
+      createEntry(agent(), "p1", { schema: "blgo", title: "T" }),
+    ).rejects.toMatchObject({ details: { schemas: ["blog"] } });
+    m.fake.git.push({ ".sitepins/schema/blog.json": null });
+    await expect(
+      createEntry(agent(), "p1", { folder: "src/content/blgo", title: "T" }),
+    ).rejects.toMatchObject({
+      code: "not_found",
+      details: { did_you_mean: ["src/content/blog"] },
+    });
+  });
+
+  it("refuses a delete of a missing file with suggestions", async () => {
+    await expect(
+      applyAgentChangeset(agent(), "p1", {
+        message: "Delete",
+        expected_shas: { "src/content/b.md": "f".repeat(40) },
+        changes: [{ op: "delete", path: "src/content/b.md" }],
+      }),
+    ).rejects.toMatchObject({
+      code: "not_found",
+      details: { did_you_mean: ["src/content/a.md"] },
+    });
+  });
+});
+
+describe("updateEntryFields against the schema", () => {
+  beforeEach(() => {
+    m.fake.git.push({
+      ".sitepins/schema/blog.json": JSON.stringify({
+        name: "blog",
+        template: [
+          { name: "title", type: "string" },
+          { name: "draft", type: "boolean" },
+          { name: "banner", type: "object" },
+        ],
+      }),
+      "src/content/blog/post.md": "---\ntitle: Old\nlegacy: 1\n---\nBody\n",
+    });
+  });
+
+  it("refuses invented field names and names the valid ones", async () => {
+    await expect(
+      updateEntryFields(agent(), "p1", {
+        path: "src/content/blog/post.md",
+        set: { titel: "New" },
+        message: "x",
+      }),
+    ).rejects.toMatchObject({
+      code: "unknown_field",
+      details: { valid_fields: ["title", "draft", "banner"] },
+    });
+    expect(m.fake.git.text("src/content/blog/post.md")).toContain("Old");
+  });
+
+  it("accepts nested and existing fields, checks types, and can allow new ones", async () => {
+    const ok = await updateEntryFields(agent(), "p1", {
+      path: "src/content/blog/post.md",
+      set: { "banner.title": "B", legacy: 2 },
+      message: "x",
+    });
+    expect(ok.status).toBe("committed");
+    await expect(
+      updateEntryFields(agent(), "p1", {
+        path: "src/content/blog/post.md",
+        set: { draft: "yes" },
+        message: "x",
+      }),
+    ).rejects.toMatchObject({ code: "invalid_fields" });
+    const added = await updateEntryFields(agent(), "p1", {
+      path: "src/content/blog/post.md",
+      set: { subtitle: "S" },
+      allow_new_fields: true,
+      message: "x",
+    });
+    expect(added.status).toBe("committed");
+    expect(m.fake.git.text("src/content/blog/post.md")).toContain(
+      "subtitle: S",
+    );
+  });
+});
+
+describe("write results", () => {
+  it("returns the new sha of each written file and what to do next", async () => {
+    const result = await editFile(agent(), "p1", {
+      path: "src/content/a.md",
+      edits: [{ old_string: "A", new_string: "B" }],
+      message: "Edit",
+    });
+    expect(result).not.toHaveProperty("previous_sha");
+    expect(result.files).toEqual([
+      { path: "src/content/a.md", sha: gitBlobSha(Buffer.from("B")) },
+    ]);
+    expect(result.next_step).toMatch(/^Saved\. Use get_deploy_status/);
+    const read = await readFile(agent(), "p1", { path: "src/content/a.md" });
+    expect(read.sha).toBe(result.files![0].sha);
+
+    const again = await editFile(agent(), "p1", {
+      path: "src/content/a.md",
+      edits: [{ old_string: "B", new_string: "B" }],
+      message: "Same",
+    });
+    expect(again).toMatchObject({
+      status: "noop",
+      next_step: expect.stringMatching(/Nothing changed/),
+    });
+    const preview = await editFile(agent(), "p1", {
+      path: "src/content/a.md",
+      edits: [{ old_string: "B", new_string: "C" }],
+      message: "Preview",
+      dry_run: true,
+    });
+    expect(preview.next_step).toMatch(/without dry_run/);
+  });
+});
+
+describe("moveFile", () => {
+  it("defaults expected_sha to the current file and previews with dry_run", async () => {
+    const preview = await moveFile(agent(), "p1", {
+      from: "src/content/a.md",
+      to: "src/content/z.md",
+      message: "Rename",
+      dry_run: true,
+    });
+    expect(preview.status).toBe("dry_run");
+    expect(m.fake.git.text("src/content/a.md")).toBe("A");
+
+    const moved = await moveFile(agent(), "p1", {
+      from: "src/content/a.md",
+      to: "src/content/z.md",
+      message: "Rename",
+    });
+    expect(moved.status).toBe("committed");
+    expect(m.fake.git.text("src/content/z.md")).toBe("A");
+    expect(m.fake.git.text("src/content/a.md")).toBeNull();
+    expect(moved.files).toEqual(
+      expect.arrayContaining([
+        { path: "src/content/a.md", sha: null },
+        { path: "src/content/z.md", sha: gitBlobSha(Buffer.from("A")) },
+      ]),
+    );
+    await expect(
+      moveFile(agent(), "p1", {
+        from: "src/content/a.md",
+        to: "src/content/y.md",
+        message: "Again",
+      }),
+    ).rejects.toMatchObject({
+      code: "not_found",
+      details: { did_you_mean: ["src/content/z.md"] },
+    });
+  });
+});
+
+describe("listEntries", () => {
+  beforeEach(() => {
+    m.fake.git.push({
+      "src/content/blog/one.md":
+        "---\ntitle: First post\ndate: 2026-01-02\ndraft: false\n---\n",
+      "src/content/blog/two.md":
+        "---\ntitle: Second post\ndate: 2026-03-04\ndraft: true\ntags: [a]\n---\n",
+      "src/content/blog/three.md": "---\ntitle: Undated\n---\n",
+      "src/content/blog/cover.png": "PNG",
+    });
+  });
+
+  it("lists entries newest first with the default fields", async () => {
+    const result = await listEntries(agent(), "p1", {
+      folder: "src/content/blog",
+    });
+    expect(result.total).toBe(3);
+    expect(result.entries.map((e) => e.path)).toEqual([
+      "src/content/blog/two.md",
+      "src/content/blog/one.md",
+      "src/content/blog/three.md",
+    ]);
+    expect(result.entries[0]).toMatchObject({
+      sha: expect.any(String),
+      fields: { title: "Second post", date: "2026-03-04", draft: true },
+    });
+  });
+
+  it("filters by title, picks fields, sorts by title and pages", async () => {
+    const result = await listEntries(agent(), "p1", {
+      folder: "src/content/blog",
+      query: "POST",
+      fields: ["tags"],
+      sort: "title_asc" as never,
+      limit: 1,
+    });
+    expect(result).toMatchObject({
+      total: 2,
+      next_cursor: "1",
+      entries: [{ path: "src/content/blog/one.md", fields: {} }],
+    });
+    const next = await listEntries(agent(), "p1", {
+      folder: "src/content/blog",
+      query: "post",
+      fields: ["tags"],
+      sort: "title_asc" as never,
+      cursor: "1",
+    });
+    expect(next.entries).toEqual([
+      expect.objectContaining({ fields: { tags: ["a"] } }),
+    ]);
+  });
+
+  it("suggests a folder when the one given doesn't exist", async () => {
+    await expect(
+      listEntries(agent(), "p1", { folder: "src/content/blogs" }),
+    ).rejects.toMatchObject({
+      code: "not_found",
+      details: { did_you_mean: ["src/content/blog"] },
+    });
+  });
+});
+
+describe("getChange", () => {
+  it("shows who changed what, file by file, with a diff", async () => {
+    await editFile(agent(), "p1", {
+      path: "src/content/a.md",
+      edits: [{ old_string: "A", new_string: "B" }],
+      message: "Change A",
+    });
+    const commit = m.fake.git.head();
+    const result = await getChange(agent(), "p1", { commit_sha: commit });
+    expect(result).toMatchObject({
+      commit,
+      subject: "Change A",
+      made_by: { user: "Ada", via: "Claude Code" },
+      total_files: 1,
+      files: [
+        {
+          path: "src/content/a.md",
+          change: "modified",
+          diff: "@@ -1,1 +1,1 @@\n-A\n+B",
+        },
+      ],
+    });
+
+    const added = m.fake.git.push({
+      "src/content/new.md": "N",
+      "src/content/a.md": null,
+    });
+    const second = await getChange(agent(), "p1", { commit_sha: added });
+    expect(second.files.map((f) => `${f.change} ${f.path}`)).toEqual([
+      "removed src/content/a.md",
+      "added src/content/new.md",
+    ]);
+    await expect(
+      getChange(agent(), "p1", { commit_sha: "f".repeat(40) }),
+    ).rejects.toMatchObject({ code: "not_found" });
   });
 });

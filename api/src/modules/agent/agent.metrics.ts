@@ -12,23 +12,27 @@ export const countUpstream = () => {
   if (metrics) metrics.upstream++;
 };
 
+/** Logs every call with ok/error_code; a rising not_found, no_match or unknown_field rate means agents are guessing. */
 export const measureTool = async <T>(
   tool: string,
   grantId: string,
-  fn: () => Promise<T>,
+  fn: () => Promise<{ value: T; code?: string }>,
   sizeOf: (result: T) => number,
 ): Promise<T> => {
   const metrics: TToolMetrics = { upstream: 0 };
   const started = performance.now();
-  const result = await storage.run(metrics, fn);
+  const { value, code } = await storage.run(metrics, fn);
   const fields = {
     tool,
     grant_id: grantId,
+    ok: !code,
+    ...(code && { error_code: code }),
     ms: Math.round(performance.now() - started),
     upstream: metrics.upstream,
-    bytes: sizeOf(result),
+    bytes: sizeOf(value),
   };
   if (fields.ms > SLOW_TOOL_MS) logger.warn("[agents] slow tool call", fields);
+  else if (code) logger.info("[agents] tool call failed", fields);
   else logger.debug("[agents] tool call", fields);
-  return result;
+  return value;
 };

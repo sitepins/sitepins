@@ -236,6 +236,7 @@ export const createFakeGitHub = (
             tree: { sha: `tree:${m[1]}` },
             message: commit.message,
             parents: commit.parents.map((sha) => ({ sha })),
+            author: { name: "dev", date: "2026-01-01T00:00:00Z" },
           })
         : json(404, {});
     }

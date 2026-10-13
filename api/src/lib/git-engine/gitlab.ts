@@ -244,9 +244,17 @@ export const createGitLabClient = ({
         id: string;
         message: string;
         parent_ids: string[];
+        author_name?: string;
+        authored_date?: string;
       }>("GET", `${base}/commits/${q(sha)}`);
       return data
-        ? { sha: data.id, message: data.message, parents: data.parent_ids }
+        ? {
+            sha: data.id,
+            message: data.message,
+            parents: data.parent_ids,
+            author: data.author_name,
+            date: data.authored_date,
+          }
         : null;
     },
 

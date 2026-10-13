@@ -220,6 +220,27 @@ const updateToml = (data: string, changes: TFieldChanges) => {
   return out;
 };
 
+/** The frontmatter (or data file) as an object; null when there is none or it doesn't parse. */
+export const readFields = (
+  path: string,
+  text: string,
+): Record<string, unknown> | null => {
+  try {
+    const doc = splitDocument(path, text);
+    const parsed =
+      doc.format === "yaml"
+        ? YAML.parse(doc.data)
+        : doc.format === "json"
+          ? JSON.parse(doc.data)
+          : parseToml(doc.data);
+    return parsed && typeof parsed === "object" && !Array.isArray(parsed)
+      ? (parsed as Record<string, unknown>)
+      : null;
+  } catch {
+    return null;
+  }
+};
+
 /** Changes only the named fields; everything else in the file stays byte for byte. */
 export const updateFields = (
   path: string,

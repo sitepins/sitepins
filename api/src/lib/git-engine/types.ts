@@ -19,7 +19,13 @@ export type TCommitSummary = {
 
 export type TPullRequest = { number: number; url: string };
 
-export type TCommitInfo = { sha: string; parents: string[]; message: string };
+export type TCommitInfo = {
+  sha: string;
+  parents: string[];
+  message: string;
+  author?: string;
+  date?: string;
+};
 
 /** What the host knows about builds and deploys of one commit. */
 export type TDeployStatus = {

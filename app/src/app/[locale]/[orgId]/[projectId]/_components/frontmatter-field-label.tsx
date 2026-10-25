@@ -13,13 +13,14 @@ export function Description({ description }: { description?: string }) {
   return <p className={cn("text-muted-foreground text-sm")}>{description}</p>;
 }
 
-type PreviewLabelProps = React.LabelHTMLAttributes<HTMLLabelElement> & {
+type TPreviewLabelProps = React.LabelHTMLAttributes<HTMLLabelElement> & {
   isRequired?: boolean;
   className?: string;
   children?: React.ReactNode;
   length?: number;
   maxLength?: number;
   action?: React.ReactNode;
+  rightContent?: React.ReactNode;
   isIgnored?: boolean;
   type?: string;
   name?: string;
@@ -46,7 +47,7 @@ export function PreviewLabel({
   length,
   maxLength,
   action,
-  // Field specific props to avoid spreading to DOM
+  rightContent,
   isIgnored: _isIgnored,
   type: _type,
   name: _name,
@@ -65,7 +66,7 @@ export function PreviewLabel({
   subType: _subType,
   label: _label,
   ...props
-}: PreviewLabelProps) {
+}: TPreviewLabelProps) {
   // `length` on the schema field is a snapshot, so count the live value instead.
   const currentLength = typeof value === "string" ? value.length : length;
 
@@ -81,6 +82,8 @@ export function PreviewLabel({
     return "outline"; // Too short
   };
 
+  const hasBadge = currentLength !== undefined && maxLength !== undefined;
+
   return (
     <Label
       className={cn(
@@ -94,10 +97,15 @@ export function PreviewLabel({
         {isRequired && <span className="text-destructive">*</span>}
         {action}
       </span>
-      {currentLength !== undefined && maxLength !== undefined && (
-        <Badge variant={getBadgeVariant()} className="ms-auto">
-          {currentLength}/{maxLength}
-        </Badge>
+      {(rightContent || hasBadge) && (
+        <span className="ms-auto flex items-center gap-2">
+          {rightContent}
+          {hasBadge && (
+            <Badge variant={getBadgeVariant()}>
+              {currentLength}/{maxLength}
+            </Badge>
+          )}
+        </span>
       )}
     </Label>
   );

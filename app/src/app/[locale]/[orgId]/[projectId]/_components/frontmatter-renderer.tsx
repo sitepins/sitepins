@@ -1122,23 +1122,27 @@ export default function FrontmatterRenderer({
                 <AnimatedListItem key={item.name}>
                   <PreviewLabel
                     {...item}
+                    value={checked}
+                    action={renderFieldAction?.(item, checked)}
                     htmlFor={item.name}
                     className="border-border dark:bg-input/30 flex w-full cursor-pointer items-center justify-between gap-3 rounded-lg border bg-transparent px-3 py-2"
+                    rightContent={
+                      <Switch
+                        required={item.isRequired}
+                        id={item.name}
+                        checked={typeof checked === "boolean" ? checked : false}
+                        className="m-0 shrink-0 cursor-pointer"
+                        name={fieldName}
+                        onPointerDown={(e) => {
+                          e.stopPropagation();
+                        }}
+                        onCheckedChange={(value) => {
+                          handleUpdateData(fieldName, value);
+                        }}
+                      />
+                    }
                   >
                     {item.label}
-                    <Switch
-                      required={item.isRequired}
-                      id={item.name}
-                      checked={typeof checked === "boolean" ? checked : false}
-                      className="m-0 shrink-0 cursor-pointer"
-                      name={fieldName}
-                      onPointerDown={(e) => {
-                        e.stopPropagation();
-                      }}
-                      onCheckedChange={(value) => {
-                        handleUpdateData(fieldName, value);
-                      }}
-                    />
                   </PreviewLabel>
                   <Description {...item} />
                 </AnimatedListItem>

@@ -1,6 +1,7 @@
 import { selectConfig, updateConfig } from "@/redux/features/config/slice";
 import { useAppDispatch } from "@/redux/store";
 import { Expand, Maximize } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { withRef } from "platejs/react";
 import { useSelector } from "react-redux";
 import { ToolbarButton } from "./toolbar";
@@ -10,13 +11,17 @@ export const ExpandToolbarButton = withRef<
   {
     clear?: string | string[];
   }
->(({ clear: _clear, ...rest }, _ref) => {
+>(({ clear: _clear, tooltip, ...rest }, _ref) => {
+  const tEditorRaw = useTranslations("editor.raw");
   const dispatch = useAppDispatch();
   const { fullscreen } = useSelector(selectConfig);
 
   return (
     <ToolbarButton
-      tooltip={fullscreen ? "Exit Fullscreen" : "Fullscreen"}
+      tooltip={
+        tooltip ??
+        (fullscreen ? tEditorRaw("exit_fullscreen") : tEditorRaw("fullscreen"))
+      }
       {...rest}
       data-testid="fullscreen-button"
       onClick={() => {

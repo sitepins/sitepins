@@ -1,25 +1,27 @@
-import { logger } from "@/lib/logger";
 import { MdxSnippet } from "@/editor/utils/plate-types";
-import { GITLAB_API_VERSION } from "@/lib/constant";
 import { siteConfigPath, snippetFolder } from "@/lib/config-dir";
+import { GITLAB_API_VERSION } from "@/lib/constant";
+import { logger } from "@/lib/logger";
 import { checkMedia } from "@/lib/utils/check-media-file";
 import {
   isOldConfigFormat,
   migrateConfig,
   type TLegacyConfig,
 } from "@/lib/utils/config-migration";
-import { getManifestFile } from "@/lib/utils/manifest";
 import { parseContentJson } from "@/lib/utils/content-serializer";
 import { fmDetector } from "@/lib/utils/frontmatter-detector";
+import { getManifestFile } from "@/lib/utils/manifest";
 import { pathToDir } from "@/lib/utils/path-to-dir";
 import { RootState, store } from "@/redux/store";
 import { TConfig, TFiles, TTree } from "@/types";
 import path from "path";
-import { TFileMetaCacheEntry, upsertFileMetadata } from "../config/meta-slice";
 import { updateConfig } from "../config/slice";
-import { encodeProjectPath, gitlabApi } from "./gitlab-api";
+import {
+  encodeProjectPath,
+  gitlabApi,
+  type TGitLabQueryArgs,
+} from "./gitlab-api";
 import { gitlabCommitApi } from "./gitlab-commit-api";
-import type { TGitLabCommit } from "./gitlab-type";
 import {
   TGitLabBranch,
   TGitLabFile,
@@ -70,41 +72,48 @@ async function loadGitLabSnippets(
   response: TGitLabTreeItem[] | { message?: string },
   id: string | number,
   ref: string | undefined,
+  fetchWithBQ?: (
+    args: TGitLabQueryArgs,
+  ) =>
+    | PromiseLike<{ data?: unknown; error?: unknown }>
+    | { data?: unknown; error?: unknown },
 ): Promise<MdxSnippet[]> {
   if (!Array.isArray(response)) {
     store.dispatch(updateConfig({ snippets: [] }));
     return [];
   }
 
-  const { config } = store.getState();
   const dispatch = store.dispatch;
-
   const snippetFiles = response.filter((item) => item.type === "blob");
 
   const snippetResults = await Promise.all<MdxSnippet | null>(
     snippetFiles.map(async (file) => {
       try {
-        const rawUrl = `https://gitlab.com/api/${GITLAB_API_VERSION}/projects/${encodeProjectPath(String(id))}/repository/files/${encodeURIComponent(file.path)}/raw`;
-        const fetchUrl = ref
-          ? `${rawUrl}?ref=${encodeURIComponent(ref)}`
-          : rawUrl;
-
-        const headers: Record<string, string> = {};
-        if (config.currentLoginUserToken) {
-          headers["PRIVATE-TOKEN"] = config.currentLoginUserToken;
-        }
-
-        const fetchResponse = await fetch(fetchUrl, { headers });
-
-        if (!fetchResponse.ok) {
-          logger.warn("Failed to fetch snippet", undefined, {
-            filePath: file.path,
-            status: fetchResponse.status,
+        let decoded = "";
+        if (fetchWithBQ) {
+          const res = await fetchWithBQ({
+            endpoint: `/projects/${encodeProjectPath(String(id))}/repository/files/${encodeURIComponent(file.path)}/raw`,
+            params: ref ? { ref } : undefined,
           });
-          return null;
+          if (res.error) return null;
+          decoded =
+            typeof res.data === "string" ? res.data : JSON.stringify(res.data);
+        } else {
+          const { config } = store.getState();
+          const rawUrl = `https://gitlab.com/api/${GITLAB_API_VERSION}/projects/${encodeProjectPath(String(id))}/repository/files/${encodeURIComponent(file.path)}/raw`;
+          const fetchUrl = ref
+            ? `${rawUrl}?ref=${encodeURIComponent(ref)}`
+            : rawUrl;
+          const token = config.currentLoginUserToken || config.token;
+          const headers: Record<string, string> = {};
+          if (token) {
+            headers.Authorization = `Bearer ${token}`;
+          }
+          const fetchResponse = await fetch(fetchUrl, { headers });
+          if (!fetchResponse.ok) return null;
+          decoded = await fetchResponse.text();
         }
 
-        const decoded = await fetchResponse.text();
         return parseSnippetFile(decoded, file.path);
       } catch (error) {
         logger.warn("Failed to load snippet", error, {
@@ -220,113 +229,11 @@ export const gitlabContentApi = gitlabApi.injectEndpoints({
           }
         }
 
-        // --- Transformation Logic (formerly transformResponse) ---
-        const response = allItems;
-
-        if (response.length > 200) {
-          const trees = convertGitLabTreeToTTree(response);
-          return {
-            data: {
-              trees: pathToDir(trees, arg.config),
-              files: trees,
-            },
-          };
-        }
-
-        const dispatch = store.dispatch;
-        const state = store.getState();
-        const metadataCache = state.gitMeta?.files ?? {};
-        const branchRef = arg.ref ?? state.config.branch ?? "HEAD";
-        const projectId = String(arg.id);
-        const cacheBaseKey = `${projectId}/${branchRef}`;
-        const pendingUpdates: Record<string, TFileMetaCacheEntry> = {};
-
-        const enrichedFiles: TTree[] = await Promise.all(
-          response.map(async (file): Promise<TTree> => {
-            if (file.type !== "blob") {
-              return convertGitLabTreeToTTree([file])[0];
-            }
-
-            const cacheKey = `${cacheBaseKey}/${file.path}`;
-            const cachedMeta = metadataCache[cacheKey];
-
-            if (
-              cachedMeta &&
-              cachedMeta.sha === file.id &&
-              cachedMeta.size !== undefined
-            ) {
-              return {
-                ...convertGitLabTreeToTTree([file])[0],
-                commitDate: cachedMeta.commitDate,
-                createdDate: cachedMeta.createdDate,
-                size: cachedMeta.size,
-              };
-            }
-
-            try {
-              const commitsPromise: Promise<TGitLabCommit[]> = dispatch(
-                gitlabCommitApi.endpoints.getGitLabCommits.initiate({
-                  id: arg.id,
-                  ref: arg.ref,
-                  path: file.path,
-                  per_page: 1,
-                }),
-              ).unwrap();
-
-              let sizePromise: Promise<number | null> | undefined;
-              if (!cachedMeta?.size) {
-                sizePromise = dispatch(
-                  gitlabContentApi.endpoints.getGitLabFileMetadata.initiate({
-                    id: arg.id,
-                    ref: arg.ref,
-                    file_path: file.path,
-                  }),
-                ).unwrap();
-              }
-
-              const [commits, fetchedSize]: [
-                TGitLabCommit[],
-                number | null | undefined,
-              ] = await Promise.all([commitsPromise, sizePromise]);
-
-              const size: number | undefined = fetchedSize ?? cachedMeta?.size;
-
-              const latestCommit = commits?.[0];
-              if (latestCommit || size !== undefined) {
-                pendingUpdates[cacheKey] = {
-                  sha: file.id,
-                  commitDate:
-                    latestCommit?.committed_date ?? cachedMeta?.commitDate,
-                  createdDate:
-                    latestCommit?.committed_date ?? cachedMeta?.createdDate,
-                  size: size ?? cachedMeta?.size,
-                };
-
-                return {
-                  ...convertGitLabTreeToTTree([file])[0],
-                  commitDate:
-                    latestCommit?.committed_date ?? cachedMeta?.commitDate,
-                  createdDate:
-                    latestCommit?.committed_date ?? cachedMeta?.createdDate,
-                  size: size,
-                };
-              }
-            } catch {
-              // Ignore fetch errors and return file without metadata
-            }
-
-            return convertGitLabTreeToTTree([file])[0];
-          }),
-        );
-
-        if (Object.keys(pendingUpdates).length > 0) {
-          store.dispatch(upsertFileMetadata(pendingUpdates));
-        }
-
+        const trees = convertGitLabTreeToTTree(allItems);
         return {
           data: {
-            trees: pathToDir(enrichedFiles, arg.config),
-            files: enrichedFiles,
+            trees: pathToDir(trees, arg.config),
+            files: trees,
           },
         };
       },
@@ -507,6 +414,7 @@ export const gitlabContentApi = gitlabApi.injectEndpoints({
             result.data as TGitLabTreeItem[] | { message?: string },
             id,
             ref,
+            fetchWithBQ,
           ),
         };
       },

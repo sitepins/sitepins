@@ -40,7 +40,10 @@ export default function FileRow({ file }: { file: TFiles }) {
     skip: !isInView || !file.isFile,
   });
 
-  const { data: commit } = useGitCommits({ path: fileName });
+  const { data: commit } = useGitCommits({
+    path: fileName,
+    skip: !isInView || !file.isFile,
+  });
 
   if (!isSuccess || isLoading) {
     return (
@@ -87,7 +90,7 @@ export default function FileRow({ file }: { file: TFiles }) {
       commit?.[0]?.committed_date
     : // @ts-ignore
       commit?.[0]?.commit.author?.date;
-  const date = commitDate;
+  const date = commitDate || file.commitDate;
 
   return (
     <div

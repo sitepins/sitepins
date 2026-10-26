@@ -2,10 +2,10 @@ import createMiddleware from "next-intl/middleware";
 import { NextRequest, NextResponse } from "next/server";
 import { getAuth } from "./lib/auth/auth-server";
 import { routing } from "./lib/i18n/routing";
-import { PUBLIC_ROUTES } from "./lib/public-routes";
 import { gateProtectedRequest } from "./lib/proxy-gate";
-import { getUserLanguage } from "./redux/features/user-preference/preference-server";
+import { PUBLIC_ROUTES } from "./lib/public-routes";
 import { safeInternalPath } from "./lib/safe-redirect";
+import { getUserLanguage } from "./redux/features/user-preference/preference-server";
 
 // Routes that are accessible without authentication (path without locale prefix)
 const AUTH_ROUTES = ["/login", "/register", "/forgot-password"];
@@ -49,7 +49,8 @@ export async function proxy(request: NextRequest) {
     // Redirect already-authed users away from auth pages
     if ((await getAuthOnce()) && isAuthRoute(pathname)) {
       const safe = safeInternalPath(nextUrl.searchParams.get("from"));
-      return NextResponse.redirect(new URL(safe, origin), 302);
+      const target = isAuthRoute(safe) ? "/" : safe;
+      return NextResponse.redirect(new URL(target, origin), 302);
     }
     return intlResponse;
   }
@@ -80,22 +81,28 @@ export async function proxy(request: NextRequest) {
     const localeToSet = dbLanguage ?? "en";
     const currentLocale = request.cookies.get("NEXT_LOCALE")?.value;
 
-    const syncResponse = NextResponse.redirect(request.url, 302);
-    syncResponse.cookies.set("NEXT_LOCALE", localeToSet, {
+    const isProduction = process.env.NODE_ENV === "production";
+    const cookieOptions = {
       path: "/",
-      maxAge: 60 * 60 * 24 * 365,
-    });
-    // session cookie — no maxAge, cleared when browser closes
-    syncResponse.cookies.set("locale_synced", "1", { path: "/" });
+      sameSite: (isProduction ? "none" : "lax") as "none" | "lax",
+      secure: isProduction,
+    };
 
-    // Only redirect if locale actually changed or cookie was missing.
-    // Avoids redirect loop on refresh when locale already matches DB.
-    if (!hasLocaleCookie || currentLocale !== localeToSet) {
+    if (currentLocale && currentLocale !== localeToSet) {
+      const syncResponse = NextResponse.redirect(request.url, 302);
+      syncResponse.cookies.set("NEXT_LOCALE", localeToSet, {
+        ...cookieOptions,
+        maxAge: 60 * 60 * 24 * 365,
+      });
+      syncResponse.cookies.set("locale_synced", "1", cookieOptions);
       return syncResponse;
     }
 
-    // Locale matches — attach sync cookie to final intlResponse instead
-    intlResponse.cookies.set("locale_synced", "1", { path: "/" });
+    intlResponse.cookies.set("NEXT_LOCALE", localeToSet, {
+      ...cookieOptions,
+      maxAge: 60 * 60 * 24 * 365,
+    });
+    intlResponse.cookies.set("locale_synced", "1", cookieOptions);
   }
 
   return (

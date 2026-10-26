@@ -1,6 +1,8 @@
 import { defineRouting } from "next-intl/routing";
 import { locales } from "@/lib/utils/localized-text";
 
+const isProduction = process.env.NODE_ENV === "production";
+
 export const routing = defineRouting({
   // Supported locales — dynamically loaded from languages.json via locales.ts
   locales: locales,
@@ -15,6 +17,8 @@ export const routing = defineRouting({
   // By default next-intl uses a session cookie (clears on browser close)
   localeCookie: {
     maxAge: 60 * 60 * 24 * 365,
+    sameSite: isProduction ? "none" : "lax",
+    secure: isProduction,
   },
 });
 

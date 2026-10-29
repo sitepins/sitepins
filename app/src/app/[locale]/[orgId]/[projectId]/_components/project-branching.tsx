@@ -66,6 +66,7 @@ const ProjectBranching = ({
   repoInfo,
 }: ProjectBranchingProps) => {
   const tProjectBranching = useTranslations("project.branching");
+  const tCommon = useTranslations("common");
   const { provider } = useGitProvider();
   const [isOpen, setIsOpen] = useState(false);
   const [title, setTitle] = useState("");
@@ -581,7 +582,7 @@ const ProjectBranching = ({
                       onClick={() => setIsOpen(false)}
                       disabled={isCreating}
                     >
-                      Cancel
+                      {tCommon("actions.cancel")}
                     </Button>
                     <Button onClick={handleCreatePR} isLoading={isCreating}>
                       {tProjectBranching("create_request", { provider: "" })}

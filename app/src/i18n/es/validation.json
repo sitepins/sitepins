@@ -1,0 +1,32 @@
+{
+  "validation": {
+    "required": "Este campo debe completarse.",
+    "email_invalid": "Este correo electrónico no es válido.",
+    "name_required": "El nombre es obligatorio",
+    "name_min": "El nombre debe tener al menos {count} caracteres",
+    "password_min": "La contraseña debe tener al menos {count} caracteres",
+    "password_max": "La contraseña debe tener menos de {count} caracteres",
+    "password_letter": "La contraseña debe contener al menos una letra",
+    "password_digit": "La contraseña debe contener al menos un dígito",
+    "password_special": "La contraseña debe contener al menos un carácter especial",
+    "password_mismatch": "Las contraseñas no coinciden",
+    "otp_length": "El código OTP debe tener exactamente {count} dígitos.",
+    "select_provider": "Por favor, seleccione un proveedor.",
+    "select_repository": "Por favor, seleccione un repositorio.",
+    "select_branch": "Por favor, seleccione una rama.",
+    "project_required": "El nombre del proyecto es obligatorio",
+    "select_file_type": "Por favor, seleccione el tipo de archivo",
+    "select_frontmatter_type": "Por favor, seleccione el tipo de frontmatter",
+    "select_content_folder": "Seleccione su carpeta de contenido.",
+    "select_media_folder": "Seleccione su carpeta de medios.",
+    "select_public_folder": "Seleccione su carpeta pública.",
+    "select_theme": "Por favor, seleccione un tema",
+    "select_role": "Por favor, seleccione un rol.",
+    "select_preference": "Por favor, seleccione al menos una preferencia.",
+    "image_requirements": "Formatos de imagen admitidos: JPEG, JPG, PNG, WebP. El tamaño máximo permitido es de 200 KB.",
+    "api_key_required": "La clave de API de OpenAI es obligatoria",
+    "label_required": "Por favor, introduzca una etiqueta",
+    "name_min_chars": "El nombre debe tener al menos {count} caracteres.",
+    "heading_min_chars": "El encabezado debe tener al menos {count} caracteres."
+  }
+}

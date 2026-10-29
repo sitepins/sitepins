@@ -1,0 +1,32 @@
+{
+  "validation": {
+    "required": "此字段为必填项。",
+    "email_invalid": "这不是有效的电子邮箱地址。",
+    "name_required": "名称为必填项",
+    "name_min": "名称至少需要包含 {count} 个字符",
+    "password_min": "密码至少需要包含 {count} 个字符",
+    "password_max": "密码长度必须少于 {count} 个字符",
+    "password_letter": "密码必须至少包含一个字母",
+    "password_digit": "密码必须至少包含一个数字",
+    "password_special": "密码必须至少包含一个特殊字符",
+    "password_mismatch": "两次输入的密码不一致",
+    "otp_length": "验证码必须恰好为 {count} 位数字。",
+    "select_provider": "请选择代码托管平台。",
+    "select_repository": "请选择代码仓库。",
+    "select_branch": "请选择分支。",
+    "project_required": "项目名称为必填项",
+    "select_file_type": "请选择文件类型",
+    "select_frontmatter_type": "请选择 Frontmatter 类型",
+    "select_content_folder": "请选择您的内容文件夹。",
+    "select_media_folder": "请选择您的媒体文件夹。",
+    "select_public_folder": "请选择您的公共文件夹。",
+    "select_theme": "请选择一个主题",
+    "select_role": "请选择一个角色。",
+    "select_preference": "请至少选择一项偏好设置。",
+    "image_requirements": "支持的图片格式：JPEG、JPG、PNG、WebP。允许的最大文件大小为 200 KB。",
+    "api_key_required": "需要提供 OpenAI API 密钥",
+    "label_required": "请输入标签",
+    "name_min_chars": "名称至少需要包含 {count} 个字符。",
+    "heading_min_chars": "标题至少需要包含 {count} 个字符。"
+  }
+}

@@ -1,8 +1,5 @@
 "use client";
 
-import { STORAGE_PREFIX } from "@/lib/brand";
-import { errorMessage } from "@/lib/utils/error";
-import { logger } from "@/lib/logger";
 import { Button } from "@/components/ui/button";
 import {
   ButtonGroup,
@@ -15,12 +12,16 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { toast } from "@/components/ui/toast";
 import { useFeatureAccess } from "@/hooks/use-feature-access";
 import {
   getPreviewWindow,
   setPreviewWindow,
 } from "@/hooks/use-sandbox-preview";
 import { openUnlockPrompt } from "@/hooks/use-unlock-prompt";
+import { STORAGE_PREFIX } from "@/lib/brand";
+import { logger } from "@/lib/logger";
+import { errorMessage } from "@/lib/utils/error";
 import { isGitLabProvider, TGitProvider } from "@/lib/utils/provider-checker";
 import {
   ChevronDown,
@@ -32,9 +33,9 @@ import {
   MonitorPlay,
   RefreshCw,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useParams, useRouter } from "next/navigation";
 import { RefObject, useCallback, useEffect, useRef, useState } from "react";
-import { toast } from "@/components/ui/toast";
 
 type PreviewButtonProps = {
   repository: string;
@@ -92,7 +93,15 @@ export default function PreviewButton({
 
   const router = useRouter();
   const { orgId } = useParams<{ orgId: string }>();
+  const tPreview = useTranslations("project.preview");
   const { hasAdvancedFeatures } = useFeatureAccess();
+
+  const getLoadingLabel = () => {
+    if (!loadingStep) return tPreview("starting");
+    if (loadingStep.toLowerCase().includes("boot")) return tPreview("booting");
+    if (loadingStep.toLowerCase().includes("push")) return tPreview("pushing");
+    return loadingStep;
+  };
 
   const hasWarnedExpiryRef = useRef(false);
   const hasProbedRef = useRef(false);
@@ -267,7 +276,7 @@ export default function PreviewButton({
         const elapsed = Date.now() - startedAt;
         if (elapsed >= SANDBOX_SESSION_MAX_MS) {
           clearSession();
-          toast.info("Preview session expired", {
+          toast.info(tPreview("toast_expired"), {
             description:
               "Vercel caps free sandbox sessions at 45 minutes. Snapshot saved — restart is fast (~20s).",
             duration: 12000,
@@ -282,7 +291,7 @@ export default function PreviewButton({
           const minsLeft = Math.ceil(
             (SANDBOX_SESSION_MAX_MS - elapsed) / 60000,
           );
-          toast.warning(`Preview expires in ~${minsLeft} min`, {
+          toast.warning(tPreview("toast_expires_in", { mins: minsLeft }), {
             id: "sandbox-expiry-warning",
             description:
               "Snapshot saved — clicking Preview again starts fresh in ~20s.",
@@ -328,6 +337,7 @@ export default function PreviewButton({
     lsStartedAtKey,
     previewWindowRef,
     SANDBOX_SESSION_MAX_MS,
+    tPreview,
   ]);
 
   // ── Stop sandbox on page unload ───────────────────────────────────────
@@ -437,7 +447,7 @@ export default function PreviewButton({
                   payload.sandboxName ?? "",
                   payload.commitSha ?? "",
                 );
-                toast.success("Preview ready!", {
+                toast.success(tPreview("toast_ready"), {
                   description: "Click 'Open Preview' to view.",
                   duration: 8000,
                   action: {
@@ -466,7 +476,7 @@ export default function PreviewButton({
       }
     } catch (err) {
       setSandboxStatus(previewUrl ? "running" : "stopped");
-      toast.error("Preview failed", {
+      toast.error(tPreview("toast_failed"), {
         description: errorMessage(err) ?? "An unexpected error occurred.",
         duration: 6000,
       });
@@ -499,7 +509,7 @@ export default function PreviewButton({
     } finally {
       clearSession();
       setIsDestroying(false);
-      toast.success("Preview destroyed", {
+      toast.success(tPreview("toast_destroyed"), {
         description: "Sandbox stopped. CPU usage freed.",
       });
     }
@@ -541,7 +551,7 @@ export default function PreviewButton({
             <MonitorPlay className="size-4" />
           )}
           <span className="hidden sm:inline">
-            {isLoading ? (loadingStep ?? "Starting") : "Preview"}
+            {isLoading ? getLoadingLabel() : tPreview("button")}
           </span>
         </Button>
       </>
@@ -560,11 +570,11 @@ export default function PreviewButton({
           className="size-9 gap-1.5 p-0 sm:size-auto sm:h-9 sm:px-2.5"
           onClick={() => startSandbox(false)}
           disabled={isLoading || isDestroying}
-          title={isStale ? "Preview may be outdated — use Sync" : undefined}
+          title={isStale ? tPreview("outdated_tooltip") : undefined}
         >
           {isLoading ? <Loader2 className="size-4 animate-spin" /> : statusIcon}
           <span className="hidden sm:inline">
-            {isLoading ? (loadingStep ?? "Starting") : "Preview"}
+            {isLoading ? getLoadingLabel() : tPreview("button")}
           </span>
         </Button>
 
@@ -577,7 +587,7 @@ export default function PreviewButton({
               variant="outline"
               size="icon-lg"
               className="h-9 w-7 px-0 sm:w-8"
-              aria-label="Preview options"
+              aria-label={tPreview("options")}
               disabled={isLoading || isDestroying}
             >
               {isDestroying ? (
@@ -593,14 +603,14 @@ export default function PreviewButton({
               onSelect={() => startSandbox(true)}
             >
               <RefreshCw className="size-3.5" />
-              Sync Preview
+              {tPreview("sync")}
             </DropdownMenuItem>
             <DropdownMenuItem
               className="cursor-pointer"
               onSelect={() => handleOpen()}
             >
               <ExternalLink className="size-3.5" />
-              Open Preview
+              {tPreview("open")}
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
@@ -608,7 +618,7 @@ export default function PreviewButton({
               onSelect={destroyPreview}
             >
               <MonitorOff className="size-3.5" />
-              Destroy Preview
+              {tPreview("destroy")}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

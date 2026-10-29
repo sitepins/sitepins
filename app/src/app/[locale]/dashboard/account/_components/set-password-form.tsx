@@ -9,11 +9,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { newPasswordSchema } from "@/lib/validate";
+import { toast } from "@/components/ui/toast";
+import { getNewPasswordSchema, newPasswordSchema } from "@/lib/validate";
 import { useSetPasswordMutation } from "@/redux/features/user/user-api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { BetterFetchError } from "better-auth/react";
-import { toast } from "@/components/ui/toast";
 // loader handled by shared Button
 import { Button } from "@/components/ui/button";
 import {
@@ -25,7 +25,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import * as z from "zod/v4";
 
@@ -41,16 +41,19 @@ export default function SetNewPassword() {
 
   const isPending = status === "pending";
 
+  const tValidation = useTranslations("validation");
+  const tDashboardAccountSetPassword = useTranslations(
+    "dashboard.account.set_password",
+  );
+
   const newPasswordForm = useForm<NewPasspayload>({
-    resolver: zodResolver(newPasswordSchema),
+    resolver: zodResolver(
+      useMemo(() => getNewPasswordSchema(tValidation), [tValidation]),
+    ),
     defaultValues: {
       newPassword: "",
     },
   });
-
-  const tDashboardAccountSetPassword = useTranslations(
-    "dashboard.account.set_password",
-  );
 
   const onSubmit = async (values: NewPasspayload) => {
     try {
@@ -60,7 +63,7 @@ export default function SetNewPassword() {
     } catch {
       setError({
         name: "set-password",
-        error: "Something went wrong!",
+        error: tDashboardAccountSetPassword("error"),
         message: tDashboardAccountSetPassword("error"),
         status: 500,
         statusText: "Internal Server error",

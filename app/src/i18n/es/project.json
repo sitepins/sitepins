@@ -126,6 +126,48 @@
       "or": "O",
       "already_deployed": "¿Ya implementado? Ingresa la URL ahora",
       "vercel_host": "en Vercel para alojar tu sitio"
+    },
+    "no_sites": {
+      "welcome": "Bienvenido a {brand} 👋",
+      "connect_description": "Conecte su sitio web existente para comenzar en minutos.",
+      "add_site": "Agregar nuevo sitio"
+    },
+    "preview": {
+      "button": "Vista previa",
+      "starting": "Iniciando",
+      "booting": "Arrancando",
+      "pushing": "Enviando",
+      "sync": "Sincronizar vista previa",
+      "open": "Abrir vista previa",
+      "destroy": "Destruir vista previa",
+      "options": "Opciones de vista previa",
+      "outdated_tooltip": "La vista previa puede estar desactualizada — use Sincronizar",
+      "toast_expired": "Sesión de vista previa caducada",
+      "toast_expires_in": "La vista previa caduca en ~{mins} min",
+      "toast_ready": "¡Vista previa lista!",
+      "toast_failed": "Error en la vista previa",
+      "toast_destroyed": "Vista previa destruida"
+    },
+    "config_empty": {
+      "title": "Nada que ver aquí",
+      "description": "No hay ninguna configuración disponible para este contenido. Primero cree un esquema para configurar este contenido."
+    },
+    "code_preview": {
+      "edit_code": "Editar código",
+      "lines": "Líneas:",
+      "characters": "Caracteres:",
+      "language": "Idioma:",
+      "preview": "Vista previa"
+    },
+    "code_ai": {
+      "generating": "Generando directamente en el editor",
+      "streaming": "Transmitiendo {count} líneas en {file}...",
+      "view_raw": "Ver fragmento de salida sin procesar",
+      "target_scope": "Ámbito objetivo:",
+      "quick_actions": "Acciones rápidas:",
+      "refine_shortcut": "⌘+↵ para refinar",
+      "run_shortcut": "⌘+↵ para ejecutar",
+      "close_explanation": "Cerrar explicación"
     }
   }
 }

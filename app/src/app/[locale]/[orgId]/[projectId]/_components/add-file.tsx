@@ -1,7 +1,5 @@
 "use client";
 
-import { useAddLog } from "@/hooks/use-add-log";
-import { logger } from "@/lib/logger";
 import { Button, ButtonProps } from "@/components/ui/button";
 import {
   Dialog,
@@ -18,16 +16,19 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { toast } from "@/components/ui/toast";
+import { useAddLog } from "@/hooks/use-add-log";
 import { useGitCacheUpdates } from "@/hooks/use-git-cache-updates";
 import { useSchemaData } from "@/hooks/use-schema-data";
 import { authClient } from "@/lib/auth/auth-client";
+import { logger } from "@/lib/logger";
 import { cn } from "@/lib/utils/cn";
-import { contentFormatter } from "@/lib/utils/content-serializer";
 import { resolveRepoPath } from "@/lib/utils/common";
+import { contentFormatter } from "@/lib/utils/content-serializer";
 import { getLogType } from "@/lib/utils/project-log-type-detector";
 import { isGitLabProvider } from "@/lib/utils/provider-checker";
 import { slugify } from "@/lib/utils/text-converter";
-import { createFileSchema } from "@/lib/validate";
+import { createFileSchema, getCreateFileSchema } from "@/lib/validate";
 import { selectConfig } from "@/redux/features/config/slice";
 import { useUpdateGitHubFilesMutation } from "@/redux/features/github";
 import { useUpdateGitLabFilesMutation } from "@/redux/features/gitlab";
@@ -36,10 +37,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useParams, usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
-import { toast } from "@/components/ui/toast";
 import * as z from "zod/v4";
 import CreateSchema from "./create-schema";
 import { convertToFormData } from "./schema-form-converter";
@@ -65,6 +65,7 @@ export default function AddFile({
 }: Props) {
   const tDirectoryView = useTranslations("directory-view");
   const tCommon = useTranslations("common");
+  const tValidation = useTranslations("validation");
   const params = useParams();
   const router = useRouter();
   const pathname = usePathname();
@@ -88,8 +89,10 @@ export default function AddFile({
   );
   const decodedFilepath = resolveRepoPath(rawUrlPath, config);
 
+  const schema = useMemo(() => getCreateFileSchema(tValidation), [tValidation]);
+
   const createFileForm = useForm<z.infer<typeof createFileSchema>>({
-    resolver: zodResolver(createFileSchema),
+    resolver: zodResolver(schema),
     defaultValues: {
       name: "",
       title: "",

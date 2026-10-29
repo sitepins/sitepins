@@ -126,6 +126,48 @@
       "or": "Hoặc",
       "already_deployed": "Đã triển khai chưa? Chèn URL ngay bây giờ",
       "vercel_host": "trên Vercel để lưu trữ trang web của bạn"
+    },
+    "no_sites": {
+      "welcome": "Chào mừng bạn đến với {brand} 👋",
+      "connect_description": "Kết nối trang web hiện tại của bạn để bắt đầu sau vài phút.",
+      "add_site": "Thêm Trang Mới"
+    },
+    "preview": {
+      "button": "Xem trước",
+      "starting": "Đang khởi động",
+      "booting": "Đang nạp",
+      "pushing": "Đang đẩy",
+      "sync": "Đồng bộ xem trước",
+      "open": "Mở xem trước",
+      "destroy": "Hủy xem trước",
+      "options": "Tùy chọn xem trước",
+      "outdated_tooltip": "Bản xem trước có thể đã cũ — hãy dùng Đồng bộ",
+      "toast_expired": "Phiên xem trước đã hết hạn",
+      "toast_expires_in": "Bản xem trước sẽ hết hạn sau ~{mins} phút",
+      "toast_ready": "Bản xem trước đã sẵn sàng!",
+      "toast_failed": "Xem trước thất bại",
+      "toast_destroyed": "Đã hủy xem trước"
+    },
+    "config_empty": {
+      "title": "Không có gì ở đây",
+      "description": "Không có cấu hình nào khả dụng cho nội dung này. Vui lòng tạo một lược đồ trước để định cấu hình nội dung này."
+    },
+    "code_preview": {
+      "edit_code": "Chỉnh sửa mã",
+      "lines": "Số dòng:",
+      "characters": "Số ký tự:",
+      "language": "Ngôn ngữ:",
+      "preview": "Xem trước"
+    },
+    "code_ai": {
+      "generating": "Đang tạo trực tiếp trong trình soạn thảo",
+      "streaming": "Đang truyền {count} dòng vào {file}...",
+      "view_raw": "Xem đoạn mã đầu ra thô",
+      "target_scope": "Phạm vi mục tiêu:",
+      "quick_actions": "Hành động nhanh:",
+      "refine_shortcut": "⌘+↵ để tinh chỉnh",
+      "run_shortcut": "⌘+↵ để chạy",
+      "close_explanation": "Đóng giải thích"
     }
   }
 }

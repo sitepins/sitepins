@@ -1,8 +1,8 @@
 "use client";
 
 import {
-  hasAddSiteExtraPanel,
   AddSiteExtraPanel,
+  hasAddSiteExtraPanel,
 } from "@/components/add-site-extras";
 import { Button, ButtonProps } from "@/components/ui/button";
 import {
@@ -42,9 +42,9 @@ import { toast } from "@/components/ui/toast";
 import { UnlockCta } from "@/components/unlock-cta";
 import { useDebounce } from "@/hooks/use-debounce";
 import { useDialog } from "@/hooks/use-dialog";
+import { useFeatureAccess } from "@/hooks/use-feature-access";
 import { useAllInstallationRepos } from "@/hooks/use-fetch-repos";
 import { useGitAuth } from "@/hooks/use-git-auth";
-import { useFeatureAccess } from "@/hooks/use-feature-access";
 import { useSiteLimit } from "@/hooks/use-plan-limits";
 import { openUnlockPrompt } from "@/hooks/use-unlock-prompt";
 import { IS_DEMO } from "@/lib/constant";
@@ -56,7 +56,7 @@ import {
   isGitLabProvider,
   TGitProvider,
 } from "@/lib/utils/provider-checker";
-import { projectSchema } from "@/lib/validate";
+import { getProjectSchema, projectSchema } from "@/lib/validate";
 import { useGetGitHubBranchesQuery as useGitHubBranches } from "@/redux/features/github";
 import { useGetGitLabBranchesQuery } from "@/redux/features/gitlab/gitlab-api";
 import { useGetOrgQuery } from "@/redux/features/orgs/org-api";
@@ -125,8 +125,11 @@ export default function AddSite({
   const [creationError, setCreationError] = useState<string | null>(null);
   const [isLimitError, setIsLimitError] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
+  const tValidation = useTranslations("validation");
   const projectForm = useForm<z.infer<typeof projectSchema>>({
-    resolver: zodResolver(projectSchema),
+    resolver: zodResolver(
+      useMemo(() => getProjectSchema(tValidation), [tValidation]),
+    ),
     defaultValues: {
       provider: "Github",
       repository: "",

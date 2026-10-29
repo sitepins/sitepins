@@ -450,6 +450,17 @@
       "missing": "Definizione della nota mancante",
       "back_to_reference": "Torna al riferimento",
       "no_results": "Nessuna nota trovata"
+    },
+    "snippets": {
+      "save_as_snippet": "Salva come snippet",
+      "save_as_snippet_desc": "Salva questo blocco di codice come snippet riutilizzabile.",
+      "save_snippet_aria": "Salva come snippet",
+      "delete_block_aria": "Elimina blocco",
+      "show_less": "Mostra meno",
+      "show_all": "Mostra tutto",
+      "lines": "righe",
+      "error_updating_jsx": "Impossibile aggiornare gli attributi dell'elemento JSX:",
+      "error_copy_image": "Errore durante la copia dell'immagine"
     }
   }
 }

@@ -1,8 +1,5 @@
 "use client";
 
-import { useAddLog } from "@/hooks/use-add-log";
-import { treeItemsOf } from "@/lib/utils/tree-items";
-import { logger } from "@/lib/logger";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -26,8 +23,11 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { IS_DEMO } from "@/lib/constant";
+import { toast } from "@/components/ui/toast";
+import { useAddLog } from "@/hooks/use-add-log";
 import { schemaFolder } from "@/lib/config-dir";
+import { IS_DEMO } from "@/lib/constant";
+import { logger } from "@/lib/logger";
 import { getLogType } from "@/lib/utils/project-log-type-detector";
 import {
   isGitHubProvider,
@@ -38,7 +38,8 @@ import {
   processTemplateForSave,
   Template,
 } from "@/lib/utils/schema-helpers";
-import { createSchema } from "@/lib/validate";
+import { treeItemsOf } from "@/lib/utils/tree-items";
+import { createSchema, getCreateSchema } from "@/lib/validate";
 import { selectConfig } from "@/redux/features/config/slice";
 import {
   githubContentApi,
@@ -56,10 +57,9 @@ import { FileJson, Settings } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
 import path from "path";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
-import { toast } from "@/components/ui/toast";
 import * as z from "zod/v4";
 import { SchemaBuilder } from "../../../_components/schema-builder";
 import SchemaSkeleton from "./schema-skeleton";
@@ -444,9 +444,15 @@ function SchemaEditDialog({
   const [addLog] = useAddLog();
   const tProjectSettingsSchemas = useTranslations("project-settings.schemas");
   const tCommon = useTranslations("common");
+  const tValidation = useTranslations("validation");
+
+  const schemaValidator = useMemo(
+    () => getCreateSchema(tValidation),
+    [tValidation],
+  );
 
   const schemaForm = useForm<z.infer<typeof createSchema>>({
-    resolver: zodResolver(createSchema),
+    resolver: zodResolver(schemaValidator),
     defaultValues: {
       name: schema.data?.name || schema.name,
       file: schema.data?.file || "",

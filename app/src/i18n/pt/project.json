@@ -126,6 +126,48 @@
       "or": "Ou",
       "already_deployed": "Já implantado? Insira a URL agora",
       "vercel_host": "no Vercel para hospedar seu site"
+    },
+    "no_sites": {
+      "welcome": "Bem-vindo ao {brand} 👋",
+      "connect_description": "Conecte seu site existente para começar em poucos minutos.",
+      "add_site": "Adicionar Novo Site"
+    },
+    "preview": {
+      "button": "Pré-visualização",
+      "starting": "Iniciando",
+      "booting": "Inicializando",
+      "pushing": "Enviando",
+      "sync": "Sincronizar Pré-visualização",
+      "open": "Abrir Pré-visualização",
+      "destroy": "Destruir Pré-visualização",
+      "options": "Opções de pré-visualização",
+      "outdated_tooltip": "A pré-visualização pode estar desatualizada — use Sincronizar",
+      "toast_expired": "Sessão de pré-visualização expirada",
+      "toast_expires_in": "A pré-visualização expira em ~{mins} min",
+      "toast_ready": "Pré-visualização pronta!",
+      "toast_failed": "Falha na pré-visualização",
+      "toast_destroyed": "Pré-visualização destruída"
+    },
+    "config_empty": {
+      "title": "Nada para ver aqui",
+      "description": "Não há configuração disponível para este conteúdo. Crie um esquema primeiro para configurar este conteúdo."
+    },
+    "code_preview": {
+      "edit_code": "Editar Código",
+      "lines": "Linhas:",
+      "characters": "Caracteres:",
+      "language": "Idioma:",
+      "preview": "Pré-visualização"
+    },
+    "code_ai": {
+      "generating": "Gerando diretamente no editor",
+      "streaming": "Transmitindo {count} linhas para {file}...",
+      "view_raw": "Ver trecho bruto de saída",
+      "target_scope": "Escopo Alvo:",
+      "quick_actions": "Ações Rápidas:",
+      "refine_shortcut": "⌘+↵ para refinar",
+      "run_shortcut": "⌘+↵ para executar",
+      "close_explanation": "Fechar explicação"
     }
   }
 }

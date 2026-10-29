@@ -3,6 +3,7 @@
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils/cn";
 import { Check, Copy } from "lucide-react";
+import { useTranslations } from "next-intl";
 import React, { useMemo, useState } from "react";
 
 interface AiMarkdownProps {
@@ -328,7 +329,7 @@ export function AiMarkdown({
     <div
       onClick={handleClick}
       className={cn(
-        "text-foreground flex flex-col gap-0.5 font-sans leading-normal break-words",
+        "text-foreground flex flex-col gap-0.5 font-sans leading-normal wrap-break-word",
         className,
       )}
     >
@@ -344,6 +345,7 @@ function CodeBlockItem({
   language?: string;
   code: string;
 }) {
+  const t = useTranslations("editor.code.ai");
   const [copied, setCopied] = useState(false);
 
   const handleCopy = () => {
@@ -360,17 +362,17 @@ function CodeBlockItem({
           type="button"
           onClick={handleCopy}
           className="hover:text-foreground flex cursor-pointer items-center gap-1 rounded p-0.5"
-          title="Copy code"
+          title={t("copy")}
         >
           {copied ? (
             <>
               <Check className="text-success size-3" />
-              <span className="text-success text-[10px]">Copied</span>
+              <span className="text-success text-[10px]">{t("copied")}</span>
             </>
           ) : (
             <>
               <Copy className="size-3" />
-              <span className="text-[10px]">Copy</span>
+              <span className="text-[10px]">{t("copy")}</span>
             </>
           )}
         </button>

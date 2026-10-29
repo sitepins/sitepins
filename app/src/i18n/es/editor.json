@@ -450,6 +450,17 @@
       "missing": "Falta la definición de la nota al pie",
       "back_to_reference": "Volver a la referencia",
       "no_results": "No se encontraron notas al pie"
+    },
+    "snippets": {
+      "save_as_snippet": "Guardar como fragmento",
+      "save_as_snippet_desc": "Guarde este bloque de código como un fragmento reutilizable.",
+      "save_snippet_aria": "Guardar como fragmento",
+      "delete_block_aria": "Eliminar bloque",
+      "show_less": "Mostrar menos",
+      "show_all": "Mostrar todo",
+      "lines": "líneas",
+      "error_updating_jsx": "No se pudieron actualizar los atributos del elemento JSX:",
+      "error_copy_image": "Error al copiar la imagen"
     }
   }
 }

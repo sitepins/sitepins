@@ -25,11 +25,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { toast } from "@/components/ui/toast";
 import { useAddLog } from "@/hooks/use-add-log";
 import { useDialog } from "@/hooks/use-dialog";
 import { useGitProvider } from "@/hooks/use-git-provider";
-import { IS_DEMO } from "@/lib/constant";
 import { schemaFolder } from "@/lib/config-dir";
+import { IS_DEMO } from "@/lib/constant";
 import { firstFormErrorMessage } from "@/lib/utils/form-errors";
 import { getLogType } from "@/lib/utils/project-log-type-detector";
 import { isGitLabProvider } from "@/lib/utils/provider-checker";
@@ -45,7 +46,7 @@ import {
   Template,
 } from "@/lib/utils/schema-helpers";
 import { treeItemsOf } from "@/lib/utils/tree-items";
-import { createSchema } from "@/lib/validate";
+import { createSchema, getCreateSchema } from "@/lib/validate";
 import { selectConfig } from "@/redux/features/config/slice";
 import {
   githubContentApi,
@@ -61,10 +62,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import { useParams, usePathname } from "next/navigation";
 import path from "path";
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useEffect, useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
-import { toast } from "@/components/ui/toast";
 import * as z from "zod/v4";
 import { SchemaBuilder } from "./schema-builder";
 
@@ -97,6 +97,7 @@ export default function CreateSchema({
   const tDirectoryViewActions = useTranslations("directory-view.actions");
   const tCommon = useTranslations("common");
   const tGit = useTranslations("project.git");
+  const tValidation = useTranslations("validation");
   const [template, setTemplate] = useState<Template[]>([]);
 
   // Track initial state for "dirty" calculation
@@ -325,8 +326,12 @@ export default function CreateSchema({
       _onOpenChangeFromHook(val);
     }
   };
+  const schemaValidator = useMemo(
+    () => getCreateSchema(tValidation),
+    [tValidation],
+  );
   const createSchemaForm = useForm<z.infer<typeof createSchema>>({
-    resolver: zodResolver(createSchema),
+    resolver: zodResolver(schemaValidator),
     defaultValues: {
       name: group || extractFolderName(filePath),
       file: "",

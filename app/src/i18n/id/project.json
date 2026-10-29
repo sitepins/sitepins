@@ -126,6 +126,48 @@
       "or": "Atau",
       "already_deployed": "Sudah diterapkan? Masukkan URL sekarang",
       "vercel_host": "di Vercel untuk menghosting situs Anda"
+    },
+    "no_sites": {
+      "welcome": "Selamat datang di {brand} 👋",
+      "connect_description": "Hubungkan situs web Anda yang ada untuk memulai dalam hitungan menit.",
+      "add_site": "Tambah Situs Baru"
+    },
+    "preview": {
+      "button": "Pratinjau",
+      "starting": "Memulai",
+      "booting": "Mem-boot",
+      "pushing": "Mendorong",
+      "sync": "Sinkronkan Pratinjau",
+      "open": "Buka Pratinjau",
+      "destroy": "Hapus Pratinjau",
+      "options": "Opsi pratinjau",
+      "outdated_tooltip": "Pratinjau mungkin usang — gunakan Sinkronkan",
+      "toast_expired": "Sesi pratinjau telah kedaluwarsa",
+      "toast_expires_in": "Pratinjau kedaluwarsa dalam ~{mins} menit",
+      "toast_ready": "Pratinjau siap!",
+      "toast_failed": "Pratinjau gagal",
+      "toast_destroyed": "Pratinjau dihapus"
+    },
+    "config_empty": {
+      "title": "Tidak ada yang bisa dilihat di sini",
+      "description": "Tidak ada konfigurasi yang tersedia untuk konten ini. Silakan buat skema terlebih dahulu untuk mengonfigurasi konten ini."
+    },
+    "code_preview": {
+      "edit_code": "Edit Kode",
+      "lines": "Baris:",
+      "characters": "Karakter:",
+      "language": "Bahasa:",
+      "preview": "Pratinjau"
+    },
+    "code_ai": {
+      "generating": "Membuat langsung di editor",
+      "streaming": "Mengalirkan {count} baris ke dalam {file}...",
+      "view_raw": "Lihat cuplikan keluaran mentah",
+      "target_scope": "Cakupan Target:",
+      "quick_actions": "Tindakan Cepat:",
+      "refine_shortcut": "⌘+↵ untuk menyempurnakan",
+      "run_shortcut": "⌘+↵ untuk menjalankan",
+      "close_explanation": "Tutup penjelasan"
     }
   }
 }

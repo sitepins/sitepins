@@ -1,6 +1,5 @@
 "use client";
 
-import { logger } from "@/lib/logger";
 import FormError from "@/components/form-error";
 import { Button } from "@/components/ui/button";
 import {
@@ -18,14 +17,16 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { toast } from "@/components/ui/toast";
 import { IS_DEMO } from "@/lib/constant";
-import { projectSchema } from "@/lib/validate";
+import { logger } from "@/lib/logger";
+import { getProjectSchema, projectSchema } from "@/lib/validate";
 import { useUpdateProjectMutation } from "@/redux/features/project/project-api";
 import { TProject } from "@/redux/features/project/type";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
+import { useMemo } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { toast } from "@/components/ui/toast";
 import { z } from "zod/v4";
 
 export default function ProjectForm(
@@ -35,9 +36,12 @@ export default function ProjectForm(
     project;
 
   const canUpdate = project.canUpdate ?? true;
+  const tValidation = useTranslations("validation");
 
   const projectForm = useForm<z.infer<typeof projectSchema>>({
-    resolver: zodResolver(projectSchema),
+    resolver: zodResolver(
+      useMemo(() => getProjectSchema(tValidation), [tValidation]),
+    ),
     defaultValues: {
       project_name,
       project_image,

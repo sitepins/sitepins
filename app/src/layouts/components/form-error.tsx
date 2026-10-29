@@ -1,6 +1,10 @@
+"use client";
+
 import { TSubmitFormState } from "@/actions/utils";
+import { getLocalizedAuthError } from "@/lib/auth/auth-error-mapper";
 import { BetterFetchError } from "better-auth/react";
 import { TriangleAlert, X } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import { Button } from "./ui/button";
 
@@ -20,6 +24,9 @@ export default function FormError({
   message,
   onReset,
 }: FormErrorProps) {
+  const tAuth = useTranslations("auth");
+  const tCommon = useTranslations("common");
+
   const derivedErrors = useMemo<TError[]>(() => {
     if (Array.isArray(errors) && errors.length > 0) return errors;
 
@@ -28,19 +35,19 @@ export default function FormError({
       return [
         {
           path: "",
-          message:
-            err.message ||
-            "Server Temporarily Unavailable. Please try again later.",
+          message: getLocalizedAuthError(err, (k) =>
+            tAuth(k as Parameters<typeof tAuth>[0]),
+          ),
         },
       ];
     }
 
     if (isError) {
-      return [{ path: "", message: message || "Something went wrong" }];
+      return [{ path: "", message: message || tCommon("status.error") }];
     }
 
     return [];
-  }, [errors, isError, message]);
+  }, [errors, isError, message, tAuth, tCommon]);
 
   // Seeded from props but locally dismissable, so a fresh set of errors has to
   // clear any dismissals — done during render rather than in an effect.

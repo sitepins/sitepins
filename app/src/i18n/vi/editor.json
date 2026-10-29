@@ -450,6 +450,17 @@
       "missing": "Thiếu định nghĩa chú thích",
       "back_to_reference": "Quay lại tham chiếu",
       "no_results": "Không tìm thấy chú thích"
+    },
+    "snippets": {
+      "save_as_snippet": "Lưu dưới dạng Đoạn mã",
+      "save_as_snippet_desc": "Lưu khối mã này dưới dạng đoạn mã có thể tái sử dụng.",
+      "save_snippet_aria": "Lưu dưới dạng đoạn mã",
+      "delete_block_aria": "Xóa khối",
+      "show_less": "Thu gọn",
+      "show_all": "Hiện tất cả",
+      "lines": "dòng",
+      "error_updating_jsx": "Không thể cập nhật thuộc tính phần tử JSX:",
+      "error_copy_image": "Lỗi khi sao chép hình ảnh"
     }
   }
 }

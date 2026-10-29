@@ -42,7 +42,8 @@
       "continue": "Continuar",
       "replace": "Substituir",
       "confirm": "Confirmar",
-      "reset": "Redefinir"
+      "reset": "Redefinir",
+      "more_options": "Mais opções"
     },
     "status": {
       "loading": "Carregando...",
@@ -97,7 +98,9 @@
       "unable_to_locate": "Não foi possível localizar os arquivos desta pasta. Atualize a página.",
       "demo_mode": "Esta ação está desativada no modo de demonstração.",
       "draft_discard_success": "Rascunho descartado com sucesso",
-      "draft_discard_error": "Falha ao descartar rascunho"
+      "draft_discard_error": "Falha ao descartar rascunho",
+      "file_list_loading": "A lista de arquivos ainda está carregando. Tente novamente em alguns segundos.",
+      "saved_by_user": "Salvo por {name}"
     },
     "labels": {
       "name": "Nome",

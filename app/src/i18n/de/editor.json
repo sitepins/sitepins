@@ -450,6 +450,17 @@
       "missing": "Fußnotendefinition fehlt",
       "back_to_reference": "Zurück zum Verweis",
       "no_results": "Keine Fußnoten gefunden"
+    },
+    "snippets": {
+      "save_as_snippet": "Als Snippet speichern",
+      "save_as_snippet_desc": "Diesen Codeblock als wiederverwendbares Snippet speichern.",
+      "save_snippet_aria": "Als Snippet speichern",
+      "delete_block_aria": "Block löschen",
+      "show_less": "Weniger anzeigen",
+      "show_all": "Alle anzeigen",
+      "lines": "Zeilen",
+      "error_updating_jsx": "JSX-Elementattribute konnten nicht aktualisiert werden:",
+      "error_copy_image": "Fehler beim Kopieren des Bildes"
     }
   }
 }

@@ -42,7 +42,8 @@
       "continue": "Continua",
       "replace": "Sostituisci",
       "confirm": "Conferma",
-      "reset": "Reimposta"
+      "reset": "Reimposta",
+      "more_options": "Altre opzioni"
     },
     "status": {
       "loading": "Caricamento...",
@@ -97,7 +98,9 @@
       "unable_to_locate": "Impossibile trovare i file per questa cartella. Aggiorna la pagina.",
       "demo_mode": "Questa azione è disabilitata in modalità demo.",
       "draft_discard_success": "Bozza scartata con successo",
-      "draft_discard_error": "Impossibile eliminare la bozza"
+      "draft_discard_error": "Impossibile eliminare la bozza",
+      "file_list_loading": "L'elenco dei file è ancora in caricamento. Riprova tra qualche secondo.",
+      "saved_by_user": "Salvato da {name}"
     },
     "labels": {
       "name": "Nome",

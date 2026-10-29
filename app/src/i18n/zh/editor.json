@@ -450,6 +450,17 @@
       "missing": "缺少脚注定义",
       "back_to_reference": "返回引用位置",
       "no_results": "未找到脚注"
+    },
+    "snippets": {
+      "save_as_snippet": "保存为代码片段",
+      "save_as_snippet_desc": "将此代码块保存为可复用的代码片段。",
+      "save_snippet_aria": "保存为代码片段",
+      "delete_block_aria": "删除代码块",
+      "show_less": "收起",
+      "show_all": "展开全部",
+      "lines": "行",
+      "error_updating_jsx": "无法更新 JSX 元素属性：",
+      "error_copy_image": "复制图片时出错"
     }
   }
 }

@@ -450,6 +450,17 @@
       "missing": "Definição da nota de rodapé ausente",
       "back_to_reference": "Voltar à referência",
       "no_results": "Nenhuma nota de rodapé encontrada"
+    },
+    "snippets": {
+      "save_as_snippet": "Salvar como Snippet",
+      "save_as_snippet_desc": "Salvar este bloco de código como um snippet reutilizável.",
+      "save_snippet_aria": "Salvar como snippet",
+      "delete_block_aria": "Excluir bloco",
+      "show_less": "Mostrar menos",
+      "show_all": "Mostrar tudo",
+      "lines": "linhas",
+      "error_updating_jsx": "Não foi possível atualizar os atributos do elemento JSX:",
+      "error_copy_image": "Erro ao copiar a imagem"
     }
   }
 }

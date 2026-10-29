@@ -42,7 +42,8 @@
       "continue": "Continuar",
       "replace": "Reemplazar",
       "confirm": "Confirmar",
-      "reset": "Restablecer"
+      "reset": "Restablecer",
+      "more_options": "Más opciones"
     },
     "status": {
       "loading": "Cargando...",
@@ -97,7 +98,9 @@
       "unable_to_locate": "No se pudieron encontrar los archivos de esta carpeta. Actualiza la página.",
       "demo_mode": "Esta acción no está disponible en el modo de demostración.",
       "draft_discard_success": "Borrador descartado correctamente",
-      "draft_discard_error": "Error al descartar el borrador"
+      "draft_discard_error": "Error al descartar el borrador",
+      "file_list_loading": "La lista de archivos todavía se está cargando. Vuelva a intentarlo en unos segundos.",
+      "saved_by_user": "Guardado por {name}"
     },
     "labels": {
       "name": "Nombre",

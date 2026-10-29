@@ -42,7 +42,8 @@
       "continue": "Tiếp tục",
       "replace": "Thay thế",
       "confirm": "Xác nhận",
-      "reset": "Đặt lại"
+      "reset": "Đặt lại",
+      "more_options": "Tùy chọn khác"
     },
     "status": {
       "loading": "Đang tải...",
@@ -97,7 +98,9 @@
       "unable_to_locate": "Không tìm thấy tệp trong thư mục này. Vui lòng làm mới trang.",
       "demo_mode": "Thao tác này bị vô hiệu hóa trong chế độ demo.",
       "draft_discard_success": "Đã hủy bản nháp thành công",
-      "draft_discard_error": "Hủy bản nháp thất bại"
+      "draft_discard_error": "Hủy bản nháp thất bại",
+      "file_list_loading": "Danh sách tệp vẫn đang tải. Vui lòng thử lại sau vài giây.",
+      "saved_by_user": "Được lưu bởi {name}"
     },
     "labels": {
       "name": "Tên",

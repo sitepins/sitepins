@@ -137,14 +137,28 @@ export function FieldItem({
             <SelectValue placeholder={tSchema("fields.placeholder.type")} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="string">String</SelectItem>
-            <SelectItem value="number">Number</SelectItem>
-            <SelectItem value="boolean">Boolean</SelectItem>
-            <SelectItem value="media">Media</SelectItem>
-            <SelectItem value="gallery">Gallery</SelectItem>
-            <SelectItem value="Array">Array</SelectItem>
-            <SelectItem value="Date">Date</SelectItem>
-            <SelectItem value="object">Object</SelectItem>
+            <SelectItem value="string">
+              {tSchema("builder.type_string")}
+            </SelectItem>
+            <SelectItem value="number">
+              {tSchema("builder.type_number")}
+            </SelectItem>
+            <SelectItem value="boolean">
+              {tSchema("builder.type_boolean")}
+            </SelectItem>
+            <SelectItem value="media">
+              {tSchema("builder.type_media")}
+            </SelectItem>
+            <SelectItem value="gallery">
+              {tSchema("builder.type_gallery")}
+            </SelectItem>
+            <SelectItem value="Array">
+              {tSchema("builder.type_array")}
+            </SelectItem>
+            <SelectItem value="Date">{tSchema("builder.type_date")}</SelectItem>
+            <SelectItem value="object">
+              {tSchema("builder.type_object")}
+            </SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -157,7 +171,9 @@ export function FieldItem({
             onValueChange={(val) => onChange({ ...item, subType: val })}
           >
             <SelectTrigger className="h-9">
-              <SelectValue placeholder="Choose subtype" />
+              <SelectValue
+                placeholder={tSchema("builder.placeholder_subtype")}
+              />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="string">{tSchema("types.string")}</SelectItem>
@@ -217,7 +233,9 @@ export function FieldItem({
                   }
                 >
                   <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select default value" />
+                    <SelectValue
+                      placeholder={tSchema("builder.placeholder_default")}
+                    />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="true">
@@ -289,7 +307,9 @@ export function FieldItem({
                       id={`inputStyle-${item.name}`}
                       className="w-full"
                     >
-                      <SelectValue placeholder="Choose input style" />
+                      <SelectValue
+                        placeholder={tSchema("builder.placeholder_style")}
+                      />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="text">
@@ -336,12 +356,14 @@ export function FieldItem({
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem value="static">
-                              Static Options
+                              {tSchema("builder.opt_static")}
                             </SelectItem>
                             <SelectItem value="folder">
-                              Files from Folder
+                              {tSchema("builder.opt_folder")}
                             </SelectItem>
-                            <SelectItem value="file">Data from File</SelectItem>
+                            <SelectItem value="file">
+                              {tSchema("builder.opt_file")}
+                            </SelectItem>
                           </SelectContent>
                         </Select>
                       </div>

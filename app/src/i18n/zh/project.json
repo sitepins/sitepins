@@ -126,6 +126,48 @@
       "or": "或者",
       "already_deployed": "已经部署了？现在插入 URL",
       "vercel_host": "在 Vercel 上托管您的站点"
+    },
+    "no_sites": {
+      "welcome": "欢迎使用 {brand} 👋",
+      "connect_description": "关联您现有的网站，数分钟即可开始使用。",
+      "add_site": "添加新站点"
+    },
+    "preview": {
+      "button": "预览",
+      "starting": "正在启动",
+      "booting": "正在引导",
+      "pushing": "正在推送",
+      "sync": "同步预览",
+      "open": "打开预览",
+      "destroy": "关闭预览",
+      "options": "预览选项",
+      "outdated_tooltip": "预览可能已过期 — 请使用同步",
+      "toast_expired": "预览会话已过期",
+      "toast_expires_in": "预览将在约 {mins} 分钟后过期",
+      "toast_ready": "预览已就绪！",
+      "toast_failed": "预览启动失败",
+      "toast_destroyed": "预览已关闭"
+    },
+    "config_empty": {
+      "title": "此处暂无内容",
+      "description": "此内容尚无可用配置。请先创建一个 Schema 以配置此内容。"
+    },
+    "code_preview": {
+      "edit_code": "编辑代码",
+      "lines": "行数：",
+      "characters": "字符数：",
+      "language": "语言：",
+      "preview": "预览"
+    },
+    "code_ai": {
+      "generating": "正在编辑器中直接生成",
+      "streaming": "正在向 {file} 输出 {count} 行...",
+      "view_raw": "查看原始输出代码片段",
+      "target_scope": "目标范围：",
+      "quick_actions": "快捷操作：",
+      "refine_shortcut": "⌘+↵ 进行微调",
+      "run_shortcut": "⌘+↵ 运行",
+      "close_explanation": "关闭说明"
     }
   }
 }

@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Code2, Eye, FileText } from "lucide-react";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import path from "path";
 
@@ -43,6 +44,7 @@ export default function FilePreview({
   orgId,
   projectId,
 }: FilePreviewProps) {
+  const t = useTranslations("project.code_preview");
   const fileName = path.basename(filePath);
   const language = getLanguageFromExtension(filePath);
   const lines = content.split("\n").length;
@@ -66,7 +68,7 @@ export default function FilePreview({
               <Link href={`/org-${orgId}/${projectId}/code/${filePath}`}>
                 <Button className="gap-2">
                   <Code2 className="size-4" />
-                  Edit Code
+                  {t("edit_code")}
                 </Button>
               </Link>
             </div>
@@ -76,15 +78,21 @@ export default function FilePreview({
         <CardContent>
           <div className="space-y-4">
             <div className="text-muted-foreground flex items-center gap-6 text-sm">
-              <span>Lines: {lines}</span>
-              <span>Characters: {chars}</span>
-              <span>Language: {language}</span>
+              <span>
+                {t("lines")} {lines}
+              </span>
+              <span>
+                {t("characters")} {chars}
+              </span>
+              <span>
+                {t("language")} {language}
+              </span>
             </div>
 
             <div className="bg-muted/30 rounded-lg border p-4">
               <div className="mb-3 flex items-center gap-2">
                 <Eye className="size-4" />
-                <span className="text-sm font-medium">Preview</span>
+                <span className="text-sm font-medium">{t("preview")}</span>
               </div>
               <pre className="max-h-96 overflow-x-auto text-sm whitespace-pre-wrap">
                 {content.substring(0, 1000)}

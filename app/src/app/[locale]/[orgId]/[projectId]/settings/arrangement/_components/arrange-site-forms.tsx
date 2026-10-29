@@ -26,26 +26,46 @@ import { Controller, useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { z } from "zod/v4";
 
-const fileFormSchema = z.object({
-  file: z.string(),
-  groupName: z
-    .string()
-    .min(2, { message: "name must be at least 2 characters." }),
-});
-const folderFormSchema = z.object({
-  type: z.string(),
-  targetPath: z.string(),
-  groupName: z
-    .string()
-    .min(2, { message: "name must be at least 2 characters." }),
-  include: z.string(),
-  exclude: z.string(),
-});
-export const headingSchema = z.object({
-  heading: z
-    .string()
-    .min(2, { message: "heading must be at least 2 characters." }),
-});
+type TValidationFn = (
+  key: string,
+  values?: Record<string, string | number>,
+) => string;
+
+const getFileFormSchema = (t?: TValidationFn) =>
+  z.object({
+    file: z.string(),
+    groupName: z.string().min(2, {
+      message: t
+        ? t("name_min_chars", { count: 2 })
+        : "name must be at least 2 characters.",
+    }),
+  });
+
+const getFolderFormSchema = (t?: TValidationFn) =>
+  z.object({
+    type: z.string(),
+    targetPath: z.string(),
+    groupName: z.string().min(2, {
+      message: t
+        ? t("name_min_chars", { count: 2 })
+        : "name must be at least 2 characters.",
+    }),
+    include: z.string(),
+    exclude: z.string(),
+  });
+
+export const getHeadingSchema = (t?: TValidationFn) =>
+  z.object({
+    heading: z.string().min(2, {
+      message: t
+        ? t("heading_min_chars", { count: 2 })
+        : "heading must be at least 2 characters.",
+    }),
+  });
+
+export const fileFormSchema = getFileFormSchema();
+export const folderFormSchema = getFolderFormSchema();
+export const headingSchema = getHeadingSchema();
 
 export function FileForm(props: {
   trees: TTree[];
@@ -65,8 +85,11 @@ export function FileForm(props: {
     "project-settings.arrangement",
   );
   const tCommon = useTranslations("common");
+  const tValidation = useTranslations("validation");
   const fileForm = useForm<z.infer<typeof fileFormSchema>>({
-    resolver: zodResolver(fileFormSchema),
+    resolver: zodResolver(
+      useMemo(() => getFileFormSchema(tValidation), [tValidation]),
+    ),
     defaultValues: {
       file: arrangement?.targetPath ?? "",
       groupName: arrangement?.groupName ?? "",
@@ -216,8 +239,11 @@ export function FolderForm(props: {
     "project-settings.arrangement",
   );
   const tCommon = useTranslations("common");
+  const tValidation = useTranslations("validation");
   const folderForm = useForm<z.infer<typeof folderFormSchema>>({
-    resolver: zodResolver(folderFormSchema),
+    resolver: zodResolver(
+      useMemo(() => getFolderFormSchema(tValidation), [tValidation]),
+    ),
     defaultValues: {
       type: "folder",
       targetPath: arrangement?.targetPath || "",
@@ -418,8 +444,11 @@ export function HeadingForm(props: {
     "project-settings.arrangement",
   );
   const tCommon = useTranslations("common");
+  const tValidation = useTranslations("validation");
   const headingForm = useForm<z.infer<typeof headingSchema>>({
-    resolver: zodResolver(headingSchema),
+    resolver: zodResolver(
+      useMemo(() => getHeadingSchema(tValidation), [tValidation]),
+    ),
     defaultValues: { heading: arrangement?.groupName ?? "" },
   });
 

@@ -1,14 +1,19 @@
 "use client";
 
+import { toast } from "@/components/ui/toast";
 import { authClient } from "@/lib/auth/auth-client";
-import { confirmPasswordSchema, forgotPasswordSchema } from "@/lib/validate";
+import {
+  confirmPasswordSchema,
+  forgotPasswordSchema,
+  getConfirmPasswordSchema,
+  getForgotPasswordSchema,
+} from "@/lib/validate";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { BetterFetchError } from "better-auth/react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useState } from "react";
-import { useForm } from "react-hook-form";
-import { toast } from "@/components/ui/toast";
 import { useTranslations } from "next-intl";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useCallback, useMemo, useState } from "react";
+import { useForm } from "react-hook-form";
 import { z } from "zod/v4";
 import ForgotPasswordView from "./_components/forget-pass";
 import LinkExpiredView from "./_components/link-expired";
@@ -26,15 +31,21 @@ export default function ForgetPassword() {
   const [isSuccess, setIsSuccess] = useState(false);
   const [betterError, setBetterError] = useState<MaybeBetterError>(null);
 
+  const tValidation = useTranslations("validation");
+
   const forgetForm = useForm<z.infer<typeof forgotPasswordSchema>>({
     defaultValues: {
       email: "",
     },
-    resolver: zodResolver(forgotPasswordSchema),
+    resolver: zodResolver(
+      useMemo(() => getForgotPasswordSchema(tValidation), [tValidation]),
+    ),
   });
 
   const confirmPasswordForm = useForm<z.infer<typeof confirmPasswordSchema>>({
-    resolver: zodResolver(confirmPasswordSchema),
+    resolver: zodResolver(
+      useMemo(() => getConfirmPasswordSchema(tValidation), [tValidation]),
+    ),
     defaultValues: {
       password: "",
       confirmPassword: "",

@@ -450,6 +450,17 @@
       "missing": "脚注の定義がありません",
       "back_to_reference": "参照箇所に戻る",
       "no_results": "脚注が見つかりません"
+    },
+    "snippets": {
+      "save_as_snippet": "スニペットとして保存",
+      "save_as_snippet_desc": "このコードブロックを再利用可能なスニペットとして保存します。",
+      "save_snippet_aria": "スニペットとして保存",
+      "delete_block_aria": "ブロックを削除",
+      "show_less": "折りたたむ",
+      "show_all": "すべて表示",
+      "lines": "行",
+      "error_updating_jsx": "JSX要素の属性を更新できませんでした:",
+      "error_copy_image": "画像のコピー中にエラーが発生しました"
     }
   }
 }

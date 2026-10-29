@@ -126,6 +126,48 @@
       "or": "Ou",
       "already_deployed": "Déjà déployé ? Insérez l'URL maintenant",
       "vercel_host": "sur Vercel pour héberger votre site"
+    },
+    "no_sites": {
+      "welcome": "Bienvenue sur {brand} 👋",
+      "connect_description": "Connectez votre site web existant pour démarrer en quelques minutes.",
+      "add_site": "Ajouter un nouveau site"
+    },
+    "preview": {
+      "button": "Aperçu",
+      "starting": "Démarrage",
+      "booting": "Amorçage",
+      "pushing": "Envoi",
+      "sync": "Synchroniser l'aperçu",
+      "open": "Ouvrir l'aperçu",
+      "destroy": "Détruire l'aperçu",
+      "options": "Options d'aperçu",
+      "outdated_tooltip": "L'aperçu peut être obsolète — utilisez Synchroniser",
+      "toast_expired": "Session d'aperçu expirée",
+      "toast_expires_in": "L'aperçu expire dans ~{mins} min",
+      "toast_ready": "Aperçu prêt !",
+      "toast_failed": "Échec de l'aperçu",
+      "toast_destroyed": "Aperçu détruit"
+    },
+    "config_empty": {
+      "title": "Rien à voir ici",
+      "description": "Aucune configuration disponible pour ce contenu. Veuillez d'abord créer un schéma pour configurer ce contenu."
+    },
+    "code_preview": {
+      "edit_code": "Modifier le code",
+      "lines": "Lignes :",
+      "characters": "Caractères :",
+      "language": "Langage :",
+      "preview": "Aperçu"
+    },
+    "code_ai": {
+      "generating": "Génération directe dans l'éditeur",
+      "streaming": "Diffusion de {count} lignes dans {file}...",
+      "view_raw": "Afficher l'extrait brut",
+      "target_scope": "Portée cible :",
+      "quick_actions": "Actions rapides :",
+      "refine_shortcut": "⌘+↵ pour affiner",
+      "run_shortcut": "⌘+↵ pour exécuter",
+      "close_explanation": "Fermer l'explication"
     }
   }
 }

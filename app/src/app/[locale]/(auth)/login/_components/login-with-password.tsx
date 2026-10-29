@@ -13,13 +13,13 @@ import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth/auth-client";
 import { IS_DEMO, POST_LOGIN_REDIRECT_KEY } from "@/lib/constant";
 import { safeInternalPath } from "@/lib/safe-redirect";
-import { loginSchema } from "@/lib/validate";
+import { getLoginSchema, loginSchema } from "@/lib/validate";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { type BetterFetchError } from "better-auth/react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import * as z from "zod/v4";
 import { LoginCredential } from "../../register/page";
@@ -40,8 +40,11 @@ export default function LoginWithPassword({
     (BetterFetchError & Record<string, unknown>) | null
   >(null);
 
+  const tValidation = useTranslations("validation");
   const loginForm = useForm<z.infer<typeof loginSchema>>({
-    resolver: zodResolver(loginSchema),
+    resolver: zodResolver(
+      useMemo(() => getLoginSchema(tValidation), [tValidation]),
+    ),
     defaultValues: {
       email: IS_DEMO
         ? process.env.NEXT_PUBLIC_DEMO_EMAIL

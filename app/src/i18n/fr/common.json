@@ -42,7 +42,8 @@
       "continue": "Continuer",
       "replace": "Remplacer",
       "confirm": "Confirmer",
-      "reset": "Réinitialiser"
+      "reset": "Réinitialiser",
+      "more_options": "Plus d'options"
     },
     "status": {
       "loading": "Chargement...",
@@ -97,7 +98,9 @@
       "unable_to_locate": "Impossible de localiser les fichiers de ce dossier. Veuillez rafraîchir.",
       "demo_mode": "Cette action est désactivée en mode démo.",
       "draft_discard_success": "Brouillon supprimé avec succès",
-      "draft_discard_error": "Impossible d'abandonner le brouillon"
+      "draft_discard_error": "Impossible d'abandonner le brouillon",
+      "file_list_loading": "La liste des fichiers est en cours de chargement. Veuillez réessayer dans quelques secondes.",
+      "saved_by_user": "Enregistré par {name}"
     },
     "labels": {
       "name": "Nom",

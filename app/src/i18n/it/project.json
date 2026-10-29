@@ -126,6 +126,48 @@
       "or": "O",
       "already_deployed": "Già distribuito? Inserisci l'URL ora",
       "vercel_host": "su Vercel per ospitare il tuo sito"
+    },
+    "no_sites": {
+      "welcome": "Benvenuto su {brand} 👋",
+      "connect_description": "Collega il tuo sito web esistente per iniziare in pochi minuti.",
+      "add_site": "Aggiungi nuovo sito"
+    },
+    "preview": {
+      "button": "Anteprima",
+      "starting": "Avvio in corso",
+      "booting": "Avvio del sistema",
+      "pushing": "Caricamento in corso",
+      "sync": "Sincronizza anteprima",
+      "open": "Apri anteprima",
+      "destroy": "Elimina anteprima",
+      "options": "Opzioni anteprima",
+      "outdated_tooltip": "L'anteprima potrebbe non essere aggiornata — usa Sincronizza",
+      "toast_expired": "Sessione di anteprima scaduta",
+      "toast_expires_in": "L'anteprima scade tra ~{mins} min",
+      "toast_ready": "Anteprima pronta!",
+      "toast_failed": "Anteprima non riuscita",
+      "toast_destroyed": "Anteprima eliminata"
+    },
+    "config_empty": {
+      "title": "Niente da vedere qui",
+      "description": "Nessuna configurazione disponibile per questo contenuto. Crea prima uno schema per configurarlo."
+    },
+    "code_preview": {
+      "edit_code": "Modifica codice",
+      "lines": "Righe:",
+      "characters": "Caratteri:",
+      "language": "Linguaggio:",
+      "preview": "Anteprima"
+    },
+    "code_ai": {
+      "generating": "Generazione diretta nell'editor",
+      "streaming": "Streaming di {count} righe in {file}...",
+      "view_raw": "Visualizza frammento non elaborato",
+      "target_scope": "Ambito di destinazione:",
+      "quick_actions": "Azioni rapide:",
+      "refine_shortcut": "⌘+↵ per perfezionare",
+      "run_shortcut": "⌘+↵ per eseguire",
+      "close_explanation": "Chiudi spiegazione"
     }
   }
 }

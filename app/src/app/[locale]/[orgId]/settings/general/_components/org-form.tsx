@@ -1,6 +1,5 @@
 "use client";
 
-import { logger } from "@/lib/logger";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -17,25 +16,29 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { toast } from "@/components/ui/toast";
 import { IS_DEMO } from "@/lib/constant";
-import { updateOrgSchema } from "@/lib/validate";
+import { logger } from "@/lib/logger";
+import { getUpdateOrgSchema, updateOrgSchema } from "@/lib/validate";
 import { useUpdateOrgMutation } from "@/redux/features/orgs/org-api";
 import { TOrg } from "@/redux/features/orgs/type";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useTransition } from "react";
-import { Controller, useForm } from "react-hook-form";
-import { toast } from "@/components/ui/toast";
-import { z } from "zod/v4";
 import { useTranslations } from "next-intl";
+import { useMemo, useTransition } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { z } from "zod/v4";
 
 export default function EditOrg(org: TOrg & { canUpdate?: boolean }) {
   const { org_name, org_image, org_id } = org;
   const canUpdate = org.canUpdate ?? true;
   const [isPending, startTransition] = useTransition();
   const tOrgGeneralForm = useTranslations("org.general.form");
+  const tValidation = useTranslations("validation");
 
   const orgForm = useForm<z.infer<typeof updateOrgSchema>>({
-    resolver: zodResolver(updateOrgSchema),
+    resolver: zodResolver(
+      useMemo(() => getUpdateOrgSchema(tValidation), [tValidation]),
+    ),
     defaultValues: {
       org_name,
       org_image,

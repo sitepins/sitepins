@@ -1,8 +1,9 @@
 "use client";
 
+import { toast } from "@/components/ui/toast";
+import { useTranslations } from "next-intl";
 import { useEditorRef } from "platejs/react";
 import { ComponentProps, useEffect } from "react";
-import { toast } from "@/components/ui/toast";
 import { BaseSnippetBlock, SnippetTheme } from "../common/base-block-node";
 import { EditableTagLine } from "../common/editable-tag-line";
 import { parseJsxString } from "./jsx-parser";
@@ -24,6 +25,7 @@ export const JsxBlockElement = ({
   theme: _theme,
   ...props
 }: ComponentProps<typeof BaseSnippetBlock>) => {
+  const t = useTranslations("editor.snippets");
   const { children } = props;
   const element = props.element as JsxSlateElement;
   const { name } = element;
@@ -63,10 +65,10 @@ export const JsxBlockElement = ({
         }
       } catch {
         // Element might not be in the editor tree yet
-        toast.warning("Could not update JSX element attributes:");
+        toast.warning(t("error_updating_jsx"));
       }
     }
-  }, [content, element, isSelfClosing, editor]);
+  }, [content, element, isSelfClosing, editor, t]);
 
   if (isSelfClosing) {
     const { children: _children, ...restProps } = props;

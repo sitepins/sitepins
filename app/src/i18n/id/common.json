@@ -42,7 +42,8 @@
       "continue": "Lanjutkan",
       "replace": "Ganti",
       "confirm": "Konfirmasi",
-      "reset": "Atur Ulang"
+      "reset": "Atur Ulang",
+      "more_options": "Opsi lainnya"
     },
     "status": {
       "loading": "Memuat...",
@@ -97,7 +98,9 @@
       "unable_to_locate": "Tidak dapat menemukan file untuk folder ini. Silakan segarkan.",
       "demo_mode": "Tindakan ini dinonaktifkan dalam mode demo.",
       "draft_discard_success": "Draf berhasil dibatalkan",
-      "draft_discard_error": "Gagal membatalkan draf"
+      "draft_discard_error": "Gagal membatalkan draf",
+      "file_list_loading": "Daftar file masih dimuat. Silakan coba lagi dalam beberapa detik.",
+      "saved_by_user": "Disimpan oleh {name}"
     },
     "labels": {
       "name": "Nama",

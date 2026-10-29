@@ -8,6 +8,7 @@ import { MarkdownPlugin } from "@platejs/markdown";
 import { Plus, Trash } from "lucide-react";
 import type { TElement } from "platejs";
 import { useEditorRef } from "platejs/react";
+import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import { SnippetSaveDialog } from "./snippet-save-dialog";
 
@@ -28,6 +29,7 @@ export function SnippetControls({
   code: codeProp,
   extraControls,
 }: SnippetControlsProps) {
+  const t = useTranslations("editor.snippets");
   const [showSaveDialog, setShowSaveDialog] = useState(false);
   const { snippets } = useSnippets();
   const editor = useEditorRef();
@@ -121,7 +123,7 @@ export function SnippetControls({
         <>
           <button
             type="button"
-            aria-label="Save as snippet"
+            aria-label={t("save_snippet_aria")}
             onMouseDown={(e) => e.stopPropagation()}
             onClick={(e) => {
               e.stopPropagation();
@@ -145,7 +147,7 @@ export function SnippetControls({
 
       <button
         type="button"
-        aria-label="Delete block"
+        aria-label={t("delete_block_aria")}
         onMouseDown={(e) => e.stopPropagation()}
         onClick={handleDelete}
         className={cn(

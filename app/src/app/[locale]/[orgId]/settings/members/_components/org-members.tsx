@@ -45,7 +45,10 @@ import { IS_DEMO } from "@/lib/constant";
 import { ENUM_PERMISSIONS } from "@/lib/roles";
 import { cn } from "@/lib/utils/cn";
 import { errorMessageOr } from "@/lib/utils/error";
-import { addNewTeamMemberSchema } from "@/lib/validate";
+import {
+  addNewTeamMemberSchema,
+  getAddNewTeamMemberSchema,
+} from "@/lib/validate";
 import {
   useAddMemberMutation,
   useUpdateMemberRoleMutation,
@@ -54,6 +57,7 @@ import { TMember, TOrg } from "@/redux/features/orgs/type";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { useMemo } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 import MemberActions from "./org-member-actions";
@@ -202,8 +206,11 @@ function AddMemberDialog({
 }) {
   const { isOpen, onOpenChange } = useDialog();
   const [addMember, { isLoading: isAdding }] = useAddMemberMutation();
+  const tValidation = useTranslations("validation");
   const form = useForm<z.infer<typeof addNewTeamMemberSchema>>({
-    resolver: zodResolver(addNewTeamMemberSchema),
+    resolver: zodResolver(
+      useMemo(() => getAddNewTeamMemberSchema(tValidation), [tValidation]),
+    ),
     defaultValues: { email: "" },
   });
   const tOrgMembers = useTranslations("org.members");

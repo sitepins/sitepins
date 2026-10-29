@@ -126,6 +126,48 @@
       "or": "Oder",
       "already_deployed": "Bereits deployed? Füge jetzt die URL ein",
       "vercel_host": "auf Vercel, um deine Website zu hosten"
+    },
+    "no_sites": {
+      "welcome": "Willkommen bei {brand} 👋",
+      "connect_description": "Verbinden Sie Ihre bestehende Website, um in wenigen Minuten loszulegen.",
+      "add_site": "Neue Website hinzufügen"
+    },
+    "preview": {
+      "button": "Vorschau",
+      "starting": "Wird gestartet",
+      "booting": "Wird hochgefahren",
+      "pushing": "Wird übertragen",
+      "sync": "Vorschau synchronisieren",
+      "open": "Vorschau öffnen",
+      "destroy": "Vorschau beenden",
+      "options": "Vorschau-Optionen",
+      "outdated_tooltip": "Vorschau ist möglicherweise veraltet – Synchronisieren verwenden",
+      "toast_expired": "Vorschau-Sitzung abgelaufen",
+      "toast_expires_in": "Vorschau läuft in ~{mins} Min. ab",
+      "toast_ready": "Vorschau bereit!",
+      "toast_failed": "Vorschau fehlgeschlagen",
+      "toast_destroyed": "Vorschau beendet"
+    },
+    "config_empty": {
+      "title": "Hier gibt es nichts zu sehen",
+      "description": "Für diesen Inhalt ist keine Konfiguration verfügbar. Bitte erstellen Sie zuerst ein Schema, um diesen Inhalt zu konfigurieren."
+    },
+    "code_preview": {
+      "edit_code": "Code bearbeiten",
+      "lines": "Zeilen:",
+      "characters": "Zeichen:",
+      "language": "Sprache:",
+      "preview": "Vorschau"
+    },
+    "code_ai": {
+      "generating": "Wird direkt im Editor generiert",
+      "streaming": "Übertrage {count} Zeilen in {file}...",
+      "view_raw": "Rohes Ausgabe-Snippet anzeigen",
+      "target_scope": "Zielbereich:",
+      "quick_actions": "Schnellaktionen:",
+      "refine_shortcut": "⌘+↵ zum Verfeinern",
+      "run_shortcut": "⌘+↵ zum Ausführen",
+      "close_explanation": "Erklärung schließen"
     }
   }
 }

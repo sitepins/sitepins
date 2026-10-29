@@ -1,0 +1,32 @@
+{
+  "validation": {
+    "required": "この項目は入力必須です。",
+    "email_invalid": "有効なメールアドレスではありません。",
+    "name_required": "名前は必須です",
+    "name_min": "名前は{count}文字以上にする必要があります",
+    "password_min": "パスワードは{count}文字以上にする必要があります",
+    "password_max": "パスワードは{count}文字未満にする必要があります",
+    "password_letter": "パスワードには少なくとも1つの英字を含める必要があります",
+    "password_digit": "パスワードには少なくとも1つの数字を含める必要があります",
+    "password_special": "パスワードには少なくとも1つの特殊文字を含める必要があります",
+    "password_mismatch": "パスワードが一致しません",
+    "otp_length": "ワンタイムパスワードは正確に{count}桁である必要があります。",
+    "select_provider": "プロバイダーを選択してください。",
+    "select_repository": "リポジトリを選択してください。",
+    "select_branch": "ブランチを選択してください。",
+    "project_required": "プロジェクト名は必須です",
+    "select_file_type": "ファイル形式を選択してください",
+    "select_frontmatter_type": "フロントマターの形式を選択してください",
+    "select_content_folder": "コンテンツフォルダーを選択してください。",
+    "select_media_folder": "メディアフォルダーを選択してください。",
+    "select_public_folder": "公開フォルダーを選択してください。",
+    "select_theme": "テーマを選択してください",
+    "select_role": "役割を選択してください。",
+    "select_preference": "少なくとも1つの設定を選択してください。",
+    "image_requirements": "サポートされている画像形式: JPEG, JPG, PNG, WebP。最大ファイルサイズは200KBです。",
+    "api_key_required": "OpenAI APIキーは必須です",
+    "label_required": "ラベルを入力してください",
+    "name_min_chars": "名前は{count}文字以上にする必要があります。",
+    "heading_min_chars": "見出しは{count}文字以上にする必要があります。"
+  }
+}

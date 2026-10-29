@@ -20,6 +20,7 @@ import { selectConfig } from "@/redux/features/config/slice";
 import { githubContentApi } from "@/redux/features/github";
 import { gitlabApi } from "@/redux/features/gitlab";
 import { useAppDispatch } from "@/redux/store";
+import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
@@ -41,6 +42,7 @@ export function SnippetSaveDialog({
   code,
   onSuccess,
 }: SnippetSaveDialogProps) {
+  const t = useTranslations("editor.snippets");
   const config = useSelector(selectConfig);
   const dispatch = useAppDispatch();
   const [schemas, setSchemas] = useState<SchemaFile[]>([]);
@@ -155,10 +157,8 @@ export function SnippetSaveDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[85vh] w-full overflow-y-auto sm:max-w-175">
         <DialogHeader>
-          <DialogTitle>Save as Snippet</DialogTitle>
-          <DialogDescription>
-            Save this code block as a reusable snippet.
-          </DialogDescription>
+          <DialogTitle>{t("save_as_snippet")}</DialogTitle>
+          <DialogDescription>{t("save_as_snippet_desc")}</DialogDescription>
         </DialogHeader>
 
         <SnippetForm

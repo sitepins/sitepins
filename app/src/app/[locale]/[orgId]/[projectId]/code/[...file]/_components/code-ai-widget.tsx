@@ -67,6 +67,7 @@ export function CodeAiWidget({
   onClearExplanation,
 }: CodeAiWidgetProps) {
   const tEditor = useTranslations("editor");
+  const tCodeAi = useTranslations("project.code_ai");
   const locale = useLocale();
   const isRtl = getDirection(locale) === "rtl";
   const hydrated = useHydrated();
@@ -252,7 +253,7 @@ export function CodeAiWidget({
             className="bg-light border-border fixed inset-e-0 top-0 z-70 flex h-svh w-full max-w-105 flex-col border-s shadow-lg 2xl:z-30 2xl:shadow-none"
           >
             {/* Header - flush at top-0 matching editor header height */}
-            <div className="border-border flex h-[69px] shrink-0 items-center justify-between border-b px-4 sm:px-5">
+            <div className="border-border flex h-17.25 shrink-0 items-center justify-between border-b px-4 sm:px-5">
               <div className="flex min-w-0 items-center gap-2.5">
                 <div className="bg-primary/10 text-primary flex size-8 shrink-0 items-center justify-center rounded-lg">
                   <Sparkles className="size-4" />
@@ -286,7 +287,7 @@ export function CodeAiWidget({
             <div className="border-border bg-muted/30 shrink-0 border-b px-4 py-2">
               <div className="flex items-center justify-between gap-2 text-xs">
                 <span className="text-muted-foreground text-[11px] font-medium">
-                  Target Scope:
+                  {tCodeAi("target_scope")}
                 </span>
                 {hasSelection ? (
                   <div className="bg-background border-border inline-flex rounded-md border p-0.5">
@@ -337,16 +338,15 @@ export function CodeAiWidget({
                   <div className="flex items-center justify-center gap-2">
                     <Loader2 className="text-primary size-4 animate-spin" />
                     <span className="text-foreground text-xs font-semibold">
-                      Generating directly in editor
+                      {tCodeAi("generating")}
                     </span>
                   </div>
                   {generatedCode && (
                     <p className="text-muted-foreground text-[11px]">
-                      Streaming {generatedLines.length}{" "}
-                      {tEditor("code.lines_count", {
+                      {tCodeAi("streaming", {
                         count: generatedLines.length,
-                      })}{" "}
-                      into {displayFileName}...
+                        file: displayFileName,
+                      })}
                     </p>
                   )}
                 </div>
@@ -362,7 +362,7 @@ export function CodeAiWidget({
                       className="text-muted-foreground hover:text-foreground flex flex-1 cursor-pointer items-center gap-1.5 py-1 text-[11px] font-medium transition-colors"
                     >
                       <Eye className="size-3.5" />
-                      <span>View raw output snippet</span>
+                      <span>{tCodeAi("view_raw")}</span>
                       {showRawOutput ? (
                         <ChevronUp className="ms-1 size-3.5" />
                       ) : (
@@ -439,7 +439,7 @@ export function CodeAiWidget({
                           size="icon-sm"
                           onClick={onClearExplanation}
                           className="text-muted-foreground hover:text-foreground size-6 cursor-pointer rounded-md"
-                          title="Close explanation"
+                          title={tCodeAi("close_explanation")}
                         >
                           <X className="size-3.5" />
                         </Button>
@@ -475,7 +475,7 @@ export function CodeAiWidget({
               {/* Quick Action Prompts */}
               <div className="space-y-2">
                 <p className="text-muted-foreground text-[11px] font-medium">
-                  Quick Actions:
+                  {tCodeAi("quick_actions")}
                 </p>
                 <div className="grid grid-cols-2 gap-2">
                   {quickPrompts.map((chip, i) => (
@@ -560,7 +560,7 @@ export function CodeAiWidget({
                     />
 
                     <div className="text-muted-foreground flex items-center justify-between text-[11px]">
-                      <span>⌘+↵ to refine</span>
+                      <span>{tCodeAi("refine_shortcut")}</span>
                       <Button
                         size="sm"
                         type="button"
@@ -596,7 +596,7 @@ export function CodeAiWidget({
                   />
 
                   <div className="text-muted-foreground flex items-center justify-between text-[11px]">
-                    <span>⌘+↵ to run</span>
+                    <span>{tCodeAi("run_shortcut")}</span>
                     <Button
                       type="button"
                       size="sm"

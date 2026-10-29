@@ -1,0 +1,32 @@
+{
+  "validation": {
+    "required": "يجب ملء هذا الحقل.",
+    "email_invalid": "هذا البريد الإلكتروني غير صالح.",
+    "name_required": "الاسم مطلوب",
+    "name_min": "يجب أن يتكون الاسم من {count} أحرف على الأقل",
+    "password_min": "يجب أن تتكون كلمة المرور من {count} أحرف على الأقل",
+    "password_max": "يجب أن تتكون كلمة المرور من أقل من {count} حرفًا",
+    "password_letter": "يجب أن تحتوي كلمة المرور على حرف واحد على الأقل",
+    "password_digit": "يجب أن تحتوي كلمة المرور على رقم واحد على الأقل",
+    "password_special": "يجب أن تحتوي كلمة المرور على رمز خاص واحد على الأقل",
+    "password_mismatch": "كلمتا المرور غير متطابقتين",
+    "otp_length": "يجب أن يتكون رمز التحقق من {count} أرقام بالضبط.",
+    "select_provider": "يرجى تحديد مزود الخدمة.",
+    "select_repository": "يرجى تحديد مستودع.",
+    "select_branch": "يرجى تحديد فرع.",
+    "project_required": "اسم المشروع مطلوب",
+    "select_file_type": "يرجى تحديد نوع الملف",
+    "select_frontmatter_type": "يرجى تحديد نوع البيانات الوصفية",
+    "select_content_folder": "حدد مجلد المحتوى الخاص بك.",
+    "select_media_folder": "حدد مجلد الوسائط الخاص بك.",
+    "select_public_folder": "حدد المجلد العام الخاص بك.",
+    "select_theme": "يرجى تحديد سمة",
+    "select_role": "يرجى تحديد دور.",
+    "select_preference": "يرجى تحديد تفضيل واحد على الأقل.",
+    "image_requirements": "أنواع الصور المدعومة: JPEG, JPG, PNG, WebP. الحجم الأقصى المسموح به هو 200 كيلوبايت.",
+    "api_key_required": "مفتاح OpenAI API مطلوب",
+    "label_required": "يرجى إدخال تسمية",
+    "name_min_chars": "يجب أن يتكون الاسم من {count} أحرف على الأقل.",
+    "heading_min_chars": "يجب أن يتكون العنوان من {count} أحرف على الأقل."
+  }
+}

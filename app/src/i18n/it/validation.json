@@ -1,0 +1,32 @@
+{
+  "validation": {
+    "required": "Questo campo deve essere compilato.",
+    "email_invalid": "Questa non è un'email valida.",
+    "name_required": "Il nome è obbligatorio",
+    "name_min": "Il nome deve contenere almeno {count} caratteri",
+    "password_min": "La password deve contenere almeno {count} caratteri",
+    "password_max": "La password deve contenere meno di {count} caratteri",
+    "password_letter": "La password deve contenere almeno una lettera",
+    "password_digit": "La password deve contenere almeno una cifra",
+    "password_special": "La password deve contenere almeno un carattere speciale",
+    "password_mismatch": "Le password non corrispondono",
+    "otp_length": "L'OTP deve essere composto da esattamente {count} cifre.",
+    "select_provider": "Seleziona un provider.",
+    "select_repository": "Seleziona un repository.",
+    "select_branch": "Seleziona un ramo.",
+    "project_required": "Il nome del progetto è obbligatorio",
+    "select_file_type": "Seleziona il tipo di file",
+    "select_frontmatter_type": "Seleziona il tipo di frontmatter",
+    "select_content_folder": "Seleziona la tua cartella dei contenuti.",
+    "select_media_folder": "Seleziona la tua cartella dei media.",
+    "select_public_folder": "Seleziona la tua cartella pubblica.",
+    "select_theme": "Seleziona un tema",
+    "select_role": "Seleziona un ruolo.",
+    "select_preference": "Seleziona almeno una preferenza.",
+    "image_requirements": "Tipi di immagine supportati: JPEG, JPG, PNG, WebP. Dimensione massima del file consentita: 200 KB.",
+    "api_key_required": "La chiave API OpenAI è obbligatoria",
+    "label_required": "Inserisci un'etichetta",
+    "name_min_chars": "Il nome deve contenere almeno {count} caratteri.",
+    "heading_min_chars": "L'intestazione deve contenere almeno {count} caratteri."
+  }
+}

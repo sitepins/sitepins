@@ -258,7 +258,9 @@ export function useCommitLogic({
     if (!socket) return;
 
     const onCommitCompleted = (payload: { user_name?: string }) => {
-      toast.success(`Saved by ${payload.user_name}`);
+      toast.success(
+        tFeedback("saved_by_user", { name: payload.user_name ?? "" }),
+      );
       updateSavedBaselineRef.current();
     };
 
@@ -288,7 +290,7 @@ export function useCommitLogic({
       socket.off("commit:error", onCommitError);
       socket.off("commit:external", onExternalCommit);
     };
-  }, [socket, tAgents]);
+  }, [socket, tAgents, tFeedback]);
 
   const getProcessedStateData = useCallback(() => {
     if (!state?.data) return state?.data;

@@ -1,7 +1,5 @@
 "use client";
 
-import { useGitProvider } from "@/hooks/use-git-provider";
-import { logger } from "@/lib/logger";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -22,6 +20,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
+import { toast } from "@/components/ui/toast";
+import { useGitProvider } from "@/hooks/use-git-provider";
+import { logger } from "@/lib/logger";
 import { cn } from "@/lib/utils/cn";
 import { parseContentJson } from "@/lib/utils/content-serializer";
 import { fmDetector } from "@/lib/utils/frontmatter-detector";
@@ -35,12 +36,6 @@ import {
   createNewField as libCreateNewField,
   Template,
 } from "@/lib/utils/schema-helpers";
-import { FieldItem, NestedEditorProps } from "./schema-field-item";
-import {
-  appendFieldToTemplate,
-  removeFieldFromTemplate,
-  updateFieldInTemplate,
-} from "./schema-template-ops";
 import { selectConfig } from "@/redux/features/config/slice";
 import { useLazyGetGitHubContentQuery } from "@/redux/features/github";
 import { useLazyGetGitLabContentQuery } from "@/redux/features/gitlab";
@@ -68,7 +63,12 @@ import {
 import { Reorder, useDragControls, useMotionValue } from "motion/react";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
-import { toast } from "@/components/ui/toast";
+import { FieldItem, NestedEditorProps } from "./schema-field-item";
+import {
+  appendFieldToTemplate,
+  removeFieldFromTemplate,
+  updateFieldInTemplate,
+} from "./schema-template-ops";
 
 // snake_case helper used by both components
 const toSnakeCase = (input: string) =>
@@ -1089,7 +1089,7 @@ export function SchemaEditorLayout({
           {tCommon("actions.add")} {tCommon("labels.fields")}
         </p>
         <p className="text-muted-foreground text-xs">
-          Configure the new field properties
+          {tSchema("builder.configure_properties")}
         </p>
       </div>
       <div className="flex-1 overflow-y-auto p-4">
@@ -1188,9 +1188,11 @@ export function SchemaEditorLayout({
         </svg>
       </div>
       <div>
-        <p className="text-sm font-medium">No field selected</p>
+        <p className="text-sm font-medium">
+          {tSchema("builder.no_field_selected")}
+        </p>
         <p className="text-xs opacity-70">
-          Select a field from the list to edit its settings
+          {tSchema("builder.select_to_edit")}
         </p>
       </div>
     </div>
@@ -1213,15 +1215,17 @@ export function SchemaEditorLayout({
             </p>
           </div>
           <span className="text-muted-foreground text-xs">
-            {template.length} field{template.length !== 1 ? "s" : ""}
+            {tSchema("builder.field_count", { count: template.length })}
           </span>
         </div>
 
         <div className="flex-1 overflow-y-auto">
           {template.length === 0 ? (
             <div className="text-muted-foreground flex flex-col items-center justify-center gap-2 px-4 py-10 text-center">
-              <p className="text-sm">No fields yet</p>
-              <p className="text-xs opacity-70">Add your first field below</p>
+              <p className="text-sm">{tSchema("builder.no_fields")}</p>
+              <p className="text-xs opacity-70">
+                {tSchema("builder.add_first_field")}
+              </p>
             </div>
           ) : (
             <Reorder.Group
@@ -1275,7 +1279,7 @@ export function SchemaEditorLayout({
             className="text-muted-foreground gap-1.5 text-sm"
           >
             <ArrowLeft className="size-4" />
-            Back to fields
+            {tSchema("builder.back_to_fields")}
           </Button>
         </div>
 

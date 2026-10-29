@@ -1,0 +1,32 @@
+{
+  "validation": {
+    "required": "Trường này phải được điền.",
+    "email_invalid": "Đây không phải là email hợp lệ.",
+    "name_required": "Tên là bắt buộc",
+    "name_min": "Tên phải có ít nhất {count} ký tự",
+    "password_min": "Mật khẩu phải có ít nhất {count} ký tự",
+    "password_max": "Mật khẩu phải có ít hơn {count} ký tự",
+    "password_letter": "Mật khẩu phải chứa ít nhất một chữ cái",
+    "password_digit": "Mật khẩu phải chứa ít nhất một chữ số",
+    "password_special": "Mật khẩu phải chứa ít nhất một ký tự đặc biệt",
+    "password_mismatch": "Mật khẩu không khớp",
+    "otp_length": "Mã OTP phải có đúng {count} chữ số.",
+    "select_provider": "Vui lòng chọn nhà cung cấp.",
+    "select_repository": "Vui lòng chọn kho lưu trữ.",
+    "select_branch": "Vui lòng chọn một nhánh.",
+    "project_required": "Tên dự án là bắt buộc",
+    "select_file_type": "Vui lòng chọn loại tệp",
+    "select_frontmatter_type": "Vui lòng chọn loại frontmatter",
+    "select_content_folder": "Chọn thư mục nội dung của bạn.",
+    "select_media_folder": "Chọn thư mục phương tiện của bạn.",
+    "select_public_folder": "Chọn thư mục công khai của bạn.",
+    "select_theme": "Vui lòng chọn một chủ đề",
+    "select_role": "Vui lòng chọn một vai trò.",
+    "select_preference": "Vui lòng chọn ít nhất một tùy chọn.",
+    "image_requirements": "Loại hình ảnh được hỗ trợ: JPEG, JPG, PNG, WebP. Dung lượng tệp tối đa được phép là 200 KB.",
+    "api_key_required": "Khóa API OpenAI là bắt buộc",
+    "label_required": "Vui lòng nhập nhãn",
+    "name_min_chars": "Tên phải có ít nhất {count} ký tự.",
+    "heading_min_chars": "Tiêu đề phải có ít nhất {count} ký tự."
+  }
+}

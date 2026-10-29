@@ -17,16 +17,16 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { toast } from "@/components/ui/toast";
 import { authClient, Session } from "@/lib/auth/auth-client";
 import { IS_DEMO } from "@/lib/constant";
-import { userDetailsSchema } from "@/lib/validate";
+import { getUserDetailsSchema, userDetailsSchema } from "@/lib/validate";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { BetterFetchError } from "better-auth/react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { toast } from "@/components/ui/toast";
 import { z } from "zod/v4";
 
 export type UserDetailsPayload = z.infer<typeof userDetailsSchema>;
@@ -40,8 +40,11 @@ export default function UserDetailsForm({ auth }: { auth: Session }) {
   const { user } = auth;
   const router = useRouter();
 
+  const tValidation = useTranslations("validation");
   const userDetailsForm = useForm<UserDetailsPayload>({
-    resolver: zodResolver(userDetailsSchema),
+    resolver: zodResolver(
+      useMemo(() => getUserDetailsSchema(tValidation), [tValidation]),
+    ),
     defaultValues: {
       full_name: user.full_name || "",
       image: user.image || "",

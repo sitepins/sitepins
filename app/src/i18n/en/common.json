@@ -42,7 +42,8 @@
       "continue": "Continue",
       "replace": "Replace",
       "confirm": "Confirm",
-      "reset": "Reset"
+      "reset": "Reset",
+      "more_options": "More options"
     },
     "status": {
       "loading": "Loading...",
@@ -97,7 +98,9 @@
       "unable_to_locate": "Unable to locate files for this folder. Please refresh and try again.",
       "demo_mode": "This action is disabled in demo mode.",
       "draft_discard_success": "Draft discarded successfully",
-      "draft_discard_error": "Failed to discard draft"
+      "draft_discard_error": "Failed to discard draft",
+      "file_list_loading": "File list is still loading. Please try again in a few seconds.",
+      "saved_by_user": "Saved by {name}"
     },
     "labels": {
       "name": "Name",

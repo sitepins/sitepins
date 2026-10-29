@@ -42,7 +42,8 @@
       "continue": "Fortfahren",
       "replace": "Ersetzen",
       "confirm": "Bestätigen",
-      "reset": "Zurücksetzen"
+      "reset": "Zurücksetzen",
+      "more_options": "Weitere Optionen"
     },
     "status": {
       "loading": "Wird geladen...",
@@ -97,7 +98,9 @@
       "unable_to_locate": "Dateien für diesen Ordner konnten nicht gefunden werden.",
       "demo_mode": "Diese Aktion ist im Demo-Modus deaktiviert.",
       "draft_discard_success": "Entwurf erfolgreich verworfen",
-      "draft_discard_error": "Entwurf konnte nicht verworfen werden"
+      "draft_discard_error": "Entwurf konnte nicht verworfen werden",
+      "file_list_loading": "Dateiliste wird noch geladen. Bitte versuchen Sie es in wenigen Sekunden erneut.",
+      "saved_by_user": "Gespeichert von {name}"
     },
     "labels": {
       "name": "Name",

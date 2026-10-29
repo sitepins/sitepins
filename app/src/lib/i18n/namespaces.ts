@@ -16,4 +16,5 @@ export const namespaces = [
   "provider-install",
   "schema",
   "search",
+  "validation",
 ] as const;

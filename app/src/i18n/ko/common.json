@@ -42,7 +42,8 @@
       "continue": "계속",
       "replace": "바꾸기",
       "confirm": "확인",
-      "reset": "재설정"
+      "reset": "재설정",
+      "more_options": "추가 옵션"
     },
     "status": {
       "loading": "불러오는 중...",
@@ -97,7 +98,9 @@
       "unable_to_locate": "이 폴더의 파일을 찾을 수 없습니다. 다시 시도해 주세요.",
       "demo_mode": "데모 모드에서는 이 작업이 비활성화되어 있습니다.",
       "draft_discard_success": "임시 저장을 삭제했습니다",
-      "draft_discard_error": "임시 저장 삭제에 실패했습니다"
+      "draft_discard_error": "임시 저장 삭제에 실패했습니다",
+      "file_list_loading": "파일 목록을 불러오는 중입니다. 잠시 후 다시 시도해 주세요.",
+      "saved_by_user": "{name} 님이 저장함"
     },
     "labels": {
       "name": "이름",

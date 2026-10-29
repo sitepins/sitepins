@@ -450,6 +450,17 @@
       "missing": "Définition de la note manquante",
       "back_to_reference": "Retour à la référence",
       "no_results": "Aucune note trouvée"
+    },
+    "snippets": {
+      "save_as_snippet": "Enregistrer comme extrait",
+      "save_as_snippet_desc": "Enregistrer ce bloc de code en tant qu'extrait réutilisable.",
+      "save_snippet_aria": "Enregistrer comme extrait",
+      "delete_block_aria": "Supprimer le bloc",
+      "show_less": "Afficher moins",
+      "show_all": "Afficher tout",
+      "lines": "lignes",
+      "error_updating_jsx": "Impossible de mettre à jour les attributs de l'élément JSX :",
+      "error_copy_image": "Erreur lors de la copie de l'image"
     }
   }
 }

@@ -1,0 +1,32 @@
+{
+  "validation": {
+    "required": "이 필드는 필수 입력 항목입니다.",
+    "email_invalid": "유효한 이메일 주소가 아닙니다.",
+    "name_required": "이름은 필수 항목입니다",
+    "name_min": "이름은 최소 {count}자 이상이어야 합니다",
+    "password_min": "비밀번호는 최소 {count}자 이상이어야 합니다",
+    "password_max": "비밀번호는 {count}자 미만이어야 합니다",
+    "password_letter": "비밀번호에는 최소 1개의 영문자가 포함되어야 합니다",
+    "password_digit": "비밀번호에는 최소 1개의 숫자가 포함되어야 합니다",
+    "password_special": "비밀번호에는 최소 1개의 특수문자가 포함되어야 합니다",
+    "password_mismatch": "비밀번호가 일치하지 않습니다",
+    "otp_length": "OTP는 정확히 {count}자리여야 합니다.",
+    "select_provider": "제공업체를 선택해 주세요.",
+    "select_repository": "저장소를 선택해 주세요.",
+    "select_branch": "브랜치를 선택해 주세요.",
+    "project_required": "프로젝트 이름은 필수 항목입니다",
+    "select_file_type": "파일 유형을 선택해 주세요",
+    "select_frontmatter_type": "프론트매터 유형을 선택해 주세요",
+    "select_content_folder": "콘텐츠 폴더를 선택하세요.",
+    "select_media_folder": "미디어 폴더를 선택하세요.",
+    "select_public_folder": "공개 폴더를 선택하세요.",
+    "select_theme": "테마를 선택해 주세요",
+    "select_role": "역할을 선택해 주세요.",
+    "select_preference": "선호 사항을 하나 이상 선택해 주세요.",
+    "image_requirements": "지원되는 이미지 형식: JPEG, JPG, PNG, WebP. 최대 허용 파일 크기는 200KB입니다.",
+    "api_key_required": "OpenAI API 키가 필요합니다",
+    "label_required": "라벨을 입력해 주세요",
+    "name_min_chars": "이름은 최소 {count}자 이상이어야 합니다.",
+    "heading_min_chars": "제목은 최소 {count}자 이상이어야 합니다."
+  }
+}

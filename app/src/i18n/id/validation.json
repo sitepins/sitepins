@@ -1,0 +1,32 @@
+{
+  "validation": {
+    "required": "Bidang ini harus diisi.",
+    "email_invalid": "Ini bukan email yang valid.",
+    "name_required": "Nama wajib diisi",
+    "name_min": "Nama harus memiliki panjang minimal {count} karakter",
+    "password_min": "Kata sandi harus memiliki panjang minimal {count} karakter",
+    "password_max": "Kata sandi harus kurang dari {count} karakter",
+    "password_letter": "Kata sandi harus mengandung setidaknya satu huruf",
+    "password_digit": "Kata sandi harus mengandung setidaknya satu angka",
+    "password_special": "Kata sandi harus mengandung setidaknya satu karakter khusus",
+    "password_mismatch": "Kata sandi tidak cocok",
+    "otp_length": "OTP harus tepat {count} digit.",
+    "select_provider": "Silakan pilih penyedia.",
+    "select_repository": "Silakan pilih repositori.",
+    "select_branch": "Silakan pilih cabang.",
+    "project_required": "Nama proyek wajib diisi",
+    "select_file_type": "Silakan pilih jenis file",
+    "select_frontmatter_type": "Silakan pilih jenis frontmatter",
+    "select_content_folder": "Pilih folder konten Anda.",
+    "select_media_folder": "Pilih folder media Anda.",
+    "select_public_folder": "Pilih folder publik Anda.",
+    "select_theme": "Silakan pilih tema",
+    "select_role": "Silakan pilih peran.",
+    "select_preference": "Silakan pilih setidaknya satu preferensi.",
+    "image_requirements": "Jenis gambar yang didukung: JPEG, JPG, PNG, WebP. Ukuran file maksimal adalah 200 KB.",
+    "api_key_required": "Kunci API OpenAI wajib diisi",
+    "label_required": "Silakan masukkan label",
+    "name_min_chars": "Nama harus memiliki panjang minimal {count} karakter.",
+    "heading_min_chars": "Judul harus memiliki panjang minimal {count} karakter."
+  }
+}

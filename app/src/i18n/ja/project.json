@@ -126,6 +126,48 @@
       "or": "または",
       "already_deployed": "すでにデプロイ済みですか？今すぐ URL を入力してください",
       "vercel_host": "Vercel でサイトをホスト"
+    },
+    "no_sites": {
+      "welcome": "{brand} へようこそ 👋",
+      "connect_description": "既存のウェブサイトを接続して、数分で利用を開始できます。",
+      "add_site": "新規サイトを追加"
+    },
+    "preview": {
+      "button": "プレビュー",
+      "starting": "開始中",
+      "booting": "起動中",
+      "pushing": "プッシュ中",
+      "sync": "プレビューを同期",
+      "open": "プレビューを開く",
+      "destroy": "プレビューを破棄",
+      "options": "プレビュー設定",
+      "outdated_tooltip": "プレビューが古い可能性があります — 同期を使用してください",
+      "toast_expired": "プレビューセッションの有効期限が切れました",
+      "toast_expires_in": "プレビューは残り約{mins}分で終了します",
+      "toast_ready": "プレビューの準備が完了しました！",
+      "toast_failed": "プレビューに失敗しました",
+      "toast_destroyed": "プレビューを破棄しました"
+    },
+    "config_empty": {
+      "title": "ここには何もありません",
+      "description": "このコンテンツに利用可能な設定はありません。設定を行うには、まずスキーマを作成してください。"
+    },
+    "code_preview": {
+      "edit_code": "コードを編集",
+      "lines": "行数:",
+      "characters": "文字数:",
+      "language": "言語:",
+      "preview": "プレビュー"
+    },
+    "code_ai": {
+      "generating": "エディター内で直接生成中",
+      "streaming": "{file} に {count} 行を出力中...",
+      "view_raw": "未加工の出力スニペットを表示",
+      "target_scope": "対象スコープ:",
+      "quick_actions": "クイックアクション:",
+      "refine_shortcut": "調整: ⌘+↵",
+      "run_shortcut": "実行: ⌘+↵",
+      "close_explanation": "説明を閉じる"
     }
   }
 }

@@ -18,13 +18,14 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { toast } from "@/components/ui/toast";
 import { useAddLog } from "@/hooks/use-add-log";
 import { useDialog } from "@/hooks/use-dialog";
 import { useGitCacheUpdates } from "@/hooks/use-git-cache-updates";
 import { useGitProvider } from "@/hooks/use-git-provider";
 import { getLogType } from "@/lib/utils/project-log-type-detector";
 import { isGitLabProvider } from "@/lib/utils/provider-checker";
-import { createFileSchema } from "@/lib/validate";
+import { createFileSchema, getCreateFileSchema } from "@/lib/validate";
 import { selectConfig } from "@/redux/features/config/slice";
 import { EAction } from "@/redux/features/project-log/type";
 import { TFiles } from "@/types";
@@ -32,10 +33,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
 import path from "path";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
-import { toast } from "@/components/ui/toast";
 import { z } from "zod/v4";
 
 type Props = {
@@ -61,6 +61,7 @@ export function FileOperation({
 }: Props) {
   const tDirectoryViewActions = useTranslations("directory-view.actions");
   const tCommon = useTranslations("common");
+  const tValidation = useTranslations("validation");
   const params = useParams();
 
   const actionLabels: Record<string, string> = {
@@ -86,8 +87,12 @@ export function FileOperation({
       ? tCommon("confirm.confirm_value")
       : "",
   );
+  const fileSchema = useMemo(
+    () => getCreateFileSchema(tValidation),
+    [tValidation],
+  );
   const editFileForm = useForm<z.infer<typeof createFileSchema>>({
-    resolver: zodResolver(createFileSchema),
+    resolver: zodResolver(fileSchema),
     defaultValues: {
       name: fileName,
     },

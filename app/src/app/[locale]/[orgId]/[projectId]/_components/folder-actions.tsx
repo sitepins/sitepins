@@ -1,6 +1,5 @@
 "use client";
 
-import { useAddLog } from "@/hooks/use-add-log";
 import { Button, ButtonProps } from "@/components/ui/button";
 import {
   Dialog,
@@ -23,6 +22,7 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { useAddLog } from "@/hooks/use-add-log";
 import { useDialog } from "@/hooks/use-dialog";
 import { useFolderOps } from "@/hooks/use-folder-ops";
 import { useGitCacheUpdates } from "@/hooks/use-git-cache-updates";
@@ -31,7 +31,10 @@ import { useSchemaData } from "@/hooks/use-schema-data";
 import { cn } from "@/lib/utils/cn";
 import { resolveRepoPath } from "@/lib/utils/common";
 import { getLogType } from "@/lib/utils/project-log-type-detector";
-import { createFileSchema as createFolderSchema } from "@/lib/validate";
+import {
+  createFileSchema as createFolderSchema,
+  getCreateFileSchema as getCreateFolderSchema,
+} from "@/lib/validate";
 import { selectConfig } from "@/redux/features/config/slice";
 import {
   githubContentApi,
@@ -43,6 +46,7 @@ import {
   useUpdateGitLabFilesMutation,
 } from "@/redux/features/gitlab";
 
+import { toast } from "@/components/ui/toast";
 import { isGitLabProvider } from "@/lib/utils/provider-checker";
 import { EAction } from "@/redux/features/project-log/type";
 import { useAppDispatch } from "@/redux/store";
@@ -62,7 +66,6 @@ import path from "path";
 import { useEffect, useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
-import { toast } from "@/components/ui/toast";
 import * as z from "zod/v4";
 import CreateSchema from "./create-schema";
 
@@ -88,6 +91,7 @@ export default function FolderActions({
 }: Props) {
   const tDirectoryViewActions = useTranslations("directory-view.actions");
   const tCommon = useTranslations("common");
+  const tValidation = useTranslations("validation");
   const params = useParams();
   const dispatch = useAppDispatch();
   const router = useRouter();
@@ -116,8 +120,13 @@ export default function FolderActions({
 
   const schemaData = useSchemaData(relativePath, schemaDir);
 
+  const folderSchema = useMemo(
+    () => getCreateFolderSchema(tValidation),
+    [tValidation],
+  );
+
   const folderCreateForm = useForm<z.infer<typeof createFolderSchema>>({
-    resolver: zodResolver(createFolderSchema),
+    resolver: zodResolver(folderSchema),
     defaultValues: {
       name: "",
     },
@@ -139,14 +148,14 @@ export default function FolderActions({
   const [isDuplicateOpen, setIsDuplicateOpen] = useState(false);
 
   const renameForm = useForm<z.infer<typeof createFolderSchema>>({
-    resolver: zodResolver(createFolderSchema),
+    resolver: zodResolver(folderSchema),
     defaultValues: {
       name: folderName || "",
     },
   });
 
   const duplicateForm = useForm<z.infer<typeof createFolderSchema>>({
-    resolver: zodResolver(createFolderSchema),
+    resolver: zodResolver(folderSchema),
     defaultValues: {
       name: folderName ? `${folderName}-copy` : "copy",
     },
@@ -268,9 +277,7 @@ export default function FolderActions({
   // Perform folder rename
   const handleRename = async (data: z.infer<typeof createFolderSchema>) => {
     if (isTreesLoading || isTreesFetching) {
-      toast.error(
-        "File list is still loading. Please try again in a few seconds.",
-      );
+      toast.error(tCommon("feedback.file_list_loading"));
       return;
     }
 
@@ -335,9 +342,7 @@ export default function FolderActions({
   // Perform folder duplication
   const handleDuplicate = async (data: z.infer<typeof createFolderSchema>) => {
     if (isTreesLoading || isTreesFetching) {
-      toast.error(
-        "File list is still loading. Please try again in a few seconds.",
-      );
+      toast.error(tCommon("feedback.file_list_loading"));
       return;
     }
 

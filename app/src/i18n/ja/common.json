@@ -42,7 +42,8 @@
       "continue": "続行",
       "replace": "置換",
       "confirm": "確認",
-      "reset": "リセット"
+      "reset": "リセット",
+      "more_options": "その他のオプション"
     },
     "status": {
       "loading": "読み込み中...",
@@ -97,7 +98,9 @@
       "unable_to_locate": "このフォルダのファイルが見つかりません。更新してください。",
       "demo_mode": "デモモードではこの操作は実行できません。",
       "draft_discard_success": "下書きを破棄しました",
-      "draft_discard_error": "下書きの破棄に失敗しました"
+      "draft_discard_error": "下書きの破棄に失敗しました",
+      "file_list_loading": "ファイル一覧を読み込み中です。数秒後にもう一度お試しください。",
+      "saved_by_user": "{name} が保存しました"
     },
     "labels": {
       "name": "名前",

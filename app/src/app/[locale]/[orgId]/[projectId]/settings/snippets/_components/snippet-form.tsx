@@ -37,7 +37,7 @@ import { Input } from "@/components/ui/input";
 import { snippetFolder } from "@/lib/config-dir";
 import { isGitLabProvider } from "@/lib/utils/provider-checker";
 import { slugify } from "@/lib/utils/text-converter";
-import { snippetSchema } from "@/lib/validate";
+import { getSnippetSchema, snippetSchema } from "@/lib/validate";
 import { selectConfig } from "@/redux/features/config/slice";
 import {
   githubContentApi,
@@ -53,7 +53,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import { useParams } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { toast } from "@/components/ui/toast";
@@ -115,9 +115,15 @@ export default function SnippetForm({
   const anchor = useComboboxAnchor();
   const tProjectSettingsSnippets = useTranslations("project-settings.snippets");
   const tCommon = useTranslations("common");
+  const tValidation = useTranslations("validation");
+
+  const formSchema = useMemo(
+    () => getSnippetSchema(tValidation),
+    [tValidation],
+  );
 
   const f = useForm<z.infer<typeof snippetSchema>>({
-    resolver: zodResolver(snippetSchema),
+    resolver: zodResolver(formSchema),
     defaultValues: {
       label: "",
       schema: [],

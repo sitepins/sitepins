@@ -450,6 +450,17 @@
       "missing": "각주 정의가 없습니다",
       "back_to_reference": "참조로 돌아가기",
       "no_results": "각주를 찾을 수 없습니다"
+    },
+    "snippets": {
+      "save_as_snippet": "스니펫으로 저장",
+      "save_as_snippet_desc": "이 코드 블록을 재사용 가능한 스니펫으로 저장합니다.",
+      "save_snippet_aria": "스니펫으로 저장",
+      "delete_block_aria": "블록 삭제",
+      "show_less": "간략히 보기",
+      "show_all": "전체 보기",
+      "lines": "줄",
+      "error_updating_jsx": "JSX 요소 속성을 업데이트할 수 없습니다:",
+      "error_copy_image": "이미지 복사 중 오류가 발생했습니다"
     }
   }
 }

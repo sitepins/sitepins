@@ -1,0 +1,32 @@
+{
+  "validation": {
+    "required": "This field has to be filled.",
+    "email_invalid": "This is not a valid email.",
+    "name_required": "Name is required",
+    "name_min": "Name must be at least {count} characters long",
+    "password_min": "Password must be at least {count} characters long",
+    "password_max": "Password must be less than {count} characters long",
+    "password_letter": "Password must contain at least one letter",
+    "password_digit": "Password must contain at least one digit",
+    "password_special": "Password must contain at least one special character",
+    "password_mismatch": "Passwords do not match",
+    "otp_length": "OTP must be exactly {count} digits.",
+    "select_provider": "Please select a provider.",
+    "select_repository": "Please select a repository.",
+    "select_branch": "Please select a branch.",
+    "project_required": "Project name is required",
+    "select_file_type": "Please select file type",
+    "select_frontmatter_type": "Please select frontmatter type",
+    "select_content_folder": "Select your content folder.",
+    "select_media_folder": "Select your media folder.",
+    "select_public_folder": "Select your public folder.",
+    "select_theme": "Please select a theme",
+    "select_role": "Please select a role.",
+    "select_preference": "Please select at least one preference.",
+    "image_requirements": "Supported image types: JPEG, JPG, PNG, WebP. Maximum file size allowed is 200 KB.",
+    "api_key_required": "OpenAI API key is required",
+    "label_required": "Please enter a label",
+    "name_min_chars": "Name must be at least {count} characters.",
+    "heading_min_chars": "Heading must be at least {count} characters."
+  }
+}

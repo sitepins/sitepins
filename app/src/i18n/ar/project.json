@@ -126,6 +126,48 @@
       "or": "أو",
       "already_deployed": "تم نشرها بالفعل؟ أدخل عنوان URL الآن",
       "vercel_host": "على Vercel لاستضافة موقعك"
+    },
+    "no_sites": {
+      "welcome": "مرحبًا بك في {brand} 👋",
+      "connect_description": "اربط موقعك الحالي للبدء في دقائق.",
+      "add_site": "إضافة موقع جديد"
+    },
+    "preview": {
+      "button": "معاينة",
+      "starting": "جارٍ البدء",
+      "booting": "جارٍ الإقلاع",
+      "pushing": "جارٍ الدفع",
+      "sync": "مزامنة المعاينة",
+      "open": "فتح المعاينة",
+      "destroy": "إنهاء المعاينة",
+      "options": "خيارات المعاينة",
+      "outdated_tooltip": "قد تكون المعاينة قديمة — استخدم المزامنة",
+      "toast_expired": "انتهت جلسة المعاينة",
+      "toast_expires_in": "تنتهي المعاينة خلال ~{mins} دقيقة",
+      "toast_ready": "المعاينة جاهزة!",
+      "toast_failed": "فشلت المعاينة",
+      "toast_destroyed": "تم إنهاء المعاينة"
+    },
+    "config_empty": {
+      "title": "لا يوجد شيء هنا",
+      "description": "لا يوجد تكوين متاح لهذا المحتوى. يرجى إنشاء مخطط أولاً لتكوين هذا المحتوى."
+    },
+    "code_preview": {
+      "edit_code": "تعديل الكود",
+      "lines": "الأسطر:",
+      "characters": "الأحرف:",
+      "language": "اللغة:",
+      "preview": "معاينة"
+    },
+    "code_ai": {
+      "generating": "جارٍ التوليد مباشرة في المحرر",
+      "streaming": "جارٍ بث {count} أسطر في {file}...",
+      "view_raw": "عرض مقتطف الإخراج الخام",
+      "target_scope": "نطاق الهدف:",
+      "quick_actions": "إجراءات سريعة:",
+      "refine_shortcut": "⌘+↵ للتحسين",
+      "run_shortcut": "⌘+↵ للتشغيل",
+      "close_explanation": "إغلاق الشرح"
     }
   }
 }

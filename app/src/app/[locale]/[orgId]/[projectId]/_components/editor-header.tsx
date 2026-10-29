@@ -26,11 +26,11 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useDeploymentStatusPollingInterval } from "@/hooks/use-deployment-status-polling";
-import { useGitProvider } from "@/hooks/use-git-provider";
 import { useFeatureAccess } from "@/hooks/use-feature-access";
+import { useGitProvider } from "@/hooks/use-git-provider";
 import { usePresence } from "@/hooks/use-presence";
-import { useVercelIntegration } from "@/hooks/use-vercel-integration";
 import { openUnlockPrompt } from "@/hooks/use-unlock-prompt";
+import { useVercelIntegration } from "@/hooks/use-vercel-integration";
 import {
   getDeploymentStatusClass,
   getDeploymentStatusI18nKey,
@@ -379,7 +379,7 @@ export default function EditorHeader({
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button
-                      aria-label="More"
+                      aria-label={tCommon("actions.more_options")}
                       size="icon-lg"
                       className="h-9 w-7 px-0 sm:w-8"
                     >

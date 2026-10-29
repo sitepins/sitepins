@@ -1,6 +1,5 @@
 "use client";
 
-import { useTranslations } from "next-intl";
 import {
   Dialog,
   DialogContent,
@@ -16,16 +15,18 @@ import {
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field";
+import { toast } from "@/components/ui/toast";
 import { useDialog } from "@/hooks/use-dialog";
 import { authClient } from "@/lib/auth/auth-client";
 import { IS_DEMO } from "@/lib/constant";
-import { orgSchema } from "@/lib/validate";
+import { getOrgSchema, orgSchema } from "@/lib/validate";
 import { useAddOrgMutation } from "@/redux/features/orgs/org-api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
+import { useMemo } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { toast } from "@/components/ui/toast";
 import { z } from "zod/v4";
 import FormError from "./form-error";
 import { Button, ButtonProps } from "./ui/button";
@@ -44,6 +45,7 @@ export default function AddOrg({
   const { isOpen, onOpenChange: setOpen } = useDialog();
   const { data: auth } = authClient.useSession();
   const tOrgCreate = useTranslations("org.create");
+  const tValidation = useTranslations("validation");
   const user = auth?.user;
   const _router = useRouter();
 
@@ -52,7 +54,9 @@ export default function AddOrg({
   const handleOpenChange = isControlled ? onOpenChange : setOpen;
 
   const orgForm = useForm<z.infer<typeof orgSchema>>({
-    resolver: zodResolver(orgSchema),
+    resolver: zodResolver(
+      useMemo(() => getOrgSchema(tValidation), [tValidation]),
+    ),
     defaultValues: {
       org_name: "",
       email: user?.email ?? "",

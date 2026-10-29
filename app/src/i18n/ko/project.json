@@ -126,6 +126,48 @@
       "or": "아니면",
       "already_deployed": "이미 배포되었나요? 지금 URL을 입력하세요",
       "vercel_host": "귀하의 사이트를 호스팅하려면 Vercel에서"
+    },
+    "no_sites": {
+      "welcome": "{brand}에 오신 것을 환영합니다 👋",
+      "connect_description": "기존 웹사이트를 연결하여 몇 분 만에 시작해 보세요.",
+      "add_site": "새 사이트 추가"
+    },
+    "preview": {
+      "button": "미리보기",
+      "starting": "시작 중",
+      "booting": "부팅 중",
+      "pushing": "푸시 중",
+      "sync": "미리보기 동기화",
+      "open": "미리보기 열기",
+      "destroy": "미리보기 종료",
+      "options": "미리보기 옵션",
+      "outdated_tooltip": "미리보기가 오래되었을 수 있습니다 — 동기화를 사용하세요",
+      "toast_expired": "미리보기 세션이 만료되었습니다",
+      "toast_expires_in": "미리보기가 약 {mins}분 후에 만료됩니다",
+      "toast_ready": "미리보기가 준비되었습니다!",
+      "toast_failed": "미리보기 실패",
+      "toast_destroyed": "미리보기가 종료되었습니다"
+    },
+    "config_empty": {
+      "title": "표시할 내용이 없습니다",
+      "description": "이 콘텐츠에 사용할 수 있는 구성이 없습니다. 이 콘텐츠를 구성하려면 먼저 스키마를 생성하세요."
+    },
+    "code_preview": {
+      "edit_code": "코드 편집",
+      "lines": "줄 수:",
+      "characters": "문자 수:",
+      "language": "언어:",
+      "preview": "미리보기"
+    },
+    "code_ai": {
+      "generating": "에디터에서 직접 생성 중",
+      "streaming": "{file}에 {count}줄 스트리밍 중...",
+      "view_raw": "원시 출력 스니펫 보기",
+      "target_scope": "대상 범위:",
+      "quick_actions": "빠른 작업:",
+      "refine_shortcut": "수정: ⌘+↵",
+      "run_shortcut": "실행: ⌘+↵",
+      "close_explanation": "설명 닫기"
     }
   }
 }

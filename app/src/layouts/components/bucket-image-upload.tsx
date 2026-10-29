@@ -1,15 +1,15 @@
 "use client";
 
-import type { TUploadFolder } from "@/lib/brand";
 import Avatar from "@/components/avatar";
 import { useImageUpload } from "@/hooks/use-image-upload";
+import type { TUploadFolder } from "@/lib/brand";
 import { AcceptImages, BUCKET_URL, MAX_SIZE } from "@/lib/constant";
 import { Camera, Trash2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { useDropzone } from "react-dropzone";
 import Gravatar from "react-gravatar";
 import SiteFallbackAvatar from "./site-fallback-avatar";
-import { useTranslations } from "next-intl";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -223,7 +223,7 @@ export function BucketImageUpload({
               // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={previewSrc}
-                alt="Preview"
+                alt={altText || tCommonImageUpload("preview_title")}
                 className="w-full rounded-lg object-contain"
               />
             )}

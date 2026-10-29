@@ -126,6 +126,48 @@
       "or": "Or",
       "already_deployed": "Already deployed? Insert the URL now",
       "vercel_host": "on Vercel to host your site"
+    },
+    "no_sites": {
+      "welcome": "Welcome to {brand} 👋",
+      "connect_description": "Connect your existing website to get started in minutes.",
+      "add_site": "Add New Site"
+    },
+    "preview": {
+      "button": "Preview",
+      "starting": "Starting",
+      "booting": "Booting",
+      "pushing": "Pushing",
+      "sync": "Sync Preview",
+      "open": "Open Preview",
+      "destroy": "Destroy Preview",
+      "options": "Preview options",
+      "outdated_tooltip": "Preview may be outdated — use Sync",
+      "toast_expired": "Preview session expired",
+      "toast_expires_in": "Preview expires in ~{mins} min",
+      "toast_ready": "Preview ready!",
+      "toast_failed": "Preview failed",
+      "toast_destroyed": "Preview destroyed"
+    },
+    "config_empty": {
+      "title": "Nothing to see here",
+      "description": "There is no configuration available for this content. Please create a schema first to configure this content."
+    },
+    "code_preview": {
+      "edit_code": "Edit Code",
+      "lines": "Lines:",
+      "characters": "Characters:",
+      "language": "Language:",
+      "preview": "Preview"
+    },
+    "code_ai": {
+      "generating": "Generating directly in editor",
+      "streaming": "Streaming {count} lines into {file}...",
+      "view_raw": "View raw output snippet",
+      "target_scope": "Target Scope:",
+      "quick_actions": "Quick Actions:",
+      "refine_shortcut": "⌘+↵ to refine",
+      "run_shortcut": "⌘+↵ to run",
+      "close_explanation": "Close explanation"
     }
   }
 }

@@ -2,6 +2,7 @@
 
 import { cn } from "@/lib/utils/cn";
 import { ChevronDown, ChevronUp } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { ContentEditableSpan } from "../common/editable-tag-line";
 
@@ -88,6 +89,7 @@ export const HtmlCodeBody = ({
   value: string;
   onChange: (value: string) => void;
 }) => {
+  const t = useTranslations("editor.snippets");
   const [draft, setDraft] = useState(value);
   const [synced, setSynced] = useState(value);
   const [expanded, setExpanded] = useState(false);
@@ -157,11 +159,12 @@ export const HtmlCodeBody = ({
         >
           {expanded ? (
             <>
-              <ChevronUp className="size-3.5" /> Show less
+              <ChevronUp className="size-3.5" /> {t("show_less")}
             </>
           ) : (
             <>
-              <ChevronDown className="size-3.5" /> Show all {lineCount} lines
+              <ChevronDown className="size-3.5" /> {t("show_all")} {lineCount}{" "}
+              {t("lines")}
             </>
           )}
         </button>

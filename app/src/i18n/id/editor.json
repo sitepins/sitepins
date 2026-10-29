@@ -450,6 +450,17 @@
       "missing": "Definisi catatan kaki tidak ada",
       "back_to_reference": "Kembali ke referensi",
       "no_results": "Catatan kaki tidak ditemukan"
+    },
+    "snippets": {
+      "save_as_snippet": "Simpan sebagai Cuplikan",
+      "save_as_snippet_desc": "Simpan blok kode ini sebagai cuplikan yang dapat digunakan kembali.",
+      "save_snippet_aria": "Simpan sebagai cuplikan",
+      "delete_block_aria": "Hapus blok",
+      "show_less": "Tampilkan lebih sedikit",
+      "show_all": "Tampilkan semua",
+      "lines": "baris",
+      "error_updating_jsx": "Tidak dapat memperbarui atribut elemen JSX:",
+      "error_copy_image": "Gagal menyalin gambar"
     }
   }
 }

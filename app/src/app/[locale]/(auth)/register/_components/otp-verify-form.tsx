@@ -17,12 +17,13 @@ import {
 } from "@/components/ui/input-otp";
 import { toast } from "@/components/ui/toast";
 import { authClient } from "@/lib/auth/auth-client";
+import { getLocalizedAuthError } from "@/lib/auth/auth-error-mapper";
 import { OTP_LENGTH } from "@/lib/constant";
-import { otpSchema } from "@/lib/validate";
+import { getOtpSchema, otpSchema } from "@/lib/validate";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { REGEXP_ONLY_DIGITS } from "input-otp";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import * as z from "zod/v4";
 
@@ -57,14 +58,18 @@ function OTPField({
 export function OTPVerifyForm({ credential }: { credential: LoginCredential }) {
   const [isPending, setIsPending] = useState(false);
 
+  const tValidation = useTranslations("validation");
+  const tAuthVerify = useTranslations("auth.verify");
+  const tAuth = useTranslations("auth");
+
   const otpForm = useForm<z.infer<typeof otpSchema>>({
-    resolver: zodResolver(otpSchema),
+    resolver: zodResolver(
+      useMemo(() => getOtpSchema(tValidation), [tValidation]),
+    ),
     defaultValues: {
       otp: "",
     },
   });
-
-  const tAuthVerify = useTranslations("auth.verify");
 
   const onSubmit = async (data: z.infer<typeof otpSchema>) => {
     if (!credential.email) {
@@ -89,7 +94,10 @@ export function OTPVerifyForm({ credential }: { credential: LoginCredential }) {
           window.location.reload();
         },
         onError: (ctx) => {
-          toast.error(ctx.error.message || tAuthVerify("something_went_wrong"));
+          const localizedMsg = getLocalizedAuthError(ctx.error, (k) =>
+            tAuth(k as Parameters<typeof tAuth>[0]),
+          );
+          toast.error(localizedMsg || tAuthVerify("something_went_wrong"));
         },
       },
     );

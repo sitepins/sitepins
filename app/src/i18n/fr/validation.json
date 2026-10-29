@@ -1,0 +1,32 @@
+{
+  "validation": {
+    "required": "Ce champ doit être rempli.",
+    "email_invalid": "Cette adresse e-mail n'est pas valide.",
+    "name_required": "Le nom est requis",
+    "name_min": "Le nom doit comporter au moins {count} caractères",
+    "password_min": "Le mot de passe doit comporter au moins {count} caractères",
+    "password_max": "Le mot de passe doit comporter moins de {count} caractères",
+    "password_letter": "Le mot de passe doit contenir au moins une lettre",
+    "password_digit": "Le mot de passe doit contenir au moins un chiffre",
+    "password_special": "Le mot de passe doit contenir au moins un caractère spécial",
+    "password_mismatch": "Les mots de passe ne correspondent pas",
+    "otp_length": "Le code OTP doit comporter exactement {count} chiffres.",
+    "select_provider": "Veuillez sélectionner un fournisseur.",
+    "select_repository": "Veuillez sélectionner un dépôt.",
+    "select_branch": "Veuillez sélectionner une branche.",
+    "project_required": "Le nom du projet est requis",
+    "select_file_type": "Veuillez sélectionner un type de fichier",
+    "select_frontmatter_type": "Veuillez sélectionner un type de frontmatter",
+    "select_content_folder": "Sélectionnez votre dossier de contenu.",
+    "select_media_folder": "Sélectionnez votre dossier de médias.",
+    "select_public_folder": "Sélectionnez votre dossier public.",
+    "select_theme": "Veuillez sélectionner un thème",
+    "select_role": "Veuillez sélectionner un rôle.",
+    "select_preference": "Veuillez sélectionner au moins une préférence.",
+    "image_requirements": "Formats d'image acceptés : JPEG, JPG, PNG, WebP. Taille maximale autorisée : 200 Ko.",
+    "api_key_required": "La clé API OpenAI est requise",
+    "label_required": "Veuillez saisir un libellé",
+    "name_min_chars": "Le nom doit comporter au moins {count} caractères.",
+    "heading_min_chars": "Le titre doit comporter au moins {count} caractères."
+  }
+}

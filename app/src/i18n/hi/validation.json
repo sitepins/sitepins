@@ -1,0 +1,32 @@
+{
+  "validation": {
+    "required": "यह फ़ील्ड भरना आवश्यक है।",
+    "email_invalid": "यह एक मान्य ईमेल नहीं है।",
+    "name_required": "नाम आवश्यक है",
+    "name_min": "नाम कम से कम {count} वर्णों का होना चाहिए",
+    "password_min": "पासवर्ड कम से कम {count} वर्णों का होना चाहिए",
+    "password_max": "पासवर्ड {count} वर्णों से कम होना चाहिए",
+    "password_letter": "पासवर्ड में कम से कम एक अक्षर होना चाहिए",
+    "password_digit": "पासवर्ड में कम से कम एक अंक होना चाहिए",
+    "password_special": "पासवर्ड में कम से कम एक विशेष वर्ण होना चाहिए",
+    "password_mismatch": "पासवर्ड मेल नहीं खाते",
+    "otp_length": "ओटीपी ठीक {count} अंकों का होना चाहिए।",
+    "select_provider": "कृपया एक प्रदाता चुनें।",
+    "select_repository": "कृपया एक रिपॉजिटरी चुनें।",
+    "select_branch": "कृपया एक शाखा चुनें।",
+    "project_required": "परियोजना का नाम आवश्यक है",
+    "select_file_type": "कृपया फ़ाइल का प्रकार चुनें",
+    "select_frontmatter_type": "कृपया फ्रंटमैट प्रकार चुनें",
+    "select_content_folder": "अपना सामग्री फ़ोल्डर चुनें।",
+    "select_media_folder": "अपना मीडिया फ़ोल्डर चुनें।",
+    "select_public_folder": "अपना सार्वजनिक फ़ोल्डर चुनें।",
+    "select_theme": "कृपया एक थीम चुनें",
+    "select_role": "कृपया एक भूमिका चुनें।",
+    "select_preference": "कृपया कम से कम एक प्राथमिकता चुनें।",
+    "image_requirements": "समर्थित छवि प्रकार: JPEG, JPG, PNG, WebP। अधिकतम फ़ाइल आकार 200 KB है।",
+    "api_key_required": "OpenAI API कुंजी आवश्यक है",
+    "label_required": "कृपया एक लेबल दर्ज करें",
+    "name_min_chars": "नाम कम से कम {count} वर्णों का होना चाहिए।",
+    "heading_min_chars": "शीर्षक कम से कम {count} वर्णों का होना चाहिए।"
+  }
+}

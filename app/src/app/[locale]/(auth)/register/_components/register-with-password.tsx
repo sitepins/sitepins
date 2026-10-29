@@ -12,17 +12,17 @@ import {
   FieldSet,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { toast } from "@/components/ui/toast";
 import { authClient } from "@/lib/auth/auth-client";
 import { PRIVACY_URL, TERMS_URL } from "@/lib/brand";
-import { registerSchema } from "@/lib/validate";
+import { getRegisterSchema, registerSchema } from "@/lib/validate";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { BetterFetchError } from "better-auth/react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { toast } from "@/components/ui/toast";
 import * as z from "zod/v4";
 import { LoginCredential } from "../page";
 
@@ -41,8 +41,11 @@ export default function RegisterWithPassword({
     (BetterFetchError & Record<string, unknown>) | null
   >(null);
 
+  const tValidation = useTranslations("validation");
   const registerForm = useForm<TRegisterFields>({
-    resolver: zodResolver(registerSchema),
+    resolver: zodResolver(
+      useMemo(() => getRegisterSchema(tValidation), [tValidation]),
+    ),
     defaultValues: {
       full_name: "",
       email: "",

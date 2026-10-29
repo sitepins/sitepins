@@ -450,6 +450,17 @@
       "missing": "Missing footnote definition",
       "back_to_reference": "Back to reference",
       "no_results": "No footnotes found"
+    },
+    "snippets": {
+      "save_as_snippet": "Save as Snippet",
+      "save_as_snippet_desc": "Save this code block as a reusable snippet.",
+      "save_snippet_aria": "Save as snippet",
+      "delete_block_aria": "Delete block",
+      "show_less": "Show less",
+      "show_all": "Show all",
+      "lines": "lines",
+      "error_updating_jsx": "Could not update JSX element attributes:",
+      "error_copy_image": "Error copying the image"
     }
   }
 }

@@ -1,14 +1,15 @@
 "use client";
 
-import { useGitProvider } from "@/hooks/use-git-provider";
 import { Card, CardContent } from "@/components/ui/card";
 import { ImageProvider } from "@/contexts/image-context";
 import { assignUniqueId } from "@/editor/utils/plate-utils";
+import { useGitProvider } from "@/hooks/use-git-provider";
 import { format } from "@/lib/utils/content-serializer";
 import { convertSchema } from "@/lib/utils/schema-generator";
 import { selectConfig } from "@/redux/features/config/slice";
 import { TFrontmatterData } from "@/types";
 import { Folder } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { use } from "react";
 import { useSelector } from "react-redux";
 import EditorWrapper from "../../_components/editor-wrapper";
@@ -18,6 +19,7 @@ import { ConfigSkeleton } from "./_components/config-skeleton";
 export default function Configuration(
   props: PageProps<"/[locale]/[orgId]/[projectId]/config/[...path]">,
 ) {
+  const tConfigEmpty = useTranslations("project.config_empty");
   const params = use(props.params);
   const { path: file } = params;
 
@@ -61,11 +63,10 @@ export default function Configuration(
             </div>
 
             <h2 className="text-center text-xl font-medium">
-              Nothing to see here
+              {tConfigEmpty("title")}
             </h2>
             <p className="text-text-strong max-w-md">
-              There is no configuration available for this content. Please
-              create a schema first to configure this content.
+              {tConfigEmpty("description")}
             </p>
           </CardContent>
         </Card>

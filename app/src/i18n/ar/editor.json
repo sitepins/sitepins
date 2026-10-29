@@ -450,6 +450,17 @@
       "missing": "تعريف الحاشية مفقود",
       "back_to_reference": "العودة إلى الإشارة",
       "no_results": "لم يتم العثور على حواشٍ"
+    },
+    "snippets": {
+      "save_as_snippet": "حفظ كمقتطف",
+      "save_as_snippet_desc": "حفظ كتلة التعليمات البرمجية هذه كمقتطف قابل لإعادة الاستخدام.",
+      "save_snippet_aria": "حفظ كمقتطف",
+      "delete_block_aria": "حذف الكتلة",
+      "show_less": "عرض أقل",
+      "show_all": "عرض الكل",
+      "lines": "أسطر",
+      "error_updating_jsx": "تعذر تحديث سمات عنصر JSX:",
+      "error_copy_image": "خطأ أثناء نسخ الصورة"
     }
   }
 }

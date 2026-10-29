@@ -1,6 +1,5 @@
 "use client";
 
-import { siteConfigPath } from "@/lib/config-dir";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Card,
@@ -38,15 +37,17 @@ import {
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field";
+import { toast } from "@/components/ui/toast";
 import { useAddLog } from "@/hooks/use-add-log";
 import { useGitProvider } from "@/hooks/use-git-provider";
 import { SUPPORT_URL } from "@/lib/brand";
+import { siteConfigPath } from "@/lib/config-dir";
 import { cn } from "@/lib/utils/cn";
 import detectFramework from "@/lib/utils/framework-detector";
 import isConfigFile from "@/lib/utils/is-config-file";
-import { isGitLabProvider } from "@/lib/utils/provider-checker";
-import { configFormSchema } from "@/lib/validate";
 import { getManifestFile } from "@/lib/utils/manifest";
+import { isGitLabProvider } from "@/lib/utils/provider-checker";
+import { configFormSchema, getConfigFormSchema } from "@/lib/validate";
 import { selectConfig, updateConfig } from "@/redux/features/config/slice";
 import {
   githubContentApi,
@@ -66,7 +67,6 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { Fragment, useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { toast } from "@/components/ui/toast";
 import * as z from "zod/v4";
 
 // Filter folders from trees
@@ -225,8 +225,11 @@ export const ConfigForm = ({
     ? isGlPending
     : isGhPending;
 
+  const tValidation = useTranslations("validation");
   const configForm = useForm<z.infer<typeof configFormSchema>>({
-    resolver: zodResolver(configFormSchema),
+    resolver: zodResolver(
+      useMemo(() => getConfigFormSchema(tValidation), [tValidation]),
+    ),
     defaultValues: {
       content: {
         value: config?.content || "",

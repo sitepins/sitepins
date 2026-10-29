@@ -17,15 +17,16 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { toast } from "@/components/ui/toast";
 import { authClient } from "@/lib/auth/auth-client";
-import { updatePasswordSchema } from "@/lib/validate";
+import { getLocalizedAuthError } from "@/lib/auth/auth-error-mapper";
+import { getUpdatePasswordSchema, updatePasswordSchema } from "@/lib/validate";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { BetterFetchError } from "better-auth/react";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { Controller, useForm } from "react-hook-form";
-import { toast } from "@/components/ui/toast";
 import { useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
+import { useMemo, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
 import * as z from "zod/v4";
 
 type UpdatePassPayload = z.infer<typeof updatePasswordSchema>;
@@ -38,17 +39,21 @@ export default function UpdatePassword() {
   const [isPending, setIsPending] = useState(false);
   const router = useRouter();
 
+  const tValidation = useTranslations("validation");
+  const tAuth = useTranslations("auth");
+  const tDashboardAccountPassword = useTranslations(
+    "dashboard.account.password",
+  );
+
   const updatePasswordForm = useForm<UpdatePassPayload>({
-    resolver: zodResolver(updatePasswordSchema),
+    resolver: zodResolver(
+      useMemo(() => getUpdatePasswordSchema(tValidation), [tValidation]),
+    ),
     defaultValues: {
       currentPassword: "",
       newPassword: "",
     },
   });
-
-  const tDashboardAccountPassword = useTranslations(
-    "dashboard.account.password",
-  );
 
   const onSubmit = async (values: UpdatePassPayload) => {
     await authClient.changePassword(
@@ -65,7 +70,10 @@ export default function UpdatePassword() {
           updatePasswordForm.reset();
         },
         onError: (ctx: { error: BetterFetchError }) => {
-          toast.error(ctx.error.message || tDashboardAccountPassword("error"));
+          const localizedMsg = getLocalizedAuthError(ctx.error, (k) =>
+            tAuth(k as Parameters<typeof tAuth>[0]),
+          );
+          toast.error(localizedMsg || tDashboardAccountPassword("error"));
         },
       },
     );

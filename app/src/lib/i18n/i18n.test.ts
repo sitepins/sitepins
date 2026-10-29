@@ -1,15 +1,16 @@
-import { existsSync, readdirSync, readFileSync } from "node:fs";
-import path from "node:path";
-import { describe, expect, it } from "vitest";
 import languages from "@/config/languages.json";
 import { getDirection } from "@/lib/i18n/direction";
 import { namespaces } from "@/lib/i18n/namespaces";
 import { routing } from "@/lib/i18n/routing";
 import {
   getMenuTranslations,
-  locales as utilLocales,
   resolveLocalizedText,
+  locales as utilLocales,
 } from "@/lib/utils/localized-text";
+import { createTranslator } from "next-intl";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
+import path from "node:path";
+import { describe, expect, it } from "vitest";
 
 const I18N_DIR = path.resolve(__dirname, "../../i18n");
 const EN_DIR = path.join(I18N_DIR, "en");
@@ -55,6 +56,22 @@ function extractTags(str: string): string[] {
   const matches = str.match(/<\/?[a-zA-Z0-9_-]+>/g) || [];
   return Array.from(new Set(matches)).sort();
 }
+
+// Extracts variable names used in ICU plural expressions, e.g. "{count, plural, ...}" -> ["count"]
+function extractPluralVars(str: string): string[] {
+  const matches = Array.from(
+    str.matchAll(/\{([a-zA-Z0-9_-]+)\s*,\s*plural\s*,/g),
+  ).map((m) => m[1]);
+  return Array.from(new Set(matches)).sort();
+}
+
+type TPluralMessageEntry = {
+  filename: string;
+  locale: string;
+  path: string;
+  pluralVars: string[];
+  value: string;
+};
 
 describe("i18n configuration & consistency", () => {
   it("languages.json contains valid entries with no duplicates", () => {
@@ -257,14 +274,30 @@ describe("i18n key completeness & parity across locales", () => {
           if (typeof enItem.value === "string") {
             const locVal = locMap.get(enItem.path);
             if (typeof locVal === "string") {
-              // Plural strings have inner ICU structure, skip standard regex
               if (enItem.value.includes("plural,")) {
                 expect(
                   locVal.includes("plural,"),
                   `${locale}/${filename} @ ${enItem.path} missing plural syntax`,
                 ).toBe(true);
+
+                const enPluralVars = extractPluralVars(enItem.value);
+                const locPluralVars = extractPluralVars(locVal);
+                expect(
+                  locPluralVars,
+                  `${locale}/${filename} @ ${enItem.path} plural variable mismatch`,
+                ).toEqual(enPluralVars);
+
+                expect(
+                  /other\s*\{/.test(locVal),
+                  `${locale}/${filename} @ ${enItem.path} missing mandatory ICU 'other' clause`,
+                ).toBe(true);
                 continue;
               }
+
+              expect(
+                locVal.includes("plural,"),
+                `${locale}/${filename} @ ${enItem.path} has unexpected plural syntax`,
+              ).toBe(false);
 
               const enPlaceholders = extractPlaceholders(enItem.value);
               const locPlaceholders = extractPlaceholders(locVal);
@@ -400,4 +433,57 @@ describe("white-label brand tokens", () => {
       c: 3,
     });
   });
+});
+
+describe("ICU messageformat plural runtime validation", () => {
+  const pluralEntries: TPluralMessageEntry[] = [];
+
+  for (const locale of localeDirectories) {
+    for (const filename of enFiles) {
+      const filePath = path.join(I18N_DIR, locale, filename);
+      if (!existsSync(filePath)) continue;
+      const json = JSON.parse(readFileSync(filePath, "utf8"));
+      for (const entry of getAllKeyEntries(json)) {
+        if (
+          typeof entry.value === "string" &&
+          entry.value.includes("plural,")
+        ) {
+          pluralEntries.push({
+            filename,
+            locale,
+            path: entry.path,
+            pluralVars: extractPluralVars(entry.value),
+            value: entry.value,
+          });
+        }
+      }
+    }
+  }
+
+  it("registers plural messages across all locales", () => {
+    expect(pluralEntries.length).toBeGreaterThan(0);
+  });
+
+  it.each(pluralEntries)(
+    "compiles and formats $locale/$filename @ $path cleanly",
+    ({ locale, pluralVars, value }) => {
+      const t = createTranslator({
+        locale,
+        messages: { target: value },
+        onError: (err) => {
+          throw err;
+        },
+      });
+
+      for (const count of [0, 1, 2, 5, 100]) {
+        const params: Record<string, number> = {};
+        for (const v of pluralVars) {
+          params[v] = count;
+        }
+        const formatted = t("target", params);
+        expect(formatted).toBeTruthy();
+        expect(formatted).not.toContain("plural,");
+      }
+    },
+  );
 });

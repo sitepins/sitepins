@@ -3,7 +3,11 @@ import { STORAGE_PREFIX } from "@/lib/brand";
 export const IS_DEMO = process.env.NEXT_PUBLIC_IS_DEMO === "true";
 export const DEMO_EMAIL = process.env.NEXT_PUBLIC_DEMO_EMAIL;
 export const DEMO_PASSWORD = process.env.NEXT_PUBLIC_DEMO_PASSWORD;
-export const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+export const API_URL =
+  typeof window === "undefined"
+    ? (process.env.INTERNAL_BACKEND_URL ||
+        process.env.NEXT_PUBLIC_BACKEND_URL)
+    : process.env.NEXT_PUBLIC_BACKEND_URL;
 export const BUCKET_URL = process.env.NEXT_PUBLIC_BUCKET_URL;
 // GitHub App slug (install URL, `<slug>[bot]` commits) and GitLab commit author.
 export const GIT_APP_NAME = process.env.NEXT_PUBLIC_GIT_APP_NAME ?? "";

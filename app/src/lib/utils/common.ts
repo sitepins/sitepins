@@ -141,23 +141,27 @@ export const mergePatterns = ({
   include,
   exclude,
 }: {
-  include?: string;
-  exclude?: string;
+  include?: string | string[];
+  exclude?: string | string[];
 }): { patterns: string[]; includes: string[]; excludes: string[] } => {
-  const includes = (include || "").split(",").reduce<string[]>((acc, curr) => {
-    if (curr.trim()) return [...acc, curr.trim()];
-    return acc;
-  }, []);
-
-  const excludes = (exclude || "").split(",").reduce<string[]>((acc, curr) => {
-    const trimValue = curr.trim();
-    if (trimValue) {
-      return trimValue.includes("!")
-        ? [...acc, curr.replace("!", "")]
-        : [...acc, `${curr}`];
+  const parseList = (val?: string | string[]): string[] => {
+    if (!val) return [];
+    if (Array.isArray(val)) {
+      return val.map((s) => String(s).trim()).filter(Boolean);
     }
-    return acc;
-  }, []);
+    if (typeof val === "string") {
+      return val
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean);
+    }
+    return [];
+  };
+
+  const includes = parseList(include);
+  const excludes = parseList(exclude).map((curr) => {
+    return curr.includes("!") ? curr.replace("!", "") : curr;
+  });
 
   return {
     patterns: includes.concat(excludes),

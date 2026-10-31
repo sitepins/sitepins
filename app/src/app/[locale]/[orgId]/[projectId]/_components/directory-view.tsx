@@ -191,7 +191,7 @@ export default function DirectoryView({
       : undefined;
   const exclude =
     matchedArrangement?.type === "folder"
-      ? (matchedArrangement?.exclude ?? [])
+      ? matchedArrangement?.exclude
       : undefined;
 
   const { patterns, includes, excludes } = mergePatterns({

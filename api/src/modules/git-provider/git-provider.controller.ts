@@ -15,16 +15,16 @@ type TProviderRow = Partial<TGitProviderType>;
 const forOwner = ({ refresh_token_index: _index, ...row }: TProviderRow) => row;
 
 // Collaborators get project-scoped tokens from the app's /api/auth/project-token.
-// GitLab still ships the owner's access token until commits move server-side.
 const forCollaborator = ({
   refresh_token: _refresh,
   refresh_token_index: _index,
   refresh_token_expires_at: _refreshExpiry,
   ...row
-}: TProviderRow) =>
-  row.provider === "Github"
-    ? { ...row, access_token: "", installation_access_token: "" }
-    : row;
+}: TProviderRow): TProviderRow => ({
+  ...row,
+  access_token: "",
+  installation_access_token: "",
+});
 
 // insert provider
 const createProviderController = catchAsync(

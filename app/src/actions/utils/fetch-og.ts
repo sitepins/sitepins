@@ -1,10 +1,13 @@
 "use server";
 import { logger } from "@/lib/logger";
+import dns from "node:dns/promises";
+import net from "node:net";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
 const FETCH_TIMEOUT_MS = 5000;
 const MAX_HTML_BYTES = 500_000; // 500KB — enough to cover any <head>
+const MAX_REDIRECTS = 3;
 
 const BROWSER_HEADERS = {
   "User-Agent":
@@ -57,12 +60,113 @@ const PATTERNS = [
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
+function isPrivateOrReservedIp(ip: string): boolean {
+  let targetIp = ip.trim();
+  if (targetIp.startsWith("::ffff:")) {
+    targetIp = targetIp.substring(7);
+  }
+
+  if (net.isIPv4(targetIp)) {
+    const parts = targetIp.split(".").map(Number);
+    if (parts.length !== 4 || parts.some((p) => isNaN(p) || p < 0 || p > 255)) {
+      return true;
+    }
+    if (parts[0] === 0) return true;
+    if (parts[0] === 10) return true;
+    if (parts[0] === 100 && parts[1] >= 64 && parts[1] <= 127) return true;
+    if (parts[0] === 127) return true;
+    if (parts[0] === 169 && parts[1] === 254) return true;
+    if (parts[0] === 172 && parts[1] >= 16 && parts[1] <= 31) return true;
+    if (
+      parts[0] === 192 &&
+      parts[1] === 0 &&
+      (parts[2] === 0 || parts[2] === 2)
+    )
+      return true;
+    if (parts[0] === 192 && parts[1] === 88 && parts[2] === 99) return true;
+    if (parts[0] === 192 && parts[1] === 168) return true;
+    if (
+      parts[0] === 198 &&
+      (parts[1] === 18 || parts[1] === 19 || parts[1] === 51)
+    )
+      return true;
+    if (parts[0] === 203 && parts[1] === 0 && parts[2] === 113) return true;
+    if (parts[0] >= 224) return true;
+    return false;
+  }
+
+  if (net.isIPv6(targetIp)) {
+    const norm = targetIp.toLowerCase();
+    if (norm === "::" || norm === "::1") return true;
+    if (norm.startsWith("fc") || norm.startsWith("fd")) return true;
+    if (
+      norm.startsWith("fe8") ||
+      norm.startsWith("fe9") ||
+      norm.startsWith("fea") ||
+      norm.startsWith("feb")
+    )
+      return true;
+    if (norm.startsWith("ff")) return true;
+    if (norm.startsWith("100:") || norm.startsWith("2001:db8:")) return true;
+    return false;
+  }
+
+  return true;
+}
+
+function isForbiddenHostname(hostname: string): boolean {
+  const lower = hostname.toLowerCase().trim();
+  if (!lower) return true;
+  if (
+    lower === "localhost" ||
+    lower.endsWith(".localhost") ||
+    lower.endsWith(".local") ||
+    lower.endsWith(".internal") ||
+    lower.endsWith(".lan") ||
+    lower === "instance-data"
+  ) {
+    return true;
+  }
+  return false;
+}
+
+export async function validateDestinationSafety(url: URL): Promise<boolean> {
+  const hostname = url.hostname;
+  if (isForbiddenHostname(hostname)) return false;
+
+  if (net.isIP(hostname)) {
+    return !isPrivateOrReservedIp(hostname);
+  }
+
+  try {
+    const records = await dns.lookup(hostname, { all: true });
+    if (!records || records.length === 0) return false;
+    for (const record of records) {
+      if (isPrivateOrReservedIp(record.address)) {
+        return false;
+      }
+    }
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 function normalizeUrl(raw: string): URL {
-  const withScheme = /^https?:\/\//i.test(raw) ? raw : `https://${raw}`;
-  const parsed = new URL(withScheme); // throws on invalid input
+  const trimmed = raw.trim();
+  if (!trimmed) throw new Error("Empty URL");
+
+  const withScheme = /^https?:\/\//i.test(trimmed)
+    ? trimmed
+    : `https://${trimmed}`;
+  const parsed = new URL(withScheme);
 
   if (!["http:", "https:"].includes(parsed.protocol)) {
     throw new Error("Only http/https URLs are supported");
+  }
+
+  if (parsed.username || parsed.password) {
+    throw new Error("Credentials in URL are not supported");
   }
 
   return parsed;
@@ -116,13 +220,12 @@ function extractImageUrl(html: string, baseUrl: URL): string | null {
 
 // ─── Server Action ────────────────────────────────────────────────────────────
 
-type OgImageResult =
+export type TOgImageResult =
   { success: true; url: string } | { success: false; error: string };
 
 export async function fetchOgImageAction(
   rawUrl: string,
-): Promise<OgImageResult> {
-  // 1. Validate & normalise the URL
+): Promise<TOgImageResult> {
   let parsedUrl: URL;
   try {
     parsedUrl = normalizeUrl(rawUrl);
@@ -131,34 +234,58 @@ export async function fetchOgImageAction(
   }
 
   try {
-    // 2. Fetch with timeout + browser-like headers
-    const res = await fetch(parsedUrl.href, {
-      headers: BROWSER_HEADERS,
-      signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
-      next: { revalidate: 3600 },
-    });
+    let currentUrl = parsedUrl;
+    let res: Response | null = null;
 
-    if (!res.ok) {
+    for (let hop = 0; hop <= MAX_REDIRECTS; hop++) {
+      const isSafe = await validateDestinationSafety(currentUrl);
+      if (!isSafe) {
+        return { success: false, error: "Target address is not permitted" };
+      }
+
+      res = await fetch(currentUrl.href, {
+        headers: BROWSER_HEADERS,
+        signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+        redirect: "manual",
+        next: { revalidate: 3600 },
+      });
+
+      if ([301, 302, 303, 307, 308].includes(res.status)) {
+        const location = res.headers.get("location");
+        if (!location) {
+          return { success: false, error: "Redirect location missing" };
+        }
+        try {
+          currentUrl = new URL(location, currentUrl);
+          if (!["http:", "https:"].includes(currentUrl.protocol)) {
+            return { success: false, error: "Invalid redirect protocol" };
+          }
+        } catch {
+          return { success: false, error: "Invalid redirect URL" };
+        }
+        continue;
+      }
+
+      break;
+    }
+
+    if (!res || !res.ok) {
       return {
         success: false,
-        error: `Target URL returned ${res.status} ${res.statusText}`,
+        error: "Target URL did not return a successful response",
       };
     }
 
-    // 3. Bail out early if the response isn't HTML
     const contentType = res.headers.get("content-type") ?? "";
-    if (!contentType.includes("text/html")) {
+    if (!contentType.toLowerCase().includes("text/html")) {
       return {
         success: false,
-        error: `Expected HTML but got "${contentType}"`,
+        error: "Target URL did not return HTML content",
       };
     }
 
-    // 4. Read only the <head> portion of the document
     const html = await readHead(res);
-
-    // 5. Extract the OG image URL
-    const imageUrl = extractImageUrl(html, parsedUrl);
+    const imageUrl = extractImageUrl(html, currentUrl);
 
     if (imageUrl) {
       return { success: true, url: imageUrl };
@@ -173,8 +300,7 @@ export async function fetchOgImageAction(
     logger.error("[fetchOgImageAction]", error);
     return {
       success: false,
-      error:
-        error instanceof Error ? error.message : "Failed to fetch OG image",
+      error: "Failed to fetch open graph image",
     };
   }
 }

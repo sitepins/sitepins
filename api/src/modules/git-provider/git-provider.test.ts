@@ -327,7 +327,7 @@ describe("Git Provider Module", () => {
           user_id: "departed-creator",
         });
       });
-      it("never returns refresh tokens or GitHub access tokens to a collaborator", async () => {
+      it("never returns refresh tokens or provider access tokens to a collaborator", async () => {
         mockProviderRows(OWNER_ROWS);
         const { gitProviderController } =
           await import("./git-provider.controller.js");
@@ -342,13 +342,13 @@ describe("Git Provider Module", () => {
           expect(row).not.toHaveProperty("refresh_token");
           expect(row).not.toHaveProperty("refresh_token_index");
           expect(row).not.toHaveProperty("refresh_token_expires_at");
+          expect(row?.access_token).toBe("");
+          expect(row?.installation_access_token).toBe("");
         }
-        expect(github?.access_token).toBe("");
-        expect(github?.installation_access_token).toBe("");
         expect(github?.provider).toBe("Github");
-        expect(gitlab?.access_token).toBe("glpat_owner");
+        expect(gitlab?.provider).toBe("Gitlab");
         expect(JSON.stringify(sentResult(json))).not.toMatch(
-          /ghr_owner|glrt_owner|gho_owner|ghs_owner/,
+          /ghr_owner|glrt_owner|gho_owner|ghs_owner|glpat_owner/,
         );
       });
 

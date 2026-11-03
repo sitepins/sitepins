@@ -382,7 +382,7 @@ const DragHandleContent = React.memo(function DragHandleContent({
       <Tooltip>
         <TooltipTrigger asChild>
           <div
-            className="text-muted-foreground/60 hover:bg-accent/80 hover:text-foreground flex size-full cursor-grab touch-none items-center justify-center rounded-sm transition-colors duration-150 select-none active:cursor-grabbing"
+            className="text-muted-foreground/60 hover:bg-primary hover:text-primary-foreground flex size-full cursor-grab touch-none items-center justify-center rounded-sm transition-colors duration-150 select-none active:cursor-grabbing"
             onClick={(e) => {
               e.preventDefault();
               editor.getApi(BlockSelectionPlugin).blockSelection.focus();

@@ -1,5 +1,5 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { Request, Response } from "express";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const projectAggregateMock = vi.fn();
 const projectCountDocumentsMock = vi.fn();
@@ -130,6 +130,48 @@ describe("Project Module", () => {
         });
 
         expect(res).toEqual(mockProject);
+      });
+    });
+
+    describe("getProjectByOrgId", () => {
+      it("retrieves projects sorted by last edit first", async () => {
+        const mockProjects = [
+          { project_id: "p1", project_name: "Site 1" },
+          { project_id: "p2", project_name: "Site 2" },
+        ];
+        projectAggregateMock.mockResolvedValueOnce(mockProjects);
+
+        const { projectService } = await import("./project.service.js");
+        const res = await projectService.getProjectByOrgId({ org_id: "org-1" });
+
+        expect(res).toEqual(mockProjects);
+        expect(projectAggregateMock).toHaveBeenCalledWith(
+          expect.arrayContaining([
+            { $match: { org_id: "org-1" } },
+            { $sort: { last_activity: -1, createdAt: -1 } },
+          ]),
+        );
+      });
+    });
+
+    describe("getProjectByOrgId", () => {
+      it("retrieves projects sorted by last edit first", async () => {
+        const mockProjects = [
+          { project_id: "p1", project_name: "Site 1" },
+          { project_id: "p2", project_name: "Site 2" },
+        ];
+        projectAggregateMock.mockResolvedValueOnce(mockProjects);
+
+        const { projectService } = await import("./project.service.js");
+        const res = await projectService.getProjectByOrgId({ org_id: "org-1" });
+
+        expect(res).toEqual(mockProjects);
+        expect(projectAggregateMock).toHaveBeenCalledWith(
+          expect.arrayContaining([
+            { $match: { org_id: "org-1" } },
+            { $sort: { last_activity: -1, createdAt: -1 } },
+          ]),
+        );
       });
     });
 

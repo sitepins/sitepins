@@ -1,7 +1,7 @@
 "use client";
 
-import { BRAND_NAME } from "@/lib/brand";
 import Container from "@/components/container";
+import { BRAND_NAME } from "@/lib/brand";
 import { cn } from "@/lib/utils/cn";
 import { useGetOrgsQuery } from "@/redux/features/orgs/org-api";
 import { useGetProjectsQuery } from "@/redux/features/project/project-api";
@@ -28,13 +28,23 @@ export default function Projects(props: PageProps<"/[locale]/[orgId]">) {
 
   const isArchived = org?.status === "archived";
 
-  const filteredSites = projects?.filter((site) => {
-    const searchLower = searchQuery.toLowerCase();
-    return (
-      site.project_name.toLowerCase().includes(searchLower) ||
-      site.repository?.toLowerCase().includes(searchLower)
-    );
-  });
+  const filteredSites = projects
+    ?.filter((site) => {
+      const searchLower = searchQuery.toLowerCase();
+      return (
+        site.project_name.toLowerCase().includes(searchLower) ||
+        site.repository?.toLowerCase().includes(searchLower)
+      );
+    })
+    .sort((a, b) => {
+      const dateA = new Date(
+        a.last_edit?.createdAt ?? a.createdAt ?? 0,
+      ).getTime();
+      const dateB = new Date(
+        b.last_edit?.createdAt ?? b.createdAt ?? 0,
+      ).getTime();
+      return dateB - dateA;
+    });
 
   return (
     <Container

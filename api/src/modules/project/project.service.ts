@@ -247,6 +247,24 @@ const getProjectByOrgId = async ({ org_id }: { org_id: string }) => {
         last_edit: { $arrayElemAt: ["$last_edit", 0] },
       },
     },
+    {
+      $addFields: {
+        last_activity: {
+          $ifNull: ["$last_edit.createdAt", "$createdAt"],
+        },
+      },
+    },
+    {
+      $sort: {
+        last_activity: -1,
+        createdAt: -1,
+      },
+    },
+    {
+      $project: {
+        last_activity: 0,
+      },
+    },
   ]);
   return project;
 };

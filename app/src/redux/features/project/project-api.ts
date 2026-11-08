@@ -1,6 +1,6 @@
+import { TExtractVariables } from "@/actions/utils";
 import { asFramework } from "@/lib/utils/framework-detector";
 import { TGitProvider } from "@/lib/utils/provider-checker";
-import { TExtractVariables } from "@/actions/utils";
 import { projectSchema } from "@/lib/validate";
 import { api } from "../api-slice";
 import { updateConfig } from "../config/slice";
@@ -14,6 +14,16 @@ export const projectApi = api.injectEndpoints({
         method: "GET",
         url: `/project/orgs/${orgId}`,
       }),
+      transformResponse: (response: TProject[]) =>
+        [...response].sort((a, b) => {
+          const dateA = new Date(
+            a.last_edit?.createdAt ?? a.createdAt ?? 0,
+          ).getTime();
+          const dateB = new Date(
+            b.last_edit?.createdAt ?? b.createdAt ?? 0,
+          ).getTime();
+          return dateB - dateA;
+        }),
       providesTags: (result) =>
         result
           ? [

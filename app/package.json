@@ -96,7 +96,7 @@
     "react-dropzone": "^20.1.4",
     "react-gravatar": "^2.6.3",
     "react-hook-form": "^7.91.0",
-    "react-redux": "^9.3.0",
+    "react-redux": "^9.3.1",
     "react-resizable-panels": "^4.15.0",
     "react-textarea-autosize": "^8.5.9",
     "remark-gfm": "^4.0.1",

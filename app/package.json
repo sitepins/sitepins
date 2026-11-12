@@ -62,7 +62,7 @@
     "@reduxjs/toolkit": "^2.13.0",
     "@slate-yjs/react": "^1.1.0",
     "@vercel/sandbox": "^3.9.0",
-    "ai": "^7.0.153",
+    "ai": "^7.0.156",
     "axios": "^1.20.0",
     "better-auth": "^1.7.13",
     "class-variance-authority": "^0.7.1",

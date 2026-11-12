@@ -26,7 +26,7 @@
     "@base-ui/react": "^1.9.0",
     "@daypicker/react": "^10.0.2",
     "@hocuspocus/provider": "^4.7.1",
-    "@hookform/resolvers": "^6.0.0",
+    "@hookform/resolvers": "^6.0.2",
     "@icons-pack/react-simple-icons": "^13.15.1",
     "@justinribeiro/lite-youtube": "^1.9.0",
     "@ltd/j-toml": "^1.38.0",

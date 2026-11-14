@@ -111,29 +111,30 @@ export default function AddFile({
     }
   };
 
+  if (!schemaData) {
+    if (!schemaDir) return null;
+    return (
+      <CreateSchema
+        filePath={filePath ?? targetPath}
+        group={group ?? folderName ?? ""}
+        schemaDir={schemaDir}
+        triggerVariant="button"
+        {...props}
+        className={cn("px-4", props.className)}
+      >
+        {children}
+      </CreateSchema>
+    );
+  }
+
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      {schemaData ? (
-        <DialogTrigger asChild>
-          <Button {...props}>
-            <Plus className="size-4" />
-            <span>{tDirectoryView("add_new")}</span>
-          </Button>
-        </DialogTrigger>
-      ) : (
-        schemaDir && (
-          <CreateSchema
-            filePath={filePath ?? targetPath}
-            group={group ?? folderName ?? ""}
-            schemaDir={schemaDir}
-            triggerVariant="button"
-            {...props}
-            className={cn("px-4", props.className)}
-          >
-            {children}
-          </CreateSchema>
-        )
-      )}
+      <DialogTrigger asChild>
+        <Button {...props}>
+          <Plus className="size-4" />
+          <span>{tDirectoryView("add_new")}</span>
+        </Button>
+      </DialogTrigger>
 
       <DialogContent>
         <DialogHeader>

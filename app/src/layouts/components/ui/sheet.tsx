@@ -51,10 +51,15 @@ function SheetPortal({ ...props }: SheetPrimitive.Portal.Props) {
   return <SheetPrimitive.Portal data-slot="sheet-portal" {...props} />;
 }
 
-function SheetOverlay({ className, ...props }: SheetPrimitive.Backdrop.Props) {
+function SheetOverlay({
+  className,
+  forceRender = true,
+  ...props
+}: SheetPrimitive.Backdrop.Props) {
   return (
     <SheetPrimitive.Backdrop
       data-slot="sheet-overlay"
+      forceRender={forceRender}
       className={cn(
         "data-open:animate-in data-closed:animate-out data-closed:fade-out-0 data-open:fade-in-0 fixed inset-0 z-100 bg-black/70 supports-backdrop-filter:backdrop-blur-xs",
         className,

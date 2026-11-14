@@ -34,11 +34,13 @@ function AlertDialogPortal({ ...props }: AlertDialogPrimitive.Portal.Props) {
 
 function AlertDialogOverlay({
   className,
+  forceRender = true,
   ...props
 }: AlertDialogPrimitive.Backdrop.Props) {
   return (
     <AlertDialogPrimitive.Backdrop
       data-slot="alert-dialog-overlay"
+      forceRender={forceRender}
       className={cn(
         "data-open:animate-in data-closed:animate-out data-closed:fade-out-0 data-open:fade-in-0 fixed inset-0 z-100 bg-black/70 duration-100 supports-backdrop-filter:backdrop-blur-xs",
         className,

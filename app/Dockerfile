@@ -5,6 +5,7 @@
 # deployment needs as build args (see docker-compose.yml).
 FROM node:24-bookworm-slim AS build
 RUN corepack enable
+ENV HUSKY=0 NEXT_TELEMETRY_DISABLED=1
 WORKDIR /app
 
 COPY pnpm-workspace.yaml package.json pnpm-lock.yaml ./
@@ -17,6 +18,7 @@ COPY app ./app
 # Public, build-time-inlined config
 ARG NEXT_PUBLIC_BACKEND_URL
 ARG NEXT_PUBLIC_HP_WS_URL
+ARG NEXT_PUBLIC_DASHBOARD_HOME
 ARG NEXT_PUBLIC_BUCKET_URL
 ARG NEXT_PUBLIC_BRAND_NAME
 ARG NEXT_PUBLIC_BRAND_URL
@@ -40,6 +42,7 @@ ARG NEXT_PUBLIC_DOCS_URL
 ARG NEXT_PUBLIC_SOURCE_URL
 ENV NEXT_PUBLIC_BACKEND_URL=$NEXT_PUBLIC_BACKEND_URL \
     NEXT_PUBLIC_HP_WS_URL=$NEXT_PUBLIC_HP_WS_URL \
+    NEXT_PUBLIC_DASHBOARD_HOME=$NEXT_PUBLIC_DASHBOARD_HOME \
     NEXT_PUBLIC_BUCKET_URL=$NEXT_PUBLIC_BUCKET_URL \
     NEXT_PUBLIC_BRAND_NAME=$NEXT_PUBLIC_BRAND_NAME \
     NEXT_PUBLIC_BRAND_URL=$NEXT_PUBLIC_BRAND_URL \
@@ -61,13 +64,16 @@ ENV NEXT_PUBLIC_BACKEND_URL=$NEXT_PUBLIC_BACKEND_URL \
     NEXT_PUBLIC_DOCS_URL=$NEXT_PUBLIC_DOCS_URL \
     NEXT_PUBLIC_SOURCE_URL=$NEXT_PUBLIC_SOURCE_URL
 
-RUN pnpm --filter sitepins-app build
+RUN SITEPINS_DOCKER_BUILD=1 pnpm --filter sitepins-app build
 
 FROM node:24-bookworm-slim
-RUN corepack enable
-ENV NODE_ENV=production
+ENV NODE_ENV=production NEXT_TELEMETRY_DISABLED=1 HOSTNAME=0.0.0.0 PORT=3000
 WORKDIR /app
-COPY --from=build /app /app
+COPY --from=build --chown=node:node /app/app/.next/standalone ./
+COPY --from=build --chown=node:node /app/app/.next/static ./app/.next/static
+COPY --from=build --chown=node:node /app/app/public ./app/public
+WORKDIR /app/app
+USER node
 
 EXPOSE 3000
-CMD ["pnpm", "--filter", "sitepins-app", "start"]
+CMD ["node", "server.js"]

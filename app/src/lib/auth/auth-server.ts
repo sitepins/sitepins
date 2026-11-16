@@ -1,6 +1,9 @@
+import { getServerBackendUrl } from "@/lib/backend-server";
 import { cookies, headers } from "next/headers";
 import type { NextRequest } from "next/server";
-import { authClient } from "./auth-client";
+import { createCmsAuthClient } from "./auth-client";
+
+const authClient = createCmsAuthClient(getServerBackendUrl());
 
 /**
  * getAuth optionally accepts a request (middleware/edge) to extract headers from.
@@ -11,7 +14,7 @@ export const getAuth = async (request?: Request | NextRequest) => {
 
   const { data } = await authClient.getSession({
     fetchOptions: {
-      headers: fetchHeaders,
+      headers: { cookie: fetchHeaders.get("cookie") ?? "" },
     },
   });
 
@@ -22,7 +25,7 @@ export const getListAccounts = async (request?: Request | NextRequest) => {
   const fetchHeaders = request ? request.headers : await headers();
   const { data } = await authClient.listAccounts({
     fetchOptions: {
-      headers: fetchHeaders,
+      headers: { cookie: fetchHeaders.get("cookie") ?? "" },
     },
   });
   return data;

@@ -1,5 +1,6 @@
 import config from "@/config/variables";
 import { ENUM_ROLE } from "@/enums/roles";
+import ApiError from "@/errors/ApiError";
 import { s3Client } from "@/lib/s3-utils";
 import { canUploadToFolder } from "@/lib/uploadFolders";
 import { sendResponse } from "@/lib/sendResponse";
@@ -14,9 +15,9 @@ const bucketRouter: express.Router = express.Router();
 
 // multer-s3 hands its callbacks the raw IncomingMessage, not an
 // express.Request, and the multipart fields arrive as untyped strings.
-type UploadBody = { permission?: string; folder?: string };
-const uploadBody = (req: unknown): UploadBody =>
-  ((req as { body?: UploadBody }).body ?? {}) as UploadBody;
+type TUploadBody = { permission?: string; folder?: string };
+const uploadBody = (req: unknown): TUploadBody =>
+  ((req as { body?: TUploadBody }).body ?? {}) as TUploadBody;
 
 // Images only — without this, an HTML/JS file served from the bucket origin is
 // stored XSS. Mirrors AcceptImages on the client so nothing the UI permits is
@@ -49,49 +50,56 @@ const safeFileName = (name: string): string => {
 };
 
 // public upload file to s3
-const uploadFile = multer({
-  limits: { fileSize: MAX_UPLOAD_BYTES, files: 1 },
-  fileFilter: (req, file, cb) => {
-    if (!ALLOWED_MIME.has(file.mimetype)) {
-      return cb(new Error("Unsupported file type. Images only."));
-    }
-    cb(null, true);
-  },
-  storage: multerS3({
-    // multer-s3 pins an older @aws-sdk/client-s3 major than the one we use.
-    s3: s3Client as unknown as NonNullable<
-      Parameters<typeof multerS3>[0]
-    >["s3"],
-    bucket: config.s3_bucket_name as string,
-    contentType: multerS3.AUTO_CONTENT_TYPE,
-    contentDisposition: function (req, file, cb) {
-      cb(null, INLINE_UNSAFE_MIME.has(file.mimetype) ? "attachment" : "inline");
-    },
-    acl: function (req, file, cb) {
-      const permission = uploadBody(req).permission;
-      if (permission === "public-read" || permission === "private") {
-        cb(null, permission);
-      } else {
-        cb(new Error("Invalid ACL type specified"));
+const createUpload = (bucket: string) =>
+  multer({
+    limits: { fileSize: MAX_UPLOAD_BYTES, files: 1 },
+    fileFilter: (req, file, cb) => {
+      if (!ALLOWED_MIME.has(file.mimetype)) {
+        return cb(new Error("Unsupported file type. Images only."));
       }
+      cb(null, true);
     },
-    key: function (req: express.Request, file, cb) {
-      const folder = uploadBody(req).folder;
-      if (!folder) {
-        return cb(new Error("Folder name is required"));
-      }
-      if (!canUploadToFolder(folder, req.user)) {
-        return cb(new Error("Invalid folder"));
-      }
-      // randomUUID prevents one uploader from clobbering another's object by
-      // racing the same millisecond + filename.
-      cb(
-        null,
-        `${folder}/${Date.now()}-${randomUUID()}-${safeFileName(file.originalname)}`,
-      );
-    },
-  }),
-});
+    storage: multerS3({
+      // multer-s3 pins an older @aws-sdk/client-s3 major than the one we use.
+      s3: s3Client as unknown as NonNullable<
+        Parameters<typeof multerS3>[0]
+      >["s3"],
+      bucket,
+      contentType: multerS3.AUTO_CONTENT_TYPE,
+      contentDisposition: function (req, file, cb) {
+        cb(
+          null,
+          INLINE_UNSAFE_MIME.has(file.mimetype) ? "attachment" : "inline",
+        );
+      },
+      acl: function (req, file, cb) {
+        const permission = uploadBody(req).permission;
+        if (permission === "public-read" || permission === "private") {
+          cb(null, permission);
+        } else {
+          cb(new Error("Invalid ACL type specified"));
+        }
+      },
+      key: function (req: express.Request, file, cb) {
+        const folder = uploadBody(req).folder;
+        if (!folder) {
+          return cb(new Error("Folder name is required"));
+        }
+        if (!canUploadToFolder(folder, req.user)) {
+          return cb(new Error("Invalid folder"));
+        }
+        // randomUUID prevents one uploader from clobbering another's object by
+        // racing the same millisecond + filename.
+        cb(
+          null,
+          `${folder}/${Date.now()}-${randomUUID()}-${safeFileName(file.originalname)}`,
+        );
+      },
+    }),
+  }).single("file");
+
+const bucketName = config.s3_bucket_name?.trim();
+const uploadSingle = bucketName ? createUpload(bucketName) : null;
 
 // upload router
 bucketRouter.post(
@@ -103,7 +111,9 @@ bucketRouter.post(
   ),
   uploadLimiter,
   (req, res, next) => {
-    const uploadSingle = uploadFile.single("file");
+    if (!uploadSingle) {
+      return next(new ApiError("Media storage is not configured", 503, ""));
+    }
 
     uploadSingle(req, res, (err) => {
       if (err) {

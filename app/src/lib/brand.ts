@@ -24,9 +24,9 @@ export const BRAND_URL = env(process.env.NEXT_PUBLIC_BRAND_URL).replace(
   "",
 );
 
-export const TERMS_URL = env(process.env.NEXT_PUBLIC_TERMS_URL);
-export const PRIVACY_URL = env(process.env.NEXT_PUBLIC_PRIVACY_URL);
-export const SUPPORT_URL = env(process.env.NEXT_PUBLIC_SUPPORT_URL);
+export const TERMS_URL = link(process.env.NEXT_PUBLIC_TERMS_URL);
+export const PRIVACY_URL = link(process.env.NEXT_PUBLIC_PRIVACY_URL);
+export const SUPPORT_URL = link(process.env.NEXT_PUBLIC_SUPPORT_URL);
 export const UPDATES_URL = link(process.env.NEXT_PUBLIC_UPDATES_URL);
 export const STATUS_URL = link(process.env.NEXT_PUBLIC_STATUS_URL);
 export const STATUS_API_URL = STATUS_URL ? `${STATUS_URL}/api/status.json` : "";
@@ -79,7 +79,7 @@ export const BRAND_ICONS: TBrandIcon[] = BUNDLED_ICONS
 /** Domain of the git commit author email for the CMS app. */
 export const GIT_COMMIT_EMAIL_DOMAIN = (() => {
   try {
-    return new URL(BRAND_URL).host;
+    return new URL(BRAND_URL).hostname;
   } catch {
     return "";
   }

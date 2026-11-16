@@ -123,5 +123,52 @@ jobs:
       - name: Build web
         run: pnpm build:app
         env:
-          NEXT_PUBLIC_BACKEND_URL: http://localhost:4000
+          NEXT_PUBLIC_BACKEND_URL: http://localhost:4000/api/v1
           NEXT_PUBLIC_HP_WS_URL: ws://localhost:4000/api/v1/editor/collab
+
+  docker:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Start a clean Compose stack
+        run: |
+          sh scripts/setup-docker.sh
+          env -i PATH="$PATH" HOME="$HOME" sh scripts/docker.sh up --build --wait --wait-timeout 120
+
+      - name: Check first signup and the web session
+        run: |
+          api=http://localhost:4000/api/v1/auth
+          web=http://localhost:3000
+          email=docker-smoke@example.com
+          password="$(openssl rand -hex 10)Aa1!"
+          cookies="$(mktemp)"
+
+          curl -fsS "$web/manifest.webmanifest" | jq -e '.name == "CMS" and .icons[0].src == "/images/cms-icon.png"' >/dev/null
+          curl -fsS "$web/images/cms-icon.png" -o /dev/null
+          curl -fsS "$web/register" -o /dev/null
+          curl -fsS "$api/sign-up/email" \
+            -H "Origin: $web" -H 'Content-Type: application/json' \
+            -d "{\"name\":\"Docker Smoke\",\"email\":\"$email\",\"password\":\"$password\"}" \
+            -o /dev/null
+          otp="$(sh scripts/docker.sh logs --no-color api | sed -n 's/.*\[mailer\] OTP: \([0-9]\{6\}\).*/\1/p' | tail -n 1)"
+          test -n "$otp"
+          curl -fsS "$api/email-otp/verify-email" \
+            -H "Origin: $web" -H 'Content-Type: application/json' \
+            -d "{\"email\":\"$email\",\"otp\":\"$otp\"}" -o /dev/null
+          curl -fsS "$api/sign-in/email" \
+            -H "Origin: $web" -H 'Content-Type: application/json' \
+            -d "{\"email\":\"$email\",\"password\":\"$password\"}" -c "$cookies" -o /dev/null
+
+          test "$(curl -sS http://localhost:4000/api/v1/bucket/upload -X POST -b "$cookies" -o /dev/null -w '%{http_code}')" = 503
+          test "$(curl -fsS "$web/login" -o /dev/null -w '%{http_code}')" = 200
+          test "$(curl -fsS "$web/login?from=/dashboard" -b "$cookies" -o /dev/null -w '%{http_code} %{redirect_url}')" = "302 $web/dashboard"
+
+      - name: Print service logs on failure
+        if: failure()
+        run: sh scripts/docker.sh logs --tail=100 mongo api web
+
+      - name: Remove the test stack
+        if: always()
+        run: sh scripts/docker.sh down -v

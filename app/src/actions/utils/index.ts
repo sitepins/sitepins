@@ -1,7 +1,8 @@
 "use server";
 
 import { authCookies } from "@/lib/auth/auth-server";
-import { API_URL, IS_DEMO } from "@/lib/constant";
+import { getServerBackendUrl } from "@/lib/backend-server";
+import { IS_DEMO } from "@/lib/constant";
 import { CustomApiError } from "@/lib/utils/custom-api-error";
 import { revalidatePath, revalidateTag } from "next/cache";
 
@@ -77,7 +78,7 @@ export async function fetchApi<T>({
           ? body
           : JSON.stringify(body);
 
-    const result = await fetch(API_URL + endPoint, {
+    const result = await fetch(getServerBackendUrl() + endPoint, {
       method,
       headers: headersObj,
       ...(method !== "GET" && { body: requestBody }),

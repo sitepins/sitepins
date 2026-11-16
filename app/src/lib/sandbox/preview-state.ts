@@ -1,5 +1,5 @@
+import { getServerBackendUrl } from "@/lib/backend-server";
 import { logger } from "@/lib/logger";
-const BACKEND = process.env.NEXT_PUBLIC_BACKEND_URL ?? "";
 const INTERNAL_SECRET = process.env.INTERNAL_API_SECRET ?? "";
 
 export function internalHeaders(cookieHeader: string): HeadersInit {
@@ -27,7 +27,7 @@ export async function canAccessProject(
 ): Promise<boolean> {
   try {
     const res = await fetch(
-      `${BACKEND}/project/${encodeURIComponent(projectId)}`,
+      `${getServerBackendUrl()}/project/${encodeURIComponent(projectId)}`,
       {
         headers: { "Content-Type": "application/json", cookie: cookieHeader },
         cache: "no-store",
@@ -50,7 +50,7 @@ export async function getCachedPreview(
 ): Promise<CachedPreview> {
   try {
     const res = await fetch(
-      `${BACKEND}/project-preview/${encodeURIComponent(projectId)}`,
+      `${getServerBackendUrl()}/project-preview/${encodeURIComponent(projectId)}`,
       { headers: internalHeaders(cookieHeader), cache: "no-store" },
     );
     if (!res.ok) return {};
@@ -71,11 +71,14 @@ export async function syncSandboxPreviewState(
   cookieHeader: string,
 ): Promise<void> {
   try {
-    await fetch(`${BACKEND}/project-preview/${encodeURIComponent(projectId)}`, {
-      method: "PUT",
-      headers: internalHeaders(cookieHeader),
-      body: JSON.stringify(state),
-    });
+    await fetch(
+      `${getServerBackendUrl()}/project-preview/${encodeURIComponent(projectId)}`,
+      {
+        method: "PUT",
+        headers: internalHeaders(cookieHeader),
+        body: JSON.stringify(state),
+      },
+    );
   } catch (e) {
     logger.error("[sandbox] failed to sync preview state:", e);
   }

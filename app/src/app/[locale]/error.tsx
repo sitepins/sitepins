@@ -37,17 +37,19 @@ export default function Error({
                 <Button onClick={() => router.push("/")}>
                   {tCommonErrorPage("go_home")}
                 </Button>
-                <Button variant="outline">
-                  <Link
-                    href={SUPPORT_URL}
-                    target="_blank"
-                    rel="noopener"
-                    className="flex items-center"
-                  >
-                    {tCommonErrorPage("contact_support")}{" "}
-                    <ExternalLink className="ms-1 size-4" />
-                  </Link>
-                </Button>
+                {SUPPORT_URL && (
+                  <Button variant="outline">
+                    <Link
+                      href={SUPPORT_URL}
+                      target="_blank"
+                      rel="noopener"
+                      className="flex items-center"
+                    >
+                      {tCommonErrorPage("contact_support")}{" "}
+                      <ExternalLink className="ms-1 size-4" />
+                    </Link>
+                  </Button>
+                )}
               </div>
               <details className="text-muted-foreground border-border border-t pt-4 text-xs">
                 <summary className="cursor-pointer">

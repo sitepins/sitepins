@@ -1,4 +1,5 @@
-import { API_URL, GITHUB_API_VERSION } from "@/lib/constant";
+import { getServerBackendUrl } from "@/lib/backend-server";
+import { GITHUB_API_VERSION } from "@/lib/constant";
 import { logger } from "@/lib/logger";
 import { errorStatus } from "@/lib/utils/error";
 import { TGitProvider } from "@/lib/utils/provider-checker";
@@ -51,7 +52,7 @@ export async function fetchProjectGrant(
   userId: string,
 ): Promise<TProjectGrant> {
   const res = await fetch(
-    `${API_URL}/provider/project-grant/${encodeURIComponent(projectId)}?user_id=${encodeURIComponent(userId)}`,
+    `${getServerBackendUrl()}/provider/project-grant/${encodeURIComponent(projectId)}?user_id=${encodeURIComponent(userId)}`,
     { headers: internalHeaders(), cache: "no-store" },
   );
   const body = await res.json().catch(() => ({}));
@@ -70,7 +71,7 @@ async function persistRotation(
   oldRefreshToken: string,
   fresh: TRefreshedTokens,
 ) {
-  const res = await fetch(`${API_URL}/provider/rotate`, {
+  const res = await fetch(`${getServerBackendUrl()}/provider/rotate`, {
     method: "POST",
     headers: internalHeaders(),
     body: JSON.stringify({

@@ -268,6 +268,10 @@ export default async function nextConfig() {
 
   return withNextIntl({
     reactStrictMode: true,
+    ...(process.env.SITEPINS_DOCKER_BUILD === "1" && {
+      output: "standalone",
+      outputFileTracingRoot: path.resolve(process.cwd(), ".."),
+    }),
     trailingSlash: false,
     env: {
       NEXT_PUBLIC_APP_VERSION: packageJson.version,

@@ -1,4 +1,5 @@
-import { API_URL, IS_DEMO } from "@/lib/constant";
+import { getServerBackendUrl } from "@/lib/backend-server";
+import { IS_DEMO } from "@/lib/constant";
 
 /**
  * Middleware-safe fetch for user language preference.
@@ -9,13 +10,16 @@ export async function getUserLanguage(
   cookie?: string,
 ): Promise<string | null> {
   try {
-    const response = await fetch(`${API_URL}/user-preference/${userId}`, {
-      headers: {
-        "X-App-Context": IS_DEMO ? "demo" : "app",
-        ...(cookie ? { cookie } : {}),
+    const response = await fetch(
+      `${getServerBackendUrl()}/user-preference/${userId}`,
+      {
+        headers: {
+          "X-App-Context": IS_DEMO ? "demo" : "app",
+          ...(cookie ? { cookie } : {}),
+        },
+        cache: "no-store",
       },
-      cache: "no-store",
-    });
+    );
 
     if (!response.ok) return null;
 

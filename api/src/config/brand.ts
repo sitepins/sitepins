@@ -33,7 +33,7 @@ const slug = toSlug(env("BRAND_SLUG"));
 const url = env("BRAND_URL").replace(/\/+$/, "");
 const host = (() => {
   try {
-    return new URL(url).host;
+    return new URL(url).hostname;
   } catch {
     throw new Error(`BRAND_URL must be an absolute URL, got "${url}"`);
   }

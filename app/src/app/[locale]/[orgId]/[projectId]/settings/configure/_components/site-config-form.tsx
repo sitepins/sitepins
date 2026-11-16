@@ -759,24 +759,25 @@ export const ConfigForm = ({
             )}
           </div>
 
-          {/* Help description — below buttons on mobile, left on md+ */}
-          <div className="flex items-center justify-center md:order-1 md:justify-start">
-            <CircleQuestionMark className="me-2 hidden size-5 shrink-0 sm:inline-block" />
-            <p className="text-text-strong text-sm">
-              {tProjectSettingsConfigureProject("help.text")}{" "}
-              <Link
-                target="_blank"
-                href={SUPPORT_URL}
-                className={buttonVariants({
-                  variant: "link",
-                  className: "text-accent! px-0!",
-                })}
-              >
-                {tProjectSettingsConfigureProject("help.contact_us")}
-              </Link>
-              .
-            </p>
-          </div>
+          {SUPPORT_URL && (
+            <div className="flex items-center justify-center md:order-1 md:justify-start">
+              <CircleQuestionMark className="me-2 hidden size-5 shrink-0 sm:inline-block" />
+              <p className="text-text-strong text-sm">
+                {tProjectSettingsConfigureProject("help.text")}{" "}
+                <Link
+                  target="_blank"
+                  href={SUPPORT_URL}
+                  className={buttonVariants({
+                    variant: "link",
+                    className: "text-accent! px-0!",
+                  })}
+                >
+                  {tProjectSettingsConfigureProject("help.contact_us")}
+                </Link>
+                .
+              </p>
+            </div>
+          )}
         </div>
       </DialogFooter>
     </DialogContent>

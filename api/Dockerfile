@@ -1,24 +1,28 @@
-# Sitepins API image. Build context is the repo root:
-#   docker build -f api/Dockerfile -t sitepins-api .
-FROM node:24-bookworm-slim AS build
+# Build context is the repository root.
+FROM node:24-bookworm-slim AS workspace
 RUN corepack enable
+ENV HUSKY=0
 WORKDIR /app
-
-# Install deps against the workspace lockfile (both package.json manifests are
-# needed for pnpm workspace resolution; only backend deps are installed).
 COPY pnpm-workspace.yaml package.json pnpm-lock.yaml ./
 COPY app/package.json ./app/package.json
 COPY api/package.json ./api/package.json
-RUN pnpm install --frozen-lockfile --filter sitepins-api
 
+FROM workspace AS build
+RUN pnpm install --frozen-lockfile --filter sitepins-api
 COPY api ./api
 RUN pnpm --filter sitepins-api build
-RUN pnpm prune --prod --ignore-scripts
+
+FROM workspace AS deps
+RUN pnpm install --frozen-lockfile --prod --filter sitepins-api
 
 FROM node:24-bookworm-slim
-ENV NODE_ENV=production
+ENV NODE_ENV=production PORT=4000
 WORKDIR /app/api
-COPY --from=build /app /app
+COPY --from=deps --chown=node:node /app/node_modules ../node_modules
+COPY --from=deps --chown=node:node /app/api/node_modules ./node_modules
+COPY --from=build --chown=node:node /app/api/dist ./dist
+COPY api/package.json ./
+USER node
 
 EXPOSE 4000
 CMD ["node", "dist/server.js"]

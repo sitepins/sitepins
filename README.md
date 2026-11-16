@@ -141,40 +141,34 @@ Skip the setup. Connect a repo and start editing in minutes.
 
 Run the whole thing yourself. The self-hosted build has no plans, billing, or usage limits. Every feature is unlocked.
 
-**Requirements:** Node.js 22+, pnpm 11+, and a MongoDB instance.
+#### Run with Docker
+
+Install Docker with Docker Compose v2.24 or later and OpenSSL. From the root of this repository:
+
+```bash
+sh scripts/setup-docker.sh
+sh scripts/docker.sh up --build --wait
+```
+
+Open [http://localhost:3000/register](http://localhost:3000/register). For your first signup, find the verification code with `sh scripts/docker.sh logs api`. Configure SMTP in `api/.env` before inviting users. The API health check is at [http://localhost:4000/healthz](http://localhost:4000/healthz).
+
+Compose stores MongoDB in the `mongo-data` volume and does not publish its port. `sh scripts/docker.sh down` stops the stack and keeps the volume. Keep a backup of the database and your `api/.env`; it contains the keys needed to read saved Git credentials. If you use external MongoDB, set `MONGO_URI` in `api/.env` to a replica set connection string.
+
+The Docker build defaults to a neutral CMS name and icon. Set your own identity and links in `app/.env` using [the web example](app/.env.example). The web and API ports listen on loopback. For a public deployment, follow the [HTTPS reverse proxy guide](https://docs.sitepins.com/self-hosting/reverse-proxy). To connect repositories or upload media, follow the [Git app setup](https://docs.sitepins.com/self-hosting/git-apps) and [S3 setup](https://docs.sitepins.com/self-hosting/media-storage). Put browser settings and web provider credentials in `app/.env`. Put secrets shared by both containers, API settings, SMTP, and S3 credentials in `api/.env`. The setup script creates both files. Rebuild after changing `NEXT_PUBLIC_*` values.
+
+Already running an older Compose setup? If you used a root `.env`, move its settings into the two service files and preserve `NEXT_PUBLIC_BRAND_SLUG` before rebuilding. See the [upgrade instructions](https://docs.sitepins.com/self-hosting/install#upgrading-an-existing-compose-install).
+
+#### Run locally with pnpm
+
+Use Node.js 22 or later, the pnpm version in `package.json`, and a MongoDB replica set.
 
 ```bash
 pnpm install
-
-# configure both apps
 cp api/.env.example api/.env
 cp app/.env.example app/.env
 ```
 
-Fill in each `.env`. See [app/README.md](https://github.com/sitepins/sitepins/blob/main/app/README.md#environment-variables) and [api/README.md](https://github.com/sitepins/sitepins/blob/main/api/README.md#environment-variables) for what every variable does and how to obtain it. The one shared step is media storage, covered below.
-
-```bash
-# run backend and frontend together
-pnpm dev
-
-# or separately, in two terminals
-pnpm dev:api
-pnpm dev:app
-```
-
-#### Run with Docker
-
-A `docker-compose.yml` brings up MongoDB, the API, and the web app together.
-
-```bash
-cp api/.env.example api/.env
-cp app/.env.example app/.env
-docker compose up --build
-```
-
-Web runs on `http://localhost:3000`. API runs on `http://localhost:4000` with a health check at `/healthz`. MongoDB runs in the `mongo` service as a single-node replica set (transactions require one), so you can leave `MONGO_URI` unset to use it. If you bring your own MongoDB, it must be a replica set too.
-
-`NEXT_PUBLIC_*` values are inlined into the web image at build time. Compose reads them from your shell or a root-level `.env` file, not `app/.env`. At minimum set `NEXT_PUBLIC_GIT_APP_NAME` (and `NEXT_PUBLIC_GITLAB_CLIENT_ID` if you use GitLab), then rebuild with `docker compose up --build`.
+Set the required values in both files (see [app/README.md](app/README.md#environment-variables) and [api/README.md](api/README.md#environment-variables)), then run `pnpm dev`.
 
 ## Project structure
 

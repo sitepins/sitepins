@@ -178,36 +178,43 @@ export default function RegisterWithPassword({
           </FieldGroup>
 
           <div className="space-y-4 pt-4">
-            <div className="leading-tight">
-              <span className="text-muted-foreground text-xs">
-                {tAuth.rich("terms_prefix", {
-                  terms: (chunks) => (
-                    <Link
-                      href={TERMS_URL}
-                      className="text-default text-xs font-normal underline"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {chunks}
-                    </Link>
-                  ),
-                })}
-              </span>{" "}
-              <span className="text-muted-foreground text-xs">
-                {tAuth.rich("privacy_prefix", {
-                  privacy: (chunks) => (
-                    <Link
-                      href={PRIVACY_URL}
-                      className="text-default text-xs font-normal underline"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {chunks}
-                    </Link>
-                  ),
-                })}
-              </span>
-            </div>
+            {(TERMS_URL || PRIVACY_URL) && (
+              <div className="leading-tight">
+                {TERMS_URL && (
+                  <span className="text-muted-foreground text-xs">
+                    {tAuth.rich("terms_prefix", {
+                      terms: (chunks) => (
+                        <Link
+                          href={TERMS_URL}
+                          className="text-default text-xs font-normal underline"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {chunks}
+                        </Link>
+                      ),
+                    })}
+                  </span>
+                )}
+                {TERMS_URL && PRIVACY_URL && " "}
+                {PRIVACY_URL && (
+                  <span className="text-muted-foreground text-xs">
+                    {tAuth.rich("privacy_prefix", {
+                      privacy: (chunks) => (
+                        <Link
+                          href={PRIVACY_URL}
+                          className="text-default text-xs font-normal underline"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {chunks}
+                        </Link>
+                      ),
+                    })}
+                  </span>
+                )}
+              </div>
+            )}
 
             <FormError
               error={error}

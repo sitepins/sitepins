@@ -1,29 +1,33 @@
+import { getServerBackendUrl } from "@/lib/backend-server";
 import { Sandbox } from "@vercel/sandbox";
 import { getAuth } from "@/lib/auth/auth-server";
 import { canAccessProject } from "@/lib/sandbox/preview-state";
 import { cleanVercelFetch, getSandboxAuth } from "@/lib/vercel-sandbox-auth";
 import { NextRequest, NextResponse } from "next/server";
 
-const BACKEND = process.env.NEXT_PUBLIC_BACKEND_URL ?? "";
 const INTERNAL_SECRET = process.env.INTERNAL_API_SECRET ?? "";
 
 async function clearProjectPreviewState(
   projectId: string,
   cookieHeader: string,
 ) {
-  if (!INTERNAL_SECRET || !BACKEND) return;
+  const backendUrl = getServerBackendUrl();
+  if (!INTERNAL_SECRET || !backendUrl) return;
   try {
-    await fetch(`${BACKEND}/project-preview/${encodeURIComponent(projectId)}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        cookie: cookieHeader,
-        "x-internal-secret": INTERNAL_SECRET,
+    await fetch(
+      `${backendUrl}/project-preview/${encodeURIComponent(projectId)}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          cookie: cookieHeader,
+          "x-internal-secret": INTERNAL_SECRET,
+        },
+        body: JSON.stringify({
+          preview_url: "",
+        }),
       },
-      body: JSON.stringify({
-        preview_url: "",
-      }),
-    });
+    );
   } catch {
     /* ignore */
   }

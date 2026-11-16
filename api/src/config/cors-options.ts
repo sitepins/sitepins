@@ -14,7 +14,7 @@ const baseLocalOrigins: string[] = [
 
 export const allowedOrigins: string[] =
   process.env.NODE_ENV === "development"
-    ? baseLocalOrigins
+    ? [...new Set([...baseLocalOrigins, ...baseProductionOrigins])]
     : baseProductionOrigins;
 
 const sharedCorsConfig: Omit<CorsOptions, "origin"> = {
@@ -30,21 +30,13 @@ const sharedCorsConfig: Omit<CorsOptions, "origin"> = {
     "User-Agent",
     "Accept",
     "X-App-Context",
+    "MCP-Protocol-Version",
+    "Mcp-Method",
+    "Mcp-Name",
   ],
 };
 
 export const corsProtectedOptions: CorsOptions = {
   ...sharedCorsConfig,
   origin: allowedOrigins,
-};
-
-// Access-token (bearer) API surface. Reachable from any origin because it's
-// consumed server-to-server / by external API clients — but it authenticates
-// via the Authorization header, never cookies, so credentials must be OFF.
-// (An open origin combined with credentials:true would expose cookie-authed
-// data to any site.)
-export const corsUnprotectedOptions: CorsOptions = {
-  ...sharedCorsConfig,
-  origin: true,
-  credentials: false,
 };

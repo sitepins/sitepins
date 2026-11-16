@@ -28,13 +28,6 @@ const createToken = (
   });
 };
 
-// delete token
-const deleteToken = (token: string, secret: Secret): string => {
-  return jwt.sign({ id: token }, secret as Secret, {
-    expiresIn: "0s",
-  });
-};
-
 // verify token with specific issuer
 const verifyToken = (
   token: string,
@@ -104,6 +97,5 @@ const verifyToken = (
 
 export const jwtHelpers = {
   createToken,
-  deleteToken,
   verifyToken,
 };

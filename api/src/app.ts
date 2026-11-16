@@ -6,14 +6,11 @@ import { sanitizeInput } from "@/middlewares/sanitizeInput";
 import router from "@/routes";
 import { toNodeHandler } from "better-auth/node";
 import cors from "cors";
-import express, { Application, NextFunction, Request, Response } from "express";
+import express, { Application } from "express";
 import helmet from "helmet";
 import { getAuth } from "./auth";
 import { getAuthDemo } from "./auth-demo";
-import {
-  corsProtectedOptions,
-  corsUnprotectedOptions,
-} from "./config/cors-options";
+import { corsProtectedOptions } from "./config/cors-options";
 import { agentUploadRouter } from "./modules/agent/agent.upload";
 import { gitProxyRouter } from "./modules/agent/git-proxy";
 import { mcpRoute } from "./modules/agent/mcp.route";
@@ -46,16 +43,7 @@ app.use(
   }),
 );
 
-const conditionalCors = (req: Request, res: Response, next: NextFunction) => {
-  const isUnprotectedRoute = req.path.startsWith("/api/v1/token");
-  const options = isUnprotectedRoute
-    ? corsUnprotectedOptions
-    : corsProtectedOptions;
-
-  cors(options)(req, res, next);
-};
-
-app.use(conditionalCors);
+app.use(cors(corsProtectedOptions));
 
 // must place better auth handlers before express.json()
 let authHandler: ReturnType<typeof toNodeHandler> | null = null;

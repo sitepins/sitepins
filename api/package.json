@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-s3": "3.1156.0",
-    "@hocuspocus/server": "^4.7.1",
+    "@hocuspocus/server": "^4.8.0",
     "@ltd/j-toml": "^1.38.0",
     "@modelcontextprotocol/node": "^2.1.2",
     "@modelcontextprotocol/server": "^2.4.0",

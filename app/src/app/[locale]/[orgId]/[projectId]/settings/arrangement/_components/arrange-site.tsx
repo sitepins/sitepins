@@ -1,6 +1,5 @@
 "use client";
 
-import { siteConfigPath } from "@/lib/config-dir";
 import { Button } from "@/components/ui/button";
 import { CardContent, CardFooter } from "@/components/ui/card";
 import {
@@ -20,8 +19,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { toast } from "@/components/ui/toast";
 import { useAddLog } from "@/hooks/use-add-log";
 import { useGitProvider } from "@/hooks/use-git-provider";
+import { siteConfigPath } from "@/lib/config-dir";
 import { deepEqualArray } from "@/lib/utils/comparison";
 import { isGitLabProvider } from "@/lib/utils/provider-checker";
 import { selectConfig, updateConfig } from "@/redux/features/config/slice";
@@ -36,7 +37,6 @@ import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
 import { Dispatch, SetStateAction, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
-import { toast } from "@/components/ui/toast";
 import { FileForm, FolderForm, HeadingForm } from "./arrange-site-forms";
 import ArrangementItem from "./arrange-site-list";
 import ArrangeSiteSkeleton from "./arrange-site-skeleton";
@@ -296,7 +296,7 @@ export default function Arrangement({
                           public: config.public,
 
                           configs: config.configs,
-                          "custom-commit": config.customCommit ?? false,
+                          customCommit: config.customCommit ?? false,
                           arrangement: updatedArrangements,
                         },
                         null,
@@ -316,7 +316,7 @@ export default function Arrangement({
                           public: config.public,
 
                           configs: config.configs,
-                          "custom-commit": config.customCommit ?? false,
+                          customCommit: config.customCommit ?? false,
                           arrangement: updatedArrangements,
                         },
                         null,

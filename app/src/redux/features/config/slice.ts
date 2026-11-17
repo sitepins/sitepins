@@ -30,7 +30,6 @@ const initialState: TConfig = {
 
 type TConfigPayload = Partial<TConfig> & {
   templates?: MdxSnippet[];
-  "custom-commit"?: boolean;
 };
 
 export const configSlice = createSlice({
@@ -38,18 +37,11 @@ export const configSlice = createSlice({
   initialState,
   reducers: {
     updateConfig: (state, action: PayloadAction<TConfigPayload>) => {
-      const {
-        templates,
-        "custom-commit": customCommitKebab,
-        ...rest
-      } = action.payload;
+      const { templates, ...rest } = action.payload;
 
       return {
         ...state,
         ...rest,
-        ...(customCommitKebab !== undefined && rest.customCommit === undefined
-          ? { customCommit: customCommitKebab }
-          : {}),
         ...(templates ? { snippets: templates } : {}),
       };
     },

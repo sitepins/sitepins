@@ -1,7 +1,5 @@
 "use client";
 
-import { siteConfigPath } from "@/lib/config-dir";
-import { useAddLog } from "@/hooks/use-add-log";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -18,6 +16,9 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Switch } from "@/components/ui/switch";
+import { toast } from "@/components/ui/toast";
+import { useAddLog } from "@/hooks/use-add-log";
+import { siteConfigPath } from "@/lib/config-dir";
 import { isGitLabProvider } from "@/lib/utils/provider-checker";
 import { commitDialogSchema } from "@/lib/validate";
 import { selectConfig, updateConfig } from "@/redux/features/config/slice";
@@ -29,7 +30,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
-import { toast } from "@/components/ui/toast";
 import * as z from "zod/v4";
 
 export default function CommitDialogForm({
@@ -78,7 +78,7 @@ export default function CommitDialogForm({
 
             configs: config.configs,
             arrangement: config.arrangement,
-            "custom-commit": data.customCommit,
+            customCommit: data.customCommit,
           },
           null,
           2,
@@ -149,7 +149,7 @@ export default function CommitDialogForm({
                   data-invalid={fieldState.invalid}
                 >
                   <div>
-                    <FieldLabel htmlFor="form-custom-commit">
+                    <FieldLabel htmlFor="customCommit">
                       {tProjectSettingsConfigureCommit("custom_commit_label")}
                     </FieldLabel>
                     <FieldDescription>
@@ -158,6 +158,7 @@ export default function CommitDialogForm({
                   </div>
                   <div className="flex items-center">
                     <Switch
+                      id="customCommit"
                       checked={field.value}
                       onCheckedChange={field.onChange}
                     />

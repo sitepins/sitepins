@@ -327,7 +327,7 @@ export const ConfigForm = ({
             media: data.media.value,
             public: data.public.value,
             configs: data.configurations,
-            "custom-commit": config.customCommit ?? false,
+            customCommit: config.customCommit ?? false,
             arrangement: data?.arrangement ?? config.arrangement ?? [],
           },
           null,

@@ -302,6 +302,7 @@ export default async function nextConfig() {
       },
     },
     experimental: {
+      agentUpgrade: "security",
       serverActions: {
         bodySizeLimit: "25mb",
       },

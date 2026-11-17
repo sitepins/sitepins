@@ -1,18 +1,12 @@
 import { MdxSnippet } from "@/editor/utils/plate-types";
-import { siteConfigPath, snippetFolder } from "@/lib/config-dir";
+import { snippetFolder } from "@/lib/config-dir";
 import { GITLAB_API_VERSION } from "@/lib/constant";
 import { logger } from "@/lib/logger";
 import { checkMedia } from "@/lib/utils/check-media-file";
-import {
-  isOldConfigFormat,
-  migrateConfig,
-  type TLegacyConfig,
-} from "@/lib/utils/config-migration";
 import { parseContentJson } from "@/lib/utils/content-serializer";
 import { fmDetector } from "@/lib/utils/frontmatter-detector";
-import { getManifestFile } from "@/lib/utils/manifest";
 import { pathToDir } from "@/lib/utils/path-to-dir";
-import { RootState, store } from "@/redux/store";
+import { store } from "@/redux/store";
 import { TConfig, TFiles, TTree } from "@/types";
 import path from "path";
 import { updateConfig } from "../config/slice";
@@ -21,7 +15,6 @@ import {
   gitlabApi,
   type TGitLabQueryArgs,
 } from "./gitlab-api";
-import { gitlabCommitApi } from "./gitlab-commit-api";
 import {
   TGitLabBranch,
   TGitLabFile,
@@ -442,34 +435,11 @@ export const gitlabContentApi = gitlabApi.injectEndpoints({
         endpoint: `/projects/${encodeProjectPath(String(id))}/repository/files/${encodeURIComponent(file_path)}`,
         params: { ref },
       }),
-      async onQueryStarted(arg, { dispatch, queryFulfilled, getState }) {
+      async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
 
-          if (!Array.isArray(data) && isOldConfigFormat(data)) {
-            const state = getState() as RootState;
-            const framework = arg.framework || state.config.framework;
-
-            const config = data as TLegacyConfig;
-            const migrated = migrateConfig(config, framework);
-            dispatch(updateConfig(migrated));
-
-            // Auto-persist migrated config to GitLab
-            dispatch(
-              gitlabCommitApi.endpoints.updateGitLabFiles.initiate({
-                id: arg.id,
-                branch: arg.ref || "main",
-                files: [
-                  {
-                    path: siteConfigPath(),
-                    content: JSON.stringify(migrated, null, 2),
-                  },
-                  getManifestFile(migrated.public),
-                ],
-                message: "chore: migrate config to new format",
-              }),
-            );
-          } else if (!Array.isArray(data)) {
+          if (!Array.isArray(data)) {
             dispatch(updateConfig(data as Partial<TConfig>));
           }
         } catch {

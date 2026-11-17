@@ -1,20 +1,14 @@
 import { MdxSnippet } from "@/editor/utils/plate-types";
+import { snippetFolder } from "@/lib/config-dir";
 import { GITHUB_API_VERSION, IS_DEMO } from "@/lib/constant";
-import { siteConfigPath, snippetFolder } from "@/lib/config-dir";
 import { logger } from "@/lib/logger";
 import { checkMedia } from "@/lib/utils/check-media-file";
-import {
-  isOldConfigFormat,
-  migrateConfig,
-  type TLegacyConfig,
-} from "@/lib/utils/config-migration";
-import { getManifestFile } from "@/lib/utils/manifest";
 import { parseContentJson } from "@/lib/utils/content-serializer";
 import { Framework } from "@/lib/utils/framework-detector";
 import { fmDetector } from "@/lib/utils/frontmatter-detector";
 import { parseSnippetFile } from "@/lib/utils/git-utils";
 import { pathToDir } from "@/lib/utils/path-to-dir";
-import { RootState, store } from "@/redux/store";
+import { store } from "@/redux/store";
 import { TConfig, TFiles, TTree } from "@/types";
 import path from "path";
 import { TFileMetaCacheEntry, upsertFileMetadata } from "../config/meta-slice";
@@ -429,34 +423,10 @@ export const githubContentApi = githubApi.injectEndpoints({
         options: { owner, repo, path, ref },
       }),
 
-      async onQueryStarted(arg, { dispatch, queryFulfilled, getState }) {
+      async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
-          if (!Array.isArray(data) && isOldConfigFormat(data)) {
-            const state = getState() as RootState;
-            const framework = arg.framework || state.config.framework;
-
-            const config = data as TLegacyConfig;
-            const migrated = migrateConfig(config, framework);
-            dispatch(updateConfig(migrated));
-
-            // Auto-persist migrated config to Git
-            dispatch(
-              githubCommitApi.endpoints.updateGitHubFiles.initiate({
-                owner: arg.owner,
-                repo: arg.repo,
-                tree: arg.ref || "main",
-                files: [
-                  {
-                    path: siteConfigPath(),
-                    content: JSON.stringify(migrated, null, 2),
-                  },
-                  getManifestFile(migrated.public),
-                ],
-                message: "chore: migrate config to new format",
-              }),
-            );
-          } else if (!Array.isArray(data)) {
+          if (!Array.isArray(data)) {
             dispatch(updateConfig(data as Partial<TConfig>));
           }
         } catch {

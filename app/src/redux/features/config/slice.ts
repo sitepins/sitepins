@@ -1,5 +1,4 @@
 import { MdxSnippet } from "@/editor/utils/plate-types";
-import { migrateConfig } from "@/lib/utils/config-migration";
 import { RootState } from "@/redux/store";
 import { TConfig } from "@/types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
@@ -29,25 +28,28 @@ const initialState: TConfig = {
   cursorOffset: 0,
 };
 
-type ConfigPayload = Partial<TConfig> & {
+type TConfigPayload = Partial<TConfig> & {
   templates?: MdxSnippet[];
+  "custom-commit"?: boolean;
 };
 
 export const configSlice = createSlice({
   name: "config",
   initialState,
   reducers: {
-    updateConfig: (state, action: PayloadAction<ConfigPayload>) => {
-      const { templates, ...rest } = action.payload;
-
-      const framework = rest.framework || state.framework;
-
-      // Apply migration if needed
-      const migratedConfig = migrateConfig(rest, framework);
+    updateConfig: (state, action: PayloadAction<TConfigPayload>) => {
+      const {
+        templates,
+        "custom-commit": customCommitKebab,
+        ...rest
+      } = action.payload;
 
       return {
         ...state,
-        ...migratedConfig,
+        ...rest,
+        ...(customCommitKebab !== undefined && rest.customCommit === undefined
+          ? { customCommit: customCommitKebab }
+          : {}),
         ...(templates ? { snippets: templates } : {}),
       };
     },

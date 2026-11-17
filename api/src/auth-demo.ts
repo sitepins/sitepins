@@ -26,6 +26,7 @@ const createAuthDemoInstance = () =>
       updateAge: 60 * 60 * 24, // 1 day (every 1 day the session expiration is updated)
       cookieCache: {
         enabled: true,
+        version: "2",
         maxAge: 5 * 60, // Cache duration in seconds
       },
     },
@@ -105,10 +106,6 @@ const createAuthDemoInstance = () =>
           required: false,
           input: true,
           defaultValue: false,
-        },
-        country: {
-          type: "string",
-          input: true,
         },
       },
     },

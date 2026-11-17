@@ -61,7 +61,6 @@ export default function RegisterWithPassword({
         password: data.password,
         name: data.full_name,
         subscribed: !!data.isSubscribed,
-        country: "",
       },
       {
         onRequest: (_ctx) => setIsPending(true),

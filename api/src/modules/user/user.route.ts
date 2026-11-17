@@ -26,14 +26,6 @@ userRouter.patch(
   userController.setPasswordController,
 );
 
-// update user country
-userRouter.patch(
-  "/update-country/:id",
-  authMiddleware.verifyAuth(ENUM_ROLE.USER),
-  selfOrAdmin("id"),
-  userController.updateUserCountryController,
-);
-
 // delete user
 userRouter.delete(
   "/delete/:id",

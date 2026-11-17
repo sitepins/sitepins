@@ -25,9 +25,6 @@ const userSchema = new mongoose.Schema<TUserType, TUserModel>(
       min: [8, "Must be at least 8, got {VALUE}"],
       max: 12,
     },
-    country: {
-      type: String,
-    },
     verified: {
       type: Boolean,
       default: false,

@@ -1,5 +1,4 @@
 import { auth } from "@/auth";
-import { emitUserUpdate } from "@/lib/lifecycleHooks";
 import { logger } from "@/lib/logger";
 import { sendMail } from "@/lib/mailer";
 import { requireUser } from "@/lib/requireUser";
@@ -20,7 +19,6 @@ const getSingleUserService = async (id: string): Promise<TUserType | null> => {
       $project: {
         user_id: 1,
         full_name: 1,
-        country: 1,
         image: 1,
         email: 1,
         verified: 1,
@@ -33,39 +31,6 @@ const getSingleUserService = async (id: string): Promise<TUserType | null> => {
   ]);
 
   return user[0];
-};
-
-// update user country
-const updateUserCountryService = async (id: string, country: string) => {
-  // check if user already has a country
-  const user = await User.findOne({ id });
-  if (user?.country) {
-    return user;
-  }
-
-  // update user country
-  const result = await User.findOneAndUpdate(
-    { user_id: id },
-    { country },
-    {
-      returnDocument: "after",
-    },
-  );
-
-  // Notify extensions of country update
-  try {
-    if (result && result.email) {
-      await emitUserUpdate({
-        type: "country",
-        email: result.email,
-        country,
-      });
-    }
-  } catch (err) {
-    logger.error("Failed to emit user update event for country", err);
-  }
-
-  return result;
 };
 
 // set password
@@ -151,6 +116,5 @@ const deleteUserService = async (reason: string, req: Request) => {
 export const userService = {
   getSingleUserService,
   setPasswordService,
-  updateUserCountryService,
   deleteUserService,
 };

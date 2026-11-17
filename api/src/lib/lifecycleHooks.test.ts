@@ -1,5 +1,5 @@
-import { describe, expect, it, vi } from "vitest";
 import type { ClientSession } from "mongoose";
+import { describe, expect, it, vi } from "vitest";
 
 // lifecycleHooks holds module-level registries — re-import a fresh copy per
 // test so registrations from one test never leak into the next.
@@ -131,18 +131,9 @@ describe("user update events", () => {
     const { onUserUpdate, emitUserUpdate } = await freshEntitlements();
     const updates: string[] = [];
     onUserUpdate(async (event) => {
-      if (event.type === "country") {
-        updates.push(`${event.type}:${event.country}`);
-      } else if (event.type === "email") {
-        updates.push(`${event.type}:${event.userId}:${event.newEmail}`);
-      }
+      updates.push(`${event.type}:${event.userId}:${event.newEmail}`);
     });
 
-    await emitUserUpdate({
-      type: "country",
-      email: "test@example.com",
-      country: "US",
-    });
     await emitUserUpdate({
       type: "email",
       userId: "@user_old_example_com",
@@ -150,9 +141,6 @@ describe("user update events", () => {
       newEmail: "new@example.com",
     });
 
-    expect(updates).toEqual([
-      "country:US",
-      "email:@user_old_example_com:new@example.com",
-    ]);
+    expect(updates).toEqual(["email:@user_old_example_com:new@example.com"]);
   });
 });

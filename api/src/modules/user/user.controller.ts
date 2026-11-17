@@ -19,23 +19,6 @@ const getSingleUserController = catchAsync(
   },
 );
 
-// update user country
-const updateUserCountryController = catchAsync(
-  async (req: Request, res: Response) => {
-    const country = req.body.country;
-    const updateCountry = await userService.updateUserCountryService(
-      req.params.id as string,
-      country,
-    );
-    sendResponse(res, {
-      success: true,
-      statusCode: 200,
-      message: "data updated successfully",
-      result: updateCountry,
-    });
-  },
-);
-
 // delete user
 const deleteUserController = catchAsync(async (req: Request, res: Response) => {
   const reason = req.body.reason;
@@ -65,6 +48,5 @@ const setPasswordController = catchAsync(
 export const userController = {
   getSingleUserController,
   setPasswordController,
-  updateUserCountryController,
   deleteUserController,
 };

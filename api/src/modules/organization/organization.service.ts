@@ -67,7 +67,19 @@ const getOrganizationsByUserService = async (userId: string) => {
           },
           {
             $project: {
-              password: 0, // Exclude the password field
+              user_id: 1,
+              full_name: 1,
+              email: 1,
+              image: 1,
+              verified: 1,
+              role: 1,
+              provider: 1,
+              subscribed: 1,
+              note: 1,
+              status: 1,
+              profession: 1,
+              createdAt: 1,
+              updatedAt: 1,
             },
           },
         ],

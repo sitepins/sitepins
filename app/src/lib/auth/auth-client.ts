@@ -33,10 +33,6 @@ export const createCmsAuthClient = (backendUrl = API_URL) =>
             type: "boolean",
             input: true,
           },
-          country: {
-            type: "string",
-            input: true,
-          },
         },
       }),
     ],

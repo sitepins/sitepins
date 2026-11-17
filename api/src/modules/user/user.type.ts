@@ -11,7 +11,6 @@ export type TUserType = {
   email: string;
   full_name: string;
   password: string;
-  country: string;
   verified: boolean;
   role: "user";
   image?: string;
@@ -20,11 +19,6 @@ export type TUserType = {
   note?: string;
   createdAt?: Date;
   updatedAt?: Date;
-};
-
-export type TUserFilterOptions = {
-  search?: string | number;
-  country?: string;
 };
 
 export type TLoginResponse<T> = Partial<T> & {

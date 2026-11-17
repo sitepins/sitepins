@@ -1,6 +1,6 @@
+import { logger } from "@/lib/logger";
 import { TAuthUser } from "@/types";
 import type { ClientSession } from "mongoose";
-import { logger } from "@/lib/logger";
 
 // Extensions register hooks here to clean up (or archive) their own
 // collections when a user account is deleted.
@@ -81,12 +81,15 @@ export const emitUserRegistration = async (event: UserRegistrationEvent) => {
   }
 };
 
-// User profile update events (country change, email change).
+// User profile update events (email change).
 // user_id is frozen at signup, so the email event carries it — handlers must
 // not re-derive one from either address.
-export type UserUpdateEvent =
-  | { type: "country"; email: string; country: string }
-  | { type: "email"; userId: string; oldEmail: string; newEmail: string };
+export type UserUpdateEvent = {
+  type: "email";
+  userId: string;
+  oldEmail: string;
+  newEmail: string;
+};
 
 export type UserUpdateHook = (event: UserUpdateEvent) => Promise<void>;
 

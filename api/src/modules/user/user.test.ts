@@ -241,35 +241,6 @@ describe("User Module", () => {
       });
     });
 
-    describe("updateUserCountryService", () => {
-      it("does not overwrite if user already has a country set", async () => {
-        const existing = { user_id: "u1", country: "US" };
-        userFindOneMock.mockResolvedValueOnce(existing);
-
-        const { userService } = await import("./user.service.js");
-        const result = await userService.updateUserCountryService("u1", "CA");
-
-        expect(result).toEqual(existing);
-        expect(userFindOneAndUpdateMock).not.toHaveBeenCalled();
-      });
-
-      it("updates country when user has no country set", async () => {
-        userFindOneMock.mockResolvedValueOnce({ user_id: "u1", country: null });
-        const updated = { user_id: "u1", country: "CA" };
-        userFindOneAndUpdateMock.mockResolvedValueOnce(updated);
-
-        const { userService } = await import("./user.service.js");
-        const result = await userService.updateUserCountryService("u1", "CA");
-
-        expect(result).toEqual(updated);
-        expect(userFindOneAndUpdateMock).toHaveBeenCalledWith(
-          { user_id: "u1" },
-          { country: "CA" },
-          { returnDocument: "after" },
-        );
-      });
-    });
-
     describe("deleteUserService", () => {
       it("removes every collection the account owns and archives it in one transaction", async () => {
         const mockUser = { user_id: "u1", email: "alice@example.com" };

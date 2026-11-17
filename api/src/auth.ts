@@ -9,7 +9,6 @@ import mongoose from "mongoose";
 import { allowedOrigins } from "./config/cors-options";
 import { getAppUrl } from "./lib/appUrl";
 import { getRegisteredAuthPlugins } from "./lib/authExtensions";
-import { isUploadKey } from "./lib/uploadFolders";
 import { verifyEmailWithReoon } from "./lib/emailVerifier";
 import { emitAuthEvent, emitUserRegistration } from "./lib/lifecycleHooks";
 import { logger } from "./lib/logger";
@@ -17,6 +16,7 @@ import { sendMail } from "./lib/mailer";
 import { reconcilePendingInvites } from "./lib/pendingInvites";
 import { escapeRegex } from "./lib/regexEscape";
 import { deleteFile } from "./lib/s3-utils";
+import { isUploadKey } from "./lib/uploadFolders";
 import { createUserId } from "./lib/userIdGenerator";
 import { otpSchema } from "./modules/authentication/authentication.zod";
 import { organizationService } from "./modules/organization/organization.service";
@@ -114,6 +114,7 @@ const createAuthInstance = () =>
       updateAge: 60 * 60 * 24, // 1 day (every 1 day the session expiration is updated)
       cookieCache: {
         enabled: true,
+        version: "2",
         maxAge: 5 * 60, // Cache duration in seconds
       },
     },
@@ -415,10 +416,6 @@ const createAuthInstance = () =>
           required: false,
           input: true,
           defaultValue: false,
-        },
-        country: {
-          type: "string",
-          input: true,
         },
       },
     },

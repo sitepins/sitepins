@@ -11,21 +11,6 @@ export const userApi = api.injectEndpoints({
       providesTags: (result, error, userId) => [{ type: "User", id: userId }],
     }),
 
-    updateUserCountry: builder.mutation<
-      void,
-      { userId: string; country: string }
-    >({
-      query: ({ userId, country }) => ({
-        url: `/user/update-country/${userId}`,
-        method: "PATCH",
-        data: { country },
-      }),
-
-      invalidatesTags: (result, error, { userId }) => [
-        { type: "User", id: userId },
-      ],
-    }),
-
     deleteUser: builder.mutation<
       void,
       { user_id: string; payload: { reason?: string } }
@@ -49,7 +34,6 @@ export const userApi = api.injectEndpoints({
 
 export const {
   useGetUserDetailsQuery,
-  useUpdateUserCountryMutation,
   useDeleteUserMutation,
   useSetPasswordMutation,
 } = userApi;

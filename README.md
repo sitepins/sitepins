@@ -156,8 +156,6 @@ Compose stores MongoDB in the `mongo-data` volume and does not publish its port.
 
 The Docker build defaults to a neutral CMS name and icon. Set your own identity and links in `app/.env` using [the web example](app/.env.example). The web and API ports listen on loopback. For a public deployment, follow the [HTTPS reverse proxy guide](https://docs.sitepins.com/self-hosting/reverse-proxy). To connect repositories or upload media, follow the [Git app setup](https://docs.sitepins.com/self-hosting/git-apps) and [S3 setup](https://docs.sitepins.com/self-hosting/media-storage). Put browser settings and web provider credentials in `app/.env`. Put secrets shared by both containers, API settings, SMTP, and S3 credentials in `api/.env`. The setup script creates both files. Rebuild after changing `NEXT_PUBLIC_*` values.
 
-Already running an older Compose setup? If you used a root `.env`, move its settings into the two service files and preserve `NEXT_PUBLIC_BRAND_SLUG` before rebuilding. See the [upgrade instructions](https://docs.sitepins.com/self-hosting/install#upgrading-an-existing-compose-install).
-
 #### Run locally with pnpm
 
 Use Node.js 22 or later, the pnpm version in `package.json`, and a MongoDB replica set.

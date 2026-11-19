@@ -1,12 +1,12 @@
 "use client";
 
 import { toast } from "@/components/ui/toast";
-import { revertToOriginal } from "@/editor/utils/plate-utils";
 import { CollabBaseContext } from "@/contexts/collab-base-context";
+import { revertToOriginal } from "@/editor/utils/plate-utils";
 import { useCommitLogic } from "@/hooks/use-commit-logic";
+import { useFeatureAccess } from "@/hooks/use-feature-access";
 import { useFrontmatterSync } from "@/hooks/use-frontmatter-sync";
 import { useIsChanged } from "@/hooks/use-is-changed";
-import { useFeatureAccess } from "@/hooks/use-feature-access";
 import { useSandboxPreview } from "@/hooks/use-sandbox-preview";
 import { useSaveAsDraft } from "@/hooks/use-save-as-draft";
 import { useSnippets } from "@/hooks/use-snippets";
@@ -380,7 +380,7 @@ const EditorWrapper: React.FC<EditorWrapperProps> = memo(
       <CollabBaseContext.Provider value={collabBase}>
         <PreventNavigation isDirty={hasChanges} resetData={handleReset} />
 
-        <div>
+        <div className="flex h-full min-h-0 flex-col overflow-hidden">
           <EditorHeader
             handleSubmit={handleSubmit}
             handleSaveAsDraft={handleSaveAsDraft}

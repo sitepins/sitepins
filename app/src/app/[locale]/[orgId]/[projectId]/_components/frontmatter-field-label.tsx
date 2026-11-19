@@ -87,7 +87,7 @@ export function PreviewLabel({
   return (
     <Label
       className={cn(
-        "mb-2 flex items-center justify-between capitalize",
+        "relative mb-2 flex items-center justify-between capitalize",
         className,
       )}
       {...props}
@@ -98,7 +98,7 @@ export function PreviewLabel({
         {action}
       </span>
       {(rightContent || hasBadge) && (
-        <span className="ms-auto flex items-center gap-2">
+        <span className="relative ms-auto flex items-center gap-2">
           {rightContent}
           {hasBadge && (
             <Badge variant={getBadgeVariant()}>

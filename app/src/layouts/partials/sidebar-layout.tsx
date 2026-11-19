@@ -1,11 +1,11 @@
 "use client";
 
 import { NavLink } from "@/components/nav-link";
-import SidebarProfileSetting from "@/components/sidebar-profile-setting";
 import {
-  SidebarAnnouncement,
   SidebarAction,
+  SidebarAnnouncement,
 } from "@/components/sidebar-extras";
+import SidebarProfileSetting from "@/components/sidebar-profile-setting";
 import { TopBanner } from "@/components/top-banner";
 import { SheetClose } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils/cn";
@@ -44,13 +44,17 @@ export function SidebarPageLayout({
 
   // Default classes based on route type
   const defaultMainClasses = isFileEditingRoute
-    ? "h-full max-h-svh px-0 py-0 flex flex-col"
+    ? "h-full max-h-svh min-h-0 flex-1 overflow-hidden px-0 py-0 flex flex-col"
     : "h-full flex-1 p-4 xl:p-8 2xl:px-14 flex flex-col";
+
+  const defaultWrapperClasses = isFileEditingRoute
+    ? "flex h-svh max-h-svh w-full flex-1 flex-col overflow-hidden"
+    : "flex min-h-svh w-full flex-1 flex-col overflow-x-hidden overflow-y-auto";
 
   return (
     <div className="flex">
       <div className="hidden w-full max-w-70 xl:block">{sidebar}</div>
-      <div className="flex min-h-svh w-full flex-1 flex-col overflow-x-hidden overflow-y-auto">
+      <div className={defaultWrapperClasses}>
         <MobileHeader>
           <SidebarContext.Provider value={{ isMobile: true }}>
             {sidebar}

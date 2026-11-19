@@ -55,7 +55,7 @@ export default function ResponsiveEditorLayout({
   if (isMobile) {
     if (configFile) {
       return (
-        <div className="p-5">
+        <div className="relative h-full overflow-y-auto p-5">
           <FrontmatterRenderer
             schema={schema}
             data={data}
@@ -93,7 +93,10 @@ export default function ResponsiveEditorLayout({
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="frontmatter" className="min-h-0 flex-1">
+          <TabsContent
+            value="frontmatter"
+            className="relative min-h-0 flex-1 overflow-y-auto pe-1 pb-6"
+          >
             <FrontmatterRenderer
               schema={schema}
               data={data}
@@ -105,7 +108,7 @@ export default function ResponsiveEditorLayout({
           <TabsContent
             value="content"
             keepMounted
-            className="h-full min-h-0 flex-1"
+            className="relative h-full min-h-0 flex-1"
           >
             <ContentEditor
               markdownContent={markdownContent}
@@ -124,7 +127,7 @@ export default function ResponsiveEditorLayout({
   if (configFile) {
     // For config files we display only the preview/frontmatter UI full-width
     return (
-      <Container>
+      <Container wrapperClassName="h-full overflow-y-auto">
         <FrontmatterRenderer
           schema={schema}
           data={data}
@@ -157,7 +160,7 @@ export default function ResponsiveEditorLayout({
     >
       <ResizablePanelGroup className="h-full" orientation="horizontal">
         <ResizablePanel minSize="30%" defaultSize="40%" className="">
-          <div className="h-full overflow-y-auto p-5">
+          <div className="relative h-full overflow-y-auto p-5">
             <FrontmatterRenderer
               schema={schema}
               data={data}

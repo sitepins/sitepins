@@ -13,14 +13,40 @@ allowBuilds:
 
 minimumReleaseAgeExclude:
   - zod@4.6.5
-  - "@better-auth/core@1.7.13"
-  - "@better-auth/drizzle-adapter@1.7.13"
-  - "@better-auth/kysely-adapter@1.7.13"
-  - "@better-auth/memory-adapter@1.7.13"
-  - "@better-auth/mongo-adapter@1.7.13"
-  - "@better-auth/prisma-adapter@1.7.13"
-  - "@better-auth/telemetry@1.7.13"
-  - better-auth@1.7.13
+  - "@better-auth/core@1.7.13 || 1.7.28"
+  - "@better-auth/drizzle-adapter@1.7.13 || 1.7.28"
+  - "@better-auth/kysely-adapter@1.7.13 || 1.7.28"
+  - "@better-auth/memory-adapter@1.7.13 || 1.7.28"
+  - "@better-auth/mongo-adapter@1.7.13 || 1.7.28"
+  - "@better-auth/prisma-adapter@1.7.13 || 1.7.28"
+  - "@better-auth/telemetry@1.7.13 || 1.7.28"
+  - better-auth@1.7.13 || 1.7.28
+  - "@ai-sdk/anthropic@4.0.108"
+  - "@ai-sdk/google@4.0.126"
+  - "@ai-sdk/openai@4.0.123"
+  - "@ai-sdk/xai@5.0.50"
+  - "@aws-sdk/checksums@3.1002.7"
+  - "@aws-sdk/client-s3@3.1177.0"
+  - "@aws-sdk/core@3.981.2"
+  - "@aws-sdk/credential-provider-env@3.972.86"
+  - "@aws-sdk/credential-provider-http@3.972.88"
+  - "@aws-sdk/credential-provider-ini@3.973.32"
+  - "@aws-sdk/credential-provider-login@3.972.94"
+  - "@aws-sdk/credential-provider-node@3.972.99"
+  - "@aws-sdk/credential-provider-process@3.972.86"
+  - "@aws-sdk/credential-provider-sso@3.973.30"
+  - "@aws-sdk/credential-provider-web-identity@3.972.92"
+  - "@aws-sdk/middleware-sdk-s3@3.972.92"
+  - "@aws-sdk/nested-clients@3.998.5"
+  - "@aws-sdk/token-providers@3.1177.0"
+  - "@hookform/resolvers@7.0.9"
+  - "@slate-yjs/react@1.1.2"
+  - "@types/react@19.3.1"
+  - lucide-react@1.79.0
+  - marked@18.3.0
+  - mongoose@9.13.1
+  - next-intl@4.16.1
+  - react-resizable-panels@4.24.2
 
 overrides:
   mdast-util-to-markdown: 2.1.2

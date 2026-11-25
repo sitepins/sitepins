@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "description": "Sitepins — open-source git-based CMS",
-  "packageManager": "pnpm@12.15.0",
+  "packageManager": "pnpm@12.23.0",
   "engines": {
     "node": ">=22"
   },
@@ -29,7 +29,7 @@
   },
   "devDependencies": {
     "husky": "^9.1.7",
-    "lint-staged": "^17.6.0"
+    "lint-staged": "^17.6.2"
   },
   "lint-staged": {
     "app/src/**/*.{ts,tsx}": [

@@ -33,30 +33,44 @@ type ShortcodeMdastNode = {
 };
 
 /**
- * Drops the newline that separates a block body from its closing tag.
- *
- * It is structure, not content. Left in the last text node, Plate's paragraph
- * rule sees a trailing line break and rewrites it into a literal `<br />`, so
- * every raw/rich switch grows another one.
+ * Drops structural newlines separating a block body from its opening and
+ * closing tags; Plate's paragraph rule otherwise turns them into `<br />` or `\`.
  */
-const trimBodyTrailingNewline = (children: Descendant[]): Descendant[] => {
-  const last = children.at(-1);
-  if (!last) return children;
+const trimEdgeNewline = (
+  children: Descendant[],
+  edge: "leading" | "trailing",
+): Descendant[] => {
+  if (children.length === 0) return children;
+  const idx = edge === "leading" ? 0 : children.length - 1;
+  const target = children[idx];
 
-  if ("text" in last && typeof last.text === "string") {
-    const text = last.text.replace(/\n+$/, "");
-    if (text === last.text) return children;
-    return [...children.slice(0, -1), { ...last, text }];
+  if ("text" in target && typeof target.text === "string") {
+    if ("rawHtml" in target && target.rawHtml) return children;
+    const text = target.text.replace(edge === "leading" ? /^\n+/ : /\n+$/, "");
+    if (text === target.text) return children;
+    const next = [...children];
+    next[idx] = { ...target, text };
+    return next;
   }
 
-  const nested = (last as TElement).children;
-  if (!Array.isArray(nested)) return children;
+  const el = target as TElement;
+  if (
+    !Array.isArray(el.children) ||
+    el.type === KEY_SHORTCODE ||
+    el.type === KEY_SHORTCODE_INLINE
+  ) {
+    return children;
+  }
 
-  return [
-    ...children.slice(0, -1),
-    { ...last, children: trimBodyTrailingNewline(nested as Descendant[]) },
-  ];
+  const trimmed = trimEdgeNewline(el.children as Descendant[], edge);
+  if (trimmed === el.children) return children;
+  const next = [...children];
+  next[idx] = { ...el, children: trimmed };
+  return next;
 };
+
+const trimBodyEdgeNewlines = (children: Descendant[]): Descendant[] =>
+  trimEdgeNewline(trimEdgeNewline(children, "leading"), "trailing");
 
 /**
  * Deserializes Hugo shortcode mdast nodes to Slate nodes
@@ -90,7 +104,7 @@ export const deserializeShortcode = (
   // Deserialize children for block shortcodes
   const children = isBlock
     ? mdastNode.children && mdastNode.children.length > 0
-      ? trimBodyTrailingNewline(
+      ? trimBodyEdgeNewlines(
           convertNodesDeserialize(mdastNode.children, deco, options),
         )
       : [{ text: "" }]

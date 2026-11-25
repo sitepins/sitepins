@@ -1,0 +1,79 @@
+name: Build Sitepins Docker images
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'api/**'
+      - 'app/**'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'pnpm-workspace.yaml'
+      - '.github/workflows/docker-images.yml'
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - component: api
+            dockerfile: api/Dockerfile
+          - component: web
+            dockerfile: app/Dockerfile
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Image metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ github.repository_owner }}/sitepins-${{ matrix.component }}
+          tags: |
+            type=raw,value=local
+            type=sha
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ${{ matrix.dockerfile }}
+          push: true
+          platforms: linux/amd64
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            NEXT_PUBLIC_BACKEND_URL=http://localhost:4000/api/v1
+            NEXT_PUBLIC_HP_WS_URL=ws://localhost:4000/api/v1/editor/collab
+            NEXT_PUBLIC_BUCKET_URL=http://localhost:9000/sitepins-media
+            NEXT_PUBLIC_BRAND_NAME=Sitepins
+            NEXT_PUBLIC_BRAND_URL=https://sitepins.com
+            NEXT_PUBLIC_GIT_APP_NAME=sitepins-local
+            NEXT_PUBLIC_BRAND_SLUG=sitepins
+            NEXT_PUBLIC_BRAND_LOGO=/images/logo.svg
+            NEXT_PUBLIC_BRAND_LOGO_DARK=/images/logo-white.svg
+            NEXT_PUBLIC_BRAND_LOGO_ICON=/images/logo-icon.svg
+            NEXT_PUBLIC_BRAND_LOGO_WIDTH=136
+            NEXT_PUBLIC_BRAND_LOGO_HEIGHT=40
+            NEXT_PUBLIC_BRAND_FAVICON=/images/favicon.png
+            NEXT_PUBLIC_TERMS_URL=https://sitepins.com/terms
+            NEXT_PUBLIC_PRIVACY_URL=https://sitepins.com/privacy-policy
+            NEXT_PUBLIC_SUPPORT_URL=https://sitepins.com/contact
+            NEXT_PUBLIC_UPDATES_URL=https://updates.sitepins.com
+            NEXT_PUBLIC_STATUS_URL=https://status.sitepins.com
+            NEXT_PUBLIC_COMMUNITY_URL=https://discord.gg/KrpvHfqcNA
+            NEXT_PUBLIC_DOCS_URL=https://docs.sitepins.com
+            NEXT_PUBLIC_SOURCE_URL=https://github.com/jsarmedia/sitepins
+          cache-from: type=gha,scope=${{ matrix.component }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.component }}

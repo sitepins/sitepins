@@ -10,7 +10,6 @@
     "password_digit": "密码必须至少包含一个数字",
     "password_special": "密码必须至少包含一个特殊字符",
     "password_mismatch": "两次输入的密码不一致",
-    "otp_length": "验证码必须恰好为 {count} 位数字。",
     "select_provider": "请选择代码托管平台。",
     "select_repository": "请选择代码仓库。",
     "select_branch": "请选择分支。",

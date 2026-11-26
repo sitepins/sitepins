@@ -10,7 +10,6 @@
     "password_digit": "Kata sandi harus mengandung setidaknya satu angka",
     "password_special": "Kata sandi harus mengandung setidaknya satu karakter khusus",
     "password_mismatch": "Kata sandi tidak cocok",
-    "otp_length": "OTP harus tepat {count} digit.",
     "select_provider": "Silakan pilih penyedia.",
     "select_repository": "Silakan pilih repositori.",
     "select_branch": "Silakan pilih cabang.",

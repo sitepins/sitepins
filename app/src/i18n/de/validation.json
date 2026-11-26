@@ -10,7 +10,6 @@
     "password_digit": "Passwort muss mindestens eine Ziffer enthalten",
     "password_special": "Passwort muss mindestens ein Sonderzeichen enthalten",
     "password_mismatch": "Passwörter stimmen nicht überein",
-    "otp_length": "OTP muss genau {count} Ziffern lang sein.",
     "select_provider": "Bitte wählen Sie einen Anbieter.",
     "select_repository": "Bitte wählen Sie ein Repository.",
     "select_branch": "Bitte wählen Sie einen Branch.",

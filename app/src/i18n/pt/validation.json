@@ -10,7 +10,6 @@
     "password_digit": "A senha deve conter pelo menos um dígito",
     "password_special": "A senha deve conter pelo menos um caractere especial",
     "password_mismatch": "As senhas não coincidem",
-    "otp_length": "O OTP deve ter exatamente {count} dígitos.",
     "select_provider": "Selecione um provedor.",
     "select_repository": "Selecione um repositório.",
     "select_branch": "Selecione uma ramificação.",

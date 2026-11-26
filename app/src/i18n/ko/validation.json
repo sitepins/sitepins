@@ -10,7 +10,6 @@
     "password_digit": "비밀번호에는 최소 1개의 숫자가 포함되어야 합니다",
     "password_special": "비밀번호에는 최소 1개의 특수문자가 포함되어야 합니다",
     "password_mismatch": "비밀번호가 일치하지 않습니다",
-    "otp_length": "OTP는 정확히 {count}자리여야 합니다.",
     "select_provider": "제공업체를 선택해 주세요.",
     "select_repository": "저장소를 선택해 주세요.",
     "select_branch": "브랜치를 선택해 주세요.",

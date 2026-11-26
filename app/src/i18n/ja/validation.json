@@ -10,7 +10,6 @@
     "password_digit": "パスワードには少なくとも1つの数字を含める必要があります",
     "password_special": "パスワードには少なくとも1つの特殊文字を含める必要があります",
     "password_mismatch": "パスワードが一致しません",
-    "otp_length": "ワンタイムパスワードは正確に{count}桁である必要があります。",
     "select_provider": "プロバイダーを選択してください。",
     "select_repository": "リポジトリを選択してください。",
     "select_branch": "ブランチを選択してください。",

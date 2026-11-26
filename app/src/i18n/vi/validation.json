@@ -10,7 +10,6 @@
     "password_digit": "Mật khẩu phải chứa ít nhất một chữ số",
     "password_special": "Mật khẩu phải chứa ít nhất một ký tự đặc biệt",
     "password_mismatch": "Mật khẩu không khớp",
-    "otp_length": "Mã OTP phải có đúng {count} chữ số.",
     "select_provider": "Vui lòng chọn nhà cung cấp.",
     "select_repository": "Vui lòng chọn kho lưu trữ.",
     "select_branch": "Vui lòng chọn một nhánh.",

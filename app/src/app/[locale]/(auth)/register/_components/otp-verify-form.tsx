@@ -9,7 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Field, FieldError, FieldGroup } from "@/components/ui/field";
+import { Field, FieldGroup } from "@/components/ui/field";
 import {
   InputOTP,
   InputOTPGroup,
@@ -19,11 +19,11 @@ import { toast } from "@/components/ui/toast";
 import { authClient } from "@/lib/auth/auth-client";
 import { getLocalizedAuthError } from "@/lib/auth/auth-error-mapper";
 import { OTP_LENGTH } from "@/lib/constant";
-import { getOtpSchema, otpSchema } from "@/lib/validate";
+import { otpSchema } from "@/lib/validate";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { REGEXP_ONLY_DIGITS } from "input-otp";
 import { useTranslations } from "next-intl";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import * as z from "zod/v4";
 
@@ -58,14 +58,11 @@ function OTPField({
 export function OTPVerifyForm({ credential }: { credential: LoginCredential }) {
   const [isPending, setIsPending] = useState(false);
 
-  const tValidation = useTranslations("validation");
   const tAuthVerify = useTranslations("auth.verify");
   const tAuth = useTranslations("auth");
 
   const otpForm = useForm<z.infer<typeof otpSchema>>({
-    resolver: zodResolver(
-      useMemo(() => getOtpSchema(tValidation), [tValidation]),
-    ),
+    resolver: zodResolver(otpSchema),
     defaultValues: {
       otp: "",
     },
@@ -125,15 +122,9 @@ export function OTPVerifyForm({ credential }: { credential: LoginCredential }) {
             <Controller
               name="otp"
               control={otpForm.control}
-              render={({ field, fieldState }) => (
-                <Field
-                  data-invalid={fieldState.invalid}
-                  orientation="horizontal"
-                >
+              render={({ field }) => (
+                <Field>
                   <OTPField field={field} />
-                  {fieldState.invalid && (
-                    <FieldError className="mt-2" errors={[fieldState.error]} />
-                  )}
                 </Field>
               )}
             />

@@ -29,7 +29,6 @@ const defaultT: TValidationTranslator = (key, values) => {
     password_digit: "Password must contain at least one digit",
     password_special: "Password must contain at least one special character",
     password_mismatch: "Passwords do not match",
-    otp_length: `OTP must be exactly ${values?.count ?? OTP_LENGTH} digits.`,
     select_provider: "Please select a provider.",
     select_repository: "Please select a repository.",
     select_branch: "Please select a branch.",
@@ -142,14 +141,9 @@ export const getForgotPasswordSchema = (t: TValidationTranslator = defaultT) =>
 
 export const forgotPasswordSchema = getForgotPasswordSchema();
 
-export const getOtpSchema = (t: TValidationTranslator = defaultT) =>
-  z.object({
-    otp: z.string().refine((value) => String(value).length === OTP_LENGTH, {
-      error: t("otp_length", { count: OTP_LENGTH }),
-    }),
-  });
-
-export const otpSchema = getOtpSchema();
+export const otpSchema = z.object({
+  otp: z.string().refine((value) => String(value).length === OTP_LENGTH),
+});
 
 export const getOrgSchema = (t: TValidationTranslator = defaultT) =>
   z.object({

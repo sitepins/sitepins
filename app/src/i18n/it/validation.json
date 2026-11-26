@@ -10,7 +10,6 @@
     "password_digit": "La password deve contenere almeno una cifra",
     "password_special": "La password deve contenere almeno un carattere speciale",
     "password_mismatch": "Le password non corrispondono",
-    "otp_length": "L'OTP deve essere composto da esattamente {count} cifre.",
     "select_provider": "Seleziona un provider.",
     "select_repository": "Seleziona un repository.",
     "select_branch": "Seleziona un ramo.",

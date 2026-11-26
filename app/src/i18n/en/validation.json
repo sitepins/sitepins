@@ -10,7 +10,6 @@
     "password_digit": "Password must contain at least one digit",
     "password_special": "Password must contain at least one special character",
     "password_mismatch": "Passwords do not match",
-    "otp_length": "OTP must be exactly {count} digits.",
     "select_provider": "Please select a provider.",
     "select_repository": "Please select a repository.",
     "select_branch": "Please select a branch.",
